@@ -121,17 +121,17 @@ variables:
   var-hubnetwork-Subnet_SEC_name: SecSubnet
   var-hubnetwork-Subnet_LOG_name: LogSubnet
   var-hubnetwork-Subnet_MGMT_name: MgmtSubnet
-  var-hubnetwork-RG_Hub_name: JDCP2PrdHubPbRsg
-  var-hubnetwork-RG_Mrz_name: JDCP2PrdMrzPbRsg
-  var-hubnetwork-RG_Paz_name: JDCP2PazPbRsg
-  var-hubnetwork-VNET_Hub_name: JDCP2HubVnet
-  var-hubnetwork-VNET_Mrz_name: JDCP2MrzVnet
-  var-hubnetwork-Bastion_name: JDCP2HubBastion
-  var-hubnetwork-PrdFWILB_name: JDCP2ProdFWsILB
-  var-hubnetwork-DevFWILB_name: JDCP2DevFWsILB
-  var-hubnetwork-FW_ProdFW1_name: JDCPProdFW1
-  var-hubnetwork-FW_ProdFW2_name: JDCPProdFW2
-  var-hubnetwork-FW_DevFW1_name: JDCPDevFW1
-  var-hubnetwork-FW_DevFW2_name: JDCPDevFW2
+  var-hubnetwork-RG_Hub_name: pubsecPrdHubPbRsg
+  var-hubnetwork-RG_Mrz_name: pubsecPrdMrzPbRsg
+  var-hubnetwork-RG_Paz_name: pubsecPazPbRsg
+  var-hubnetwork-VNET_Hub_name: pubsecHubVnet
+  var-hubnetwork-VNET_Mrz_name: pubsecMrzVnet
+  var-hubnetwork-Bastion_name: pubsecHubBastion
+  var-hubnetwork-PrdFWILB_name: pubsecProdFWsILB
+  var-hubnetwork-DevFWILB_name: pubsecDevFWsILB
+  var-hubnetwork-FW_ProdFW1_name: pubsecProdFW1
+  var-hubnetwork-FW_ProdFW2_name: pubsecProdFW2
+  var-hubnetwork-FW_DevFW1_name: pubsecDevFW1
+  var-hubnetwork-FW_DevFW2_name: pubsecDevFW2
   var-hubnetwork-FW_ProdFW_username: localadmin
   var-hubnetwork-FW_ProdFW_temppassword: VeryGoodP@ssw0rd2021!
