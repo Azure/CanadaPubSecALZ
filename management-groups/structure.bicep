@@ -12,18 +12,6 @@ param topLevelManagementGroupName string
 
 param parentManagementGroupId string
 
-param l1 array = [
-  'ATESS'
-  'CAF'
-  'CFHIS'
-  'CORP'
-  'DAPI'
-  'DIMEI'
-  'RCAF'
-  'RCN'  
-  'SMMS'
-]
-
 // Level 1
 resource topLevel 'Microsoft.Management/managementGroups@2020-05-01' = {
   name: topLevelManagementGroupName
@@ -104,39 +92,3 @@ resource prod 'Microsoft.Management/managementGroups@2020-05-01' = {
     }
   }
 }
-
-// Level 4 - Dev/Test
-resource l1InDev 'Microsoft.Management/managementGroups@2020-05-01' = [for l1name in l1: {
-  name: '${devtest.name}${l1name}'
-  properties: {
-    details: {
-      parent: {
-        id: devtest.id
-      }
-    }
-  }
-}]
-
-// Level 4 - QA
-resource l1InQA 'Microsoft.Management/managementGroups@2020-05-01' = [for l1name in l1: {
-  name: '${qa.name}${l1name}'
-  properties: {
-    details: {
-      parent: {
-        id: qa.id
-      }
-    }
-  }
-}]
-
-// Level 4 - Prod
-resource l1InProd 'Microsoft.Management/managementGroups@2020-05-01' = [for l1name in l1: {
-  name: '${prod.name}${l1name}'
-  properties: {
-    details: {
-      parent: {
-        id: prod.id
-      }
-    }
-  }
-}]
