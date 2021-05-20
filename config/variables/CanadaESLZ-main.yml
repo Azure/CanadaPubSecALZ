@@ -28,9 +28,9 @@ variables:
   var-logging-subscriptionOwnerGroupObjectIds: '[]'
   var-logging-subscriptionContributorGroupObjectIds: '["38f33f7e-a471-4630-8ce9-c6653495a2ee"]'
   var-logging-subscriptionReaderGroupObjectIds: '[]'
-  var-logging-logAnalyticsResourceGroupName: log-analytics
-  var-logging-logAnalyticsWorkspaceName: centralized-logging
-  var-logging-logAnalyticsAutomationAccountName: centralized-logging-automation
+  var-logging-logAnalyticsResourceGroupName: pubSecLogAnalyticsRG
+  var-logging-logAnalyticsWorkspaceName: pubSecLogAnalytics
+  var-logging-logAnalyticsAutomationAccountName: pubSecLogAnalyticsAutomation
   var-logging-securityContactEmail: sesivan@microsoft.com
   var-logging-securityContactPhone: 6472960698
   var-logging-createBudget: false
