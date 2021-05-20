@@ -1,0 +1,20 @@
+{
+  "if": {
+    "field": "type",
+    "in": "[parameters('listOfResourceTypes')]"
+  },
+  "then": {
+    "effect": "AuditIfNotExists",
+    "details": {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "existenceCondition": {
+        "allOf": [
+          {
+            "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+            "equals": "true"
+          }
+        ]
+      }
+    }
+  }
+}

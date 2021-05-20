@@ -1,0 +1,73 @@
+# ----------------------------------------------------------------------------------
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+# Transpiling Bicep into ARM template and injecting Subscription scope is
+# required until https://github.com/Azure/bicep/issues/1691 is fixed.
+# After that issue is resolved, this pipeline file can be refactored to
+# remove the transpiling and invoke the Bicep template file direcly.
+
+parameters:
+  - name: templateDirectory
+    type: string
+  - name: templateFileBase
+    type: string
+  - name: managementGroup
+    type: string
+  - name: subscriptionGuid
+    type: string
+  - name: workingDir
+    type: string
+
+steps:
+
+- task: Bash@3
+  displayName: Inject Scope
+  inputs:
+    workingDirectory: '${{ parameters.workingDir }}'
+    targetType: 'inline'
+    script: |
+      $(var-bashPreInjectScript)
+
+      echo "Installing bicep..."
+      curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
+      chmod +x bicep
+
+      echo "Converting bicep file to ARM file..."
+      rm -f ${{ parameters.templateFileBase }}.json
+      ./bicep build ${{ parameters.templateDirectory }}/${{ parameters.templateFileBase }}.bicep --outfile ${{ parameters.templateFileBase }}.json
+
+      echo "Injecting subscription scope into ARM template..."
+      chmod u+x $(Build.SourcesDirectory)/pipelines/scripts/add-scope-subscriptions.sh
+      $(Build.SourcesDirectory)/pipelines/scripts/add-scope-subscriptions.sh ${{ parameters.templateFileBase }}.json
+
+      echo "Contents of transpiled & scope-injected template..."
+      echo "----------------------------------------------------------------------------------"
+      cat ${{ parameters.templateFileBase }}.json
+      echo "----------------------------------------------------------------------------------"
+
+      $(var-bashPostInjectScript)
+  
+- task: AzureCLI@2
+  displayName: Move Subscription
+  inputs:
+    azureSubscription: $(serviceConnection)
+    workingDirectory: '${{ parameters.workingDir }}'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      echo "Moving subscription ${{ parameters.subscriptionGuid }} to management group ${{ parameters.managementGroup }}..."
+
+      az deployment mg $(deployOperation) \
+        --location $(deploymentRegion) \
+        --management-group-id ${{ parameters.managementGroup }} \
+        --template-file ${{ parameters.templateFileBase }}.json \
+        --parameters \
+            managementGroupId='${{ parameters.managementGroup }}' \
+            subscriptionId='${{ parameters.subscriptionGuid }}'
+
+      $(var-bashPostInjectScript)

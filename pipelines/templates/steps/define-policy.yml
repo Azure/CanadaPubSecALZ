@@ -1,0 +1,41 @@
+# ----------------------------------------------------------------------------------
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: description
+    type: string
+  - name: workingDir
+    type: string
+  
+steps:
+
+- task: AzureCLI@2
+  displayName: ${{ parameters.description }}
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      echo "Creating policy definitions based on subfolders..."
+
+      for defn in `ls -d */`
+      do
+          echo "Create/Update: $defn"
+          name=`jq -r .name $defn'azurepolicy.config.json'`
+          mode=`jq -r .mode $defn'azurepolicy.config.json'`
+          az policy definition create \
+            -n $defn \
+            --display-name "$name" \
+            --mode "$mode" \
+            --rules @$defn'azurepolicy.rules.json' \
+            --params @$defn'azurepolicy.parameters.json' \
+            --management-group $(var-topLevelManagementGroupName)
+      done
+
+      $(var-bashPostInjectScript)
+    workingDirectory: ${{ parameters.workingDir }}

@@ -1,0 +1,51 @@
+# ----------------------------------------------------------------------------------
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+#
+# GitHub Super Linter : https://github.com/github/super-linter
+# 
+
+# To setup a CI trigger so this pipeline is automatically run on new commits:
+#   1. Remove the 'none' keyword after the 'trigger:' statement in the line below
+#   2. Uncomment the indented lines following the 'trigger:' statement
+trigger: none
+  # batch: true
+  # branches:
+  #   include:
+  #     - main
+  # paths:
+  #   include:
+  #     - azresources/*
+  #     - config/*
+  #     - landingzones/*
+  #     - pipelines/*
+
+variables:
+- name: devops-org-name
+  value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: variable-template-file
+  value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
+- template: ../config/variables/common.yml
+- template: ../config/variables/${{ variables['variable-template-file'] }}
+
+pool:
+  vmImage: $[ variables.vmImage ]
+  
+stages:
+
+- stage: LinterStage
+  displayName: Linter Stage
+
+  jobs:
+
+  - job: LinterJob
+    displayName: Linter Job
+
+    steps:
+
+    - template: ./templates/steps/run-linter.yml
+      parameters:
+        validationTypes: 'ARM JSON YAML'

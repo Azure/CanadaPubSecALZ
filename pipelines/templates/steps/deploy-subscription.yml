@@ -1,0 +1,44 @@
+# ----------------------------------------------------------------------------------
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: config
+    type: string
+  - name: enviro
+    type: string
+  - name: environment
+    type: string
+  - name: filename
+    type: string
+  - name: fullpath
+    type: string
+  - name: relativepath
+    type: string
+  - name: mgmtgroup
+    type: string
+  - name: subguid
+    type: string
+  - name: subtype
+    type: string
+
+steps:
+
+- template: ./move-subscription.yml
+  parameters:
+    managementGroup: ${{ parameters.mgmtgroup }}
+    subscriptionGuid: ${{ parameters.subguid }}
+    templateDirectory: $(Build.SourcesDirectory)/landingzones/utils/mg-move
+    templateFileBase: move-subscription
+    workingDir: $(Build.SourcesDirectory)/$(subscriptionsPathFromRoot)/${{ parameters.relativePath }}
+
+- template: ./load-log-analytics-vars.yml
+
+- template: ./config-subscription.yml
+  parameters:
+    subscriptionGuid: ${{ parameters.subguid }}
+    subscriptionType: ${{ parameters.subtype }}
+    filename: ${{ parameters.filename }}
+    workingDir: $(Build.SourcesDirectory)/$(subscriptionsPathFromRoot)/${{ parameters.relativePath }}

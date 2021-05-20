@@ -1,0 +1,137 @@
+# ----------------------------------------------------------------------------------
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+# Environment YAML files can be used to supplement
+# the variables specified in 'config/variables/common.yml'. You can:
+#   * Override existing common-vars.yml variable value settings, and
+#   * Create new variable values not present in common-vars.yml
+#
+# The naming convention for these YAML files is:
+#   {organization}-{branch}.yml
+#
+# where {organization} is the organization variable from the
+#         common.yml file
+# and   {branch} is the Azure Repos branch name used by the
+#         currently executing pipeline.
+
+variables:
+  # Management Groups
+  var-parentManagementGroupId: 343ddfdb-bef5-46d9-99cf-ed67d5948783
+  var-topLevelManagementGroupName: pubsec
+
+  # Logging
+  var-logging-managementGroupId: pubsecPlatform
+  var-logging-subscriptionId: 82f7705e-3386-427b-95b7-cbed91ab29a7
+  var-logging-subscriptionOwnerGroupObjectIds: '[]'
+  var-logging-subscriptionContributorGroupObjectIds: '["38f33f7e-a471-4630-8ce9-c6653495a2ee"]'
+  var-logging-subscriptionReaderGroupObjectIds: '[]'
+  var-logging-logAnalyticsResourceGroupName: log-analytics
+  var-logging-logAnalyticsWorkspaceName: centralized-logging
+  var-logging-logAnalyticsAutomationAccountName: centralized-logging-automation
+  var-logging-securityContactEmail: sesivan@microsoft.com
+  var-logging-securityContactPhone: 6472960698
+  var-logging-createBudget: false
+  var-logging-budgetName: SubscriptionBudget
+  var-logging-budgetAmount: 100
+  var-logging-budgetTimeGrain: Monthly
+  var-logging-budgetNotificationEmailAddress: sesivan@microsoft.com
+  var-logging-tagISSO: tbd
+  var-logging-tagClientOrganization: tbd
+  var-logging-tagCostCenter: tbd
+  var-logging-tagDataSensitivity: tbd
+  var-logging-tagProjectContact: tbd
+  var-logging-tagProjectName: tbd
+  var-logging-tagTechnicalContact: tbd
+
+  # Hub Networking
+  var-hubnetwork-managementGroupId: pubsecPlatform
+  var-hubnetwork-subscriptionId: 7f7e7d61-990c-46bc-9dfd-4d6115ef04f6
+  var-hubnetwork-subscriptionOwnerGroupObjectIds: '[]'
+  var-hubnetwork-subscriptionContributorGroupObjectIds: '["38f33f7e-a471-4630-8ce9-c6653495a2ee"]'
+  var-hubnetwork-subscriptionReaderGroupObjectIds: '[]'
+  var-hubnetwork-securityContactEmail: sesivan@microsoft.com
+  var-hubnetwork-securityContactPhone: 6472960698
+  var-hubnetwork-createBudget: false
+  var-hubnetwork-budgetName: SubscriptionBudget
+  var-hubnetwork-budgetAmount: 100
+  var-hubnetwork-budgetTimeGrain: Monthly
+  var-hubnetwork-budgetNotificationEmailAddress: sesivan@microsoft.com
+  var-hubnetwork-tagISSO: tbd
+  var-hubnetwork-tagClientOrganization: tbd
+  var-hubnetwork-tagCostCenter: tbd
+  var-hubnetwork-tagDataSensitivity: tbd
+  var-hubnetwork-tagProjectContact: tbd
+  var-hubnetwork-tagProjectName: tbd
+  var-hubnetwork-tagTechnicalContact: tbd
+  var-hubnetwork-budgetStartDate: yyyy-MM-01
+  var-hubnetwork-Hub_IPrange: 10.22.0.0/22
+  var-hubnetwork-Hub_CGNATrange: 100.98.0.0/16
+  var-hubnetwork-Hub_BastionRange: 192.168.0.0/16
+  var-hubnetwork-Subnet_Public: 100.98.0.0/24
+  var-hubnetwork-Subnet_EAN: 10.22.0.0/27
+  var-hubnetwork-Subnet_MRZInt: 10.22.0.96/27
+  var-hubnetwork-Subnet_PrdInt: 10.22.0.32/27
+  var-hubnetwork-Subnet_DevInt: 10.22.0.64/27
+  var-hubnetwork-Subnet_HA: 10.22.0.128/28
+  var-hubnetwork-Subnet_PAZ: 100.98.1.0/24
+  var-hubnetwork-Subnet_Bastion: 192.168.0.0/24
+  var-hubnetwork-Subnet_Public_name: PublicSubnet
+  var-hubnetwork-Subnet_EAN_name: EanSubnet
+  var-hubnetwork-Subnet_MRZInt_name: MrzSubnet
+  var-hubnetwork-Subnet_PrdInt_name: PrdIntSubnet
+  var-hubnetwork-Subnet_DevInt_name: DevIntSubnet
+  var-hubnetwork-Subnet_HA_name: HASubnet
+  var-hubnetwork-Subnet_PAZ_name: PAZSubnet
+  var-hubnetwork-useFortigateFW: true
+  var-hubnetwork-FW_VM_sku_prod: Standard_F8s_v2
+  var-hubnetwork-FW_VM_sku_dev: Standard_D8s_v4
+  var-hubnetwork-FW_VIP_ProdFWs_Public: 100.98.0.4
+  var-hubnetwork-FW_ProdFW1_Public: 100.98.0.5
+  var-hubnetwork-FW_ProdFW2_Public: 100.98.0.6
+  var-hubnetwork-FW_VIP_DevFWs_Public: 100.98.0.7
+  var-hubnetwork-FW_DevFW1_Public: 100.98.0.8
+  var-hubnetwork-FW_DevFW2_Public: 100.98.0.9
+  var-hubnetwork-FW_VIP_ProdFWs_MRZInt: 10.22.0.100
+  var-hubnetwork-FW_ProdFW1_MRZInt: 10.22.0.101
+  var-hubnetwork-FW_ProdFW2_MRZInt: 10.22.0.102
+  var-hubnetwork-FW_VIP_DevFWs_MRZInt: 10.22.0.103
+  var-hubnetwork-FW_DevFW1_MRZInt: 10.22.0.104
+  var-hubnetwork-FW_DevFW2_MRZInt: 10.22.0.105
+  var-hubnetwork-FW_VIP_ProdFWs_PrdInt: 10.22.0.36
+  var-hubnetwork-FW_ProdFW1_PrdInt: 10.22.0.37
+  var-hubnetwork-FW_ProdFW2_PrdInt: 10.22.0.38
+  var-hubnetwork-FW_VIP_DevFWs_DevInt: 10.22.0.68
+  var-hubnetwork-FW_DevFW1_DevInt: 10.22.0.69
+  var-hubnetwork-FW_DevFW2_DevInt: 10.22.0.70
+  var-hubnetwork-FW_ProdFW1_HA: 10.22.0.132
+  var-hubnetwork-FW_ProdFW2_HA: 10.22.0.133
+  var-hubnetwork-FW_DevFW1_HA: 10.22.0.134
+  var-hubnetwork-FW_DevFW2_HA: 10.22.0.135
+  var-hubnetwork-MRZ_IPrange: 10.22.4.0/22
+  var-hubnetwork-Subnet_MAZ: 10.22.4.0/25
+  var-hubnetwork-Subnet_INF: 10.22.4.128/25
+  var-hubnetwork-Subnet_SEC: 10.22.5.0/26
+  var-hubnetwork-Subnet_LOG: 10.22.5.64/26
+  var-hubnetwork-Subnet_MGMT: 10.22.5.128/26
+  var-hubnetwork-Subnet_MAZ_name: MazSubnet
+  var-hubnetwork-Subnet_INF_name: InfSubnet
+  var-hubnetwork-Subnet_SEC_name: SecSubnet
+  var-hubnetwork-Subnet_LOG_name: LogSubnet
+  var-hubnetwork-Subnet_MGMT_name: MgmtSubnet
+  var-hubnetwork-RG_Hub_name: JDCP2PrdHubPbRsg
+  var-hubnetwork-RG_Mrz_name: JDCP2PrdMrzPbRsg
+  var-hubnetwork-RG_Paz_name: JDCP2PazPbRsg
+  var-hubnetwork-VNET_Hub_name: JDCP2HubVnet
+  var-hubnetwork-VNET_Mrz_name: JDCP2MrzVnet
+  var-hubnetwork-Bastion_name: JDCP2HubBastion
+  var-hubnetwork-PrdFWILB_name: JDCP2ProdFWsILB
+  var-hubnetwork-DevFWILB_name: JDCP2DevFWsILB
+  var-hubnetwork-FW_ProdFW1_name: JDCPProdFW1
+  var-hubnetwork-FW_ProdFW2_name: JDCPProdFW2
+  var-hubnetwork-FW_DevFW1_name: JDCPDevFW1
+  var-hubnetwork-FW_DevFW2_name: JDCPDevFW2
+  var-hubnetwork-FW_ProdFW_username: localadmin
+  var-hubnetwork-FW_ProdFW_temppassword: VeryGoodP@ssw0rd2021!

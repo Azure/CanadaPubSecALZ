@@ -1,0 +1,46 @@
+# ----------------------------------------------------------------------------------
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: description
+    type: string
+  - name: deployTemplates
+    type: object
+  - name: deployOperation
+    type: string
+    default: create
+    values:
+      - create
+      - what-if
+  - name: workingDir
+    type: string
+  
+steps:
+
+- ${{ each policy in parameters.deployTemplates }}:
+  - task: AzureCLI@2
+    displayName: '${{ parameters.description }} - ${{ policy }}.bicep'
+    inputs:
+      azureSubscription: $(serviceConnection)
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        $(var-bashPreInjectScript)
+
+        echo "Deploying ${{ policy }}.bicep using ${{ parameters.deployOperation}} operation..."
+
+        az deployment mg ${{ parameters.deployOperation }} \
+          --location $(deploymentRegion) \
+          --management-group-id $(var-topLevelManagementGroupName) \
+          --template-file ${{ policy }}.bicep \
+          --parameters \
+              policyAssignmentManagementGroupId='$(var-topLevelManagementGroupName)' \
+              policyDefinitionManagementGroupId=$(var-topLevelManagementGroupName) \
+              logAnalyticsResourceId=$(var-logging-logAnalyticsWorkspaceResourceId) \
+              logAnalyticsWorkspaceId=$(var-logging-logAnalyticsWorkspaceId)
+        
+        $(var-bashPostInjectScript)
+      workingDirectory: ${{ parameters.workingDir }}

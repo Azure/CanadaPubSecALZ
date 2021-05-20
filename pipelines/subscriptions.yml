@@ -1,0 +1,81 @@
+# ----------------------------------------------------------------------------------
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: subscriptions
+    type: object
+    default: []
+  - name: commit
+    type: string
+    default: 'optional-commit-id'
+
+# Remove 'none' and uncomment block to enable CI trigger
+trigger: none
+  # batch: false
+  # branches:
+  #   include:
+  #     - main
+  # paths:
+  #   include:
+  #     - config/subscriptions/*
+
+variables:
+- name: devops-org-name
+  value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: environment
+  value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}
+- template: ../config/variables/common.yml
+- template: ../config/variables/${{ variables['environment'] }}.yml
+
+pool:
+  vmImage: $[ variables.vmImage ]
+  
+stages:
+
+- stage: DeploySubscriptionsStage
+  displayName: Deploy Subscription Stage
+
+  jobs:
+
+  # This job is run when the CI trigger is fired based on a change to one or more
+  # subscription configuration files *OR* when the pipeline is run manually and the
+  # default empty array value is passed for the 'subscriptions' suparameter. 
+  # In either of these cases, the array of subscriptions is determined by one of:
+  #
+  #   1) Inspecting configuration files included in the triggering Git commit *OR*
+  #      the HEAD of the current branch if manually triggered
+  #
+  #   2) The (array) values entered by the user when manually triggered
+  #
+  # The template job invoked here will re-invoke this template (subscriptions.yml)
+  # once, passing it an array of subscriptions. When re-entered (and 'subscriptions'
+  # array parameter is not empty - i.e. []), this block will not run, rather the
+  # following block will run, using a template job to run subscription deployment
+  # for each subscription in the array - allowing parallel execution if you have
+  # sufficient parallel pipelines available.  
+
+  - ${{ if eq(length(parameters.subscriptions), 0) }}:
+    - template: templates/jobs/trigger-subscriptions.yml
+      parameters:
+        config: ${{ variables['subscriptionsPathFromRoot'] }}
+        enviro: ${{ variables['environment'] }}
+        ${{ if eq(parameters['commit'], 'optional-commit-id') }}:
+          commit: $(Build.SourceVersion)
+        ${{ if ne(parameters['commit'], 'optional-commit-id') }}:
+          commit: ${{ parameters.commit }}
+
+  # Create a new job for each subscription in subscriptions parameter (if any).
+  # This job (template) will not be run on CI invocation where no subscriptions are passed by parameter.
+  # If mutliple subscription changes are detected *and* you have sufficient parallel pipelines,
+  # then the subscription deployments will occur in parallel.
+
+  - ${{ each subscription in parameters.subscriptions }}:
+    - template: templates/jobs/deploy-subscription.yml
+      parameters:
+        config: ${{ variables['subscriptionsPathFromRoot'] }}
+        enviro: ${{ variables['environment'] }}
+        subscription: ${{ subscription }}
+

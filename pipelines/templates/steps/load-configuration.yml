@@ -1,0 +1,49 @@
+# ----------------------------------------------------------------------------------
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+# 2021-03-31 : THIS TEMPLATE IS NOT IN USE
+# It is an example of the following:
+#   1) Process JSON file with jq.exe to get values by keys
+#   2) Set step process environment variable with key value
+#   3) Inject (##vso) key value into Azure Pipeline environment
+
+parameters:
+  - name: configFile
+    type: string
+
+steps:
+
+- task: Bash@3
+  displayName: Load Configuration
+  inputs:
+    targetType: 'inline'
+    script: |
+      $(var-bashPreInjectScript)
+
+      echo Configuration file is: ${{ parameters.configFile }}
+      PARENT_MGMT_GROUP_ID=`jq -r .managementgroups.parentManagementGroupId "${{ parameters.configFile }}"`
+      TOP_LEVEL_MGMT_GROUP_NAME=`jq -r .managementgroups.topLevelManagementGroupName "${{ parameters.configFile }}"`
+      echo "##vso[task.setvariable variable=parentManagementGroupId]$PARENT_MGMT_GROUP_ID"
+      echo "##vso[task.setvariable variable=topLevelManagementGroupName]$TOP_LEVEL_MGMT_GROUP_NAME"
+
+      $(var-bashPostInjectScript)
+
+- task: Bash@3
+  displayName: Show Configuration
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "--------------------------------------------------"
+      echo "Variables from templates ( config/variables/* )"
+      echo "--------------------------------------------------"
+      echo "  variableTemplateFile is: $(variableTemplateFile)"
+      echo "  serviceConnection is: $(serviceConnection)"
+      echo "  deploymentRegion is: $(deploymentRegion)"
+      echo "--------------------------------------------------"
+      echo "Variables from config ( config/* )"
+      echo "--------------------------------------------------"
+      echo "  parentManagementGroupId is : $(parentManagementGroupId)"
+      echo "  topLevelManagementGroupName is : $(topLevelManagementGroupName)"

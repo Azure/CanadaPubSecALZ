@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Azure Application Gateway to Log Analytics Workspaces",
+    "mode": "indexed"
+}

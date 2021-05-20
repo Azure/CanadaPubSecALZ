@@ -1,0 +1,60 @@
+// ----------------------------------------------------------------------------------
+// THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+// EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+// OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+// ----------------------------------------------------------------------------------
+
+targetScope = 'managementGroup'
+
+// Required parameters
+param policyAssignmentManagementGroupId string
+param logAnalyticsWorkspaceId string
+
+// Unused parameters with default values
+param policyDefinitionManagementGroupId string = ''
+param logAnalyticsResourceId string = ''
+
+var policyId = '4c4a5f27-de81-430b-b4e5-9cbd50595a87' // Canada Federal PBMM
+var assignmentName = 'Canada Federal PBMM'
+
+var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
+var policyScopedId = resourceId('Microsoft.Authorization/policySetDefinitions', policyId)
+
+resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
+  name: 'assign-${uniqueString('pbmm-',policyAssignmentManagementGroupId)}'
+  properties: {
+    displayName: assignmentName
+    policyDefinitionId: policyScopedId
+    scope: scope
+    notScopes: [
+    ]
+    parameters: {
+      logAnalyticsWorkspaceIdforVMReporting: {
+        value: logAnalyticsWorkspaceId
+       }
+       listOfMembersToExcludeFromWindowsVMAdministratorsGroup: {
+        value: 'excludedUser'
+       }
+       listOfMembersToIncludeInWindowsVMAdministratorsGroup: {
+        value: 'includedUser'
+       }
+    }
+    enforcementMode: 'Default'
+  }
+  identity: {
+    type: 'SystemAssigned'
+  }
+  location: deployment().location
+}
+
+// These role assignments are required to allow Policy Assignment to remediate.
+
+resource policySetRoleAssignmentContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(policyAssignmentManagementGroupId, 'pbmm-Contributor')
+  scope: managementGroup()
+  properties: {
+    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    principalId: policySetAssignment.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+}

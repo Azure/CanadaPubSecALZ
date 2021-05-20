@@ -1,0 +1,85 @@
+# ----------------------------------------------------------------------------------
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: description
+    type: string
+  - name: moveTemplate
+    type: string
+  - name: configTemplate
+    type: string
+  - name: workingDir
+    type: string
+  - name: deployOperation
+    type: string
+    default: create
+    values:
+      - create
+      - what-if
+
+steps:
+
+- task: AzureCLI@2
+  displayName: ${{ parameters.description }} - Move Subscription
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      echo "Deploying ${{ parameters.moveTemplate }} using ${{ parameters.deployOperation}} operation..."
+
+      az deployment mg ${{ parameters.deployOperation }} \
+        --location $(deploymentRegion) \
+        --management-group-id $(var-logging-managementGroupId) \
+        --template-file ${{ parameters.moveTemplate }} \
+        --parameters \
+            managementGroupId='$(var-logging-managementGroupId)' \
+            subscriptionId='$(var-logging-subscriptionId)'
+
+      $(var-bashPostInjectScript)
+    workingDirectory: '${{ parameters.workingDir }}/utils/mg-move'
+
+- task: AzureCLI@2
+  displayName: ${{ parameters.description}} - Configure Subscription
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      echo "Deploying ${{ parameters.configTemplate }} using ${{ parameters.deployOperation}} operation..."
+
+      az deployment sub ${{ parameters.deployOperation }} \
+        --location $(deploymentRegion) \
+        --subscription $(var-logging-subscriptionId) \
+        --template-file ${{ parameters.configTemplate }} \
+        --parameters \
+            subscriptionOwnerGroupObjectIds='$(var-logging-subscriptionOwnerGroupObjectIds)' \
+            subscriptionContributorGroupObjectIds='$(var-logging-subscriptionContributorGroupObjectIds)' \
+            subscriptionReaderGroupObjectIds='$(var-logging-subscriptionReaderGroupObjectIds)' \
+            securityContactEmail='$(var-logging-securityContactEmail)' \
+            securityContactPhone='$(var-logging-securityContactPhone)' \
+            createBudget='$(var-logging-createBudget)' \
+            budgetName='$(var-logging-budgetName)' \
+            budgetAmount='$(var-logging-budgetAmount)' \
+            budgetTimeGrain='$(var-logging-budgetTimeGrain)' \
+            budgetNotificationEmailAddress='$(var-logging-budgetNotificationEmailAddress)' \
+            logAnalyticsResourceGroupName='$(var-logging-logAnalyticsResourceGroupName)' \
+            logAnalyticsWorkspaceName='$(var-logging-logAnalyticsWorkspaceName)' \
+            logAnalyticsAutomationAccountName='$(var-logging-logAnalyticsAutomationAccountName)' \
+            tagISSO='$(var-logging-tagISSO)' \
+            tagClientOrganization='$(var-logging-tagClientOrganization)' \
+            tagCostCenter='$(var-logging-tagCostCenter)' \
+            tagDataSensitivity='$(var-logging-tagDataSensitivity)' \
+            tagProjectContact='$(var-logging-tagProjectContact)' \
+            tagProjectName='$(var-logging-tagProjectName)' \
+            tagTechnicalContact='$(var-logging-tagTechnicalContact)'
+
+      $(var-bashPostInjectScript)
+    workingDirectory: '${{ parameters.workingDir }}/lz-platform-logging'

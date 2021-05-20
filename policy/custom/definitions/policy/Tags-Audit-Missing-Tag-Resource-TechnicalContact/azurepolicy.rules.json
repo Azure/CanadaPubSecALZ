@@ -1,0 +1,9 @@
+{
+  "if": {
+    "field": "[concat('tags[TechnicalContact]')]",
+    "exists": "false"
+  },
+  "then": {
+    "effect": "audit"
+  }
+}

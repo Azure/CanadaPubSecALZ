@@ -1,0 +1,74 @@
+# ----------------------------------------------------------------------------------
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+trigger:
+  batch: true
+  branches:
+    include:
+     # - main
+      - sandbox
+  paths:
+    include:
+      - landingzones/lz-platform-logging
+      - pipelines/platform-logging.yml
+      - pipelines/templates/steps/deploy-platform-logging.yml
+
+resources:
+  pipelines:
+    # Trigger this pipeline when management-groups-ci pipeline completes
+    - pipeline: ManagementGroups
+      source: management-groups-ci
+      trigger:
+        branches:
+          include:
+            - refs/heads/main
+
+variables:
+- name: devops-org-name
+  value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: variable-template-file
+  value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
+- template: ../config/variables/common.yml
+- template: ../config/variables/${{ variables['variable-template-file'] }}
+
+pool:
+  vmImage: $[ variables.vmImage ]
+  
+stages:
+
+- stage: DeployPlatformLoggingStage
+  displayName: Deploy Platform Logging Stage
+
+  jobs:
+
+  - deployment: DeployPlatformLoggingJob
+    displayName: Deploy Platform Logging Job
+    environment: ${{ variables['Build.SourceBranchName'] }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+
+          - template: templates/steps/show-variables.yml
+            parameters:
+              json: ${{ convertToJson(variables) }}
+
+          - template: templates/steps/transpile-bicep.yml
+            parameters:
+              description: 'Transpile Bicep'
+              scope: subscriptions
+              bicepFile: move-subscription.bicep
+              armFile: move-subscription.json
+              workingDir: $(System.DefaultWorkingDirectory)/landingzones/utils/mg-move
+
+          - template: templates/steps/deploy-platform-logging.yml
+            parameters:
+              description: 'Deploy Logging'
+              moveTemplate: move-subscription.json
+              configTemplate: main.bicep
+              deployOperation: ${{ variables['deployOperation'] }}
+              workingDir: $(System.DefaultWorkingDirectory)/landingzones

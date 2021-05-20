@@ -1,0 +1,134 @@
+# ----------------------------------------------------------------------------------
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+trigger:
+  batch: true
+  branches:
+    include:
+      # - main
+      - sandbox
+  paths:
+    include:
+      - policy
+      - pipelines/policy.yml
+      - pipelines/templates/steps/deploy-policy.yml
+
+resources:
+  pipelines:
+    # Trigger this pipeline when platform-logging-ci pipeline completes
+    - pipeline: PlatformLogging
+      source: platform-logging-ci
+      trigger:
+        branches:
+          include:
+            - refs/heads/main
+
+variables:
+- name: devops-org-name
+  value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: variable-template-file
+  value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
+- template: ../config/variables/common.yml
+- template: ../config/variables/${{ variables['variable-template-file'] }}
+
+pool:
+  vmImage: $[ variables.vmImage ]
+
+stages:
+
+- stage: DeployPolicyStage
+  displayName: Deploy Policy Stage
+
+  # Policy deployment is divided into 2 jobs, one for Built-In and
+  # one for Custom policy definitions and assignments. Jobs are
+  # implicitly parallel, so these jobs may run concurrently if
+  # you have enough parallel job capacity.
+  # Added one more job (total 3) that runs before the two existing
+  # jobs to run Environment Approvals and Checks. The two policy
+  # jobs (built-in and custom) only run once any/all environment
+  # approvals and checks are satisfied.
+
+  jobs:
+
+  - deployment: EnvionmentApprovalsAndChecks
+    displayName: Environment Approvals and Checks
+    environment: ${{ variables['Build.SourceBranchName'] }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - script: |
+                echo "Environment Approvals and Checks completed for environment: ${{ variables['Build.SourceBranchName'] }}"
+
+  - job: CustomPolicyJob
+    displayName: Custom Policy Job
+    dependsOn:
+      - EnvionmentApprovalsAndChecks
+    condition: succeeded('EnvionmentApprovalsAndChecks')
+
+    steps:
+
+    - template: templates/steps/load-log-analytics-vars.yml
+
+    - template: templates/steps/show-variables.yml
+      parameters:
+        json: ${{ convertToJson(variables) }}
+  
+    # Required due to https://github.com/Azure/bicep/issues/2243 or upgrade to AzCLI 2.22.1+
+    - task: Bash@3
+      displayName: Upgrade Azure CLI
+      enabled: false
+      inputs:
+        targetType: 'inline'
+        script: 'az upgrade -y'
+
+    - template: templates/steps/define-policy.yml
+      parameters:
+        description: 'Define Policies'
+        workingDir: $(System.DefaultWorkingDirectory)/policy/custom/definitions/policy
+    
+    - template: templates/steps/define-policyset.yml
+      parameters:
+        description: 'Define Policy Sets'
+        deployTemplates: [AKS, EnableAzureDefender, EnableLogAnalytics, Network, Tags]
+        deployOperation: ${{ variables['deployOperation'] }}
+        workingDir: $(System.DefaultWorkingDirectory)/policy/custom/definitions/policyset
+      
+    - template: templates/steps/assign-policy.yml
+      parameters:
+        description: 'Assign Policy'
+        deployTemplates: [aks, asc, loganalytics, tags-management-groups, network]
+        deployOperation: ${{ variables['deployOperation'] }}
+        workingDir: $(System.DefaultWorkingDirectory)/policy/custom/assignments
+  
+  - job: BuiltInPolicyJob
+    displayName: Built In Policy Job
+    dependsOn:
+      - EnvionmentApprovalsAndChecks
+    condition: succeeded('EnvionmentApprovalsAndChecks')
+
+    steps:
+
+    - template: templates/steps/load-log-analytics-vars.yml
+
+    - template: templates/steps/show-variables.yml
+      parameters:
+        json: ${{ convertToJson(variables) }}
+
+    # Required due to https://github.com/Azure/bicep/issues/2243 or upgrade to AzCLI 2.22.1+
+    - task: Bash@3
+      displayName: Upgrade Azure CLI
+      enabled: false
+      inputs:
+        targetType: 'inline'
+        script: 'az upgrade -y'
+
+    - template: templates/steps/assign-policy.yml
+      parameters:
+        description: 'Assign Policy'
+        deployTemplates: [asb, cis-msft-130, location, nist80053r4, pbmm]
+        deployOperation: ${{ variables['deployOperation'] }}
+        workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
