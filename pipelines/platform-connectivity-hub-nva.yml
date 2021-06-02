@@ -48,18 +48,10 @@ stages:
             parameters:
               json: ${{ convertToJson(variables) }}
 
-          - template: templates/steps/transpile-bicep.yml
-            parameters:
-              description: 'Transpile Bicep'
-              scope: subscriptions
-              bicepFile: move-subscription.bicep
-              armFile: move-subscription.json
-              workingDir: $(System.DefaultWorkingDirectory)/landingzones/utils/mg-move
-
           - template: templates/steps/deploy-platform-connectivity-hub-nva.yml
             parameters:
               description: 'Deploy Networking'
-              moveTemplate: move-subscription.json
+              moveTemplate: move-subscription.bicep
               templateFile: main.bicep
               deployOperation: ${{ variables['deployOperation'] }}
               workingDir: $(System.DefaultWorkingDirectory)/landingzones
