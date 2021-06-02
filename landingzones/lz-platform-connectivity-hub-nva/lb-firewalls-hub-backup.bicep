@@ -21,10 +21,10 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-06-01' = {
       {
         name: '${name}-Frontend'
         properties: {
-          privateIPAddress: '${FrontendIP}'
+          privateIPAddress: FrontendIP
           privateIPAllocationMethod: 'Static'
           subnet: {
-            id: '${FrontendSubnetID}'
+            id: FrontendSubnetID
           }
           privateIPAddressVersion: 'IPv4'
         }
@@ -111,13 +111,13 @@ resource ILBBackend 'Microsoft.Network/loadBalancers/backendAddressPools@2020-07
       {
           name: 'FW1'
           properties: {
-              ipAddress: '${BackendIP1}'
+              ipAddress: BackendIP1
           }
       }
       {
         name: 'FW2'
         properties: {
-            ipAddress: '${BackendIP2}'
+            ipAddress: BackendIP2
         }
       }
     ]

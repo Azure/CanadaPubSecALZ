@@ -32,10 +32,10 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
       {
         name: '${name}-Frontend-ext'
         properties: {
-          privateIPAddress: '${FrontendIP_ext}'
+          privateIPAddress: FrontendIP_ext
           privateIPAllocationMethod: 'Static'
           subnet: {
-            id: '${FrontendSubnetID_ext}'
+            id: FrontendSubnetID_ext
           }
           privateIPAddressVersion: 'IPv4'
         }
@@ -48,10 +48,10 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
       {
         name: '${name}-Frontend-mrz'
         properties: {
-          privateIPAddress: '${FrontendIP_mrz}'
+          privateIPAddress: FrontendIP_mrz
           privateIPAllocationMethod: 'Static'
           subnet: {
-            id: '${FrontendSubnetID_mrz}'
+            id: FrontendSubnetID_mrz
           }
           privateIPAddressVersion: 'IPv4'
         }
@@ -64,10 +64,10 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
       {
         name: '${name}-Frontend-int'
         properties: {
-          privateIPAddress: '${FrontendIP_int}'
+          privateIPAddress: FrontendIP_int
           privateIPAllocationMethod: 'Static'
           subnet: {
-            id: '${FrontendSubnetID_int}'
+            id: FrontendSubnetID_int
           }
           privateIPAddressVersion: 'IPv4'
         }
