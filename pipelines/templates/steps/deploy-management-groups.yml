@@ -31,6 +31,8 @@ steps:
       
       echo "Deploying ${{ parameters.templateFile }} using ${{ parameters.deployOperation }} operation..."
 
+      az bicep upgrade
+
       az deployment mg ${{ parameters.deployOperation }} \
         --location $(deploymentRegion) \
         --management-group-id $(var-parentManagementGroupId) \

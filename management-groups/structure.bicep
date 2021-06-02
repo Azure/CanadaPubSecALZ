@@ -4,7 +4,7 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-targetScope = 'tenant'
+targetScope = 'managementGroup'
 
 @minLength(2)
 @maxLength(10)
@@ -15,6 +15,7 @@ param parentManagementGroupId string
 // Level 1
 resource topLevel 'Microsoft.Management/managementGroups@2020-05-01' = {
   name: topLevelManagementGroupName
+  scope: tenant()
   properties: {
     details: {
       parent: {
@@ -27,6 +28,7 @@ resource topLevel 'Microsoft.Management/managementGroups@2020-05-01' = {
 // Level 2
 resource platform 'Microsoft.Management/managementGroups@2020-05-01' = {
   name: '${topLevel.name}Platform'
+  scope: tenant()
   properties: {
     details: {
       parent: {
@@ -38,6 +40,7 @@ resource platform 'Microsoft.Management/managementGroups@2020-05-01' = {
 
 resource landingzones 'Microsoft.Management/managementGroups@2020-05-01' = {
   name: '${topLevel.name}LandingZones'
+  scope: tenant()
   properties: {
     details: {
       parent: {
@@ -49,6 +52,7 @@ resource landingzones 'Microsoft.Management/managementGroups@2020-05-01' = {
 
 resource sandbox 'Microsoft.Management/managementGroups@2020-05-01' = {
   name: '${topLevel.name}Sandbox'
+  scope: tenant()
   properties: {
     details: {
       parent: {
@@ -62,6 +66,7 @@ resource sandbox 'Microsoft.Management/managementGroups@2020-05-01' = {
 
 resource devtest 'Microsoft.Management/managementGroups@2020-05-01' = {
   name: '${landingzones.name}DevTest'
+  scope: tenant()
   properties: {
     details: {
       parent: {
@@ -73,6 +78,7 @@ resource devtest 'Microsoft.Management/managementGroups@2020-05-01' = {
 
 resource qa 'Microsoft.Management/managementGroups@2020-05-01' = {
   name: '${landingzones.name}QA'
+  scope: tenant()
   properties: {
     details: {
       parent: {
@@ -84,6 +90,7 @@ resource qa 'Microsoft.Management/managementGroups@2020-05-01' = {
 
 resource prod 'Microsoft.Management/managementGroups@2020-05-01' = {
   name: '${landingzones.name}Prod'
+  scope: tenant()
   properties: {
     details: {
       parent: {

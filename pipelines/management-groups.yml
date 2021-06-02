@@ -46,17 +46,9 @@ stages:
             parameters:
               json: ${{ convertToJson(variables) }}
 
-          - template: templates/steps/transpile-bicep.yml
-            parameters:
-              description: 'Management Groups'
-              scope: management-groups
-              bicepFile: structure.bicep
-              armFile: structure.json
-              workingDir: $(System.DefaultWorkingDirectory)/management-groups
-
           - template: templates/steps/deploy-management-groups.yml
             parameters:
               description: 'Create/Update Management Groups'
-              templateFile: structure.json
+              templateFile: structure.bicep
               deployOperation: ${{ variables['deployOperation'] }}
               workingDir: $(System.DefaultWorkingDirectory)/management-groups
