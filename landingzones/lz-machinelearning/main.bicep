@@ -6,8 +6,6 @@
 
 targetScope = 'subscription'
 
-param azureRegion string = deployment().location
-
 // Groups
 param subscriptionOwnerGroupObjectIds array = []
 param subscriptionContributorGroupObjectIds array = []
@@ -126,16 +124,6 @@ param sqlmiUsername string
 @secure()
 param selfHostedVMUsername string
 
-// Tags
-var tags = {
-  ClientOrganization: tagClientOrganization
-  CostCenter: tagCostCenter
-  DataSensitivity: tagDataSensitivity
-  ProjectContact: tagProjectContact
-  ProjectName: tagProjectName
-  TechnicalContact: tagTechnicalContact
-}
-
 // Configure generic subscription
 module genericSubscription '../lz-generic-subscription/main.bicep' = {
   name: 'genericSubscription'
@@ -147,6 +135,10 @@ module genericSubscription '../lz-generic-subscription/main.bicep' = {
     budgetNotificationEmailAddress: budgetNotificationEmailAddress
     budgetStartDate: budgetStartDate
     budgetTimeGrain: budgetTimeGrain
+
+    subscriptionOwnerGroupObjectIds: subscriptionOwnerGroupObjectIds
+    subscriptionContributorGroupObjectIds: subscriptionContributorGroupObjectIds
+    subscriptionReaderGroupObjectIds: subscriptionReaderGroupObjectIds
     
     securityContactEmail: securityContactEmail
     securityContactPhone: securityContactPhone
