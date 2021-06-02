@@ -6,8 +6,6 @@
 
 targetScope = 'subscription'
 
-param azureRegion string = deployment().location
-
 // Groups
 param subscriptionOwnerGroupObjectIds array = []
 param subscriptionContributorGroupObjectIds array = []
