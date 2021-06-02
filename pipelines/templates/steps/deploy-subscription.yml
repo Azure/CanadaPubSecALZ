@@ -31,7 +31,7 @@ steps:
     managementGroup: ${{ parameters.mgmtgroup }}
     subscriptionGuid: ${{ parameters.subguid }}
     templateDirectory: $(Build.SourcesDirectory)/landingzones/utils/mg-move
-    templateFileBase: move-subscription
+    templateFile: move-subscription.bicep
     workingDir: $(Build.SourcesDirectory)/$(subscriptionsPathFromRoot)/${{ parameters.relativePath }}
 
 - template: ./load-log-analytics-vars.yml

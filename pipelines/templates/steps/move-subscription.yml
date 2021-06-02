@@ -12,7 +12,7 @@
 parameters:
   - name: templateDirectory
     type: string
-  - name: templateFileBase
+  - name: templateFile
     type: string
   - name: managementGroup
     type: string
@@ -21,35 +21,7 @@ parameters:
   - name: workingDir
     type: string
 
-steps:
-
-- task: Bash@3
-  displayName: Inject Scope
-  inputs:
-    workingDirectory: '${{ parameters.workingDir }}'
-    targetType: 'inline'
-    script: |
-      $(var-bashPreInjectScript)
-
-      echo "Installing bicep..."
-      curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
-      chmod +x bicep
-
-      echo "Converting bicep file to ARM file..."
-      rm -f ${{ parameters.templateFileBase }}.json
-      ./bicep build ${{ parameters.templateDirectory }}/${{ parameters.templateFileBase }}.bicep --outfile ${{ parameters.templateFileBase }}.json
-
-      echo "Injecting subscription scope into ARM template..."
-      chmod u+x $(Build.SourcesDirectory)/pipelines/scripts/add-scope-subscriptions.sh
-      $(Build.SourcesDirectory)/pipelines/scripts/add-scope-subscriptions.sh ${{ parameters.templateFileBase }}.json
-
-      echo "Contents of transpiled & scope-injected template..."
-      echo "----------------------------------------------------------------------------------"
-      cat ${{ parameters.templateFileBase }}.json
-      echo "----------------------------------------------------------------------------------"
-
-      $(var-bashPostInjectScript)
-  
+steps: 
 - task: AzureCLI@2
   displayName: Move Subscription
   inputs:
@@ -60,12 +32,14 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
+      az bicep upgrade
+
       echo "Moving subscription ${{ parameters.subscriptionGuid }} to management group ${{ parameters.managementGroup }}..."
 
       az deployment mg $(deployOperation) \
         --location $(deploymentRegion) \
         --management-group-id ${{ parameters.managementGroup }} \
-        --template-file ${{ parameters.templateFileBase }}.json \
+        --template-file ${{ parameters.templateFile }} \
         --parameters \
             managementGroupId='${{ parameters.managementGroup }}' \
             subscriptionId='${{ parameters.subscriptionGuid }}'
