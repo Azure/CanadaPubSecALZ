@@ -1,0 +1,26 @@
+{
+    "pricingTier": {
+        "type": "string",
+        "metadata": {
+            "displayName": "Azure Defender pricing tier",
+            "description": "Azure Defender pricing tier"
+        },
+        "allowedValues": [
+            "Standard",
+            "Free"
+        ],
+        "defaultValue": "Standard"
+    },
+    "effect": {
+        "type": "string",
+        "metadata": {
+            "displayName": "Effect",
+            "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+    }
+}
