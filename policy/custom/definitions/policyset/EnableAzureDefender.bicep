@@ -207,8 +207,16 @@ resource ascAzureDefender 'Microsoft.Authorization/policySetDefinitions@2020-03-
         groupNames: [
           'EXTRA'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-SQLDB')
-        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for SQLDB', ' ', '-'))
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-DNS')
+        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for DNS', ' ', '-'))
+        parameters: {}
+      }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-OSSDB')
+        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for Open-source relational databases', ' ', '-'))
         parameters: {}
       }
       {
