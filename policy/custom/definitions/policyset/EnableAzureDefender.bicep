@@ -6,11 +6,15 @@
 
 targetScope = 'managementGroup'
 
-// Unused parameters with default values
+// Required parameters
 param policyAssignmentManagementGroupId string = ''
+
+// Unused parameters with default values
 param policyDefinitionManagementGroupId string = ''
 param logAnalyticsResourceId string = ''
 param logAnalyticsWorkspaceId string = ''
+
+var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
 
 resource ascAzureDefender 'Microsoft.Authorization/policySetDefinitions@2020-03-01' = {
   name: 'custom-enable-azure-defender'
@@ -149,6 +153,86 @@ resource ascAzureDefender 'Microsoft.Authorization/policySetDefinitions@2020-03-
         ]
         policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/13ce0167-8ca6-4048-8e6b-f996402e3c1b'
         policyDefinitionReferenceId: toLower(replace('Configure machines to receive the Qualys vulnerability assessment agent', ' ', '-'))
+        parameters: {}
+      }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-ACR')
+        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for ACR', ' ', '-'))
+        parameters: {}
+      }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-AKS')
+        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for AKS', ' ', '-'))
+        parameters: {}
+      }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-AKV')
+        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for AKV', ' ', '-'))
+        parameters: {}
+      }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-AppService')
+        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for App Service', ' ', '-'))
+        parameters: {}
+      }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-ARM')
+        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for ARM', ' ', '-'))
+        parameters: {}
+      }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-DNS')
+        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for DNS', ' ', '-'))
+        parameters: {}
+      }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-SQLDB')
+        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for SQLDB', ' ', '-'))
+        parameters: {}
+      }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-SQLDBVM')
+        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for SQL on VM', ' ', '-'))
+        parameters: {}
+      }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-Storage')
+        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for Storage Account', ' ', '-'))
+        parameters: {}
+      }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-VM')
+        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for VM', ' ', '-'))
         parameters: {}
       }
     ]
