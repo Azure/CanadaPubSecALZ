@@ -1,4 +1,4 @@
 {
-    "name": "Deploy Azure Defender for AKV (Azure Key Vault)",
+    "name": "Deploy Azure Defender for Azure Key Vault",
     "mode": "all"
 }

@@ -1,4 +1,4 @@
 {
-    "name": "Deploy Azure Defender for ACR (Azure Container Registry)",
+    "name": "Deploy Azure Defender for Azure Container Registry",
     "mode": "all"
 }
