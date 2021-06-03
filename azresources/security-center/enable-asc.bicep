@@ -45,6 +45,7 @@ var azureDefenderServices = [
   'Dns'
   'KeyVaults'
   'KubernetesService'
+  'OpenSourceRelationalDatabases'
   'SqlServers'
   'SqlServerVirtualMachines'
   'StorageAccounts'
