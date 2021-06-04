@@ -59,7 +59,7 @@
       "value": "20.0.0.4"
     },
     "hubVnetId": {
-      "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourceGroups/pubsec-lz/providers/Microsoft.Network/virtualNetworks/vnet"
+      "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourceGroups/dnd-lz/providers/Microsoft.Network/virtualNetworks/vnet"
     },
     "hubRFC1918IPRange": {
       "value": "20.0.0.0/16"
@@ -68,31 +68,31 @@
       "value": "100.90.0.0/16"
     },
     "logAnalyticsWorkspaceResourceId": {
-      "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourcegroups/pubsec-lz/providers/microsoft.operationalinsights/workspaces/pubsec-la"
+      "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourcegroups/dnd-lz/providers/microsoft.operationalinsights/workspaces/dnd-la"
     },
     "rgVnetName": {
-      "value": "azmlNetwork88"
+      "value": "azmlNetwork6656"
     },
     "rgAutomationName": {
-      "value": "azmlAutomation88"
+      "value": "azmlAutomation6656"
     },
     "rgStorageName": {
-      "value": "azmlStorage88"
+      "value": "azmlStorage6656"
     },
     "rgComputeName": {
-      "value": "azmlCompute88"
+      "value": "azmlCompute6656"
     },
     "rgSecurityName": {
-      "value": "azmlSecurity88"
+      "value": "azmlSecurity6656"
     },
     "rgMonitorName": {
-      "value": "azmlMonitor88"
+      "value": "azmlMonitor6656"
     },
     "rgSelfHostedRuntimeName": {
-      "value": "azmlSelfHostingIR88"
+      "value": "azmlSelfHostingIR6656"
     },
     "automationAccountName": {
-      "value": "automation88"
+      "value": "automation6656"
     },
     "deploySubnetsInExistingVnet": {
       "value": true
@@ -158,7 +158,7 @@
       "value": "10.0.9.0/25"
     },
     "aksVersion": {
-      "value": "1.18.14"
+      "value": "1.20.7"
     },
     "deploySQLDB": {
       "value": true

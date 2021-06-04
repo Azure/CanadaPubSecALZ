@@ -7,9 +7,10 @@
 param privateEndpointSubnetId string
 param privateZoneId string
 param sqlServerName string = 'sqlserver${uniqueString(resourceGroup().id)}'
-param storagePath string
 param securityContactEmail string
-param saLoggingID string
+param saLoggingName string
+param storagePath string
+
 
 param tags object = {}
 
@@ -31,6 +32,15 @@ resource sqlserver 'Microsoft.Sql/servers@2019-06-01-preview' = {
     administratorLoginPassword: sqldbPassword
     minimalTlsVersion: '1.2'
     publicNetworkAccess: 'Disabled'
+  }
+}
+
+module roleAssignSQLToSALogging '../../azresources/iam/resource/storageRoleAssignmentToSP.bicep' = {
+  name: 'roleAssignSQLToSALogging'
+  params: {
+    storageName: saLoggingName
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
+    resourceSPObjectIds: array(sqlserver.identity.principalId)
   }
 }
 
@@ -68,6 +78,7 @@ resource sqlserver_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZone
     ]
   }
 }
+
 resource sqlserver_sap 'Microsoft.Sql/servers/securityAlertPolicies@2020-11-01-preview' = {
   name: '${sqlServerName}/default'
   dependsOn: [
@@ -78,15 +89,16 @@ resource sqlserver_sap 'Microsoft.Sql/servers/securityAlertPolicies@2020-11-01-p
     emailAccountAdmins: false
   }
 }
+
 resource sqlserver_va 'Microsoft.Sql/servers/vulnerabilityAssessments@2020-11-01-preview' = {
   name: '${sqlServerName}/default'
   dependsOn: [
     sqlserver
     sqlserver_sap
+    roleAssignSQLToSALogging
   ]
   properties: {
     storageContainerPath: '${storagePath}vulnerability-assessment'
-    storageAccountAccessKey: listKeys(saLoggingID, '2019-06-01').keys[0].value
     recurringScans: {
       isEnabled: true
       emailSubscriptionAdmins: true
@@ -119,5 +131,4 @@ resource sqlserverdevopsaudit 'Microsoft.Sql/servers/devOpsAuditingSettings@2020
   }
 }
 
-output sqlSPId string = reference(sqlserver.id,'2020-11-01-preview', 'Full').identity.principalId
 output sqlDbFqdn string = sqlserver.properties.fullyQualifiedDomainName

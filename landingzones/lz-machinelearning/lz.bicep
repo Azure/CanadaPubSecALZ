@@ -59,6 +59,8 @@ param adfIRVMNames array = [
   'SelfHostedVm1'
 ]
 
+param selfHostedRuntimeVmSize string
+
 @description('If SQL Database is selected to be deployed, enter username. Otherwise, you can enter blank')
 @secure()
 param sqldbUsername string
@@ -86,8 +88,6 @@ var amlName = 'aml${uniqueString(rgCompute.id)}'
 var acrName = 'acr${uniqueString(rgStorage.id)}'
 var aiName = 'ai${uniqueString(rgMonitor.id)}'
 var storageLoggingName = 'salogging${uniqueString(rgStorage.id)}'
-
-var selfHostedRuntimeVmSize = 'Standard_DS3_v2'
 
 var tags = {
   ClientOrganization: tagClientOrganization
@@ -191,7 +191,7 @@ module storageLogging '../../azresources/storage/storagev2.bicep' = {
     filePrivateZoneId: networking.outputs.dataLakeFilePrivateZoneId
     deployBlobPrivateZone: false
     deployFilePrivateZone: false
-    defaultNetworkAcls: 'Allow'
+    defaultNetworkAcls: 'Deny'
   }
 }
 
@@ -205,7 +205,7 @@ module sqlDb '../../azresources/sql/sqldb.bicep' = if (deploySQLDB == true) {
     privateZoneId: networking.outputs.sqlDBPrivateZoneId
     sqldbUsername: sqldbUsername
     sqldbPassword: sqldbPassword
-    saLoggingID: storageLogging.outputs.storageId
+    saLoggingName: storageLogging.outputs.storageName
     storagePath: storageLogging.outputs.storagePath
     securityContactEmail: securityContactEmail
   }
@@ -461,19 +461,6 @@ module roleAssignADFToAKV '../../azresources/iam/resource/roleAssignmentToSP.bic
   }
 }
 
-module roleAssignSQLToSALogging '../../azresources/iam/resource/storageRoleAssignmentToSP.bicep' = if (deploySQLDB == true) {
-  dependsOn: [
-    storageLogging
-  ]
-  name: 'roleAssignSQLToSALogging'
-  scope: rgStorage
-  params: {
-    storageName: storageLoggingName
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
-    resourceSPObjectIds: deploySQLDB ? array(sqlDb.outputs.sqlSPId) : []
-  }
-}
-
 module roleAssignSQLMIToSALogging '../../azresources/iam/resource/storageRoleAssignmentToSP.bicep' = if (deploySQLMI == true) {
   dependsOn: [
     storageLogging
@@ -486,4 +473,3 @@ module roleAssignSQLMIToSALogging '../../azresources/iam/resource/storageRoleAss
     resourceSPObjectIds: deploySQLMI ? array(sqlMi.outputs.sqlSPId) : []
   }
 }
-

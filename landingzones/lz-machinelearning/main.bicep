@@ -98,6 +98,9 @@ param tagProjectContact string
 param tagProjectName string
 param tagTechnicalContact string
 
+// parameters for vmsize
+param selfHostedRuntimeVmSize string = 'Standard_D8s_v3'
+
 @allowed([
   'Monthly'
   'Quarterly'
@@ -231,5 +234,7 @@ module landingZone 'lz.bicep' = {
     adfSelfHostedRuntimeSubnetId: '${genericSubscription.outputs.vnetId}/subnets/${subnetDataName}'
 
     secretExpiryInDays: secretExpiryInDays
+
+    selfHostedRuntimeVmSize: selfHostedRuntimeVmSize
   }
 }

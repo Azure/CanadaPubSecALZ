@@ -109,5 +109,6 @@ resource storage_file_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZ
   }
 }
 
+output storageName string = storage.name
 output storageId string = storage.id
 output storagePath string = storage.properties.primaryEndpoints.blob
