@@ -133,5 +133,3 @@ variables:
   var-hubnetwork-FW_ProdFW2_name: pubsecProdFW2
   var-hubnetwork-FW_DevFW1_name: pubsecDevFW1
   var-hubnetwork-FW_DevFW2_name: pubsecDevFW2
-  var-hubnetwork-FW_ProdFW_username: localadmin
-  var-hubnetwork-FW_ProdFW_temppassword: VeryGoodP@ssw0rd2021!
