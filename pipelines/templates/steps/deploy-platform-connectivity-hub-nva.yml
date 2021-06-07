@@ -144,8 +144,6 @@ steps:
           Bastion_name='$(var-hubnetwork-Bastion_name)' \
           PrdFWILB_name='$(var-hubnetwork-PrdFWILB_name)' \
           DevFWILB_name='$(var-hubnetwork-DevFWILB_name)' \
-          FW_ProdFW_username='$(var-hubnetwork-FW_ProdFW_username)' \
-          FW_ProdFW_temppassword='$(var-hubnetwork-FW_ProdFW_temppassword)' \
           FW_ProdFW1_name='$(var-hubnetwork-FW_ProdFW1_name)' \
           FW_ProdFW2_name='$(var-hubnetwork-FW_ProdFW2_name)' \
           FW_DevFW1_name='$(var-hubnetwork-FW_DevFW1_name)' \
