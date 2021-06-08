@@ -235,6 +235,11 @@ resource subnetSqlMI 'Microsoft.Network/virtualNetworks/subnets@2020-07-01' = if
     networkSecurityGroup: {
       id: '${deploySQLMI ? nsgSqlMi.outputs.nsgId : ''}'
     }
+    serviceEndpoints: [
+      {
+        service: 'Microsoft.Storage'
+      }
+    ]
     delegations: [
       {
         name: 'sqlmi-delegation'

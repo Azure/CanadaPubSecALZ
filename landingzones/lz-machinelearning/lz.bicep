@@ -192,6 +192,7 @@ module storageLogging '../../azresources/storage/storagev2.bicep' = {
     deployBlobPrivateZone: false
     deployFilePrivateZone: false
     defaultNetworkAcls: 'Deny'
+    subnetIdForVnetRestriction: deploySQLMI ? array(networking.outputs.sqlMiSubnetId): []
   }
 }
 
