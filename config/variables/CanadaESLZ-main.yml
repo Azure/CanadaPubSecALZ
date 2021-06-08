@@ -24,7 +24,7 @@ variables:
 
   # Logging
   var-logging-managementGroupId: pubsecPlatform
-  var-logging-subscriptionId: 82f7705e-3386-427b-95b7-cbed91ab29a7
+  var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
   var-logging-subscriptionOwnerGroupObjectIds: '[]'
   var-logging-subscriptionContributorGroupObjectIds: '["38f33f7e-a471-4630-8ce9-c6653495a2ee"]'
   var-logging-subscriptionReaderGroupObjectIds: '[]'
