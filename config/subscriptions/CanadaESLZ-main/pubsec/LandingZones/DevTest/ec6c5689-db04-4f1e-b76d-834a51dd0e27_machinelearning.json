@@ -1,0 +1,185 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "securityContactEmail": {
+        "value": "sesivan@microsoft.com"
+      },
+      "securityContactPhone": {
+        "value": "6472960000"
+      },
+      "createBudget": {
+        "value": false
+      },
+      "budgetName": {
+        "value": "SubscriptionBudget"
+      },
+      "budgetAmount": {
+        "value": 100
+      },
+      "budgetTimeGrain": {
+        "value": "Monthly"
+      },
+      "budgetNotificationEmailAddress": {
+        "value": "sesivan@microsoft.com"
+      },
+      "tagISSO": {
+        "value": "tbd"
+      },
+      "tagClientOrganization": {
+        "value": "tbd"
+      },
+      "tagCostCenter": {
+        "value": "tbd"
+      },
+      "tagDataSensitivity": {
+        "value": "tbd"
+      },
+      "tagProjectContact": {
+        "value": "tbd"
+      },
+      "tagProjectName": {
+        "value": "tbd"
+      },
+      "tagTechnicalContact": {
+        "value": "tbd"
+      },
+      "subscriptionOwnerGroupObjectIds": {
+        "value": []
+      },
+      "subscriptionContributorGroupObjectIds": {
+        "value": [
+          "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+        ]
+      },
+      "subscriptionReaderGroupObjectIds": {
+        "value": []
+      },
+      "egressVirtualApplianceIp": {
+        "value": "20.0.0.4"
+      },
+      "hubVnetId": {
+        "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsecPrdHubPbRsg/providers/Microsoft.Network/virtualNetworks/pubsecHubVnet"
+      },
+      "hubRFC1918IPRange": {
+        "value": "20.0.0.0/16"
+      },
+      "hubCGNATIPRange": {
+        "value": "100.90.0.0/16"
+      },
+      "logAnalyticsWorkspaceResourceId": {
+        "value": "/subscriptions/82f7705e-3386-427b-95b7-cbed91ab29a7/resourcegroups/pubsecloganalyticsrg/providers/microsoft.operationalinsights/workspaces/pubsecloganalytics"
+      },
+      "rgVnetName": {
+        "value": "azml1Network"
+      },
+      "rgAutomationName": {
+        "value": "azml1Automation"
+      },
+      "rgStorageName": {
+        "value": "azml1Storage"
+      },
+      "rgComputeName": {
+        "value": "azml1Compute"
+      },
+      "rgSecurityName": {
+        "value": "azml1Security"
+      },
+      "rgMonitorName": {
+        "value": "azml1Monitor"
+      },
+      "rgSelfHostedRuntimeName": {
+        "value": "azml1SelfHostingIR"
+      },
+      "automationAccountName": {
+        "value": "azml1automation"
+      },
+      "deploySubnetsInExistingVnet": {
+        "value": false
+      },
+      "vnetName": {
+        "value": "azml1vnet"
+      },
+      "vnetAddressSpace": {
+        "value": "10.1.0.0/16"
+      },
+      "subnetFoundationalElementsName": {
+        "value": "foundationalElements"
+      },
+      "subnetFoundationalElementsPrefix": {
+        "value": "10.1.1.0/25"
+      },
+      "subnetPresentationName": {
+        "value": "presentation"
+      },
+      "subnetPresentationPrefix": {
+        "value": "10.1.2.0/25"
+      },
+      "subnetApplicationName": {
+        "value": "application"
+      },
+      "subnetApplicationPrefix": {
+        "value": "10.1.3.0/25"
+      },
+      "subnetDataName": {
+        "value": "data"
+      },
+      "subnetDataPrefix": {
+        "value": "10.1.4.0/25"
+      },
+      "subnetSQLMIName": {
+        "value": "sqlmi"
+      },
+      "subnetSQLMIPrefix": {
+        "value": "10.1.5.0/25"
+      },
+      "subnetDatabricksPublicName": {
+        "value": "databrickspublic"
+      },
+      "subnetDatabricksPublicPrefix": {
+        "value": "10.1.6.0/25"
+      },
+      "subnetDatabricksPrivateName": {
+        "value": "databricksprivate"
+      },
+      "subnetDatabricksPrivatePrefix": {
+        "value": "10.1.7.0/25"
+      },
+      "subnetPrivateEndpointsName": {
+        "value": "privateendpoints"
+      },
+      "subnetPrivateEndpointsPrefix": {
+        "value": "10.1.8.0/25"
+      },
+      "subnetAKSName": {
+        "value": "aks"
+      },
+      "subnetAKSPrefix": {
+        "value": "10.1.9.0/25"
+      },
+      "aksVersion": {
+        "value": "1.20.7"
+      },
+      "deploySQLDB": {
+        "value": true
+      },
+      "deploySQLMI": {
+        "value": true
+      },
+      "deploySelfhostIRVM": {
+        "value": true
+      },
+      "sqldbUsername": {
+        "value": "azadmin"
+      },
+      "sqlmiUsername": {
+        "value": "azadmin"
+      },
+      "selfHostedVMUsername": {
+        "value": "azadmin"
+      },
+      "secretExpiryInDays": {
+        "value": 3650
+      }
+    }
+  }
