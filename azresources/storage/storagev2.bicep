@@ -12,6 +12,8 @@ param deployBlobPrivateZone bool
 param deployFilePrivateZone bool
 param defaultNetworkAcls string = 'deny'
 param bypassNetworkAcls string = 'AzureServices,Logging,Metrics'
+param subnetIdForVnetRestriction array = []
+
 param tags object = {}
 
 
@@ -35,6 +37,10 @@ resource storage 'Microsoft.Storage/storageAccounts@2019-06-01' = {
     networkAcls: {
       defaultAction: defaultNetworkAcls
       bypass: bypassNetworkAcls
+      virtualNetworkRules: [for subnetId in subnetIdForVnetRestriction: {
+        id: subnetId
+        action: 'Allow'
+      }]
     }
   }
 }
