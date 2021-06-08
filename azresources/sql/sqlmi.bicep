@@ -12,7 +12,7 @@ param subnetId string
 
 param storagePath string
 param securityContactEmail string
-param saLoggingID string
+param saLoggingName string
 
 param tags object = {}
 
@@ -42,6 +42,15 @@ resource sqlmi 'Microsoft.Sql/managedInstances@2020-11-01-preview' = {
   }
 }
 
+module roleAssignSQLMIToSALogging '../../azresources/iam/resource/storageRoleAssignmentToSP.bicep' = {
+  name: 'roleAssignSQLMIToSALogging'
+  params: {
+    storageName: saLoggingName
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
+    resourceSPObjectIds: array(sqlmi.identity.principalId)
+  }
+}
+
 resource sqlmi_sap 'Microsoft.Sql/managedInstances/securityAlertPolicies@2020-11-01-preview' = {
   name: '${name}/default'
   dependsOn: [
@@ -58,10 +67,10 @@ resource sqlmi_va 'Microsoft.Sql/managedInstances/vulnerabilityAssessments@2020-
   dependsOn: [
     sqlmi
     sqlmi_sap
+    roleAssignSQLMIToSALogging
   ]
   properties: {
     storageContainerPath: '${storagePath}vulnerability-assessment'
-    storageAccountAccessKey: listKeys(saLoggingID, '2019-06-01').keys[0].value
     recurringScans: {
       isEnabled: true
       emailSubscriptionAdmins: true
@@ -72,5 +81,4 @@ resource sqlmi_va 'Microsoft.Sql/managedInstances/vulnerabilityAssessments@2020-
   }
 }
 
-output sqlSPId string = reference(sqlmi.id,'2020-11-01-preview', 'Full').identity.principalId
 output sqlMiFqdn string = sqlmi.properties.fullyQualifiedDomainName

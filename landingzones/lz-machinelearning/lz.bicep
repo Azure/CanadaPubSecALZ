@@ -174,7 +174,7 @@ module sqlMi '../../azresources/sql/sqlmi.bicep' = if (deploySQLMI == true) {
     subnetId: networking.outputs.sqlMiSubnetId
     sqlmiUsername: sqlmiUsername
     sqlmiPassword: sqlmiPassword
-    saLoggingID: storageLogging.outputs.storageId
+    saLoggingName: storageLogging.outputs.storageName
     storagePath: storageLogging.outputs.storagePath
     securityContactEmail: securityContactEmail
   }
@@ -459,18 +459,5 @@ module roleAssignADFToAKV '../../azresources/iam/resource/roleAssignmentToSP.bic
   params: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
     resourceSPObjectIds: array(adf.outputs.identityPrincipalId)
-  }
-}
-
-module roleAssignSQLMIToSALogging '../../azresources/iam/resource/storageRoleAssignmentToSP.bicep' = if (deploySQLMI == true) {
-  dependsOn: [
-    storageLogging
-  ]
-  name: 'roleAssignSQLMIToSALogging'
-  scope: rgStorage
-  params: {
-    storageName: storageLoggingName
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
-    resourceSPObjectIds: deploySQLMI ? array(sqlMi.outputs.sqlSPId) : []
   }
 }
