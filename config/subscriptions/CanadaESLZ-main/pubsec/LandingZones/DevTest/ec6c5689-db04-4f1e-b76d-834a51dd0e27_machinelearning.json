@@ -56,7 +56,7 @@
         "value": []
       },
       "egressVirtualApplianceIp": {
-        "value": "20.0.0.4"
+        "value": "10.18.0.36"
       },
       "hubVnetId": {
         "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsecPrdHubPbRsg/providers/Microsoft.Network/virtualNetworks/pubsecHubVnet"
@@ -65,7 +65,7 @@
         "value": "20.0.0.0/16"
       },
       "hubCGNATIPRange": {
-        "value": "100.90.0.0/16"
+        "value": "100.60.0.0/16"
       },
       "logAnalyticsWorkspaceResourceId": {
         "value": "/subscriptions/82f7705e-3386-427b-95b7-cbed91ab29a7/resourcegroups/pubsecloganalyticsrg/providers/microsoft.operationalinsights/workspaces/pubsecloganalytics"
@@ -164,7 +164,7 @@
         "value": true
       },
       "deploySQLMI": {
-        "value": true
+        "value": false
       },
       "deploySelfhostIRVM": {
         "value": true
