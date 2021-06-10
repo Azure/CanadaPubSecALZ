@@ -26,43 +26,43 @@ param Subnet_HA_name string
 param Subnet_PAZ_name string     
 param UDR_PAZ string
 
-module nsgpublic '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsgpublic '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgpublic'
   params:{
     name: '${Subnet_Public_name}Nsg'
   }
 }
-module nsgean '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsgean '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgean'
   params:{
     name: '${Subnet_EAN_name}Nsg'
   }
 }
-module nsgprd '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsgprd '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgprd'
   params:{
     name: '${Subnet_PrdInt_name}Nsg'
   }
 }
-module nsgdev '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsgdev '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgdev'
   params:{
     name: '${Subnet_DevInt_name}Nsg'
   }
 }
-module nsgha '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsgha '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgha'
   params:{
     name: '${Subnet_HA_name}Nsg'
   }
 }
-module nsgmrz '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsgmrz '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgmrz'
   params:{
     name: '${Subnet_MRZInt_name}Nsg'
   }
 }
-module nsgpaz '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsgpaz '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgpaz'
   params:{
     name: '${Subnet_PAZ_name}Nsg'

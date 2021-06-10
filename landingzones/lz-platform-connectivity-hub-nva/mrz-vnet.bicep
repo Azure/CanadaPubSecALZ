@@ -19,31 +19,31 @@ param Subnet_LOG_name string
 param Subnet_MGMT_name string 
 param UDR string
 
-module nsgmaz '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsgmaz '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgmaz'
   params:{
     name: '${Subnet_MAZ_name}Nsg'
   }
 }
-module nsginf '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsginf '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsginf'
   params:{
     name: '${Subnet_INF_name}Nsg'
   }
 }
-module nsgsec '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsgsec '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgsec'
   params:{
     name: '${Subnet_SEC_name}Nsg'
   }
 }
-module nsglog '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsglog '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsglog'
   params:{
     name: '${Subnet_LOG_name}Nsg'
   }
 }
-module nsgmgmt '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsgmgmt '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgmgmt'
   params:{
     name: '${Subnet_MGMT_name}Nsg'
