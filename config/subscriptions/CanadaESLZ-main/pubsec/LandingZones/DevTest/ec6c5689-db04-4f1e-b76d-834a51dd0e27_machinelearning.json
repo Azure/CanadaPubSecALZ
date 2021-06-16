@@ -164,7 +164,7 @@
         "value": true
       },
       "deploySQLMI": {
-        "value": false
+        "value": true
       },
       "deploySelfhostIRVM": {
         "value": true
