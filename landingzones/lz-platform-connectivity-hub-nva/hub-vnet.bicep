@@ -62,7 +62,7 @@ module nsgmrz '../../azresources/network/nsg/nsg-empty.bicep' = {
     name: '${Subnet_MRZInt_name}Nsg'
   }
 }
-module nsgpaz '../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsgpaz '../../azresources/network/nsg/nsg-appgwv2.bicep' = {
   name: 'nsgpaz'
   params:{
     name: '${Subnet_PAZ_name}Nsg'
