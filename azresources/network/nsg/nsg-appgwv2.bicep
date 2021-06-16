@@ -19,9 +19,9 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
                   access: 'Allow'
                   protocol: 'Tcp'
                   sourceAddressPrefix: 'GatewayManager'
-                  sourcePortRange: '65200-65535'
+                  sourcePortRange: '*'
                   destinationAddressPrefix: '*'
-                  destinationPortRange: '*'
+                  destinationPortRange: '65200-65535'
               }
           }
       ]
