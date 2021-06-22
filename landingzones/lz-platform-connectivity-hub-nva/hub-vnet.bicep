@@ -26,7 +26,7 @@ param Subnet_HA_name string
 param Subnet_PAZ_name string     
 param UDR_PAZ string
 
-module nsgpublic '../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsgpublic '../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'nsgpublic'
   params:{
     name: '${Subnet_Public_name}Nsg'
@@ -38,13 +38,13 @@ module nsgean '../../azresources/network/nsg/nsg-empty.bicep' = {
     name: '${Subnet_EAN_name}Nsg'
   }
 }
-module nsgprd '../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsgprd '../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'nsgprd'
   params:{
     name: '${Subnet_PrdInt_name}Nsg'
   }
 }
-module nsgdev '../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsgdev '../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'nsgdev'
   params:{
     name: '${Subnet_DevInt_name}Nsg'
