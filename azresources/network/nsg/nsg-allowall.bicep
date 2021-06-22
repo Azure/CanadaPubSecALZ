@@ -47,42 +47,6 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2020-11-01' = {
           destinationAddressPrefixes: []
         }
       }
-      {
-        name: 'AllowICMPInbound'
-        properties: {
-          description: 'Allow all ICMP in'
-          protocol: 'Icmp'
-          sourcePortRange: '*'
-          destinationPortRange: '*'
-          sourceAddressPrefix: '*'
-          destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 1001
-          direction: 'Inbound'
-          sourcePortRanges: []
-          destinationPortRanges: []
-          sourceAddressPrefixes: []
-          destinationAddressPrefixes: []
-        }
-      }
-      {
-        name: 'AllowICMPOutbound'
-        properties: {
-          description: 'Allow all ICMP out'
-          protocol: 'Icmp'
-          sourcePortRange: '*'
-          destinationPortRange: '*'
-          sourceAddressPrefix: '*'
-          destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 1001
-          direction: 'Outbound'
-          sourcePortRanges: []
-          destinationPortRanges: []
-          sourceAddressPrefixes: []
-          destinationAddressPrefixes: []
-        }
-      }
     ]
   }
 }
