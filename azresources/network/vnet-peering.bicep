@@ -12,7 +12,7 @@ param useRemoteGateways bool = false
 param allowVirtualNetworkAccess bool = true
 param allowForwardedTraffic bool = true
 
-resource vnetPeeringFromEdgeFirewall 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
+resource vnetPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-06-01' = {
   name: '${sourceVnetName}/${peeringName}'
   properties: {
     useRemoteGateways: useRemoteGateways
