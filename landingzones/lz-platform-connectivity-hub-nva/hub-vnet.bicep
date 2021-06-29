@@ -25,6 +25,7 @@ param Subnet_DevInt_name string
 param Subnet_HA_name string      
 param Subnet_PAZ_name string     
 param UDR_PAZ string
+param ddosStandardPlanId string
 
 module nsgpublic '../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'nsgpublic'
@@ -79,6 +80,9 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   location: resourceGroup().location
   name: hubName
   properties: {
+    ddosProtectionPlan: (!empty(ddosStandardPlanId)) ? {
+      id: ddosStandardPlanId
+    } : null
     addressSpace: {
       addressPrefixes: [
         Hub_IPrange

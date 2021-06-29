@@ -72,6 +72,7 @@ steps:
           budgetName='$(var-hubnetwork-budgetName)' \
           budgetAmount='$(var-hubnetwork-budgetAmount)' \
           budgetTimeGrain='$(var-hubnetwork-budgetTimeGrain)' \
+          budgetStartDate='$(var-hubnetwork-budgetStartDate)' \
           budgetNotificationEmailAddress='$(var-hubnetwork-budgetNotificationEmailAddress)' \
           tagISSO='$(var-hubnetwork-tagISSO)' \
           tagClientOrganization='$(var-hubnetwork-tagClientOrganization)' \
@@ -80,8 +81,9 @@ steps:
           tagProjectContact='$(var-hubnetwork-tagProjectContact)' \
           tagProjectName='$(var-hubnetwork-tagProjectName)' \
           tagTechnicalContact='$(var-hubnetwork-tagTechnicalContact)' \
-          budgetStartDate='$(var-hubnetwork-budgetStartDate)' \
-          budgetTimeGrain='$(var-hubnetwork-budgetTimeGrain)' \
+          deployDdosStandard='$(var-hubnetwork-deployDdosStandard)' \
+          rgDdosName='$(var-hubnetwork-rgDdosName)' \
+          ddosPlanName='$(var-hubnetwork-ddosPlanName)' \
           Hub_IPrange='$(var-hubnetwork-Hub_IPrange)' \
           Hub_CGNATrange='$(var-hubnetwork-Hub_CGNATrange)' \
           Hub_BastionRange='$(var-hubnetwork-Hub_BastionRange)' \

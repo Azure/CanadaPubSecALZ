@@ -68,6 +68,11 @@ variables:
   var-hubnetwork-tagTechnicalContact: tbd
   var-hubnetwork-budgetStartDate: yyyy-MM-01
 
+  ## Hub Networking - DDOS
+  var-hubnetwork-deployDdosStandard: false
+  var-hubnetwork-rgDdosName: 'pubsecDdosPbRsg'
+  var-hubnetwork-ddosPlanName: 'pubsecDdosPlan'
+
   ## Hub Networking - Core Virtual Network
   var-hubnetwork-RG_Hub_name: pubsecPrdHubPbRsg
   var-hubnetwork-VNET_Hub_name: pubsecHubVnet
