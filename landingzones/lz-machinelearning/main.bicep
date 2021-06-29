@@ -17,6 +17,7 @@ param securityContactEmail string
 param securityContactPhone string
 
 // Resource Groups
+param rgNetworkWatcherName string = 'NetworkWatcherRG'
 param rgVnetName string
 param rgAutomationName string
 param rgStorageName string
@@ -154,6 +155,7 @@ module genericSubscription '../lz-generic-subscription/main.bicep' = {
     tagProjectName: tagProjectName
     tagTechnicalContact: tagTechnicalContact
 
+    rgNetworkWatcherName: rgNetworkWatcherName
     rgAutomationName: rgAutomationName
     rgVnetName: rgVnetName
 
