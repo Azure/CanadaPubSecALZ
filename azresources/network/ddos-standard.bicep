@@ -11,3 +11,5 @@ resource ddosPlan 'Microsoft.Network/ddosProtectionPlans@2020-07-01' = {
   location: resourceGroup().location
   properties: {}
 }
+
+output ddosPlanId string = ddosPlan.id
