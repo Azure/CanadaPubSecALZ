@@ -18,6 +18,7 @@ param Subnet_SEC_name string
 param Subnet_LOG_name string  
 param Subnet_MGMT_name string 
 param UDR string
+param ddosStandardPlanId string
 
 module nsgmaz '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgmaz'
@@ -54,6 +55,9 @@ resource mrzVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   location: resourceGroup().location
   name: mrzName
   properties: {
+    ddosProtectionPlan: (!empty(ddosStandardPlanId)) ? {
+      id: ddosStandardPlanId
+    } : null
     addressSpace: {
       addressPrefixes: [
         MRZ_IPrange

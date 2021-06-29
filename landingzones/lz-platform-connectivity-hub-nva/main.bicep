@@ -42,6 +42,11 @@ param securityContactPhone string
 // Network Watcher
 param rgNetworkWatcherName string = 'NetworkWatcherRG'
 
+// DDOS Standard
+param deployDdosStandard bool
+param rgDdosName string
+param ddosPlanName string
+
 //TIP: we defined PARAMS here first, then we copy to subscription parameters with the help of a helper script 
 //..\utils\bicep-vars-to-yaml.ps1 .\main.bicep "var-hubnetwork-"
 //it outputs two results: one to be put in YAML file for AzDevOps, another to be appended to Azure CLI pipeline task
@@ -169,11 +174,23 @@ resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   tags: tags
 }
 
+resource rgDdosRG 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployDdosStandard) {
+  name: rgDdosName
+  location: deployment().location
+  tags: tags
+}
+
 resource rgHubVnetRG 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: RG_Hub_name
   location: deployment().location
   tags: tags
 }
+
+module rgDdosDeleteLock '../../azresources/util/delete-lock.bicep' = if (deployDdosStandard) {
+  name: 'rgDdosDeleteLock'
+  scope: rgDdosRG
+}
+
 module rgHubDeleteLock '../../azresources/util/delete-lock.bicep' = {
   name: 'rgHubDeleteLock'
   scope: rgHubVnetRG
@@ -184,18 +201,29 @@ resource rgMrzVnetRG 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   location: deployment().location
   tags: tags
 }
+
 module rgMrzDeleteLock '../../azresources/util/delete-lock.bicep' = {
   name: 'rgMrzDeleteLock'
   scope: rgMrzVnetRG
 }
+
 resource rgPazRG 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: RG_Paz_name
   location: deployment().location
   tags: tags
 }
+
 module rgPazDeleteLock '../../azresources/util/delete-lock.bicep' = {
   name: 'rgPazDeleteLock'
   scope: rgPazRG
+}
+
+module ddosPlan '../../azresources/network/ddos-standard.bicep' = if (deployDdosStandard) {
+  name: 'ddosPlan'
+  scope: rgDdosRG
+  params: {
+    ddosPlanName: ddosPlanName
+  }
 }
 
 module udrPrdSpokes '../../azresources/network/udr/udr-custom.bicep' = {
@@ -332,6 +360,7 @@ module hubVnet './hub-vnet.bicep' = {
     Subnet_DevInt_name: Subnet_DevInt_name
     Subnet_HA_name: Subnet_HA_name
     Subnet_Public_name: Subnet_Public_name
+    ddosStandardPlanId: deployDdosStandard ? ddosPlan.outputs.ddosPlanId : ''
   }
 }
 
@@ -355,6 +384,7 @@ module mrzVnet './mrz-vnet.bicep' = {
     Subnet_SEC_name: Subnet_SEC_name
     Subnet_LOG_name: Subnet_LOG_name
     Subnet_MGMT_name: Subnet_MGMT_name 
+    ddosStandardPlanId: deployDdosStandard ? ddosPlan.outputs.ddosPlanId : ''
   }
 }
 
