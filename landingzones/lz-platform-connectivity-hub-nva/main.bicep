@@ -39,6 +39,9 @@ param logAnalyticsWorkspaceResourceId string
 param securityContactEmail string
 param securityContactPhone string
 
+// Network Watcher
+param rgNetworkWatcherName string = 'NetworkWatcherRG'
+
 //TIP: we defined PARAMS here first, then we copy to subscription parameters with the help of a helper script 
 //..\utils\bicep-vars-to-yaml.ps1 .\main.bicep "var-hubnetwork-"
 //it outputs two results: one to be put in YAML file for AzDevOps, another to be appended to Azure CLI pipeline task
@@ -158,6 +161,12 @@ module subScaffold '../scaffold-subscription.bicep' = {
     budgetNotificationEmailAddress: budgetNotificationEmailAddress
     tagISSO: tagISSO
   }
+}
+
+resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
+  name: rgNetworkWatcherName
+  location: deployment().location
+  tags: tags
 }
 
 resource rgHubVnetRG 'Microsoft.Resources/resourceGroups@2020-06-01' = {

@@ -21,6 +21,7 @@ param securityContactPhone string
 // Resource Groups
 param rgVnetName string
 param rgAutomationName string
+param rgNetworkWatcherName string = 'NetworkWatcherRG'
 
 // Automation
 param automationAccountName string
@@ -108,6 +109,12 @@ module subScaffold '../scaffold-subscription.bicep' = {
 }
 
 // Resource Groups
+resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
+  name: rgNetworkWatcherName
+  location: azureRegion
+  tags: tags
+}
+
 resource rgVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgVnetName
   location: azureRegion
