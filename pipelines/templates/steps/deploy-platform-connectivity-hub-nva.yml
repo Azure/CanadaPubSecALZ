@@ -104,6 +104,7 @@ steps:
           Subnet_PAZ_name='$(var-hubnetwork-Subnet_PAZ_name)' \
           FW_VM_sku_prod='$(var-hubnetwork-FW_VM_sku_prod)' \
           FW_VM_sku_dev='$(var-hubnetwork-FW_VM_sku_dev)' \
+          deployFirewallVMs='$(var-hubnetwork-deployFirewallVMs)' \
           useFortigateFW='$(var-hubnetwork-useFortigateFW)' \
           FW_VIP_ProdFWs_Public='$(var-hubnetwork-FW_VIP_ProdFWs_Public)' \
           FW_ProdFW1_Public='$(var-hubnetwork-FW_ProdFW1_Public)' \

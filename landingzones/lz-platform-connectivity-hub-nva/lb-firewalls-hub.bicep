@@ -19,6 +19,7 @@ param FrontendIP_int string
 param BackendIP1_int string
 param BackendIP2_int string
 param LB_Probe_tcp_port int 
+param configureEmptyBackendPool bool
 
 resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
   name: name
@@ -171,11 +172,11 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
 }
 
 
-//define the BackendAddressPool as its own resource, otherwise it doesn't work
+//define the BackendAddressPool
 resource ILBBackend_ext 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
   name: '${ILB.name}/${name}-Backend-ext'
   properties: {
-    loadBalancerBackendAddresses: [
+    loadBalancerBackendAddresses: configureEmptyBackendPool ? null : [
       {
         name: '${ILB.name}-ext1'
         properties: {
@@ -201,7 +202,7 @@ resource ILBBackend_ext 'Microsoft.Network/loadBalancers/backendAddressPools@202
 resource ILBBackend_mrz 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
   name: '${ILB.name}/${name}-Backend-mrz'
   properties: {
-    loadBalancerBackendAddresses: [
+    loadBalancerBackendAddresses: configureEmptyBackendPool ? null : [
       {
         name: '${ILB.name}-mrz1'
         properties: {
@@ -227,7 +228,7 @@ resource ILBBackend_mrz 'Microsoft.Network/loadBalancers/backendAddressPools@202
 resource ILBBackend_int 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
   name: '${ILB.name}/${name}-Backend-int'
   properties: {
-    loadBalancerBackendAddresses: [
+    loadBalancerBackendAddresses: configureEmptyBackendPool ? null : [
       {
         name: '${ILB.name}-int1'
         properties: {

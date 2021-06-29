@@ -15,7 +15,6 @@ param tagProjectContact string
 param tagProjectName string
 param tagTechnicalContact string
 
-
 // parameters for Budget
 param createBudget bool
 param budgetName string
@@ -71,6 +70,8 @@ param Subnet_DevInt_name string  //= 'DevIntSubnet'
 param Subnet_HA_name string      //= 'HASubnet'
 param Subnet_PAZ_name string     //= 'PAZSubnet'
 
+// Firewalls
+param deployFirewallVMs bool = true
 
 //Fortinet vars
 param FW_VM_sku_prod string //= 'Standard_F8s_v2' //ensure it can have 4 nics
@@ -430,7 +431,7 @@ module bastion '../../azresources/compute/bastion.bicep' = {
   }
 }
 
-module ProdFW1_fortigate './fortinet-vm.bicep' = if (useFortigateFW) {
+module ProdFW1_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   name: 'ProdFW1_fortigate'
   scope: rgHubVnetRG
   params: {
@@ -450,7 +451,7 @@ module ProdFW1_fortigate './fortinet-vm.bicep' = if (useFortigateFW) {
   }
 }
 
-module ProdFW1_ubuntu './ubuntu-fw-vm.bicep' = if (!useFortigateFW) {
+module ProdFW1_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFortigateFW) {
   name: 'ProdFW1_ubuntu'
   scope: rgHubVnetRG
   params: {
@@ -470,7 +471,7 @@ module ProdFW1_ubuntu './ubuntu-fw-vm.bicep' = if (!useFortigateFW) {
   }
 }
 
-module ProdFW2_fortigate './fortinet-vm.bicep' = if (useFortigateFW) {
+module ProdFW2_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   name: 'ProdFW2_fortigate'
   scope: rgHubVnetRG
   params: {
@@ -490,7 +491,7 @@ module ProdFW2_fortigate './fortinet-vm.bicep' = if (useFortigateFW) {
   }
 }
 
-module ProdFW2_ubuntu './ubuntu-fw-vm.bicep' = if (!useFortigateFW) {
+module ProdFW2_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFortigateFW) {
   name: 'ProdFW2_ubuntu'
   scope: rgHubVnetRG
   params: {
@@ -510,7 +511,7 @@ module ProdFW2_ubuntu './ubuntu-fw-vm.bicep' = if (!useFortigateFW) {
   }
 }
 
-module DevFW1 './fortinet-vm.bicep' = if (useFortigateFW) {
+module DevFW1 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   name: 'DevFW1_fortigate'
   scope: rgHubVnetRG
   params: {
@@ -530,7 +531,7 @@ module DevFW1 './fortinet-vm.bicep' = if (useFortigateFW) {
   }
 }
 
-module DevFW2 './fortinet-vm.bicep' = if (useFortigateFW) {
+module DevFW2 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   name: 'DevFW2_fortigate'
   scope: rgHubVnetRG
   params: {
@@ -568,7 +569,8 @@ module ProdFWs_ILB './lb-firewalls-hub.bicep' = {
     BackendIP1_int:  FW_ProdFW1_PrdInt
     BackendIP2_int:  FW_ProdFW2_PrdInt
     FrontendSubnetID_int: hubVnet.outputs.PrdIntSubnetId
-    LB_Probe_tcp_port: useFortigateFW? 8008 : 22
+    LB_Probe_tcp_port: useFortigateFW ? 8008 : 22
+    configureEmptyBackendPool: !deployFirewallVMs
   }
 }
 
@@ -590,7 +592,8 @@ module DevFWs_ILB './lb-firewalls-hub.bicep' = {
     BackendIP1_int:  FW_DevFW1_DevInt
     BackendIP2_int:  FW_DevFW2_DevInt 
     FrontendSubnetID_int: hubVnet.outputs.DevIntSubnetId
-    LB_Probe_tcp_port: useFortigateFW? 8008 : 22
+    LB_Probe_tcp_port: useFortigateFW ? 8008 : 22
+    configureEmptyBackendPool: !deployFirewallVMs
   }
 }
 
