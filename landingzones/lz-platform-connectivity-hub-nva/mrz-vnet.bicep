@@ -55,6 +55,7 @@ resource mrzVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   location: resourceGroup().location
   name: mrzName
   properties: {
+    enableDdosProtection: !empty(ddosStandardPlanId)
     ddosProtectionPlan: (!empty(ddosStandardPlanId)) ? {
       id: ddosStandardPlanId
     } : null
