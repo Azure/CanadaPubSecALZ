@@ -4,69 +4,89 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param hubName string
+// Hub Virtual Network
 
-param Hub_IPrange string         
-param Hub_CGNATrange string
-param Hub_BastionRange string      
-param Subnet_Public string       
-param Subnet_EAN string          
-param Subnet_MRZInt string       
-param Subnet_PrdInt string       
-param Subnet_DevInt string       
-param Subnet_HA string           
-param Subnet_PAZ string         
-param Subnet_Bastion string      
-param Subnet_Public_name string 
-param Subnet_EAN_name string    
-param Subnet_MRZInt_name string  
-param Subnet_PrdInt_name string  
-param Subnet_DevInt_name string  
-param Subnet_HA_name string      
-param Subnet_PAZ_name string     
-param UDR_PAZ string
+// VNET
+param vnetName string
+param vnetAddressPrefixRFC1918 string         
+param vnetAddressPrefixCGNAT string
+param vnetAddressPrefixBastion string   
+
+// External Facing (Internet/Ground)
+param publicSubnetName string 
+param publicSubnetAddressPrefix string       
+
+// External Access Network
+param eanSubnetName string    
+param eanSubnetAddressPrefix string          
+
+// Management Restricted Zone (connect Mgmt VNET)
+param mrzIntSubnetName string  
+param mrzIntSubnetAddressPrefix string       
+
+// Internal Facing Prod  (Connect PROD VNET)
+param prodIntSubnetName string  
+param prodIntSubnetAddressPrefix string       
+
+// Internal Facing Dev (Connect Dev VNET)
+param devIntSubnetName string  
+param devIntSubnetAddressPrefix string       
+
+// High Availability (FW<=>FW heartbeat)
+param haSubnetName string      
+param haSubnetAddressPrefix string           
+
+// Public Access Zone (i.e. Application Gateways)
+param pazSubnetName string     
+param pazSubnetAddressPrefix string  
+param pazUdrId string
+
+// Azure Bastion
+param bastionSubnetAddressPrefix string      
+
+// DDOS
 param ddosStandardPlanId string
 
 module nsgpublic '../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'nsgpublic'
   params:{
-    name: '${Subnet_Public_name}Nsg'
+    name: '${publicSubnetName}Nsg'
   }
 }
 module nsgean '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgean'
   params:{
-    name: '${Subnet_EAN_name}Nsg'
+    name: '${eanSubnetName}Nsg'
   }
 }
 module nsgprd '../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'nsgprd'
   params:{
-    name: '${Subnet_PrdInt_name}Nsg'
+    name: '${prodIntSubnetName}Nsg'
   }
 }
 module nsgdev '../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'nsgdev'
   params:{
-    name: '${Subnet_DevInt_name}Nsg'
+    name: '${devIntSubnetName}Nsg'
   }
 }
 module nsgha '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgha'
   params:{
-    name: '${Subnet_HA_name}Nsg'
+    name: '${haSubnetName}Nsg'
   }
 }
 module nsgmrz '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgmrz'
   params:{
-    name: '${Subnet_MRZInt_name}Nsg'
+    name: '${mrzIntSubnetName}Nsg'
   }
 }
 module nsgpaz '../../azresources/network/nsg/nsg-appgwv2.bicep' = {
   name: 'nsgpaz'
   params:{
-    name: '${Subnet_PAZ_name}Nsg'
+    name: '${pazSubnetName}Nsg'
   }
 }
 module nsgbastion '../../azresources/network/nsg/nsg-bastion.bicep' = {
@@ -78,7 +98,7 @@ module nsgbastion '../../azresources/network/nsg/nsg-bastion.bicep' = {
 
 resource hubVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   location: resourceGroup().location
-  name: hubName
+  name: vnetName
   properties: {
     enableDdosProtection: !empty(ddosStandardPlanId)
     ddosProtectionPlan: (!empty(ddosStandardPlanId)) ? {
@@ -86,82 +106,82 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
     } : null
     addressSpace: {
       addressPrefixes: [
-        Hub_IPrange
-        Hub_CGNATrange
-        Hub_BastionRange
+        vnetAddressPrefixRFC1918
+        vnetAddressPrefixCGNAT
+        vnetAddressPrefixBastion
       ]
     }
     subnets: [
       {
-        name: Subnet_Public_name
+        name: publicSubnetName
         properties: {
-          addressPrefix: Subnet_Public
+          addressPrefix: publicSubnetAddressPrefix
           networkSecurityGroup: {
             id: nsgpublic.outputs.nsgId
           }
         }
       }
       {
-        name: Subnet_EAN_name
+        name: eanSubnetName
         properties: {
-          addressPrefix: Subnet_EAN
+          addressPrefix: eanSubnetAddressPrefix
           networkSecurityGroup: {
             id: nsgean.outputs.nsgId
           }
         }
       }
       {
-        name: Subnet_PrdInt_name
+        name: prodIntSubnetName
         properties: {
-          addressPrefix: Subnet_PrdInt
+          addressPrefix: prodIntSubnetAddressPrefix
           networkSecurityGroup: {
             id: nsgprd.outputs.nsgId
           }
         }
       }
       {
-        name: Subnet_DevInt_name
+        name: devIntSubnetName
         properties: {
-          addressPrefix: Subnet_DevInt
+          addressPrefix: devIntSubnetAddressPrefix
           networkSecurityGroup: {
             id: nsgdev.outputs.nsgId
           }
         }
       }
       {
-        name: Subnet_MRZInt_name
+        name: mrzIntSubnetName
         properties: {
-          addressPrefix: Subnet_MRZInt
+          addressPrefix: mrzIntSubnetAddressPrefix
           networkSecurityGroup: {
             id: nsgmrz.outputs.nsgId
           }
         }
       }
       {
-        name: Subnet_HA_name
+        name: haSubnetName
         properties: {
-          addressPrefix: Subnet_HA
+          addressPrefix: haSubnetAddressPrefix
           networkSecurityGroup: {
             id: nsgha.outputs.nsgId
           }
         }
       }
       {
-        name: Subnet_PAZ_name
+        name: pazSubnetName
         properties: {
-          addressPrefix: Subnet_PAZ
+          addressPrefix: pazSubnetAddressPrefix
           networkSecurityGroup: {
             id: nsgpaz.outputs.nsgId
           }
           routeTable: {
-            id: UDR_PAZ
+            id: pazUdrId
           }
         }
       }
       {
         name: 'AzureBastionSubnet'
         properties: {
-         addressPrefix: Subnet_Bastion
+         addressPrefix: bastionSubnetAddressPrefix
          networkSecurityGroup: {
           id: nsgbastion.outputs.nsgId
           }
@@ -172,11 +192,11 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
 }
 
 output hubVnetId  string = hubVnet.id
-output PublicSubnetId string = '${hubVnet.id}/subnets/${Subnet_Public_name}'
-output EANSubnetId    string = '${hubVnet.id}/subnets/${Subnet_EAN_name}'
-output PrdIntSubnetId string = '${hubVnet.id}/subnets/${Subnet_PrdInt_name}'
-output DevIntSubnetId string = '${hubVnet.id}/subnets/${Subnet_DevInt_name}'
-output MrzIntSubnetId string = '${hubVnet.id}/subnets/${Subnet_MRZInt_name}'
-output HASubnetId     string = '${hubVnet.id}/subnets/${Subnet_HA_name}'
-output PAZSubnetId    string = '${hubVnet.id}/subnets/${Subnet_PAZ_name}'
+output PublicSubnetId string = '${hubVnet.id}/subnets/${publicSubnetName}'
+output EANSubnetId    string = '${hubVnet.id}/subnets/${eanSubnetName}'
+output PrdIntSubnetId string = '${hubVnet.id}/subnets/${prodIntSubnetName}'
+output DevIntSubnetId string = '${hubVnet.id}/subnets/${devIntSubnetName}'
+output MrzIntSubnetId string = '${hubVnet.id}/subnets/${mrzIntSubnetName}'
+output HASubnetId     string = '${hubVnet.id}/subnets/${haSubnetName}'
+output PAZSubnetId    string = '${hubVnet.id}/subnets/${pazSubnetName}'
 output AzureBastionSubnetId string = '${hubVnet.id}/subnets/AzureBastionSubnet'

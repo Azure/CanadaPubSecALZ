@@ -74,93 +74,93 @@ variables:
   var-hubnetwork-ddosPlanName: 'pubsecDdosPlan'
 
   ## Hub Networking - Core Virtual Network
-  var-hubnetwork-RG_Hub_name: pubsecPrdHubPbRsg
-  var-hubnetwork-VNET_Hub_name: pubsecHubVnet
-  var-hubnetwork-Hub_IPrange: 10.18.0.0/22
-  var-hubnetwork-Hub_CGNATrange: 100.60.0.0/16
-  var-hubnetwork-Hub_BastionRange: 192.168.0.0/16
+  var-hubnetwork-rgHubName: pubsecPrdHubPbRsg
+  var-hubnetwork-hubVnetName: pubsecHubVnet
+  var-hubnetwork-hubVnetAddressPrefixRFC1918: 10.18.0.0/22
+  var-hubnetwork-hubVnetAddressPrefixCGNAT: 100.60.0.0/16
+  var-hubnetwork-hubVnetAddressPrefixBastion: 192.168.0.0/16
 
-  var-hubnetwork-Subnet_DevInt_name: DevIntSubnet
-  var-hubnetwork-Subnet_DevInt: 10.18.0.64/27
+  var-hubnetwork-hubEanSubnetName: EanSubnet
+  var-hubnetwork-hubEanSubnetAddressPrefix: 10.18.0.0/27
 
-  var-hubnetwork-Subnet_EAN_name: EanSubnet
-  var-hubnetwork-Subnet_EAN: 10.18.0.0/27
+  var-hubnetwork-hubPublicSubnetName: PublicSubnet
+  var-hubnetwork-hubPublicSubnetAddressPrefix: 100.60.0.0/24
 
-  var-hubnetwork-Subnet_HA_name: HASubnet
-  var-hubnetwork-Subnet_HA: 10.18.0.128/28
+  var-hubnetwork-hubPazSubnetName: PAZSubnet
+  var-hubnetwork-hubPazSubnetAddressPrefix: 100.60.1.0/24
 
-  var-hubnetwork-Subnet_MRZInt_name: MrzSubnet
-  var-hubnetwork-Subnet_MRZInt: 10.18.0.96/27
+  var-hubnetwork-hubDevIntSubnetName: DevIntSubnet
+  var-hubnetwork-hubDevIntSubnetAddressPrefix: 10.18.0.64/27
 
-  var-hubnetwork-Subnet_PAZ_name: PAZSubnet
-  var-hubnetwork-Subnet_PAZ: 100.60.1.0/24
+  var-hubnetwork-hubSubnetProdIntName: PrdIntSubnet
+  var-hubnetwork-hubSubnetProdIntAddressPrefix: 10.18.0.32/27
 
-  var-hubnetwork-Subnet_PrdInt_name: PrdIntSubnet
-  var-hubnetwork-Subnet_PrdInt: 10.18.0.32/27
+  var-hubnetwork-hubSubnetMrzIntName: MrzSubnet
+  var-hubnetwork-hubSubnetMrzIntAddressPrefix: 10.18.0.96/27
 
-  var-hubnetwork-Subnet_Public_name: PublicSubnet
-  var-hubnetwork-Subnet_Public: 100.60.0.0/24
+  var-hubnetwork-hubSubnetHAName: HASubnet
+  var-hubnetwork-hubSubnetHAAddressPrefix: 10.18.0.128/28
 
-  var-hubnetwork-Subnet_Bastion: 192.168.0.0/24
-  var-hubnetwork-Bastion_name: pubsecHubBastion
+  var-hubnetwork-hubSubnetBastionAddressPrefix: 192.168.0.0/24
+  var-hubnetwork-bastionName: pubsecHubBastion
 
   ## Hub Networking - Firewall Virtual Appliances
   var-hubnetwork-deployFirewallVMs: true
   var-hubnetwork-useFortigateFW: true
 
   ### Hub Networking - Firewall Virtual Appliances - For Non-production Traffic
-  var-hubnetwork-FW_VM_sku_dev: Standard_D8s_v4
-  var-hubnetwork-DevFWILB_name: pubsecDevFWsILB
-  var-hubnetwork-FW_DevFW1_name: pubsecDevFW1
-  var-hubnetwork-FW_DevFW2_name: pubsecDevFW2
-  var-hubnetwork-FW_VIP_DevFWs_Public: 100.60.0.7
-  var-hubnetwork-FW_DevFW1_Public: 100.60.0.8
-  var-hubnetwork-FW_DevFW2_Public: 100.60.0.9
-  var-hubnetwork-FW_VIP_DevFWs_MRZInt: 10.18.0.103
-  var-hubnetwork-FW_DevFW1_MRZInt: 10.18.0.104
-  var-hubnetwork-FW_DevFW2_MRZInt: 10.18.0.105
-  var-hubnetwork-FW_VIP_DevFWs_DevInt: 10.18.0.68
-  var-hubnetwork-FW_DevFW1_DevInt: 10.18.0.69
-  var-hubnetwork-FW_DevFW2_DevInt: 10.18.0.70
-  var-hubnetwork-FW_DevFW1_HA: 10.18.0.134
-  var-hubnetwork-FW_DevFW2_HA: 10.18.0.135
+  var-hubnetwork-fwDevILBName: pubsecDevFWsILB
+  var-hubnetwork-fwDevVMSku: Standard_D8s_v4
+  var-hubnetwork-fwDevVM1Name: pubsecDevFW1
+  var-hubnetwork-fwDevVM2Name: pubsecDevFW2
+  var-hubnetwork-fwDevILBExternalFacingIP: 100.60.0.7
+  var-hubnetwork-fwDevVM1ExternalFacingIP: 100.60.0.8
+  var-hubnetwork-fwDevVM2ExternalFacingIP: 100.60.0.9
+  var-hubnetwork-fwDevILBMrzIntIP: 10.18.0.103
+  var-hubnetwork-fwDevVM1MrzIntIP: 10.18.0.104
+  var-hubnetwork-fwDevVM2MrzIntIP: 10.18.0.105
+  var-hubnetwork-fwDevILBDevIntIP: 10.18.0.68
+  var-hubnetwork-fwDevVM1DevIntIP: 10.18.0.69
+  var-hubnetwork-fwDevVM2DevIntIP: 10.18.0.70
+  var-hubnetwork-fwDevVM1HAIP: 10.18.0.134
+  var-hubnetwork-fwDevVM2HAIP: 10.18.0.135
 
   ### Hub Networking - Firewall Virtual Appliances - For Production Traffic
-  var-hubnetwork-FW_VM_sku_prod: Standard_F8s_v2
-  var-hubnetwork-PrdFWILB_name: pubsecProdFWsILB
-  var-hubnetwork-FW_ProdFW1_name: pubsecProdFW1
-  var-hubnetwork-FW_ProdFW2_name: pubsecProdFW2
-  var-hubnetwork-FW_VIP_ProdFWs_Public: 100.60.0.4
-  var-hubnetwork-FW_ProdFW1_Public: 100.60.0.5
-  var-hubnetwork-FW_ProdFW2_Public: 100.60.0.6
-  var-hubnetwork-FW_VIP_ProdFWs_MRZInt: 10.18.0.100
-  var-hubnetwork-FW_ProdFW1_MRZInt: 10.18.0.101
-  var-hubnetwork-FW_ProdFW2_MRZInt: 10.18.0.102
-  var-hubnetwork-FW_VIP_ProdFWs_PrdInt: 10.18.0.36
-  var-hubnetwork-FW_ProdFW1_PrdInt: 10.18.0.37
-  var-hubnetwork-FW_ProdFW2_PrdInt: 10.18.0.38
-  var-hubnetwork-FW_ProdFW1_HA: 10.18.0.132
-  var-hubnetwork-FW_ProdFW2_HA: 10.18.0.133
+  var-hubnetwork-fwProdILBName: pubsecProdFWsILB
+  var-hubnetwork-fwProdVMSku: Standard_F8s_v2
+  var-hubnetwork-fwProdVM1Name: pubsecProdFW1
+  var-hubnetwork-fwProdVM2Name: pubsecProdFW2
+  var-hubnetwork-fwProdILBExternalFacingIP: 100.60.0.4
+  var-hubnetwork-fwProdVM1ExternalFacingIP: 100.60.0.5
+  var-hubnetwork-fwProdVM2ExternalFacingIP: 100.60.0.6
+  var-hubnetwork-fwProdILBMrzIntIP: 10.18.0.100
+  var-hubnetwork-fwProdVM1MrzIntIP: 10.18.0.101
+  var-hubnetwork-fwProdVM2MrzIntIP: 10.18.0.102
+  var-hubnetwork-fwProdILBPrdIntIP: 10.18.0.36
+  var-hubnetwork-fwProdVM1PrdIntIP: 10.18.0.37
+  var-hubnetwork-fwProdVM2PrdIntIP: 10.18.0.38
+  var-hubnetwork-fwProdVM1HAIP: 10.18.0.132
+  var-hubnetwork-fwProdVM2HAIP: 10.18.0.133
 
   ## Hub Networking - Management Restricted Zone Virtual Network
-  var-hubnetwork-RG_Mrz_name: pubsecPrdMrzPbRsg
-  var-hubnetwork-VNET_Mrz_name: pubsecMrzVnet
-  var-hubnetwork-MRZ_IPrange: 10.18.4.0/22
+  var-hubnetwork-rgMrzName: pubsecPrdMrzPbRsg
+  var-hubnetwork-mrzVnetName: pubsecMrzVnet
+  var-hubnetwork-mrzVnetAddressPrefixRFC1918: 10.18.4.0/22
 
-  var-hubnetwork-Subnet_MAZ_name: MazSubnet
-  var-hubnetwork-Subnet_MAZ: 10.18.4.0/25
+  var-hubnetwork-mrzMazSubnetName: MazSubnet
+  var-hubnetwork-mrzMazSubnetAddressPrefix: 10.18.4.0/25
   
-  var-hubnetwork-Subnet_INF_name: InfSubnet
-  var-hubnetwork-Subnet_INF: 10.18.4.128/25
+  var-hubnetwork-mrzInfSubnetName: InfSubnet
+  var-hubnetwork-mrzInfSubnetAddressPrefix: 10.18.4.128/25
   
-  var-hubnetwork-Subnet_SEC_name: SecSubnet
-  var-hubnetwork-Subnet_SEC: 10.18.5.0/26
+  var-hubnetwork-mrzSecSubnetName: SecSubnet
+  var-hubnetwork-mrzSecSubnetAddressPrefix: 10.18.5.0/26
   
-  var-hubnetwork-Subnet_LOG_name: LogSubnet
-  var-hubnetwork-Subnet_LOG: 10.18.5.64/26
+  var-hubnetwork-mrzLogSubnetName: LogSubnet
+  var-hubnetwork-mrzLogSubnetAddressPrefix: 10.18.5.64/26
   
-  var-hubnetwork-Subnet_MGMT_name: MgmtSubnet
-  var-hubnetwork-Subnet_MGMT: 10.18.5.128/26
+  var-hubnetwork-mrzMgmtSubnetName: MgmtSubnet
+  var-hubnetwork-mrzMgmtSubnetAddressPrefix: 10.18.5.128/26
 
   ## Hub Networking - Public Zone
-  var-hubnetwork-RG_Paz_name: pubsecPazPbRsg
+  var-hubnetwork-rgPazName: pubsecPazPbRsg

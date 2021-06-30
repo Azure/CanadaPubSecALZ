@@ -4,22 +4,34 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param BackendVNet_ID string
-param FrontendSubnetID_ext string
-param FrontendSubnetID_mrz string
-param FrontendSubnetID_int string
 param name string 
-param FrontendIP_ext string
-param BackendIP1_ext string
-param BackendIP2_ext string
-param FrontendIP_mrz string
-param BackendIP1_mrz string
-param BackendIP2_mrz string
-param FrontendIP_int string
-param BackendIP1_int string
-param BackendIP2_int string
-param LB_Probe_tcp_port int 
+
+// vnet
+param backendVnetId string
+
+// backend pool
 param configureEmptyBackendPool bool
+
+// external
+param frontendSubnetIdExt string
+param frontendIPExt string
+param backendIP1Ext string
+param backendIP2Ext string
+
+// management
+param frontendSubnetIdMrz string
+param frontendIPMrz string
+param backendIP1Mrz string
+param backendIP2Mrz string
+
+// internal
+param frontendSubnetIdInt string
+param frontendIPInt string
+param backendIP1Int string
+param backendIP2Int string
+
+// probe
+param lbProbeTcpPort int 
 
 resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
   name: name
@@ -33,10 +45,10 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
       {
         name: '${name}-Frontend-ext'
         properties: {
-          privateIPAddress: FrontendIP_ext
+          privateIPAddress: frontendIPExt
           privateIPAllocationMethod: 'Static'
           subnet: {
-            id: FrontendSubnetID_ext
+            id: frontendSubnetIdExt
           }
           privateIPAddressVersion: 'IPv4'
         }
@@ -49,10 +61,10 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
       {
         name: '${name}-Frontend-mrz'
         properties: {
-          privateIPAddress: FrontendIP_mrz
+          privateIPAddress: frontendIPMrz
           privateIPAllocationMethod: 'Static'
           subnet: {
-            id: FrontendSubnetID_mrz
+            id: frontendSubnetIdMrz
           }
           privateIPAddressVersion: 'IPv4'
         }
@@ -65,10 +77,10 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
       {
         name: '${name}-Frontend-int'
         properties: {
-          privateIPAddress: FrontendIP_int
+          privateIPAddress: frontendIPInt
           privateIPAllocationMethod: 'Static'
           subnet: {
-            id: FrontendSubnetID_int
+            id: frontendSubnetIdInt
           }
           privateIPAddressVersion: 'IPv4'
         }
@@ -162,7 +174,7 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
         name: 'lbprobe'
         properties: {
           protocol: 'Tcp'
-          port: LB_Probe_tcp_port
+          port: lbProbeTcpPort
           intervalInSeconds: 5
           numberOfProbes: 2
         }
@@ -173,25 +185,25 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
 
 
 //define the BackendAddressPool
-resource ILBBackend_ext 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
+resource ILBBackendExt 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
   name: '${ILB.name}/${name}-Backend-ext'
   properties: {
     loadBalancerBackendAddresses: configureEmptyBackendPool ? null : [
       {
         name: '${ILB.name}-ext1'
         properties: {
-          ipAddress: BackendIP1_ext
+          ipAddress: backendIP1Ext
           virtualNetwork: {
-            id: BackendVNet_ID
+            id: backendVnetId
           }
         }
       }
       {
         name: '${ILB.name}-ext2'
         properties: {
-          ipAddress: BackendIP2_ext
+          ipAddress: backendIP2Ext
           virtualNetwork: {
-            id: BackendVNet_ID
+            id: backendVnetId
           }
         }
       }
@@ -199,25 +211,25 @@ resource ILBBackend_ext 'Microsoft.Network/loadBalancers/backendAddressPools@202
   }
 }
 
-resource ILBBackend_mrz 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
+resource ILBBackendMrz 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
   name: '${ILB.name}/${name}-Backend-mrz'
   properties: {
     loadBalancerBackendAddresses: configureEmptyBackendPool ? null : [
       {
         name: '${ILB.name}-mrz1'
         properties: {
-          ipAddress: BackendIP1_mrz
+          ipAddress: backendIP1Mrz
           virtualNetwork: {
-            id: BackendVNet_ID
+            id: backendVnetId
           }
         }
       }
       {
         name: '${ILB.name}-mrz2'
         properties: {
-          ipAddress: BackendIP2_mrz
+          ipAddress: backendIP2Mrz
           virtualNetwork: {
-            id: BackendVNet_ID
+            id: backendVnetId
           }
         }
       }
@@ -225,25 +237,25 @@ resource ILBBackend_mrz 'Microsoft.Network/loadBalancers/backendAddressPools@202
   }
 }
 
-resource ILBBackend_int 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
+resource ILBBackendInt 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
   name: '${ILB.name}/${name}-Backend-int'
   properties: {
     loadBalancerBackendAddresses: configureEmptyBackendPool ? null : [
       {
         name: '${ILB.name}-int1'
         properties: {
-          ipAddress: BackendIP1_int
+          ipAddress: backendIP1Int
           virtualNetwork: {
-            id: BackendVNet_ID
+            id: backendVnetId
           }
         }
       }
       {
         name: '${ILB.name}-int2'
         properties: {
-          ipAddress: BackendIP2_int
+          ipAddress: backendIP2Int
           virtualNetwork: {
-            id: BackendVNet_ID
+            id: backendVnetId
           }
         }
       }

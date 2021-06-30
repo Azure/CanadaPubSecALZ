@@ -4,31 +4,41 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param VM_name string = 'FW1'
-param VM_sku string = 'Standard_F8s_v2'
-param VM_nic1_ip string
-param VM_nic1_subnetId string
-param VM_nic2_ip string
-param VM_nic2_subnetId string
-param VM_nic3_ip string
-param VM_nic3_subnetId string
-param VM_nic4_ip string
-param VM_nic4_subnetId string
+// VM
+param vmName string = 'FW1'
+param vmSku string = 'Standard_F8s_v2'
 param availabilityZone string
+
+// Network Interfaces
+param nic1PrivateIP string
+param nic1SubnetId string
+
+param nic2PrivateIP string
+param nic2SubnetId string
+
+param nic3PrivateIP string
+param nic3SubnetId string
+
+param nic4PrivateIP string
+param nic4SubnetId string
+
+
 //fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm:6.4.5 //BYOL - works with MSDN free subs
 //fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm-payg_20190624:6.4.5 //PAYG - needs credit card
-param cfg_FW_publisher string = 'fortinet'
-param cfg_FW_productoffer string = 'fortinet_fortigate-vm_v5'
-param cfg_FW_planname string = 'fortinet_fg-vm'
-param cfg_FW_sku string = 'fortinet_fg-vm'
-param cfg_FW_version string = '6.4.5' 
+
+// VM Image
+param vmImagePublisher string = 'fortinet'
+param vmImageOffer string = 'fortinet_fortigate-vm_v5'
+param vmImagePlanName string = 'fortinet_fg-vm'
+param vmImageSku string = 'fortinet_fg-vm'
+param vmImageVersion string = '6.4.5' 
 
 param username string
 @secure()
 param password string
 
 resource nic1 'Microsoft.Network/networkInterfaces@2020-11-01' = {
-  name: '${VM_name}-nic1'
+  name: '${vmName}-nic1'
   location: resourceGroup().location
   tags: {}
   properties: {
@@ -36,10 +46,10 @@ resource nic1 'Microsoft.Network/networkInterfaces@2020-11-01' = {
       {
         name: 'ipconfig1'
         properties: {
-          privateIPAddress: VM_nic1_ip
+          privateIPAddress: nic1PrivateIP
           privateIPAllocationMethod: 'Static'
           subnet: {
-            id: VM_nic1_subnetId
+            id: nic1SubnetId
           }
           primary: true
           privateIPAddressVersion: 'IPv4'
@@ -55,7 +65,7 @@ resource nic1 'Microsoft.Network/networkInterfaces@2020-11-01' = {
 }
 
 resource nic2 'Microsoft.Network/networkInterfaces@2020-11-01' = {
-  name: '${VM_name}-nic2'
+  name: '${vmName}-nic2'
   location: resourceGroup().location
   tags: {}
   properties: {
@@ -63,10 +73,10 @@ resource nic2 'Microsoft.Network/networkInterfaces@2020-11-01' = {
       {
         name: 'ipconfig1'
         properties: {
-          privateIPAddress: VM_nic2_ip
+          privateIPAddress: nic2PrivateIP
           privateIPAllocationMethod: 'Static'
           subnet: {
-            id: VM_nic2_subnetId
+            id: nic2SubnetId
           }
           primary: true
           privateIPAddressVersion: 'IPv4'
@@ -81,7 +91,7 @@ resource nic2 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   }
 }
 resource nic3 'Microsoft.Network/networkInterfaces@2020-11-01' = {
-  name: '${VM_name}-nic3'
+  name: '${vmName}-nic3'
   location: resourceGroup().location
   tags: {}
   properties: {
@@ -89,10 +99,10 @@ resource nic3 'Microsoft.Network/networkInterfaces@2020-11-01' = {
       {
         name: 'ipconfig1'
         properties: {
-          privateIPAddress: VM_nic3_ip
+          privateIPAddress: nic3PrivateIP
           privateIPAllocationMethod: 'Static'
           subnet: {
-            id: VM_nic3_subnetId
+            id: nic3SubnetId
           }
           primary: true
           privateIPAddressVersion: 'IPv4'
@@ -107,7 +117,7 @@ resource nic3 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   }
 }
 resource nic4 'Microsoft.Network/networkInterfaces@2020-11-01' = {
-  name: '${VM_name}-nic4'
+  name: '${vmName}-nic4'
   location: resourceGroup().location
   tags: {}
   properties: {
@@ -115,10 +125,10 @@ resource nic4 'Microsoft.Network/networkInterfaces@2020-11-01' = {
       {
         name: 'ipconfig1'
         properties: {
-          privateIPAddress: VM_nic4_ip
+          privateIPAddress: nic4PrivateIP
           privateIPAllocationMethod: 'Static'
           subnet: {
-            id: VM_nic4_subnetId
+            id: nic4SubnetId
           }
           primary: true
           privateIPAddressVersion: 'IPv4'
@@ -134,32 +144,31 @@ resource nic4 'Microsoft.Network/networkInterfaces@2020-11-01' = {
 }
 
 resource VM_resource 'Microsoft.Compute/virtualMachines@2020-12-01' = {
-  name: VM_name
+  name: vmName
   location: resourceGroup().location
   tags: {}
   zones: [
     availabilityZone
   ]
-  // do not include a plan:{} block when using Ubuntu. It cannot be made conditional (must be null)
   plan: { 
-     name: cfg_FW_planname
-     product: cfg_FW_productoffer
-     publisher: cfg_FW_publisher
+     name: vmImagePlanName
+     product: vmImageOffer
+     publisher: vmImagePublisher
    }
   properties: {
     hardwareProfile: {
-      vmSize: VM_sku
+      vmSize: vmSku
     }
     storageProfile: {
       imageReference: {
-        publisher: cfg_FW_publisher 
-        offer: cfg_FW_productoffer 
-        sku: cfg_FW_sku
-        version: cfg_FW_version 
+        publisher: vmImagePublisher 
+        offer: vmImageOffer 
+        sku: vmImageSku
+        version: vmImageVersion 
       }
       osDisk: {
         osType: 'Linux'
-        name: '${VM_name}_OsDisk_1'
+        name: '${vmName}_OsDisk_1'
         createOption: 'FromImage'
         caching: 'ReadWrite'
         managedDisk: {
@@ -169,7 +178,7 @@ resource VM_resource 'Microsoft.Compute/virtualMachines@2020-12-01' = {
       dataDisks: [
         {
           lun: 0
-          name: '${VM_name}_disk2'
+          name: '${vmName}_disk2'
           createOption: 'Empty'
           caching: 'None'
           diskSizeGB: 128
@@ -181,7 +190,7 @@ resource VM_resource 'Microsoft.Compute/virtualMachines@2020-12-01' = {
       ]
     }
     osProfile: {
-      computerName: VM_name
+      computerName: vmName
       adminUsername: username
       adminPassword: password
       linuxConfiguration: {

@@ -4,56 +4,74 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param mrzName string 
+// Management Restricted Zone Virtual Network
 
-param MRZ_IPrange string     
-param Subnet_MAZ string       
-param Subnet_INF string      
-param Subnet_SEC string       
-param Subnet_LOG string     
-param Subnet_MGMT string      
-param Subnet_MAZ_name string
-param Subnet_INF_name string 
-param Subnet_SEC_name string  
-param Subnet_LOG_name string  
-param Subnet_MGMT_name string 
-param UDR string
+// VNET
+param vnetName string 
+param vnetAddressPrefix string     
+
+// Management (Access Zone)
+param mazSubnetName string
+param mazSubnetAddressPrefix string      
+param mazSubnetUdrId string 
+
+// Infra Services (Restricted Zone)
+param infSubnetName string 
+param infSubnetAddressPrefix string   
+param infSubnetUdrId string 
+
+// Security Services (Restricted Zone)
+param secSubnetName string  
+param secSubnetAddressPrefix string
+param secSubnetUdrId string 
+
+// Logging Services (Restricted Zone)
+param logSubnetName string  
+param logSubnetAddressPrefix string
+param logSubnetUdrId string 
+
+// Core Management Interfaces
+param mgmtSubnetName string 
+param mgmtSubnetAddressPrefix string      
+param mgmtSubnetUdrId string 
+
+// DDOS
 param ddosStandardPlanId string
 
 module nsgmaz '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgmaz'
   params:{
-    name: '${Subnet_MAZ_name}Nsg'
+    name: '${mazSubnetName}Nsg'
   }
 }
 module nsginf '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsginf'
   params:{
-    name: '${Subnet_INF_name}Nsg'
+    name: '${infSubnetName}Nsg'
   }
 }
 module nsgsec '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgsec'
   params:{
-    name: '${Subnet_SEC_name}Nsg'
+    name: '${secSubnetName}Nsg'
   }
 }
 module nsglog '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsglog'
   params:{
-    name: '${Subnet_LOG_name}Nsg'
+    name: '${logSubnetName}Nsg'
   }
 }
 module nsgmgmt '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'nsgmgmt'
   params:{
-    name: '${Subnet_MGMT_name}Nsg'
+    name: '${mgmtSubnetName}Nsg'
   }
 }
 
 resource mrzVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   location: resourceGroup().location
-  name: mrzName
+  name: vnetName
   properties: {
     enableDdosProtection: !empty(ddosStandardPlanId)
     ddosProtectionPlan: (!empty(ddosStandardPlanId)) ? {
@@ -61,67 +79,67 @@ resource mrzVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
     } : null
     addressSpace: {
       addressPrefixes: [
-        MRZ_IPrange
+        vnetAddressPrefix
       ]
     }
     subnets: [
       {
-        name: Subnet_MAZ_name
+        name: mazSubnetName
         properties: {
-          addressPrefix: Subnet_MAZ
+          addressPrefix: mazSubnetAddressPrefix
           networkSecurityGroup: {
             id: nsgmaz.outputs.nsgId
           }
           routeTable: {
-            id: UDR
+            id: mazSubnetUdrId
           }
         }
       }
       {
-        name: Subnet_INF_name
+        name: infSubnetName
         properties: {
-          addressPrefix: Subnet_INF
+          addressPrefix: infSubnetAddressPrefix
           networkSecurityGroup: {
             id: nsginf.outputs.nsgId
           }
           routeTable: {
-            id: UDR
+            id: infSubnetUdrId
           }
         }
       }
       {
-        name: Subnet_SEC_name
+        name: secSubnetName
         properties: {
-          addressPrefix: Subnet_SEC
+          addressPrefix: secSubnetAddressPrefix
           networkSecurityGroup: {
             id: nsgsec.outputs.nsgId
           }
           routeTable: {
-            id: UDR
+            id: secSubnetUdrId
           }
         }
       }
       {
-        name: Subnet_LOG_name
+        name: logSubnetName
         properties: {
-          addressPrefix: Subnet_LOG
+          addressPrefix: logSubnetAddressPrefix
           networkSecurityGroup: {
             id: nsglog.outputs.nsgId
           }
           routeTable: {
-            id: UDR
+            id: logSubnetUdrId
           }
         }
       }
       {
-        name: Subnet_MGMT_name
+        name: mgmtSubnetName
         properties: {
-          addressPrefix: Subnet_MGMT
+          addressPrefix: mgmtSubnetAddressPrefix
           networkSecurityGroup: {
             id: nsgmgmt.outputs.nsgId
           }
           routeTable: {
-            id: UDR
+            id: mgmtSubnetUdrId
           }
         }
       }
@@ -131,8 +149,8 @@ resource mrzVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
 
 output mrzVnetId string = mrzVnet.id
 
-output MazSubnetId  string = '${mrzVnet.id}/subnets/${Subnet_MAZ_name}'
-output InfSubnetId  string = '${mrzVnet.id}/subnets/${Subnet_INF_name}'
-output SecSubnetId  string = '${mrzVnet.id}/subnets/${Subnet_SEC_name}'
-output LogSubnetId  string = '${mrzVnet.id}/subnets/${Subnet_LOG_name}'
-output MgmtSubnetId string = '${mrzVnet.id}/subnets/${Subnet_MGMT_name}'
+output MazSubnetId  string = '${mrzVnet.id}/subnets/${mazSubnetName}'
+output InfSubnetId  string = '${mrzVnet.id}/subnets/${infSubnetName}'
+output SecSubnetId  string = '${mrzVnet.id}/subnets/${secSubnetName}'
+output LogSubnetId  string = '${mrzVnet.id}/subnets/${logSubnetName}'
+output MgmtSubnetId string = '${mrzVnet.id}/subnets/${mgmtSubnetName}'
