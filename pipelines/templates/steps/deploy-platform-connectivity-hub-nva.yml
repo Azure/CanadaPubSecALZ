@@ -156,3 +156,40 @@ steps:
           
       $(var-bashPostInjectScript)
     workingDirectory: '${{ parameters.workingDir }}/lz-platform-connectivity-hub-nva'
+
+- task: AzureCLI@2
+  displayName: ${{ parameters.description }} - Azure Policy - Enable DDoS Standard (if var-hubnetwork-deployDdosStandard=true)
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      case $(var-hubnetwork-deployDdosStandard) in
+        (true)
+          echo "DDoS Standard is enabled, creating Azure Policy assignment to protect for all Virtual Networks in '$(var-topLevelManagementGroupName)' management group."
+
+          # Identify the Resource Id for DDOS Standard Plan
+          DDOS_PLAN_ID=`az network ddos-protection show -g $(var-hubnetwork-rgDdosName) -n $(var-hubnetwork-ddosPlanName) --subscription $(var-hubnetwork-subscriptionId) --query id -o tsv`
+          echo "DDoS Standard Plan Id: $DDOS_PLAN_ID"
+
+          # Apply the policy assignment
+          echo "Deploying policy assignment using policy/custom/assignments/ddos.bicep"
+
+          az deployment mg ${{ parameters.deployOperation }} \
+            --location $(deploymentRegion) \
+            --management-group-id $(var-topLevelManagementGroupName) \
+            --template-file ddos.bicep \
+            --parameters \
+                policyAssignmentManagementGroupId='$(var-topLevelManagementGroupName)' \
+                policyDefinitionManagementGroupId=$(var-topLevelManagementGroupName) \
+                ddosStandardPlanId="$DDOS_PLAN_ID"
+          ;;
+        (*)
+          echo "DDoS Standard is not enabled.  Azure Policy assignment will be skipped."
+          ;;
+      esac
+
+      $(var-bashPostInjectScript)
+    workingDirectory: '$(System.DefaultWorkingDirectory)/policy/custom/assignments'
