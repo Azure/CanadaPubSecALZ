@@ -13,17 +13,12 @@ param subnetDatabricksPublicPrefix string
 param subnetDatabricksPrivateName string
 param subnetDatabricksPrivatePrefix string
 
-param subnetSqlMIName string
-param subnetSqlMIPrefix string
-
 param subnetPrivateEndpointsName string
 param subnetPrivateEndpointsPrefix string
 
-param subnetAKSName string
-param subnetAKSPrefix string
+param subnetSynapseName string
+param subnetSynapsePrefix string
 
-param deploySQLDB bool
-param deploySQLMI bool
 
 // Network Security Groups
 module nsgDatabricks '../../azresources/network/nsg/nsg-databricks.bicep' = {
@@ -34,20 +29,6 @@ module nsgDatabricks '../../azresources/network/nsg/nsg-databricks.bicep' = {
   }
 }
 
-module nsgSqlMi '../../azresources/network/nsg/nsg-sqlmi.bicep' = if (deploySQLMI == true){
-  name: 'nsgSqlMi'
-  params: {
-    name: '${subnetSqlMIName}Nsg'
-  }
-}
-
-// Route Tables
-module udrSqlMi '../../azresources/network/udr/udr-sqlmi.bicep' = if (deploySQLMI == true){
-  name: 'udrSqlMi'
-  params: {
-    name: '${subnetSqlMIName}Udr'
-  }
-}
 
 module udrDatabricksPublic '../../azresources/network/udr/udr-databricks-public.bicep' = {
   name: 'udrDatabricksPublic'
@@ -73,14 +54,6 @@ module privatezone_datalake_dfs '../../azresources/network/private-zone.bicep' =
   }
 }
 
-module privatezone_sqldb '../../azresources/network/private-zone.bicep' = if (deploySQLDB == true){
-  name: 'sqldb_private_zone'
-  scope: resourceGroup()
-  params: {
-    zone: 'privatelink.database.windows.net'
-    vnetId: vnetId
-  }
-}
 
 module privatezone_adf '../../azresources/network/private-zone.bicep' = {
   name: 'adf_private_zone'
@@ -158,22 +131,11 @@ resource subnetPrivateEndpoints 'Microsoft.Network/virtualNetworks/subnets@2020-
   }
 }
 
-resource subnetAks 'Microsoft.Network/virtualNetworks/subnets@2020-07-01' = {
-  dependsOn: [
-    subnetPrivateEndpoints
-  ]
-  parent: vnet
-  name: subnetAKSName
-  properties: {
-    addressPrefix: subnetAKSPrefix
-    privateEndpointNetworkPolicies: 'Disabled'
-  }
-}
 
 // Landing Zone specific subnets - required due to subnet delegation
 resource subnetDatabricksPublic 'Microsoft.Network/virtualNetworks/subnets@2020-07-01' = {
   dependsOn: [
-    subnetAks
+    subnetPrivateEndpoints
   ]
   parent: vnet
   name: subnetDatabricksPublicName
@@ -221,39 +183,18 @@ resource subnetDatabricksPrivate 'Microsoft.Network/virtualNetworks/subnets@2020
   }
 }
 
-resource subnetSqlMI 'Microsoft.Network/virtualNetworks/subnets@2020-07-01' = if (deploySQLMI == true){
-  dependsOn: [
-    subnetDatabricksPrivate
-  ]
+resource subnetSynapse 'Microsoft.Network/virtualNetworks/subnets@2020-07-01' = {
   parent: vnet
-  name: subnetSqlMIName
+  name: subnetSynapseName
   properties: {
-    addressPrefix: subnetSqlMIPrefix
-    routeTable: {
-      id: '${deploySQLMI ? udrSqlMi.outputs.udrId : ''}'
-    }
-    networkSecurityGroup: {
-      id: '${deploySQLMI ? nsgSqlMi.outputs.nsgId : ''}'
-    }
-    serviceEndpoints: [
-      {
-        service: 'Microsoft.Storage'
-      }
-    ]
-    delegations: [
-      {
-        name: 'sqlmi-delegation'
-        properties: {
-          serviceName: 'Microsoft.Sql/managedInstances'
-        }
-      }
-    ]
+    addressPrefix: subnetSynapsePrefix
   }
 }
 
+
+
 output privateEndpointSubnetId string = '${vnetId}/subnets/${subnetPrivateEndpoints.name}'
-output sqlMiSubnetId string = deploySQLMI ? '${vnetId}/subnets/${subnetSqlMI.name}': ''
-output aksSubnetId string = '${vnetId}/subnets/${subnetAks.name}'
+output synapseSubnetId string = '${vnetId}/subnets/${subnetSynapse.name}'
 
 output databricksPublicSubnetName string = subnetDatabricksPublic.name
 output databricksPrivateSubnetName string = subnetDatabricksPrivate.name
@@ -264,6 +205,6 @@ output dataLakeFilePrivateZoneId string = privatezone_datalake_file.outputs.priv
 output adfPrivateZoneId string = privatezone_adf.outputs.privateZoneId
 output keyVaultPrivateZoneId string = privatezone_keyvault.outputs.privateZoneId
 output acrPrivateZoneId string = privatezone_acr.outputs.privateZoneId
-output sqlDBPrivateZoneId string = deploySQLDB ? privatezone_sqldb.outputs.privateZoneId: ''
 output amlApiPrivateZoneId string = privatezone_azureml_api.outputs.privateZoneId
 output amlNotebooksPrivateZoneId string = privatezone_azureml_notebook.outputs.privateZoneId
+

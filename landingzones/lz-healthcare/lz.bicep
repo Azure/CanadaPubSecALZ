@@ -8,14 +8,8 @@ targetScope = 'subscription'
 
 param azureRegion string = deployment().location
 
-@description('Should SQL Database be deployed in environment')
-param deploySQLDB bool
-@description('Should SQL Managed Instance be deployed in environment')
-param deploySQLMI bool
 @description('Should ADF Self Hosted Integration Runtime VM be deployed in environment')
 param deploySelfhostIRVM bool
-
-param securityContactEmail string
 
 param tagClientOrganization string
 param tagCostCenter string
@@ -40,20 +34,16 @@ param subnetDatabricksPublicPrefix string
 param subnetDatabricksPrivateName string
 param subnetDatabricksPrivatePrefix string
 
-param subnetSQLMIName string
-param subnetSQLMIPrefix string
-
 param subnetPrivateEndpointsName string
 param subnetPrivateEndpointsPrefix string
 
-param subnetAKSName string
-param subnetAKSPrefix string
-
 param adfSelfHostedRuntimeSubnetId string
+
+param subnetSynapseName string
+param subnetSynapsePrefix string
 
 param secretExpiryInDays int
 
-param aksVersion string
 
 param adfIRVMNames array = [
   'SelfHostedVm1'
@@ -61,18 +51,15 @@ param adfIRVMNames array = [
 
 param selfHostedRuntimeVmSize string
 
-@description('If SQL Database is selected to be deployed, enter username. Otherwise, you can enter blank')
 @secure()
-param sqldbUsername string
-@description('If SQL Managed Instance is selected to be deployed, enter username. Otherwise, you can enter blank')
-@secure()
-param sqlmiUsername string
+param synapseUsername string
+
+
 @description('If ADF Self Hosted Integration Runtime VM is selected to be deployed, enter username. Otherwise, you can enter blank')
 @secure()
 param selfHostedVMUsername string
 
-var sqldbPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldbUsername))}'
-var sqlmiPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqlmiUsername))}'
+var synapsePassword = '${uniqueString(rgCompute.id)}*${toUpper(uniqueString(synapseUsername))}'
 var selfHostedVMPassword = '${uniqueString(rgCompute.id)}*${toUpper(uniqueString(selfHostedVMUsername))}'
 
 var databricksName = 'databricks'
@@ -80,14 +67,11 @@ var databricksEgressLbName = 'egressLb'
 var datalakeStorageName = 'datalake${uniqueString(rgStorage.id)}'
 var amlMetaStorageName = 'amlmeta${uniqueString(rgCompute.id)}'
 var akvName = 'akv${uniqueString(rgSecurity.id)}'
-var sqlServerName = 'sqlserver${uniqueString(rgStorage.id)}'
 var adfName = 'adf${uniqueString(rgCompute.id)}'
-var aksName = 'aks${uniqueString(rgCompute.id)}'
-var sqlMiName = 'sqlmi${uniqueString(rgStorage.id)}'
 var amlName = 'aml${uniqueString(rgCompute.id)}'
 var acrName = 'acr${uniqueString(rgStorage.id)}'
 var aiName = 'ai${uniqueString(rgMonitor.id)}'
-var storageLoggingName = 'salogging${uniqueString(rgStorage.id)}'
+var synapseName = 'syn${uniqueString(rgMonitor.id)}'
 
 var tags = {
   ClientOrganization: tagClientOrganization
@@ -136,20 +120,16 @@ module networking 'networking.bicep' = {
   params: {
     vnetId: vnetId
     vnetName: vnetName
-
-    deploySQLDB: deploySQLDB
-    deploySQLMI: deploySQLMI
     
     subnetDatabricksPublicName: subnetDatabricksPublicName
     subnetDatabricksPublicPrefix: subnetDatabricksPublicPrefix
     subnetDatabricksPrivateName: subnetDatabricksPrivateName
     subnetDatabricksPrivatePrefix: subnetDatabricksPrivatePrefix
-    subnetSqlMIName: subnetSQLMIName
-    subnetSqlMIPrefix: subnetSQLMIPrefix
     subnetPrivateEndpointsName: subnetPrivateEndpointsName
     subnetPrivateEndpointsPrefix: subnetPrivateEndpointsPrefix
-    subnetAKSName: subnetAKSName
-    subnetAKSPrefix: subnetAKSPrefix
+
+    subnetSynapseName: subnetSynapseName
+    subnetSynapsePrefix: subnetSynapsePrefix
   }
 }
 
@@ -162,53 +142,6 @@ module keyVault '../../azresources/security/key-vault.bicep' = {
     tags: tags
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.keyVaultPrivateZoneId
-  }
-}
-
-module sqlMi '../../azresources/sql/sqlmi.bicep' = if (deploySQLMI == true) {
-  name: 'sqlMi'
-  scope: rgStorage
-  params: {
-    tags: tags
-    name: sqlMiName
-    subnetId: networking.outputs.sqlMiSubnetId
-    sqlmiUsername: sqlmiUsername
-    sqlmiPassword: sqlmiPassword
-    saLoggingName: storageLogging.outputs.storageName
-    storagePath: storageLogging.outputs.storagePath
-    securityContactEmail: securityContactEmail
-  }
-}
-
-module storageLogging '../../azresources/storage/storagev2.bicep' = {
-  name: 'storageLogging'
-  scope: rgStorage
-  params: {
-    tags: tags
-    name: storageLoggingName
-    privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
-    blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateZoneId
-    filePrivateZoneId: networking.outputs.dataLakeFilePrivateZoneId
-    deployBlobPrivateZone: false
-    deployFilePrivateZone: false
-    defaultNetworkAcls: 'Deny'
-    subnetIdForVnetRestriction: deploySQLMI ? array(networking.outputs.sqlMiSubnetId): []
-  }
-}
-
-module sqlDb '../../azresources/sql/sqldb.bicep' = if (deploySQLDB == true) {
-  name: 'sqldb'
-  scope: rgStorage
-  params: {
-    tags: tags
-    sqlServerName: sqlServerName
-    privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
-    privateZoneId: networking.outputs.sqlDBPrivateZoneId
-    sqldbUsername: sqldbUsername
-    sqldbPassword: sqldbPassword
-    saLoggingName: storageLogging.outputs.storageName
-    storagePath: storageLogging.outputs.storagePath
-    securityContactEmail: securityContactEmail
   }
 }
 
@@ -249,17 +182,6 @@ module databricks '../../azresources/compute/databricks.bicep' = {
   }
 }
 
-module aks '../../azresources/compute/aks-kubenet.bicep' = {
-  name: 'aks'
-  scope: rgCompute
-  params: {
-    tags: tags
-    aksName: aksName
-    aksVersion: aksVersion
-    subnetID: networking.outputs.aksSubnetId
-    nodeResourceGroupName: '${rgCompute.name}-${aksName}-${uniqueString(rgCompute.id)}'
-  }
-}
 
 module adf '../../azresources/compute/datafactory.bicep' = {
   name: 'adf'
@@ -339,87 +261,43 @@ module aml '../../azresources/compute/aml.bicep' = {
   }
 }
 
-// Adding secrets to key vault
-module akvSqlDbUsername '../../azresources/security/key-vault-secret.bicep' = if (deploySQLDB == true) {
+module synapse '../../azresources/compute/synapse.bicep' = {
+  name: 'synapse'
+  scope: rgCompute
+  params: {
+    synapseName: synapseName
+    computeSubnetId: networking.outputs.synapseSubnetId
+    tags: tags
+    managedResourceGroupName: 'synapse-rg-${rgCompute.name}-${uniqueString(rgCompute.id)}'
+    synapseUsername: synapseUsername 
+    synapsePassword: synapsePassword
+  }
+}
+
+module akvsynapseUsername '../../azresources/security/key-vault-secret.bicep' = {
   dependsOn: [
     keyVault
   ]
-  name: 'akvSqlDbUsername'
+  name: 'synapseUsername'
   scope: rgSecurity
   params: {
     akvName: akvName
-    secretName: 'sqldbUsername'
-    secretValue: sqldbUsername
+    secretName: 'synapseUsername'
+    secretValue: synapseUsername
     secretExpiryInDays: secretExpiryInDays
   }
 }
 
-module akvSqlDbPassword '../../azresources/security/key-vault-secret.bicep' = if (deploySQLDB == true) {
+module akvsynapsePassword '../../azresources/security/key-vault-secret.bicep' = {
   dependsOn: [
     keyVault
   ]
-  name: 'akvSqlDbPassword'
+  name: 'synapsePassword'
   scope: rgSecurity
   params: {
     akvName: akvName
-    secretName: 'sqldbPassword'
-    secretValue: sqldbPassword
-    secretExpiryInDays: secretExpiryInDays
-  }
-}
-
-module akvSqlDbConnection '../../azresources/security/key-vault-secret.bicep' = if (deploySQLDB == true) {
-  dependsOn: [
-    keyVault
-  ]
-  name: 'akvSqlDbConnection'
-  scope: rgSecurity
-  params: {
-    akvName: akvName
-    secretName: 'SqlDbConnectionString'
-    secretValue: 'Server=tcp:${deploySQLDB ? sqlDb.outputs.sqlDbFqdn : ''},1433;Initial Catalog=${sqlServerName};Persist Security Info=False;User ID=${sqldbUsername};Password=${sqldbPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
-    secretExpiryInDays: secretExpiryInDays
-  }
-}
-
-module akvSqlmiUsername '../../azresources/security/key-vault-secret.bicep' = if (deploySQLMI == true) {
-  dependsOn: [
-    keyVault
-  ]
-  name: 'akvSqlmiUsername'
-  scope: rgSecurity
-  params: {
-    akvName: akvName
-    secretName: 'sqlmiUsername'
-    secretValue: sqlmiUsername
-    secretExpiryInDays: secretExpiryInDays
-  }
-}
-
-module akvSqlmiPassword '../../azresources/security/key-vault-secret.bicep' = if (deploySQLMI == true) {
-  dependsOn: [
-    keyVault
-  ]
-  name: 'akvSqlmiPassword'
-  scope: rgSecurity
-  params: {
-    akvName: akvName
-    secretName: 'sqlmiPassword'
-    secretValue: sqlmiPassword
-    secretExpiryInDays: secretExpiryInDays
-  }
-}
-
-module akvSqlMiConnection '../../azresources/security/key-vault-secret.bicep' = if (deploySQLMI == true) {
-  dependsOn: [
-    keyVault
-  ]
-  name: 'akvSqlMiConnection'
-  scope: rgSecurity
-  params: {
-    akvName: akvName
-    secretName: 'SqlMiConnectionString'
-    secretValue: 'Server=tcp:${deploySQLMI ? sqlMi.outputs.sqlMiFqdn : ''},1433;Initial Catalog=${sqlMiName};Persist Security Info=False;User ID=${sqlmiUsername};Password=${sqlmiPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+    secretName: 'synapsePassword'
+    secretValue: synapsePassword
     secretExpiryInDays: secretExpiryInDays
   }
 }

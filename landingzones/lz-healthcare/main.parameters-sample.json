@@ -127,12 +127,6 @@
     "subnetDataPrefix": {
       "value": "10.0.4.0/25"
     },
-    "subnetSQLMIName": {
-      "value": "sqlmi"
-    },
-    "subnetSQLMIPrefix": {
-      "value": "10.0.5.0/25"
-    },
     "subnetDatabricksPublicName": {
       "value": "databrickspublic"
     },
@@ -151,31 +145,19 @@
     "subnetPrivateEndpointsPrefix": {
       "value": "10.0.8.0/25"
     },
-    "subnetAKSName": {
-      "value": "aks"
+    "subnetSynapseName": {
+      "value": "synapse"
     },
-    "subnetAKSPrefix": {
+    "subnetSynapsePrefix": {
       "value": "10.0.9.0/25"
-    },
-    "aksVersion": {
-      "value": "1.20.7"
-    },
-    "deploySQLDB": {
-      "value": true
-    },
-    "deploySQLMI": {
-      "value": false
     },
     "deploySelfhostIRVM": {
       "value": true
     },
-    "sqldbUsername": {
-      "value": "azadmin"
-    },
-    "sqlmiUsername": {
-      "value": "azadmin"
-    },
     "selfHostedVMUsername": {
+      "value": "azadmin"
+    },
+    "synapseUsername": {
       "value": "azadmin"
     },
     "secretExpiryInDays": {
