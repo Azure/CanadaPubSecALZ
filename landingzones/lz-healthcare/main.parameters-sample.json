@@ -48,9 +48,7 @@
       "value": []
     },
     "subscriptionContributorGroupObjectIds": {
-      "value": [
-        "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-      ]
+      "value": []
     },
     "subscriptionReaderGroupObjectIds": {
       "value": []
@@ -71,31 +69,31 @@
       "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourcegroups/dnd-lz/providers/microsoft.operationalinsights/workspaces/dnd-la"
     },
     "rgVnetName": {
-      "value": "azmlNetwork6656"
+      "value": "azmlNetwork6756"
     },
     "rgAutomationName": {
-      "value": "azmlAutomation6656"
+      "value": "azmlAutomation6756"
     },
     "rgStorageName": {
-      "value": "azmlStorage6656"
+      "value": "azmlStorage6756"
     },
     "rgComputeName": {
-      "value": "azmlCompute6656"
+      "value": "azmlCompute6756"
     },
     "rgSecurityName": {
-      "value": "azmlSecurity6656"
+      "value": "azmlSecurity6756"
     },
     "rgMonitorName": {
-      "value": "azmlMonitor6656"
+      "value": "azmlMonitor6756"
     },
     "rgSelfHostedRuntimeName": {
-      "value": "azmlSelfHostingIR6656"
+      "value": "azmlSelfHostingIR6756"
     },
     "automationAccountName": {
-      "value": "automation6656"
+      "value": "automation6756"
     },
     "deploySubnetsInExistingVnet": {
-      "value": true
+      "value": false
     },
     "vnetName": {
       "value": "vnet"
