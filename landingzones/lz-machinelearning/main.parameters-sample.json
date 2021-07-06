@@ -1,0 +1,185 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "securityContactEmail": {
+      "value": "hudua@microsoft.com"
+    },
+    "securityContactPhone": {
+      "value": "6047647018"
+    },
+    "createBudget": {
+      "value": false
+    },
+    "budgetName": {
+      "value": "SubscriptionBudget"
+    },
+    "budgetAmount": {
+      "value": 100
+    },
+    "budgetTimeGrain": {
+      "value": "Monthly"
+    },
+    "budgetNotificationEmailAddress": {
+      "value": "hudua@microsoft.com"
+    },
+    "tagISSO": {
+      "value": "tbd"
+    },
+    "tagClientOrganization": {
+      "value": "tbd"
+    },
+    "tagCostCenter": {
+      "value": "tbd"
+    },
+    "tagDataSensitivity": {
+      "value": "tbd"
+    },
+    "tagProjectContact": {
+      "value": "tbd"
+    },
+    "tagProjectName": {
+      "value": "tbd"
+    },
+    "tagTechnicalContact": {
+      "value": "tbd"
+    },
+    "subscriptionOwnerGroupObjectIds": {
+      "value": []
+    },
+    "subscriptionContributorGroupObjectIds": {
+      "value": [
+        "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+      ]
+    },
+    "subscriptionReaderGroupObjectIds": {
+      "value": []
+    },
+    "egressVirtualApplianceIp": {
+      "value": "20.0.0.4"
+    },
+    "hubVnetId": {
+      "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourceGroups/dnd-lz/providers/Microsoft.Network/virtualNetworks/vnet"
+    },
+    "hubRFC1918IPRange": {
+      "value": "20.0.0.0/16"
+    },
+    "hubCGNATIPRange": {
+      "value": "100.90.0.0/16"
+    },
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourcegroups/dnd-lz/providers/microsoft.operationalinsights/workspaces/dnd-la"
+    },
+    "rgVnetName": {
+      "value": "azmlNetwork6656"
+    },
+    "rgAutomationName": {
+      "value": "azmlAutomation6656"
+    },
+    "rgStorageName": {
+      "value": "azmlStorage6656"
+    },
+    "rgComputeName": {
+      "value": "azmlCompute6656"
+    },
+    "rgSecurityName": {
+      "value": "azmlSecurity6656"
+    },
+    "rgMonitorName": {
+      "value": "azmlMonitor6656"
+    },
+    "rgSelfHostedRuntimeName": {
+      "value": "azmlSelfHostingIR6656"
+    },
+    "automationAccountName": {
+      "value": "automation6656"
+    },
+    "deploySubnetsInExistingVnet": {
+      "value": true
+    },
+    "vnetName": {
+      "value": "vnet"
+    },
+    "vnetAddressSpace": {
+      "value": "10.0.0.0/16"
+    },
+    "subnetFoundationalElementsName": {
+      "value": "foundationalElements"
+    },
+    "subnetFoundationalElementsPrefix": {
+      "value": "10.0.1.0/25"
+    },
+    "subnetPresentationName": {
+      "value": "presentation"
+    },
+    "subnetPresentationPrefix": {
+      "value": "10.0.2.0/25"
+    },
+    "subnetApplicationName": {
+      "value": "application"
+    },
+    "subnetApplicationPrefix": {
+      "value": "10.0.3.0/25"
+    },
+    "subnetDataName": {
+      "value": "data"
+    },
+    "subnetDataPrefix": {
+      "value": "10.0.4.0/25"
+    },
+    "subnetSQLMIName": {
+      "value": "sqlmi"
+    },
+    "subnetSQLMIPrefix": {
+      "value": "10.0.5.0/25"
+    },
+    "subnetDatabricksPublicName": {
+      "value": "databrickspublic"
+    },
+    "subnetDatabricksPublicPrefix": {
+      "value": "10.0.6.0/25"
+    },
+    "subnetDatabricksPrivateName": {
+      "value": "databricksprivate"
+    },
+    "subnetDatabricksPrivatePrefix": {
+      "value": "10.0.7.0/25"
+    },
+    "subnetPrivateEndpointsName": {
+      "value": "privateendpoints"
+    },
+    "subnetPrivateEndpointsPrefix": {
+      "value": "10.0.8.0/25"
+    },
+    "subnetAKSName": {
+      "value": "aks"
+    },
+    "subnetAKSPrefix": {
+      "value": "10.0.9.0/25"
+    },
+    "aksVersion": {
+      "value": "1.20.7"
+    },
+    "deploySQLDB": {
+      "value": true
+    },
+    "deploySQLMI": {
+      "value": false
+    },
+    "deploySelfhostIRVM": {
+      "value": true
+    },
+    "sqldbUsername": {
+      "value": "azadmin"
+    },
+    "sqlmiUsername": {
+      "value": "azadmin"
+    },
+    "selfHostedVMUsername": {
+      "value": "azadmin"
+    },
+    "secretExpiryInDays": {
+      "value": 3650
+    }
+  }
+}

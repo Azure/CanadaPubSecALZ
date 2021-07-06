@@ -53,6 +53,8 @@ param subnetDataName string
 param subnetDataPrefix string
 
 // Delegated Subnets
+param subnetSQLMIName string
+param subnetSQLMIPrefix string
 
 param subnetDatabricksPublicName string
 param subnetDatabricksPublicPrefix string
@@ -64,9 +66,12 @@ param subnetDatabricksPrivatePrefix string
 param subnetPrivateEndpointsName string
 param subnetPrivateEndpointsPrefix string
 
-// Synapse Subnet
-param subnetSynapseName string
-param subnetSynapsePrefix string
+// AKS Subnet
+param subnetAKSName string
+param subnetAKSPrefix string
+
+// AKS version
+param aksVersion string
 
 // Virtual Appliance IP
 param egressVirtualApplianceIp string
@@ -105,12 +110,20 @@ param selfHostedRuntimeVmSize string = 'Standard_D8s_v3'
 param budgetTimeGrain string = 'Monthly'
 
 // ML landing zone parameters - start
+@description('Should SQL Database be deployed in environment')
+param deploySQLDB bool
+@description('Should SQL Managed Instance be deployed in environment')
+param deploySQLMI bool
 @description('Should ADF Self Hosted Integration Runtime VM be deployed in environment')
 param deploySelfhostIRVM bool
 
 
+@description('If SQL Database is selected to be deployed, enter username. Otherwise, you can enter blank')
 @secure()
-param synapseUsername string
+param sqldbUsername string
+@description('If SQL Managed Instance is selected to be deployed, enter username. Otherwise, you can enter blank')
+@secure()
+param sqlmiUsername string
 @description('If ADF Self Hosted Integration Runtime VM is selected to be deployed, enter username. Otherwise, you can enter blank')
 @secure()
 param selfHostedVMUsername string
@@ -173,7 +186,7 @@ module landingZone 'lz.bicep' = {
   dependsOn: [
     genericSubscription
   ]
-  name: 'healthcare-lz'
+  name: 'machinelearning-lz'
   scope: subscription()
   params: {
     tagClientOrganization: tagClientOrganization
@@ -182,6 +195,8 @@ module landingZone 'lz.bicep' = {
     tagProjectContact: tagProjectContact
     tagProjectName: tagProjectName
     tagTechnicalContact: tagTechnicalContact
+  
+    securityContactEmail: securityContactEmail
 
     rgVnetName: rgVnetName
     rgComputeName: rgComputeName
@@ -193,8 +208,12 @@ module landingZone 'lz.bicep' = {
     vnetId: genericSubscription.outputs.vnetId
     vnetName: vnetName
 
+    deploySQLDB: deploySQLDB
+    deploySQLMI: deploySQLMI
     deploySelfhostIRVM: deploySelfhostIRVM
 
+    sqldbUsername: sqldbUsername
+    sqlmiUsername: sqlmiUsername
     selfHostedVMUsername: selfHostedVMUsername
 
     subnetDatabricksPrivateName: subnetDatabricksPrivateName
@@ -203,14 +222,16 @@ module landingZone 'lz.bicep' = {
     subnetDatabricksPublicName: subnetDatabricksPublicName
     subnetDatabricksPublicPrefix: subnetDatabricksPublicPrefix
 
+    subnetSQLMIName: subnetSQLMIName
+    subnetSQLMIPrefix: subnetSQLMIPrefix
 
     subnetPrivateEndpointsName: subnetPrivateEndpointsName
     subnetPrivateEndpointsPrefix: subnetPrivateEndpointsPrefix
 
-    subnetSynapseName: subnetSynapseName
-    subnetSynapsePrefix: subnetSynapsePrefix
+    subnetAKSName: subnetAKSName
+    subnetAKSPrefix: subnetAKSPrefix
 
-    synapseUsername: synapseUsername
+    aksVersion: aksVersion
     
     adfSelfHostedRuntimeSubnetId: '${genericSubscription.outputs.vnetId}/subnets/${subnetDataName}'
 
