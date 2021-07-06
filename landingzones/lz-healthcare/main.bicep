@@ -203,7 +203,6 @@ module landingZone 'lz.bicep' = {
     subnetDatabricksPublicName: subnetDatabricksPublicName
     subnetDatabricksPublicPrefix: subnetDatabricksPublicPrefix
 
-
     subnetPrivateEndpointsName: subnetPrivateEndpointsName
     subnetPrivateEndpointsPrefix: subnetPrivateEndpointsPrefix
 
