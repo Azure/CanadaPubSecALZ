@@ -54,3 +54,4 @@ resource aksPolicySet 'Microsoft.Authorization/policySetDefinitions@2020-03-01' 
     ]
   }
 }
+
