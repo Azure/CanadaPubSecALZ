@@ -35,23 +35,6 @@ resource aksPolicySet 'Microsoft.Authorization/policySetDefinitions@2020-03-01' 
         policyDefinitionReferenceId: toLower(replace('Deploy Azure Policy Add-on to Azure Kubernetes Service clusters', ' ', '-'))
         parameters: {}
       }
-      {
-        groupNames: [
-          'AKS'
-        ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/42b8ef37-b724-4e24-bbc8-7a7708edfe00'
-        policyDefinitionReferenceId: toLower(replace('Kubernetes cluster pod security restricted standards for Linux-based workloads', ' ', '-'))
-        parameters: {}
-      }
-      {
-        groupNames: [
-          'AKS'
-        ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/a8640138-9b0a-4a28-b8cb-1666c838647d'
-        policyDefinitionReferenceId: toLower(replace('Kubernetes cluster pod security baseline standards for Linux-based workloads', ' ', '-'))
-        parameters: {}
-      }
     ]
   }
 }
-
