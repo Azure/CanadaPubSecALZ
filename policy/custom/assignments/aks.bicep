@@ -36,6 +36,38 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
   location: deployment().location
 }
 
+resource podSecurityRestrictedStandardsPolicySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
+  name: 'aks-res-${uniqueString(policyAssignmentManagementGroupId)}'
+  properties: {
+    displayName: 'Kubernetes cluster pod security restricted standards for Linux-based workloads'
+    policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/42b8ef37-b724-4e24-bbc8-7a7708edfe00'
+    scope: scope
+    notScopes: []
+    parameters: {}
+    enforcementMode: 'Default'
+  }
+  identity: {
+    type: 'SystemAssigned'
+  }
+  location: deployment().location
+}
+
+resource podSecurityBaselineStandardsPolicySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
+  name: 'aks-std-${uniqueString(policyAssignmentManagementGroupId)}'
+  properties: {
+    displayName: 'Kubernetes cluster pod security baseline standards for Linux-based workloads'
+    policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/a8640138-9b0a-4a28-b8cb-1666c838647d'
+    scope: scope
+    notScopes: []
+    parameters: {}
+    enforcementMode: 'Default'
+  }
+  identity: {
+    type: 'SystemAssigned'
+  }
+  location: deployment().location
+}
+
 // These role assignments are required to allow Policy Assignment to remediate.
 
 resource policySetRoleAssignmentAKSContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
