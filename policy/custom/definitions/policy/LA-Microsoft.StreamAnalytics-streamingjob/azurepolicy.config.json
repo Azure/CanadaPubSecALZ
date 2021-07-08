@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Azure Stream Analytics Jobs to Log Analytics Workspaces",
+    "mode": "indexed"
+}
