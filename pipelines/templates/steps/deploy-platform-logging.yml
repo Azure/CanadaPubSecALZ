@@ -23,6 +23,20 @@ parameters:
 steps:
 
 - task: AzureCLI@2
+  displayName: ${{ parameters.description }} - Register Providers
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      az provider register -n Microsoft.ContainerService --subscription '$(var-logging-subscriptionId)'
+
+      $(var-bashPostInjectScript)
+
+
+- task: AzureCLI@2
   displayName: ${{ parameters.description }} - Move Subscription
   inputs:
     azureSubscription: $(serviceConnection)

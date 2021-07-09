@@ -61,6 +61,8 @@ param adfIRVMNames array = [
 
 param selfHostedRuntimeVmSize string
 
+param logAnalyticsWorkspaceResourceId string = ''
+
 @description('If SQL Database is selected to be deployed, enter username. Otherwise, you can enter blank')
 @secure()
 param sqldbUsername string
@@ -254,10 +256,24 @@ module aks '../../azresources/compute/aks-kubenet.bicep' = {
   scope: rgCompute
   params: {
     tags: tags
+
     aksName: aksName
     aksVersion: aksVersion
+
+    systemNodePoolEnableAutoScaling: true
+    systemNodePoolMinNodeCount: 1
+    systemNodePoolMaxNodeCount: 3
+    systemNodePoolNodeSize: 'Standard_DS2_v2'
+
+    userNodePoolEnableAutoScaling: true
+    userNodePoolMinNodeCount: 1
+    userNodePoolMaxNodeCount: 3
+    userNodePoolNodeSize: 'Standard_DS2_v2'
+    
     subnetID: networking.outputs.aksSubnetId
     nodeResourceGroupName: '${rgCompute.name}-${aksName}-${uniqueString(rgCompute.id)}'
+    
+    containerInsightsLogAnalyticsResourceId: logAnalyticsWorkspaceResourceId
   }
 }
 
