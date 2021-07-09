@@ -238,5 +238,7 @@ module landingZone 'lz.bicep' = {
     secretExpiryInDays: secretExpiryInDays
 
     selfHostedRuntimeVmSize: selfHostedRuntimeVmSize
+
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
   }
 }

@@ -5,12 +5,29 @@
 // ----------------------------------------------------------------------------------
 
 param aksName string = 'aks'
-param subnetID string
 param aksVersion string
-param vmNodeCount int = 1
-param vmNodeSize string = 'Standard_DS2_v2'
+
+param systemNodePoolEnableAutoScaling bool
+param systemNodePoolMinNodeCount int
+param systemNodePoolMaxNodeCount int
+param systemNodePoolNodeSize string = 'Standard_DS2_v2'
+
+param userNodePoolEnableAutoScaling bool
+param userNodePoolMinNodeCount int
+param userNodePoolMaxNodeCount int
+param userNodePoolNodeSize string = 'Standard_DS2_v2'
+
+param subnetID string
 param dnsPrefix string = 'aksdns'
 param nodeResourceGroupName string
+
+param podCidr string = '11.0.0.0/16'
+param serviceCidr string = '20.0.0.0/16'
+param dnsServiceIP string = '20.0.0.10'
+param dockerBridgeCidr string = '30.0.0.1/16'
+
+param containerInsightsLogAnalyticsResourceId string = ''
+
 param tags object = {}
 
 resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-02-01' = {
@@ -24,15 +41,35 @@ resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-02-01' = {
     enableRBAC: true
     networkProfile: {
       networkPlugin: 'kubenet'
-      podCidr: '11.0.0.0/16'
-      serviceCidr: '20.0.0.0/16'
-      dnsServiceIP: '20.0.0.10'
-      dockerBridgeCidr: '30.0.0.1/16'
+      podCidr: podCidr
+      serviceCidr: serviceCidr
+      dnsServiceIP: dnsServiceIP
+      dockerBridgeCidr: dockerBridgeCidr
     }
     agentPoolProfiles: [
       {
-        count: vmNodeCount
-        vmSize: vmNodeSize
+        count: systemNodePoolMinNodeCount
+        minCount: systemNodePoolMinNodeCount
+        maxCount: systemNodePoolMaxNodeCount
+        enableAutoScaling: systemNodePoolEnableAutoScaling
+        vmSize: systemNodePoolNodeSize
+        availabilityZones: [
+          '1'
+          '2'
+          '3'
+        ]
+        type: 'VirtualMachineScaleSets'
+        osType: 'Linux'
+        vnetSubnetID: subnetID
+        name: 'systempool'
+        mode: 'System'
+      }
+      {
+        count: userNodePoolMinNodeCount
+        minCount: userNodePoolMinNodeCount
+        maxCount: userNodePoolMaxNodeCount
+        enableAutoScaling: userNodePoolEnableAutoScaling
+        vmSize: userNodePoolNodeSize
         availabilityZones: [
           '1'
           '2'
@@ -42,7 +79,7 @@ resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-02-01' = {
         osType: 'Linux'
         vnetSubnetID: subnetID
         name: 'agentpool'
-        mode: 'System'
+        mode: 'User'
       }
     ]
     apiServerAccessProfile: {
@@ -50,6 +87,16 @@ resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-02-01' = {
     }
     servicePrincipalProfile: {
       clientId: 'msi'
+    }
+    addonProfiles: {
+      'omsagent': (!empty(containerInsightsLogAnalyticsResourceId)) ? {
+        enabled: true
+        config: {
+          logAnalyticsWorkspaceResourceID: containerInsightsLogAnalyticsResourceId
+        }
+      } : {
+          enabled: false
+      }
     }
   }
   identity: {

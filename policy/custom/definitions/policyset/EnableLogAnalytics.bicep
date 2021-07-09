@@ -650,6 +650,90 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           }
         }
       }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Synapse-workspaces')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Synapse workspace to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.CognitiveServices-accounts-CognitiveServices')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Azure Cognitive Services to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.HealthcareApis-services-fhir-R4')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for FHIR R4 to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.HealthcareApis-services-fhir-STU3')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for FHIR STU3 to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
     ]
   }
 }
