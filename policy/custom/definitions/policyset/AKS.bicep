@@ -6,16 +6,6 @@
 
 targetScope = 'managementGroup'
 
-// Required parameters
-param policyAssignmentManagementGroupId string = ''
-
-// Unused parameters with default values
-param policyDefinitionManagementGroupId string = ''
-param logAnalyticsResourceId string = ''
-param logAnalyticsWorkspaceId string = ''
-
-var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
-
 resource aksPolicySet 'Microsoft.Authorization/policySetDefinitions@2020-03-01' = {
   name: 'custom-aks'
   properties: {

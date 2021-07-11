@@ -6,13 +6,8 @@
 
 targetScope = 'managementGroup'
 
-// Required parameters
 param policyAssignmentManagementGroupId string
 param logAnalyticsWorkspaceId string
-
-// Unused parameters with default values
-param policyDefinitionManagementGroupId string = ''
-param logAnalyticsResourceId string = ''
 
 var policyId = '4c4a5f27-de81-430b-b4e5-9cbd50595a87' // Canada Federal PBMM
 var assignmentName = 'Canada Federal PBMM'

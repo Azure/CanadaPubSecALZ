@@ -6,13 +6,7 @@
 
 targetScope = 'managementGroup'
 
-// Required parameters
 param policyAssignmentManagementGroupId string
-
-// Unused parameters with default values
-param policyDefinitionManagementGroupId string = ''
-param logAnalyticsResourceId string = ''
-param logAnalyticsWorkspaceId string = ''
 
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
 

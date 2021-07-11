@@ -6,13 +6,7 @@
 
 targetScope = 'managementGroup'
 
-// Required parameters
 param policyAssignmentManagementGroupId string
-
-// Unused parameters with default values
-param policyDefinitionManagementGroupId string = ''
-param logAnalyticsResourceId string = ''
-param logAnalyticsWorkspaceId string = ''
 
 var policyId = '1f3afdf9-d0c9-4c3d-847f-89da613e70a8' // Azure Security Benchmark
 var assignmentName = 'Azure Security Benchmark'
