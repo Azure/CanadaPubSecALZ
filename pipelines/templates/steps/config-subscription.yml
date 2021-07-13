@@ -51,6 +51,7 @@ steps:
             --location $(deploymentRegion) \
             --subscription $hubSubscriptionId \
             --template-file $(Build.SourcesDirectory)/landingzones/utils/network/peer-to-hub.bicep \
+            --name 'peer-to-hub-${{ parameters.subscriptionGuid }}' \
             --parameters \
                 hubVnetId=$hubVnetId \
                 spokeSubId=${{ parameters.subscriptionGuid }} \

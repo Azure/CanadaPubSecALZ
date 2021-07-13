@@ -14,7 +14,7 @@ parameters:
 
 jobs:
 
-- deployment: DeploySubscriptionJob
+- deployment: DeploySubscriptionJob_${{ replace(parameters.subscription, '-', '_') }}
   displayName: Deploy Subscription Job - ${{ parameters.subscription }}
   timeoutInMinutes: 0
   environment: ${{ variables['Build.SourceBranchName'] }}
