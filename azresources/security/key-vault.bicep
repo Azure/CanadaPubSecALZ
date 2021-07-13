@@ -65,4 +65,5 @@ resource akv_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups
   }
 }
 
+output akvName string = akv.name
 output akvId string = akv.id

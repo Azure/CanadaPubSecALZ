@@ -45,7 +45,7 @@ resource sqlmi 'Microsoft.Sql/managedInstances@2020-11-01-preview' = {
 module roleAssignSQLMIToSALogging '../../azresources/iam/resource/storageRoleAssignmentToSP.bicep' = {
   name: 'roleAssignSQLMIToSALogging'
   params: {
-    storageName: saLoggingName
+    storageAccountName: saLoggingName
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
     resourceSPObjectIds: array(sqlmi.identity.principalId)
   }
