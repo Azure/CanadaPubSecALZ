@@ -99,7 +99,7 @@ stages:
     - template: templates/steps/assign-policy.yml
       parameters:
         description: 'Assign Policy'
-        deployTemplates: [aks, asc, loganalytics, tags-management-groups, network]
+        deployTemplates: [aks, asc, loganalytics, network, tags]
         deployOperation: ${{ variables['deployOperation'] }}
         workingDir: $(System.DefaultWorkingDirectory)/policy/custom/assignments
   

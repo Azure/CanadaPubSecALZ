@@ -4,16 +4,16 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param storageAccountName string
+param keyVaultName string
 param roleDefinitionId string
 param resourceSPObjectIds array = []
 
-resource scopeOfRoleAssignment 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
-  name: storageAccountName
+resource scopeOfRoleAssignment 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
+  name: keyVaultName
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for spId in resourceSPObjectIds: {
-  name: guid(scopeOfRoleAssignment.id, storageAccountName, spId, roleDefinitionId)
+  name: guid(scopeOfRoleAssignment.id, spId, roleDefinitionId)
   scope: scopeOfRoleAssignment
   properties: {
     roleDefinitionId: roleDefinitionId

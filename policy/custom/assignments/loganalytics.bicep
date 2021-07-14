@@ -6,7 +6,6 @@
 
 targetScope = 'managementGroup'
 
-// Required parameters
 param policyDefinitionManagementGroupId string
 param policyAssignmentManagementGroupId string
 param logAnalyticsResourceId string

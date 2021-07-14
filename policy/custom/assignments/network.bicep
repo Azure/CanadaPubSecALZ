@@ -6,13 +6,8 @@
 
 targetScope = 'managementGroup'
 
-// Required parameters
 param policyDefinitionManagementGroupId string
 param policyAssignmentManagementGroupId string
-
-// Unused parameters with default values
-param logAnalyticsResourceId string = ''
-param logAnalyticsWorkspaceId string = ''
 
 var policyId = 'custom-network'
 var assignmentName = 'Custom - Network'

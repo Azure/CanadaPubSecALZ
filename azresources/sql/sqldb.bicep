@@ -38,7 +38,7 @@ resource sqlserver 'Microsoft.Sql/servers@2019-06-01-preview' = {
 module roleAssignSQLToSALogging '../../azresources/iam/resource/storageRoleAssignmentToSP.bicep' = {
   name: 'roleAssignSQLToSALogging'
   params: {
-    storageName: saLoggingName
+    storageAccountName: saLoggingName
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
     resourceSPObjectIds: array(sqlserver.identity.principalId)
   }

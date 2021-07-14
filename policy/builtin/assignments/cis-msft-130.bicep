@@ -6,13 +6,7 @@
 
 targetScope = 'managementGroup'
 
-// Required parameters
 param policyAssignmentManagementGroupId string
-
-// Unused parameters with default values
-param policyDefinitionManagementGroupId string = ''
-param logAnalyticsResourceId string = ''
-param logAnalyticsWorkspaceId string = ''
 
 var policyId = '612b5213-9160-4969-8578-1518bd2a000c' // CIS Microsoft Azure Foundations Benchmark 1.3.0
 var assignmentName = 'CIS Microsoft Azure Foundations Benchmark 1.3.0'

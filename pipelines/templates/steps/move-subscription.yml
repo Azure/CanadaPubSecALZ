@@ -40,6 +40,7 @@ steps:
         --location $(deploymentRegion) \
         --management-group-id ${{ parameters.managementGroup }} \
         --template-file ${{ parameters.templateFile }} \
+        --name 'move-subscription-${{ parameters.subscriptionGuid }}' \
         --parameters \
             managementGroupId='${{ parameters.managementGroup }}' \
             subscriptionId='${{ parameters.subscriptionGuid }}'

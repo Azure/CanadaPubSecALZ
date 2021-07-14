@@ -10,16 +10,6 @@ parameters:
     default: ''
 
 steps:
-  
-# # Show variables whose names do not begin with 'system' or 'build'
-# - task: Bash@3
-#   displayName: Variables
-#   inputs:
-#     targetType: inline
-#     script: |
-#       $(var-bashPreInjectScript)
-#       echo '${{ parameters.json }}' | jq 'to_entries | map(select(.key | match("^(?!system|build).*$";"i"))) | from_entries'
-#       $(var-bashPreInjectScript)
 
 # Show variables (hard-coded)
 - task: Bash@3
@@ -50,25 +40,8 @@ steps:
       echo "LOGGING"
       echo "  var-logging-managementGroupId = $(var-logging-managementGroupId)"
       echo "  var-logging-subscriptionId = $(var-logging-subscriptionId)"
-      echo "  var-logging-subscriptionOwnerGroupObjectIds = $(var-logging-subscriptionOwnerGroupObjectIds)"
-      echo "  var-logging-subscriptionContributorGroupObjectIds = $(var-logging-subscriptionContributorGroupObjectIds)"
-      echo "  var-logging-subscriptionReaderGroupObjectIds = $(var-logging-subscriptionReaderGroupObjectIds)"
       echo "  var-logging-logAnalyticsResourceGroupName = $(var-logging-logAnalyticsResourceGroupName)"
       echo "  var-logging-logAnalyticsWorkspaceName = $(var-logging-logAnalyticsWorkspaceName)"
-      echo "  var-logging-logAnalyticsAutomationAccountName = $(var-logging-logAnalyticsAutomationAccountName)"
-      echo "  var-logging-securityContactEmail = $(var-logging-securityContactEmail)"
-      echo "  var-logging-securityContactPhone = $(var-logging-securityContactPhone)"
-      echo "  var-logging-budgetName = $(var-logging-budgetName)"
-      echo "  var-logging-budgetAmount = $(var-logging-budgetAmount)"
-      echo "  var-logging-budgetTimeGrain = $(var-logging-budgetTimeGrain)"
-      echo "  var-logging-budgetNotificationEmailAddress = $(var-logging-budgetNotificationEmailAddress)"
-      echo "  var-logging-tagISSO = $(var-logging-tagISSO)"
-      echo "  var-logging-tagClientOrganization = $(var-logging-tagClientOrganization)"
-      echo "  var-logging-tagCostCenter = $(var-logging-tagCostCenter)"
-      echo "  var-logging-tagDataSensitivity = $(var-logging-tagDataSensitivity)"
-      echo "  var-logging-tagProjectContact = $(var-logging-tagProjectContact)"
-      echo "  var-logging-tagProjectName = $(var-logging-tagProjectName)"
-      echo "  var-logging-tagTechnicalContact = $(var-logging-tagTechnicalContact)"
     
       echo
       echo "HUB NETWORKING"

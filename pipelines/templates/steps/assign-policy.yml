@@ -30,17 +30,20 @@ steps:
       inlineScript: |
         $(var-bashPreInjectScript)
 
+        echo "Populating templated properties in ${{ policy }}.properties.json"
+        sed -i 's~{{var-topLevelManagementGroupName}}~$(var-topLevelManagementGroupName)~g' ${{ policy }}.properties.json
+        sed -i 's~{{var-logging-logAnalyticsWorkspaceResourceId}}~$(var-logging-logAnalyticsWorkspaceResourceId)~g' ${{ policy }}.properties.json
+        sed -i 's~{{var-logging-logAnalyticsWorkspaceId}}~$(var-logging-logAnalyticsWorkspaceId)~g' ${{ policy }}.properties.json
+
+        cat ${{ policy }}.properties.json
+
         echo "Deploying ${{ policy }}.bicep using ${{ parameters.deployOperation}} operation..."
 
         az deployment mg ${{ parameters.deployOperation }} \
           --location $(deploymentRegion) \
           --management-group-id $(var-topLevelManagementGroupName) \
           --template-file ${{ policy }}.bicep \
-          --parameters \
-              policyAssignmentManagementGroupId='$(var-topLevelManagementGroupName)' \
-              policyDefinitionManagementGroupId=$(var-topLevelManagementGroupName) \
-              logAnalyticsResourceId=$(var-logging-logAnalyticsWorkspaceResourceId) \
-              logAnalyticsWorkspaceId=$(var-logging-logAnalyticsWorkspaceId)
+          --parameters ${{ policy }}.properties.json
         
         $(var-bashPostInjectScript)
       workingDirectory: ${{ parameters.workingDir }}

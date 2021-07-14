@@ -6,15 +6,9 @@
 
 targetScope = 'managementGroup'
 
-// Required parameters
-param policyAssignmentManagementGroupId string = ''
+param policyDefinitionManagementGroupId string
 
-// Unused parameters with default values
-param policyDefinitionManagementGroupId string = ''
-param logAnalyticsResourceId string = ''
-param logAnalyticsWorkspaceId string = ''
-
-var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
+var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)
 
 resource networkPolicySet 'Microsoft.Authorization/policySetDefinitions@2020-03-01' = {
   name: 'custom-network'

@@ -6,13 +6,8 @@
 
 targetScope = 'managementGroup'
 
-// Required parameters
 param policyAssignmentManagementGroupId string
 param logAnalyticsWorkspaceId string
-
-// Unused parameters with default values
-param policyDefinitionManagementGroupId string = ''
-param logAnalyticsResourceId string = ''
 
 var policyId = 'cf25b9c1-bd23-4eb6-bd2c-f4f3ac644a5f' // NIST SP 800-53 R4 
 var assignmentName = 'NIST SP 800-53 R4'
