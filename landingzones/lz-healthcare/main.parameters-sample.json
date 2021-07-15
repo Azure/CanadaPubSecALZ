@@ -69,28 +69,28 @@
       "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourcegroups/dnd-lz/providers/microsoft.operationalinsights/workspaces/dnd-la"
     },
     "rgVnetName": {
-      "value": "azmlNetwork6756"
+      "value": "azmlNetwork6756-test"
     },
     "rgAutomationName": {
-      "value": "azmlAutomation6756"
+      "value": "azmlAutomation6756-test"
     },
     "rgStorageName": {
-      "value": "azmlStorage6756"
+      "value": "azmlStorage6756-test"
     },
     "rgComputeName": {
-      "value": "azmlCompute6756"
+      "value": "azmlCompute6756-test"
     },
     "rgSecurityName": {
-      "value": "azmlSecurity6756"
+      "value": "azmlSecurity6756-test"
     },
     "rgMonitorName": {
-      "value": "azmlMonitor6756"
+      "value": "azmlMonitor6756-test"
     },
     "rgSelfHostedRuntimeName": {
-      "value": "azmlSelfHostingIR6756"
+      "value": "azmlSelfHostingIR6756-test"
     },
     "automationAccountName": {
-      "value": "automation6756"
+      "value": "automation6756-test"
     },
     "deploySubnetsInExistingVnet": {
       "value": false
