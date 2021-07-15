@@ -73,6 +73,9 @@ param sqlmiUsername string
 @secure()
 param selfHostedVMUsername string
 
+@description('When true, customer managed keys are used for Azure resources')
+param useCMK bool
+
 var sqldbPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldbUsername))}'
 var sqlmiPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqlmiUsername))}'
 var selfHostedVMPassword = '${uniqueString(rgCompute.id)}*${toUpper(uniqueString(selfHostedVMUsername))}'
@@ -468,13 +471,69 @@ module akvselfHostedVMPassword '../../azresources/security/key-vault-secret.bice
   }
 }
 
-// Creating role assignments
+// Key Vault Secrets User - used for accessing secrets in ADF pipelines
 module roleAssignADFToAKV '../../azresources/iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
-  name: 'roleAssignADFToAKV'
+  name: 'roleAssignADFToAKV-Key-Vault-Secrets-User'
   scope: rgSecurity
   params: {
     keyVaultName: keyVault.outputs.akvName
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6') // Key Vault Secrets User
     resourceSPObjectIds: array(adf.outputs.identityPrincipalId)
   }
+}
+
+/* CONFIGURE CUSTOMER MANAGED KEYS */
+
+// Create User Assigned Identity for deployment scripts
+module cmkDeploymentScriptIdentity '../../azresources/iam/userAssignedIdentity.bicep' = if (useCMK) {
+  name: 'cmk-deployment-scripts-managed-identity'
+  scope: rgSecurity
+  params: {
+    name: 'cmk-deployment-scripts-managed-identity'
+  }
+}
+
+// Enable CMK - Storage Account - Data Lake
+module cmkDataLakeEnable '../../azresources/security/cmk/storage-account.bicep' = if (useCMK) {
+  scope: subscription()
+  name: 'cmk-enable-datalake'
+  params: {
+    deploymentScriptResourceGroupName: rgSecurity.name
+    akvResourceGroupName: rgSecurity.name
+    akvName: keyVault.outputs.akvName
+    storageAccountResourceGroupName: rgStorage.name
+    storageAccountName: dataLake.outputs.storageName
+    deploymentScriptIdentitylId: useCMK ? cmkDeploymentScriptIdentity.outputs.identityId : ''
+    deploymentScriptIdentityPrincipalId: useCMK ? cmkDeploymentScriptIdentity.outputs.identityPrincipalId : ''
+  }  
+}
+
+// Enable CMK - Storage Account - Logging
+module cmkStorageLoggingEnable '../../azresources/security/cmk/storage-account.bicep' = if (useCMK) {
+  scope: subscription()
+  name: 'cmk-enable-storagelogging'
+  params: {
+    deploymentScriptResourceGroupName: rgSecurity.name
+    akvResourceGroupName: rgSecurity.name
+    akvName: keyVault.outputs.akvName
+    storageAccountResourceGroupName: rgStorage.name
+    storageAccountName: storageLogging.outputs.storageName
+    deploymentScriptIdentitylId: useCMK ? cmkDeploymentScriptIdentity.outputs.identityId : ''
+    deploymentScriptIdentityPrincipalId: useCMK ? cmkDeploymentScriptIdentity.outputs.identityPrincipalId : ''
+  }  
+}
+
+// Enable CMK - Storage Account - Data Lake Meta Data (used by AML)
+module cmkDataLakeMetaEnable '../../azresources/security/cmk/storage-account.bicep' = if (useCMK) {
+  scope: subscription()
+  name: 'cmk-enable-dataLakeMeta'
+  params: {
+    deploymentScriptResourceGroupName: rgSecurity.name
+    akvResourceGroupName: rgSecurity.name
+    akvName: keyVault.outputs.akvName
+    storageAccountResourceGroupName: rgCompute.name
+    storageAccountName: dataLakeMetaData.outputs.storageName
+    deploymentScriptIdentitylId: useCMK ? cmkDeploymentScriptIdentity.outputs.identityId : ''
+    deploymentScriptIdentityPrincipalId: useCMK ? cmkDeploymentScriptIdentity.outputs.identityPrincipalId : ''
+  }  
 }

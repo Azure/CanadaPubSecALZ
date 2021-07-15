@@ -4,10 +4,11 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param privateEndpointSubnetId string
-param privateZoneId string
 param name string = 'akv${uniqueString(resourceGroup().id)}'
 param tags object = {}
+
+param privateEndpointSubnetId string
+param privateZoneId string
 
 resource akv 'Microsoft.KeyVault/vaults@2019-09-01' = {
   location: resourceGroup().location

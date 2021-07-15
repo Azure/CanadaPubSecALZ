@@ -117,7 +117,6 @@ param deploySQLMI bool
 @description('Should ADF Self Hosted Integration Runtime VM be deployed in environment')
 param deploySelfhostIRVM bool
 
-
 @description('If SQL Database is selected to be deployed, enter username. Otherwise, you can enter blank')
 @secure()
 param sqldbUsername string
@@ -127,6 +126,9 @@ param sqlmiUsername string
 @description('If ADF Self Hosted Integration Runtime VM is selected to be deployed, enter username. Otherwise, you can enter blank')
 @secure()
 param selfHostedVMUsername string
+
+@description('When true, customer managed keys are used for Azure resources')
+param useCMK bool = false
 
 // Configure generic subscription
 module genericSubscription '../lz-generic-subscription/main.bicep' = {
@@ -240,5 +242,7 @@ module landingZone 'lz.bicep' = {
     selfHostedRuntimeVmSize: selfHostedRuntimeVmSize
 
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
+
+    useCMK: useCMK
   }
 }

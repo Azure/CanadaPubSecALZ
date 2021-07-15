@@ -4,12 +4,12 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param privateEndpointSubnetId string
-param blobPrivateZoneId string
-param dfsPrivateZoneId string
 param name string = 'datalake${uniqueString(resourceGroup().id)}'
 param tags object = {}
 
+param privateEndpointSubnetId string
+param blobPrivateZoneId string
+param dfsPrivateZoneId string
 
 resource datalake 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   location: resourceGroup().location
@@ -28,6 +28,28 @@ resource datalake 'Microsoft.Storage/storageAccounts@2019-06-01' = {
     minimumTlsVersion: 'TLS1_2'
     supportsHttpsTrafficOnly: true
     allowBlobPublicAccess: false
+    encryption: {
+      requireInfrastructureEncryption: true
+      keySource: 'Microsoft.Storage'
+      services: {
+        blob: {
+          enabled: true
+          keyType: 'Account'
+        }
+        file: {
+          enabled: true
+          keyType: 'Account'
+        }
+        queue: {
+          enabled: true
+          keyType: 'Account'
+        }
+        table: {
+          enabled: true
+          keyType: 'Account'
+        }
+      }
+    }
     networkAcls: {
       defaultAction: 'Deny'
       bypass: 'AzureServices,Logging,Metrics'
@@ -107,3 +129,4 @@ resource datalake_dfs_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZ
 }
 
 output storageId string = datalake.id
+output storageName string = datalake.name

@@ -177,6 +177,9 @@
     },
     "secretExpiryInDays": {
       "value": 3650
+    },
+    "useCMK": {
+      "value": true
     }
   }
 }
