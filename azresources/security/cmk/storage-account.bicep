@@ -25,31 +25,19 @@ var cliCommand = '''
   --encryption-key-source Microsoft.Keyvault
 '''
 
-resource rgDeploymentScripts 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
-  name: deploymentScriptResourceGroupName
-}
-
-resource rgKeyVault 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
-  name: akvResourceGroupName
-}
-
-resource rgStorage 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
-  name: storageAccountResourceGroupName
-}
-
 resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
-  scope: rgKeyVault
+  scope: resourceGroup(akvResourceGroupName)
   name: akvName
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
-  scope: rgStorage
+  scope: resourceGroup(storageAccountResourceGroupName)
   name: storageAccountName
 }
 
 module roleAssignForDeploymentScript '../../iam/resource/storageRoleAssignmentToSP.bicep' = {
   name: 'cmk-role-assign-deployment-script-${storageAccountName}'
-  scope: rgStorage
+  scope: resourceGroup(storageAccountResourceGroupName)
   params: {
     storageAccountName: storageAccount.name
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
@@ -59,7 +47,7 @@ module roleAssignForDeploymentScript '../../iam/resource/storageRoleAssignmentTo
 
 module roleAssignForAKV '../../iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
   name: 'cmk-role-assign-${storageAccountName}-key-vault'
-  scope: rgKeyVault
+  scope: resourceGroup(akvResourceGroupName)
   params: {
     keyVaultName: akv.name
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424')
@@ -68,7 +56,7 @@ module roleAssignForAKV '../../iam/resource/keyVaultRoleAssignmentToSP.bicep' = 
 }
 
 module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
-  scope: rgKeyVault
+  scope: resourceGroup(akvResourceGroupName)
   name: 'cmk-key-${storageAccountName}'
   params: {
     akvName: akv.name
@@ -82,7 +70,7 @@ module enableCmk '../../util/deploymentScript.bicep' = {
     roleAssignForAKV
   ]
   
-  scope: rgDeploymentScripts
+  scope: resourceGroup(deploymentScriptResourceGroupName)
   name: 'enable-cmk-${storageAccountName}'
   params: {
     deploymentScript: format(cliCommand, storageAccountResourceGroupName, storageAccountName, akv.properties.vaultUri, akvKey.outputs.keyName)
