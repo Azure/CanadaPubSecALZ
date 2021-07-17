@@ -12,7 +12,6 @@ param privateEndpointSubnetId string
 
 @description('When true, blob private zone is created')
 param deployBlobPrivateZone bool
-
 @description('Required when deployBlobPrivateZone=true')
 param blobPrivateZoneId string
 
@@ -25,7 +24,16 @@ param defaultNetworkAcls string = 'deny'
 param bypassNetworkAcls string = 'AzureServices,Logging,Metrics'
 param subnetIdForVnetRestriction array = []
 
+@description('When true, customer managed key is used for encryption')
+param useCMK bool
+@description('Required when useCMK=true')
+param keyVaultName string
+@description('Required when useCMK=true')
+param keyVaultResourceGroupName string
+@description('Required when useCMK=true')
+param deploymentScriptIdentityId string
 
+/* Storage Account */
 resource storage 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   tags: tags
   location: resourceGroup().location
@@ -76,6 +84,21 @@ resource storage 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   }
 }
 
+/* Customer Managed Keys - configured after the storage account is created with managed key */
+module enableCMK 'storage-enable-cmk.bicep' = if (useCMK) {
+  name: 'deploy-cmk-${name}'
+  params: {
+    storageAccountName: storage.name
+    storageResourceGroupName: resourceGroup().name
+
+    keyVaultName: keyVaultName
+    keyVaultResourceGroupName: keyVaultResourceGroupName
+
+    deploymentScriptIdentityId: deploymentScriptIdentityId
+  }  
+}
+
+/* Private Endpoints */
 resource storage_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployBlobPrivateZone == true) {
   location: resourceGroup().location
   name: '${storage.name}-blob-endpoint'

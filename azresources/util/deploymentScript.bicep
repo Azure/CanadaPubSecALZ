@@ -6,7 +6,7 @@
 
 param deploymentScriptName string
 param deploymentScript string
-param deploymentScriptIdentitylId string
+param deploymentScriptIdentityId string
 
 param azCliVersion string = '2.26.0'
 param forceUpdateTag string = utcNow()
@@ -24,7 +24,7 @@ resource ds 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
-      '${deploymentScriptIdentitylId}': {}
+      '${deploymentScriptIdentityId}': {}
     }
   }
   properties: {

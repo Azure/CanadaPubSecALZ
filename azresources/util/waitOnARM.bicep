@@ -4,7 +4,5 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-targetScope = 'subscription'
-
 param input string
 output output string = input

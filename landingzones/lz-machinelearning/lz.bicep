@@ -24,6 +24,7 @@ param tagProjectContact string
 param tagProjectName string
 param tagTechnicalContact string
 
+param rgExistingAutomationName string
 param rgVnetName string
 param rgStorageName string
 param rgComputeName string
@@ -103,7 +104,13 @@ var tags = {
   TechnicalContact: tagTechnicalContact
 }
 
+var useDeploymentScripts = useCMK
+
 //resource group deployments
+resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' existing = {
+  name: rgExistingAutomationName
+}
+
 resource rgStorage 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgStorageName
   location: azureRegion
@@ -134,9 +141,72 @@ resource rgSelfhosted 'Microsoft.Resources/resourceGroups@2020-06-01' = if (depl
   tags: tags
 }
 
+// Prepare for CMK deployments
+module deploymentScriptIdentity '../../azresources/iam/userAssignedIdentity.bicep' = if (useDeploymentScripts) {
+  name: 'deploy-ds-managed-identity'
+  scope: rgAutomation
+  params: {
+    name: 'deployment-scripts'
+  }
+}
+
+module rgStorageDeploymentScriptRBAC '../../azresources/iam/resourceGroupRoleAssignmentToSP.bicep' = if (useDeploymentScripts) {
+  scope: rgStorage
+  name: 'rbac-ds-${rgStorageName}'
+  params: {
+     // Owner - this role is cleaned up as part of this deployment
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+    resourceSPObjectIds: useDeploymentScripts ? array(deploymentScriptIdentity.outputs.identityPrincipalId) : []
+  }  
+}
+
+module rgComputeDeploymentScriptRBAC '../../azresources/iam/resourceGroupRoleAssignmentToSP.bicep' = if (useDeploymentScripts) {
+  scope: rgCompute
+  name: 'rbac-ds-${rgComputeName}'
+  params: {
+     // Owner - this role is cleaned up as part of this deployment
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+    resourceSPObjectIds: useDeploymentScripts ? array(deploymentScriptIdentity.outputs.identityPrincipalId) : []
+  }  
+}
+
+// Clean up the role assignments
+var azCliCommandDeploymentScriptPermissionCleanup = '''
+  az role assignment delete --assignee {0} --scope {1}
+'''
+
+module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploymentScript.bicep' = if (useDeploymentScripts) {
+  dependsOn: [
+    dataLake
+    storageLogging
+  ]
+
+  scope: rgAutomation
+  name: 'ds-rbac-${rgStorageName}-cleanup'
+  params: {
+    deploymentScript: format(azCliCommandDeploymentScriptPermissionCleanup, useDeploymentScripts ? deploymentScriptIdentity.outputs.identityPrincipalId : '', rgStorage.id)
+    deploymentScriptIdentityId: useDeploymentScripts ? deploymentScriptIdentity.outputs.identityId : ''
+    deploymentScriptName: 'ds-rbac-${rgStorageName}-cleanup'
+  }  
+}
+
+module rgComputeDeploymentScriptPermissionCleanup '../../azresources/util/deploymentScript.bicep' = if (useDeploymentScripts) {
+  dependsOn: [
+    dataLakeMetaData
+  ]
+
+  scope: rgAutomation
+  name: 'ds-rbac-${rgComputeName}-cleanup'
+  params: {
+    deploymentScript: format(azCliCommandDeploymentScriptPermissionCleanup, useDeploymentScripts ? deploymentScriptIdentity.outputs.identityPrincipalId : '', rgCompute.id)
+    deploymentScriptIdentityId: useDeploymentScripts ? deploymentScriptIdentity.outputs.identityId : ''
+    deploymentScriptName: 'ds-rbac-${rgComputeName}-cleanup'
+  }  
+}
+
 //virtual network deployment
 module networking 'networking.bicep' = {
-  name: 'networking'
+  name: 'deploy-networking'
   scope: resourceGroup(rgVnetName)
   params: {
     vnetId: vnetId
@@ -160,7 +230,7 @@ module networking 'networking.bicep' = {
 
 // Data and AI & related services deployment
 module keyVault '../../azresources/security/key-vault.bicep' = {
-  name: 'keyVault'
+  name: 'deploy-akv'
   scope: rgSecurity
   params: {
     name: akvName
@@ -171,7 +241,7 @@ module keyVault '../../azresources/security/key-vault.bicep' = {
 }
 
 module sqlMi '../../azresources/sql/sqlmi.bicep' = if (deploySQLMI == true) {
-  name: 'sqlMi'
+  name: 'deploy-sqlmi'
   scope: rgStorage
   params: {
     tags: tags
@@ -185,24 +255,31 @@ module sqlMi '../../azresources/sql/sqlmi.bicep' = if (deploySQLMI == true) {
   }
 }
 
-module storageLogging '../../azresources/storage/storagev2.bicep' = {
-  name: 'storageLogging'
+module storageLogging '../../azresources/storage/storage-generalpurpose.bicep' = {
+  name: 'deploy-storage-for-logging'
   scope: rgStorage
   params: {
     tags: tags
     name: storageLoggingName
+
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateZoneId
     filePrivateZoneId: networking.outputs.dataLakeFilePrivateZoneId
     deployBlobPrivateZone: false
     deployFilePrivateZone: false
+    
     defaultNetworkAcls: 'Deny'
     subnetIdForVnetRestriction: deploySQLMI ? array(networking.outputs.sqlMiSubnetId): []
+
+    useCMK: useCMK
+    deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
+    keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
+    keyVaultName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
 module sqlDb '../../azresources/sql/sqldb.bicep' = if (deploySQLDB == true) {
-  name: 'sqldb'
+  name: 'deploy-sqldb'
   scope: rgStorage
   params: {
     tags: tags
@@ -217,20 +294,26 @@ module sqlDb '../../azresources/sql/sqldb.bicep' = if (deploySQLDB == true) {
   }
 }
 
-module dataLake '../../azresources/storage/adlsgen2.bicep' = {
-  name: 'datalake'
+module dataLake '../../azresources/storage/storage-adlsgen2.bicep' = {
+  name: 'deploy-datalake'
   scope: rgStorage
   params: {
     tags: tags
     name: datalakeStorageName
+
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateZoneId
     dfsPrivateZoneId: networking.outputs.dataLakeDfsPrivateZoneId
+
+    useCMK: useCMK
+    deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
+    keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
+    keyVaultName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
 module egressLb '../../azresources/network/lb-egress.bicep' = {
-  name: 'egressLb'
+  name: 'deploy-databricks-egressLb'
   scope: rgCompute
   params: {
     name: databricksEgressLbName
@@ -239,7 +322,7 @@ module egressLb '../../azresources/network/lb-egress.bicep' = {
 }
 
 module databricks '../../azresources/compute/databricks.bicep' = {
-  name: 'databricks'
+  name: 'deploy-databricks'
   scope: rgCompute
   params: {
     name: databricksName
@@ -255,7 +338,7 @@ module databricks '../../azresources/compute/databricks.bicep' = {
 }
 
 module aks '../../azresources/compute/aks-kubenet.bicep' = {
-  name: 'aks'
+  name: 'deploy-aks'
   scope: rgCompute
   params: {
     tags: tags
@@ -281,7 +364,7 @@ module aks '../../azresources/compute/aks-kubenet.bicep' = {
 }
 
 module adf '../../azresources/compute/datafactory.bicep' = {
-  name: 'adf'
+  name: 'deploy-adf'
   scope: rgCompute
   params: {
     tags: tags
@@ -293,7 +376,7 @@ module adf '../../azresources/compute/datafactory.bicep' = {
 
 // vm provisioned as part for the integration runtime for ADF
 module vm '../../azresources/compute/vm-win2019.bicep' = [for i in range(0, length(adfIRVMNames)): if (deploySelfhostIRVM == true) {
-  name: adfIRVMNames[i]
+  name: 'deploy-ir-${adfIRVMNames[i]}'
   scope: rgSelfhosted
   params: {
     enableAcceleratedNetworking: false
@@ -307,7 +390,7 @@ module vm '../../azresources/compute/vm-win2019.bicep' = [for i in range(0, leng
 }]
 
 module acr '../../azresources/storage/acr.bicep' = {
-  name: 'acr'
+  name: 'deploy-acr'
   scope: rgStorage
   params: {
     name: acrName
@@ -318,7 +401,7 @@ module acr '../../azresources/storage/acr.bicep' = {
 }
 
 module appInsights '../../azresources/monitor/ai-web.bicep' = {
-  name: 'aiweb'
+  name: 'deploy-appinsights-web'
   scope: rgMonitor
   params: {
     tags: tags
@@ -328,22 +411,28 @@ module appInsights '../../azresources/monitor/ai-web.bicep' = {
 
 // azure machine learning uses a metadata data lake storage account
 
-module dataLakeMetaData '../../azresources/storage/storagev2.bicep' = {
-  name: 'amlmeta'
+module dataLakeMetaData '../../azresources/storage/storage-generalpurpose.bicep' = {
+  name: 'deploy-aml-metadata-storage'
   scope: rgCompute
   params: {
     tags: tags
     name: amlMetaStorageName
+
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateZoneId
     filePrivateZoneId: networking.outputs.dataLakeFilePrivateZoneId
     deployBlobPrivateZone: true
     deployFilePrivateZone: true
+
+    useCMK: useCMK
+    deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
+    keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
+    keyVaultName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
 module aml '../../azresources/compute/aml.bicep' = {
-  name: 'aml'
+  name: 'deploy-aml'
   scope: rgCompute
   params: {
     name: amlName
@@ -363,7 +452,7 @@ module akvSqlDbUsername '../../azresources/security/key-vault-secret.bicep' = if
   dependsOn: [
     keyVault
   ]
-  name: 'akvSqlDbUsername'
+  name: 'add-akv-secret-sqldbUsername'
   scope: rgSecurity
   params: {
     akvName: akvName
@@ -377,7 +466,7 @@ module akvSqlDbPassword '../../azresources/security/key-vault-secret.bicep' = if
   dependsOn: [
     keyVault
   ]
-  name: 'akvSqlDbPassword'
+  name: 'add-akv-secret-sqldbPassword'
   scope: rgSecurity
   params: {
     akvName: akvName
@@ -391,7 +480,7 @@ module akvSqlDbConnection '../../azresources/security/key-vault-secret.bicep' = 
   dependsOn: [
     keyVault
   ]
-  name: 'akvSqlDbConnection'
+  name: 'add-akv-secret-SqlDbConnectionString'
   scope: rgSecurity
   params: {
     akvName: akvName
@@ -405,7 +494,7 @@ module akvSqlmiUsername '../../azresources/security/key-vault-secret.bicep' = if
   dependsOn: [
     keyVault
   ]
-  name: 'akvSqlmiUsername'
+  name: 'add-akv-secret-sqlmiUsername'
   scope: rgSecurity
   params: {
     akvName: akvName
@@ -419,7 +508,7 @@ module akvSqlmiPassword '../../azresources/security/key-vault-secret.bicep' = if
   dependsOn: [
     keyVault
   ]
-  name: 'akvSqlmiPassword'
+  name: 'add-akv-secret-sqlmiPassword'
   scope: rgSecurity
   params: {
     akvName: akvName
@@ -433,7 +522,7 @@ module akvSqlMiConnection '../../azresources/security/key-vault-secret.bicep' = 
   dependsOn: [
     keyVault
   ]
-  name: 'akvSqlMiConnection'
+  name: 'add-akv-secret-SqlMiConnectionString'
   scope: rgSecurity
   params: {
     akvName: akvName
@@ -447,7 +536,7 @@ module akvselfHostedVMUsername '../../azresources/security/key-vault-secret.bice
   dependsOn: [
     keyVault
   ]
-  name: 'akvselfHostedVMUsername'
+  name: 'add-akv-secret-selfHostedVMUsername'
   scope: rgSecurity
   params: {
     akvName: akvName
@@ -461,7 +550,7 @@ module akvselfHostedVMPassword '../../azresources/security/key-vault-secret.bice
   dependsOn: [
     keyVault
   ]
-  name: 'akvselfHostedVMPassword'
+  name: 'add-akv-secret-selfHostedVMPassword'
   scope: rgSecurity
   params: {
     akvName: akvName
@@ -473,67 +562,11 @@ module akvselfHostedVMPassword '../../azresources/security/key-vault-secret.bice
 
 // Key Vault Secrets User - used for accessing secrets in ADF pipelines
 module roleAssignADFToAKV '../../azresources/iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
-  name: 'roleAssignADFToAKV-Key-Vault-Secrets-User'
+  name: 'rbac-${adfName}-${akvName}'
   scope: rgSecurity
   params: {
     keyVaultName: keyVault.outputs.akvName
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6') // Key Vault Secrets User
     resourceSPObjectIds: array(adf.outputs.identityPrincipalId)
   }
-}
-
-/* CONFIGURE CUSTOMER MANAGED KEYS */
-
-// Create User Assigned Identity for deployment scripts
-module cmkDeploymentScriptIdentity '../../azresources/iam/userAssignedIdentity.bicep' = if (useCMK) {
-  name: 'cmk-deployment-scripts-managed-identity'
-  scope: rgSecurity
-  params: {
-    name: 'cmk-deployment-scripts-managed-identity'
-  }
-}
-
-// Enable CMK - Storage Account - Data Lake
-module cmkDataLakeEnable '../../azresources/security/cmk/storage-account.bicep' = if (useCMK) {
-  scope: subscription()
-  name: 'cmk-enable-datalake'
-  params: {
-    deploymentScriptResourceGroupName: rgSecurity.name
-    akvResourceGroupName: rgSecurity.name
-    akvName: keyVault.outputs.akvName
-    storageAccountResourceGroupName: rgStorage.name
-    storageAccountName: dataLake.outputs.storageName
-    deploymentScriptIdentitylId: useCMK ? cmkDeploymentScriptIdentity.outputs.identityId : ''
-    deploymentScriptIdentityPrincipalId: useCMK ? cmkDeploymentScriptIdentity.outputs.identityPrincipalId : ''
-  }  
-}
-
-// Enable CMK - Storage Account - Logging
-module cmkStorageLoggingEnable '../../azresources/security/cmk/storage-account.bicep' = if (useCMK) {
-  scope: subscription()
-  name: 'cmk-enable-storagelogging'
-  params: {
-    deploymentScriptResourceGroupName: rgSecurity.name
-    akvResourceGroupName: rgSecurity.name
-    akvName: keyVault.outputs.akvName
-    storageAccountResourceGroupName: rgStorage.name
-    storageAccountName: storageLogging.outputs.storageName
-    deploymentScriptIdentitylId: useCMK ? cmkDeploymentScriptIdentity.outputs.identityId : ''
-    deploymentScriptIdentityPrincipalId: useCMK ? cmkDeploymentScriptIdentity.outputs.identityPrincipalId : ''
-  }  
-}
-
-// Enable CMK - Storage Account - Data Lake Meta Data (used by AML)
-module cmkDataLakeMetaEnable '../../azresources/security/cmk/storage-account.bicep' = if (useCMK) {
-  scope: subscription()
-  name: 'cmk-enable-dataLakeMeta'
-  params: {
-    deploymentScriptResourceGroupName: rgSecurity.name
-    akvResourceGroupName: rgSecurity.name
-    akvName: keyVault.outputs.akvName
-    storageAccountResourceGroupName: rgCompute.name
-    storageAccountName: dataLakeMetaData.outputs.storageName
-    deploymentScriptIdentitylId: useCMK ? cmkDeploymentScriptIdentity.outputs.identityId : ''
-    deploymentScriptIdentityPrincipalId: useCMK ? cmkDeploymentScriptIdentity.outputs.identityPrincipalId : ''
-  }  
 }

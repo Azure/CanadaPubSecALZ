@@ -132,7 +132,7 @@ param useCMK bool = false
 
 // Configure generic subscription
 module genericSubscription '../lz-generic-subscription/main.bicep' = {
-  name: 'genericSubscription'
+  name: 'deploy-generic-subscription-archetype'
   scope: subscription()
   params: {
     createBudget: createBudget
@@ -188,7 +188,7 @@ module landingZone 'lz.bicep' = {
   dependsOn: [
     genericSubscription
   ]
-  name: 'machinelearning-lz'
+  name: 'deploy-machinelearning-archetype'
   scope: subscription()
   params: {
     tagClientOrganization: tagClientOrganization
@@ -200,6 +200,7 @@ module landingZone 'lz.bicep' = {
   
     securityContactEmail: securityContactEmail
 
+    rgExistingAutomationName: rgAutomationName
     rgVnetName: rgVnetName
     rgComputeName: rgComputeName
     rgMonitorName: rgMonitorName
