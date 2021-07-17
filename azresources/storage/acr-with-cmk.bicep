@@ -55,7 +55,7 @@ module tempAkvRoleAssignmentForCMK '../iam/resource/keyVaultRoleAssignmentToSP.b
   name: 'rbac-add-temp-${name}-${tempKeyVaultName}'
   params: {
     keyVaultName: tempAkv.outputs.akvName
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424')
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6') // Key Vault Crypto Service Encryption User
     resourceSPObjectIds: array(userAssignedIdentityPrincipalId)
   }
 }
