@@ -27,7 +27,7 @@ param rgNetworkWatcherName string = 'NetworkWatcherRG'
 param automationAccountName string
 
 // VNET
-param deploySubnetsInExistingVnet bool
+param deployVnet bool = true
 param vnetName string
 param vnetAddressSpace string
 
@@ -89,7 +89,7 @@ var tags = {
 }
 
 module subScaffold '../scaffold-subscription.bicep' = {
-  name: 'subscription-scaffold'
+  name: 'configure-subscription'
   scope: subscription()
   params: {
     subscriptionOwnerGroupObjectIds: subscriptionOwnerGroupObjectIds
@@ -115,8 +115,8 @@ resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   tags: tags
 }
 
-resource rgVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgVnetName
+resource rgVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployVnet) {
+  name: deployVnet ? rgVnetName : 'placeholder'
   location: azureRegion
   tags: tags
 }
@@ -128,23 +128,27 @@ resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
 }
 
 // Virtual Network
-module vnet 'networking.bicep' = {
-  name: 'vnet'
+module vnet 'networking.bicep' = if (deployVnet) {
+  name: 'deploy-networking'
   scope: resourceGroup(rgVnet.name)
   params: {
     egressVirtualApplianceIp: egressVirtualApplianceIp
     hubRFC1918IPRange: hubRFC1918IPRange
     hubCGNATIPRange: hubCGNATIPRange
     hubVnetId: hubVnetId
-    deploySubnetsInExistingVnet: deploySubnetsInExistingVnet
+
     vnetName: vnetName
     vnetAddressSpace: vnetAddressSpace
+
     subnetFoundationalElementsName: subnetFoundationalElementsName
     subnetFoundationalElementsPrefix: subnetFoundationalElementsPrefix
+    
     subnetPresentationName: subnetPresentationName
     subnetPresentationPrefix: subnetPresentationPrefix
+    
     subnetApplicationName: subnetApplicationName
     subnetApplicationPrefix: subnetApplicationPrefix
+    
     subnetDataName: subnetDataName
     subnetDataPrefix: subnetDataPrefix
   }
@@ -152,7 +156,7 @@ module vnet 'networking.bicep' = {
 
 // Automation
 module automationAccount '../../azresources/automation/automationAccount.bicep' = {
-  name: 'automation-account'
+  name: 'deploy-automation-account'
   scope: rgAutomation
   params: {
     automationAccountName: automationAccountName
@@ -161,8 +165,8 @@ module automationAccount '../../azresources/automation/automationAccount.bicep' 
 }
 
 // Outputs
-output vnetId string = vnet.outputs.vnetId
-output foundationalElementSubnetId string = vnet.outputs.foundationalElementSubnetId
-output presentationSubnetId string = vnet.outputs.presentationSubnetId
-output applicationSubnetId string = vnet.outputs.applicationSubnetId
-output dataSubnetId string = vnet.outputs.dataSubnetId
+output vnetId string = deployVnet ? vnet.outputs.vnetId : ''
+output foundationalElementSubnetId string = deployVnet ? vnet.outputs.foundationalElementSubnetId : ''
+output presentationSubnetId string = deployVnet ? vnet.outputs.presentationSubnetId : ''
+output applicationSubnetId string = deployVnet ? vnet.outputs.applicationSubnetId : ''
+output dataSubnetId string = deployVnet ? vnet.outputs.dataSubnetId : ''

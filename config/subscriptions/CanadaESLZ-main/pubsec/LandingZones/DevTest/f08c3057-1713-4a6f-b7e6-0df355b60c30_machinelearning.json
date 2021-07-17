@@ -91,9 +91,6 @@
     "automationAccountName": {
       "value": "azmlnocmkautomation"
     },
-    "deploySubnetsInExistingVnet": {
-      "value": false
-    },
     "vnetName": {
       "value": "azmlnocmkvnet"
     },

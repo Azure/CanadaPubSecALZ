@@ -76,8 +76,8 @@
         "rgAutomationName": {
             "value": "rgAutomation"
         },
-        "deploySubnetsInExistingVnet": {
-            "value": false
+        "deployVnet": {
+            "value": true
         },
         "vnetName": {
             "value": "vnet"

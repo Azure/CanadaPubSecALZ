@@ -32,8 +32,33 @@ param rgSecurityName string
 param rgMonitorName string
 param rgSelfHostedRuntimeName string
 
-param vnetId string
 param vnetName string
+param vnetAddressSpace string
+
+param hubVnetId string
+
+// Virtual Appliance IP
+param egressVirtualApplianceIp string
+
+// Hub IP Ranges
+param hubRFC1918IPRange string
+param hubCGNATIPRange string
+
+// Internal Foundational Elements (OZ) Subnet
+param subnetFoundationalElementsName string
+param subnetFoundationalElementsPrefix string
+
+// Presentation Zone (PAZ) Subnet
+param subnetPresentationName string
+param subnetPresentationPrefix string
+
+// Application zone (RZ) Subnet
+param subnetApplicationName string
+param subnetApplicationPrefix string
+
+// Data Zone (HRZ) Subnet
+param subnetDataName string
+param subnetDataPrefix string
 
 param subnetDatabricksPublicName string
 param subnetDatabricksPublicPrefix string
@@ -49,8 +74,6 @@ param subnetPrivateEndpointsPrefix string
 
 param subnetAKSName string
 param subnetAKSPrefix string
-
-param adfSelfHostedRuntimeSubnetId string
 
 param secretExpiryInDays int
 
@@ -109,6 +132,12 @@ var useDeploymentScripts = useCMK
 //resource group deployments
 resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' existing = {
   name: rgExistingAutomationName
+}
+
+resource rgVnet 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: rgVnetName
+  location: azureRegion
+  tags: tags
 }
 
 resource rgStorage 'Microsoft.Resources/resourceGroups@2020-06-01' = {
@@ -208,22 +237,40 @@ module rgComputeDeploymentScriptPermissionCleanup '../../azresources/util/deploy
 //virtual network deployment
 module networking 'networking.bicep' = {
   name: 'deploy-networking'
-  scope: resourceGroup(rgVnetName)
+  scope: rgVnet
   params: {
-    vnetId: vnetId
     vnetName: vnetName
+    vnetAddressSpace: vnetAddressSpace
 
-    deploySQLDB: deploySQLDB
-    deploySQLMI: deploySQLMI
+    hubVnetId: hubVnetId
+    egressVirtualApplianceIp: egressVirtualApplianceIp
+    hubRFC1918IPRange: hubRFC1918IPRange
+    hubCGNATIPRange: hubCGNATIPRange
+
+    subnetFoundationalElementsName: subnetFoundationalElementsName
+    subnetFoundationalElementsPrefix: subnetFoundationalElementsPrefix
+
+    subnetPresentationName: subnetPresentationName
+    subnetPresentationPrefix: subnetPresentationPrefix
+
+    subnetApplicationName: subnetApplicationName
+    subnetApplicationPrefix: subnetApplicationPrefix
+
+    subnetDataName: subnetDataName
+    subnetDataPrefix: subnetDataPrefix
     
     subnetDatabricksPublicName: subnetDatabricksPublicName
     subnetDatabricksPublicPrefix: subnetDatabricksPublicPrefix
+
     subnetDatabricksPrivateName: subnetDatabricksPrivateName
     subnetDatabricksPrivatePrefix: subnetDatabricksPrivatePrefix
+    
     subnetSqlMIName: subnetSQLMIName
     subnetSqlMIPrefix: subnetSQLMIPrefix
+   
     subnetPrivateEndpointsName: subnetPrivateEndpointsName
     subnetPrivateEndpointsPrefix: subnetPrivateEndpointsPrefix
+    
     subnetAKSName: subnetAKSName
     subnetAKSPrefix: subnetAKSPrefix
   }
@@ -271,7 +318,7 @@ module storageLogging '../../azresources/storage/storage-generalpurpose.bicep' =
     deployFilePrivateZone: false
     
     defaultNetworkAcls: 'Deny'
-    subnetIdForVnetRestriction: deploySQLMI ? array(networking.outputs.sqlMiSubnetId): []
+    subnetIdForVnetRestriction: array(networking.outputs.sqlMiSubnetId)
 
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
@@ -329,7 +376,7 @@ module databricks '../../azresources/compute/databricks.bicep' = {
   params: {
     name: databricksName
     tags: tags
-    vnetId: vnetId
+    vnetId: networking.outputs.vnetId
     pricingTier: 'premium'
     managedResourceGroupId: '${subscription().id}/resourceGroups/${rgCompute.name}-${databricksName}-${uniqueString(rgCompute.id)}'
     publicSubnetName: networking.outputs.databricksPublicSubnetName
@@ -384,7 +431,7 @@ module vm '../../azresources/compute/vm-win2019.bicep' = [for i in range(0, leng
     enableAcceleratedNetworking: false
     username: selfHostedVMUsername
     password: selfHostedVMPassword
-    subnetId: adfSelfHostedRuntimeSubnetId
+    subnetId: networking.outputs.dataSubnetId
     vmName: adfIRVMNames[i]
     vmSize: selfHostedRuntimeVmSize
     availabilityZone: string((i % 3) + 1)

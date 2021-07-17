@@ -94,9 +94,6 @@
     "automationAccountName": {
       "value": "automation6656"
     },
-    "deploySubnetsInExistingVnet": {
-      "value": true
-    },
     "vnetName": {
       "value": "vnet"
     },
