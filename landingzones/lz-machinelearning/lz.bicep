@@ -177,6 +177,7 @@ var azCliCommandDeploymentScriptPermissionCleanup = '''
 
 module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploymentScript.bicep' = if (useDeploymentScripts) {
   dependsOn: [
+    acr
     dataLake
     storageLogging
   ]
@@ -235,6 +236,7 @@ module keyVault '../../azresources/security/key-vault.bicep' = {
   params: {
     name: akvName
     tags: tags
+    deployPrivateEndpoint: true
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.keyVaultPrivateZoneId
   }
@@ -395,8 +397,15 @@ module acr '../../azresources/storage/acr.bicep' = {
   params: {
     name: acrName
     tags: tags
+
+    deployPrivateZone: true
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.acrPrivateZoneId
+
+    useCMK: useCMK
+    deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 

@@ -7,8 +7,17 @@
 param name string = 'akv${uniqueString(resourceGroup().id)}'
 param tags object = {}
 
-param privateEndpointSubnetId string
-param privateZoneId string
+@minValue(7)
+param softDeleteRetentionInDays int = 90
+
+@description('When true, blob private zone is created')
+param deployPrivateEndpoint bool = false
+
+@description('Required when deployPrivateEndpoint=true')
+param privateEndpointSubnetId string = ''
+
+@description('Required when deployPrivateEndpoint=true')
+param privateZoneId string = ''
 
 resource akv 'Microsoft.KeyVault/vaults@2019-09-01' = {
   location: resourceGroup().location
@@ -22,16 +31,16 @@ resource akv 'Microsoft.KeyVault/vaults@2019-09-01' = {
     tenantId: subscription().tenantId
     enableSoftDelete: true
     enablePurgeProtection: true
-    softDeleteRetentionInDays: 90
+    softDeleteRetentionInDays: softDeleteRetentionInDays
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: 'Deny'
+      defaultAction: deployPrivateEndpoint ? 'Deny' : 'Allow'
     }
     enableRbacAuthorization: true
   }
 }
 
-resource akv_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
+resource akv_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployPrivateEndpoint) {
   location: resourceGroup().location
   name: '${akv.name}-endpoint'
   properties: {
@@ -52,7 +61,7 @@ resource akv_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   }
 }
 
-resource akv_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = {
+resource akv_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = if (deployPrivateEndpoint) {
   name: '${akv_pe.name}/default'
   properties: {
     privateDnsZoneConfigs: [
