@@ -289,7 +289,7 @@ module udrMrzSpoke '../../azresources/network/udr/udr-custom.bicep' = {
     name: 'MrzSpokeUdr'
     routes: [
       {
-        name: 'default'
+        name: 'RouteToEgressFirewall'
         properties: {
           addressPrefix: '0.0.0.0/0'
           nextHopType: 'VirtualAppliance'
@@ -304,14 +304,6 @@ module udrMrzSpoke '../../azresources/network/udr/udr-custom.bicep' = {
           addressPrefix: hubVnetAddressPrefixRFC1918       
           nextHopType: 'VirtualAppliance'
           nextHopIpAddress: fwProdILBMrzIntIP
-        }
-      }
-      // Override Bastion Routes via VirtualNetwork regular routes
-      {
-        name: 'MrzSpokeUdrBastionVnetLocalRoute'
-        properties: {
-          addressPrefix: hubSubnetBastionAddressPrefix //shorter IP range, destination VnetLocal (avoid FW)    
-          nextHopType:  'VnetLocal'
         }
       }
       // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering

@@ -105,8 +105,8 @@ variables:
   var-hubnetwork-bastionName: pubsecHubBastion
 
   ## Hub Networking - Firewall Virtual Appliances
-  var-hubnetwork-deployFirewallVMs: true
-  var-hubnetwork-useFortigateFW: true
+  var-hubnetwork-deployFirewallVMs: false
+  var-hubnetwork-useFortigateFW: false
 
   ### Hub Networking - Firewall Virtual Appliances - For Non-production Traffic
   var-hubnetwork-fwDevILBName: pubsecDevFWsILB
