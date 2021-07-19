@@ -68,31 +68,31 @@
       "value": "10.18.0.36"
     },
     "rgVnetName": {
-      "value": "azmlnocmkNetwork"
+      "value": "azmlcmksqlmi072021Network"
     },
     "rgAutomationName": {
-      "value": "azmlnocmkAutomation"
+      "value": "azmlcmksqlmi072021Automation"
     },
     "rgStorageName": {
-      "value": "azmlnocmkStorage"
+      "value": "azmlcmksqlmi072021Storage"
     },
     "rgComputeName": {
-      "value": "azmlnocmkCompute"
+      "value": "azmlcmksqlmi072021Compute"
     },
     "rgSecurityName": {
-      "value": "azmlnocmkSecurity"
+      "value": "azmlcmksqlmi072021Security"
     },
     "rgMonitorName": {
-      "value": "azmlnocmkMonitor"
+      "value": "azmlcmksqlmi072021Monitor"
     },
     "rgSelfHostedRuntimeName": {
-      "value": "azmlnocmkSelfHostingIR"
+      "value": "azmlcmksqlmi072021SelfHostingIR"
     },
     "automationAccountName": {
-      "value": "azmlnocmkautomation"
+      "value": "azmlcmksqlmi072021automation"
     },
     "vnetName": {
-      "value": "azmlnocmkvnet"
+      "value": "azmlcmksqlmi072021vnet"
     },
     "vnetAddressSpace": {
       "value": "10.4.0.0/16"
