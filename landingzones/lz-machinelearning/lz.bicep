@@ -412,6 +412,10 @@ module aks '../../azresources/compute/aks-kubenet.bicep' = {
     nodeResourceGroupName: '${rgCompute.name}-${aksName}-${uniqueString(rgCompute.id)}'
     
     containerInsightsLogAnalyticsResourceId: logAnalyticsWorkspaceResourceId
+
+    useCMK: useCMK
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
