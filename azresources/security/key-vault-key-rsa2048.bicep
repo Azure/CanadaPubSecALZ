@@ -22,4 +22,5 @@ resource akvKey 'Microsoft.KeyVault/vaults/keys@2020-04-01-preview' = {
 output keyName string = keyName
 output keyId string = akvKey.id
 output keyUri string = akvKey.properties.keyUri
+output keyUriWithVersion string = akvKey.properties.keyUriWithVersion
 

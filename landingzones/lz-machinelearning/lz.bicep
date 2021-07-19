@@ -283,6 +283,9 @@ module keyVault '../../azresources/security/key-vault.bicep' = {
   params: {
     name: akvName
     tags: tags
+
+    enabledForDiskEncryption: true
+
     deployPrivateEndpoint: true
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.keyVaultPrivateZoneId
@@ -424,17 +427,24 @@ module adf '../../azresources/compute/datafactory.bicep' = {
 }
 
 // vm provisioned as part for the integration runtime for ADF
-module vm '../../azresources/compute/vm-win2019.bicep' = [for i in range(0, length(adfIRVMNames)): if (deploySelfhostIRVM == true) {
-  name: 'deploy-ir-${adfIRVMNames[i]}'
+module vm '../../azresources/compute/vm-win2019.bicep' = [for (vmName, i) in adfIRVMNames: if (deploySelfhostIRVM == true) {
+  name: 'deploy-ir-${vmName}'
   scope: rgSelfhosted
   params: {
+    vmName: vmName
+    vmSize: selfHostedRuntimeVmSize
+
+    availabilityZone: string((i % 3) + 1)
+
+    subnetId: networking.outputs.dataSubnetId
     enableAcceleratedNetworking: false
+
     username: selfHostedVMUsername
     password: selfHostedVMPassword
-    subnetId: networking.outputs.dataSubnetId
-    vmName: adfIRVMNames[i]
-    vmSize: selfHostedRuntimeVmSize
-    availabilityZone: string((i % 3) + 1)
+    
+    useCMK: useCMK
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }]
 

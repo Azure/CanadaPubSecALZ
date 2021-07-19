@@ -7,6 +7,10 @@
 param name string = 'akv${uniqueString(resourceGroup().id)}'
 param tags object = {}
 
+param enabledForDeployment bool = false
+param enabledForDiskEncryption bool = false
+param enabledForTemplateDeployment bool = false
+
 @minValue(7)
 param softDeleteRetentionInDays int = 90
 
@@ -29,9 +33,15 @@ resource akv 'Microsoft.KeyVault/vaults@2019-09-01' = {
       family: 'A'
     }
     tenantId: subscription().tenantId
+    
     enableSoftDelete: true
     enablePurgeProtection: true
     softDeleteRetentionInDays: softDeleteRetentionInDays
+    
+    enabledForDeployment: enabledForDeployment
+    enabledForDiskEncryption: enabledForDiskEncryption
+    enabledForTemplateDeployment: enabledForTemplateDeployment
+
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: deployPrivateEndpoint ? 'Deny' : 'Allow'
