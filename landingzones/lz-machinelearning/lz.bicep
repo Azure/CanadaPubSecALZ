@@ -419,14 +419,19 @@ module aks '../../azresources/compute/aks-kubenet.bicep' = {
   }
 }
 
-module adf '../../azresources/compute/datafactory.bicep' = {
+module adf '../../azresources/compute/adf.bicep' = {
   name: 'deploy-adf'
   scope: rgCompute
   params: {
-    tags: tags
     name: adfName
+    tags: tags
+
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.adfPrivateZoneId
+
+    useCMK: useCMK
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
