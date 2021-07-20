@@ -297,13 +297,22 @@ module sqlMi '../../azresources/sql/sqlmi.bicep' = if (deploySQLMI == true) {
   scope: rgStorage
   params: {
     tags: tags
+    
     name: sqlMiName
+    
     subnetId: networking.outputs.sqlMiSubnetId
+    
     sqlmiUsername: sqlmiUsername
     sqlmiPassword: sqlmiPassword
+
     saLoggingName: storageLogging.outputs.storageName
     storagePath: storageLogging.outputs.storagePath
+    
     securityContactEmail: securityContactEmail
+
+    useCMK: useCMK
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
