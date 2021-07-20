@@ -36,6 +36,31 @@ steps:
 
 - template: ./load-log-analytics-vars.yml
 
+- task: AzureCLI@2
+  displayName: Register Azure Provider Features
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      az account set -s ${{ parameters.subguid }}
+
+      echo 'Registering feature Microsoft.Compute/EncryptionAtHost'
+      az feature register --namespace Microsoft.Compute --name EncryptionAtHost
+
+      while [ "`az feature show --namespace Microsoft.Compute --name EncryptionAtHost --query properties.state -o tsv`" != "Registered" ]
+      do
+          echo 'Waiting for Microsoft.Compute/EncryptionAtHost to register, checking in 5s ...'
+          sleep 5s
+      done
+
+      echo 'Registering Microsoft.Compute namespace'
+      az provider register -n Microsoft.Compute
+
+      $(var-bashPostInjectScript)
+
 - template: ./config-subscription.yml
   parameters:
     subscriptionGuid: ${{ parameters.subguid }}

@@ -39,31 +39,31 @@ param mgmtSubnetUdrId string
 param ddosStandardPlanId string
 
 module nsgmaz '../../azresources/network/nsg/nsg-empty.bicep' = {
-  name: 'nsgmaz'
+  name: 'deploy-nsg-${mazSubnetName}'
   params:{
     name: '${mazSubnetName}Nsg'
   }
 }
 module nsginf '../../azresources/network/nsg/nsg-empty.bicep' = {
-  name: 'nsginf'
+  name: 'deploy-nsg-${infSubnetName}'
   params:{
     name: '${infSubnetName}Nsg'
   }
 }
 module nsgsec '../../azresources/network/nsg/nsg-empty.bicep' = {
-  name: 'nsgsec'
+  name: 'deploy-nsg-${secSubnetName}'
   params:{
     name: '${secSubnetName}Nsg'
   }
 }
 module nsglog '../../azresources/network/nsg/nsg-empty.bicep' = {
-  name: 'nsglog'
+  name: 'deploy-nsg-${logSubnetName}'
   params:{
     name: '${logSubnetName}Nsg'
   }
 }
 module nsgmgmt '../../azresources/network/nsg/nsg-empty.bicep' = {
-  name: 'nsgmgmt'
+  name: 'deploy-nsg-${mgmtSubnetName}'
   params:{
     name: '${mgmtSubnetName}Nsg'
   }

@@ -41,6 +41,9 @@ param pazSubnetName string
 param pazSubnetAddressPrefix string  
 param pazUdrId string
 
+// Gateway Subnet
+param hubSubnetGatewaySubnetPrefix string
+
 // Azure Bastion
 param bastionSubnetAddressPrefix string      
 
@@ -48,49 +51,49 @@ param bastionSubnetAddressPrefix string
 param ddosStandardPlanId string
 
 module nsgpublic '../../azresources/network/nsg/nsg-allowall.bicep' = {
-  name: 'nsgpublic'
+  name: 'deploy-nsg-${publicSubnetName}'
   params:{
     name: '${publicSubnetName}Nsg'
   }
 }
 module nsgean '../../azresources/network/nsg/nsg-empty.bicep' = {
-  name: 'nsgean'
+  name: 'deploy-nsg-${eanSubnetName}'
   params:{
     name: '${eanSubnetName}Nsg'
   }
 }
 module nsgprd '../../azresources/network/nsg/nsg-allowall.bicep' = {
-  name: 'nsgprd'
+  name: 'deploy-nsg-${prodIntSubnetName}'
   params:{
     name: '${prodIntSubnetName}Nsg'
   }
 }
 module nsgdev '../../azresources/network/nsg/nsg-allowall.bicep' = {
-  name: 'nsgdev'
+  name: 'deploy-nsg-${devIntSubnetName}'
   params:{
     name: '${devIntSubnetName}Nsg'
   }
 }
 module nsgha '../../azresources/network/nsg/nsg-empty.bicep' = {
-  name: 'nsgha'
+  name: 'deploy-nsg-${haSubnetName}'
   params:{
     name: '${haSubnetName}Nsg'
   }
 }
 module nsgmrz '../../azresources/network/nsg/nsg-empty.bicep' = {
-  name: 'nsgmrz'
+  name: 'deploy-nsg-${mrzIntSubnetName}'
   params:{
     name: '${mrzIntSubnetName}Nsg'
   }
 }
 module nsgpaz '../../azresources/network/nsg/nsg-appgwv2.bicep' = {
-  name: 'nsgpaz'
+  name: 'deploy-nsg-${pazSubnetName}'
   params:{
     name: '${pazSubnetName}Nsg'
   }
 }
 module nsgbastion '../../azresources/network/nsg/nsg-bastion.bicep' = {
-  name: 'nsgbastion'
+  name: 'deploy-nsg-AzureBastionNsg'
   params:{
     name: 'AzureBastionNsg'
   }
@@ -187,6 +190,12 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
           }
         }
       }
+      {
+        name: 'GatewaySubnet'
+        properties: {
+          addressPrefix: hubSubnetGatewaySubnetPrefix
+        }
+      }
     ]
   }
 }
@@ -199,4 +208,5 @@ output DevIntSubnetId string = '${hubVnet.id}/subnets/${devIntSubnetName}'
 output MrzIntSubnetId string = '${hubVnet.id}/subnets/${mrzIntSubnetName}'
 output HASubnetId     string = '${hubVnet.id}/subnets/${haSubnetName}'
 output PAZSubnetId    string = '${hubVnet.id}/subnets/${pazSubnetName}'
+output GatewaySubnetId string = '${hubVnet.id}/subnets/GatewaySubnet'
 output AzureBastionSubnetId string = '${hubVnet.id}/subnets/AzureBastionSubnet'

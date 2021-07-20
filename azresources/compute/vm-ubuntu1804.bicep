@@ -6,83 +6,64 @@
 
 param subnetId string
 param vmName string
-param vmSize string = 'Standard_DS1_v2'
+param vmSize string
 
 param username string
 @secure()
 param password string
 
-param availabilityZone string = '1'
-param enableAcceleratedNetworking bool = false
+param availabilityZone string
+param enableAcceleratedNetworking bool
 
-param publisher string = 'Canonical'
-param offer string = 'UbuntuServer'
-param sku string = '18.04-LTS'
-param version string = 'latest' 
-param storageAccountType string = 'StandardSSD_LRS'
+@description('When true, customer managed key will be enabled')
+param useCMK bool
+@description('Required when useCMK=true')
+param akvResourceGroupName string
+@description('Required when useCMK=true')
+param akvName string
 
-resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
-    name: '${vmName}-nic'
-     location: resourceGroup().location
-     properties: {
+@description('Enable encryption at host (double encryption)')
+param encryptionAtHost bool = true
+
+module vmWithoutCMK 'vm-ubuntu1804-without-cmk.bicep' = if (!useCMK) {
+    name: 'deploy-vm-without-cmk'
+    params: {
+        vmName: vmName
+        vmSize: vmSize
+
+        subnetId: subnetId
+
+        availabilityZone: availabilityZone
         enableAcceleratedNetworking: enableAcceleratedNetworking
-        ipConfigurations: [
-            {
-                name: 'IpConf'
-                properties: {
-                    subnet: {
-                        id: subnetId
-                    }
-                    privateIPAllocationMethod: 'Dynamic'
-                    privateIPAddressVersion: 'IPv4'
-                    primary: true
-                }
-            }
-        ]
-     }
-}
 
-resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
-    name: vmName
-    location: resourceGroup().location
-    zones: [
-        availabilityZone
-    ]
-    properties: {
-        hardwareProfile: {
-            vmSize: vmSize
-        }
-        networkProfile: {
-            networkInterfaces: [
-                {
-                    id: nic.id
-                }
-            ]
-        }
-        storageProfile: {
-            imageReference: {
-                publisher: publisher
-                offer: offer
-                sku: sku
-                version: version
-            }
-            osDisk: {
-                name: '${vmName}-os'
-                caching: 'ReadWrite'
-                createOption: 'FromImage'
-                managedDisk: {
-                    storageAccountType: storageAccountType
-                }
-            }
-        }
-        osProfile: {
-            computerName: vmName
-            adminUsername: username
-            adminPassword: password
-        }
+        username: username
+        password: password
+
+        encryptionAtHost: encryptionAtHost
     }
 }
 
-output vmName string = vm.name
-output vmId string = vm.id
-output nicId string = nic.id
+module vmWithCMK 'vm-ubuntu1804-with-cmk.bicep' = if (useCMK) {
+    name: 'deploy-vm-with-cmk'
+    params: {
+        vmName: vmName
+        vmSize: vmSize
+
+        subnetId: subnetId
+
+        availabilityZone: availabilityZone
+        enableAcceleratedNetworking: enableAcceleratedNetworking
+
+        username: username
+        password: password
+
+        encryptionAtHost: encryptionAtHost
+
+        akvName: akvName
+        akvResourceGroupName: akvResourceGroupName
+    }
+}
+
+output vmName string = (useCMK) ? vmWithCMK.outputs.vmName : vmWithoutCMK.outputs.vmName
+output vmId string = (useCMK) ? vmWithCMK.outputs.vmId : vmWithoutCMK.outputs.vmId
+output nicId string = (useCMK) ? vmWithCMK.outputs.nicId : vmWithoutCMK.outputs.nicId

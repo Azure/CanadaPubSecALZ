@@ -103,6 +103,7 @@ steps:
           hubSubnetMrzIntAddressPrefix='$(var-hubnetwork-hubSubnetMrzIntAddressPrefix)' \
           hubSubnetHAName='$(var-hubnetwork-hubSubnetHAName)' \
           hubSubnetHAAddressPrefix='$(var-hubnetwork-hubSubnetHAAddressPrefix)' \
+          hubSubnetGatewaySubnetPrefix='$(var-hubnetwork-hubSubnetGatewaySubnetPrefix)' \
           hubSubnetBastionAddressPrefix='$(var-hubnetwork-hubSubnetBastionAddressPrefix)' \
           bastionName='$(var-hubnetwork-bastionName)' \
           deployFirewallVMs='$(var-hubnetwork-deployFirewallVMs)' \

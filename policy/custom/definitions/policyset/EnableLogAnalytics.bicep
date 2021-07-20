@@ -364,6 +364,24 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
       }
       {
         groupNames: [
+          'BUILTIN'
+        ]
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/752154a7-1e0f-45c6-a880-ac75a7e4f648'
+        policyDefinitionReferenceId: toLower(replace('Public IP addresses should have resource logs enabled for Azure DDoS Protection Standard', ' ', '-'))
+        parameters: {
+          effect: {
+            value: 'DeployIfNotExists'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+        }
+      }
+      {
+        groupNames: [
           'CUSTOM'
         ]
         policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Logs-Diagnostic-Settings')
@@ -461,27 +479,6 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         ]
         policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Network-networkSecurityGroups')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Network Security Groups to Log Analytics Workspaces', ' ', '-'))
-        parameters: {
-          logAnalytics: {
-            value: '[parameters(\'logAnalytics\')]'
-          }
-          profileName: {
-            value: 'setByPolicy'
-          }
-          azureRegions: {
-            value: [
-              'canadacentral'
-              'canadaeast'
-            ]
-          }
-        }
-      }
-      {
-        groupNames: [
-          'CUSTOM'
-        ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Network-publicIPAddresses')
-        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Public IP Addresses to Log Analytics Workspaces', ' ', '-'))
         parameters: {
           logAnalytics: {
             value: '[parameters(\'logAnalytics\')]'

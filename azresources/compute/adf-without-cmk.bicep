@@ -4,17 +4,23 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param privateEndpointSubnetId string
-param privateZoneId string
 param name string = 'adf${uniqueString(resourceGroup().id)}'
 param tags object = {}
+
+param privateEndpointSubnetId string
+param privateZoneId string
+
+param userAssignedIdentityId string
 
 resource adf 'Microsoft.DataFactory/factories@2018-06-01' = {
   location: resourceGroup().location
   name: name
   tags: tags
   identity: {
-    type: 'SystemAssigned'
+    type: 'SystemAssigned,UserAssigned'
+    userAssignedIdentities: {
+      '${userAssignedIdentityId}': {}
+    }
   }
   properties: {
     publicNetworkAccess: 'Disabled'
@@ -97,5 +103,3 @@ resource adf_datafactory_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateD
     ]
   }
 }
-
-output identityPrincipalId string = adf.identity.principalId

@@ -16,7 +16,7 @@ var hubRgName = split(hubVnetId, '/')[4]
 var hubVnetName = split(hubVnetId, '/')[8]
 
 module hubToSpokePeering '../../../azresources/network/vnet-peering.bicep' = {
-  name: 'hubToSpokePeering'
+  name: 'hubToSpokePeering-${spokeSubId}'
   scope: resourceGroup(hubRgName)
   params: {
     useRemoteGateways: false

@@ -15,80 +15,55 @@ param password string
 param availabilityZone string
 param enableAcceleratedNetworking bool
 
-resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
-    name: '${vmName}-nic'
-     location: resourceGroup().location
-     properties: {
-        enableAcceleratedNetworking: enableAcceleratedNetworking
-        ipConfigurations: [
-            {
-                name: 'IpConf'
-                properties: {
-                    subnet: {
-                        id: subnetId
-                    }
-                    privateIPAllocationMethod: 'Dynamic'
-                    privateIPAddressVersion: 'IPv4'
-                    primary: true
-                }
-            }
-        ]
-     }
-}
+@description('When true, customer managed key will be enabled')
+param useCMK bool
+@description('Required when useCMK=true')
+param akvResourceGroupName string
+@description('Required when useCMK=true')
+param akvName string
 
-resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
-    name: vmName
-    location: resourceGroup().location
-    zones: [
-        availabilityZone
-    ]
-    properties: {
-        hardwareProfile: {
-            vmSize: vmSize
-        }
-        networkProfile: {
-            networkInterfaces: [
-                {
-                    id: nic.id
-                }
-            ]
-        }
-        storageProfile: {
-            imageReference: {
-                publisher: 'MicrosoftWindowsServer'
-                offer: 'WindowsServer'
-                sku: '2019-Datacenter'
-                version: 'latest'
-            }
-            osDisk: {
-                name: '${vmName}-os'
-                caching: 'ReadWrite'
-                createOption: 'FromImage'
-                managedDisk: {
-                    storageAccountType: 'Premium_LRS'
-                }
-            }
-            dataDisks: [
-                {
-                    caching: 'None'
-                    name: '${vmName}-data-1'
-                    diskSizeGB: 128
-                    lun: 0
-                    managedDisk: {
-                        storageAccountType: 'Premium_LRS'
-                    }
-                    createOption: 'Empty'
-                }
-            ]
-        }
-        osProfile: {
-            computerName: vmName
-            adminUsername: username
-            adminPassword: password
-        }
+@description('Enable encryption at host (double encryption)')
+param encryptionAtHost bool = true
+
+module vmWithoutCMK 'vm-win2019-without-cmk.bicep' = if (!useCMK) {
+    name: 'deploy-vm-without-cmk'
+    params: {
+        vmName: vmName
+        vmSize: vmSize
+
+        subnetId: subnetId
+
+        availabilityZone: availabilityZone
+        enableAcceleratedNetworking: enableAcceleratedNetworking
+
+        username: username
+        password: password
+
+        encryptionAtHost: encryptionAtHost
     }
 }
 
-output vmName string = vm.name
-output vmId string = vm.id
-output nicId string = nic.id
+module vmWithCMK 'vm-win2019-with-cmk.bicep' = if (useCMK) {
+    name: 'deploy-vm-with-cmk'
+    params: {
+        vmName: vmName
+        vmSize: vmSize
+
+        subnetId: subnetId
+
+        availabilityZone: availabilityZone
+        enableAcceleratedNetworking: enableAcceleratedNetworking
+
+        username: username
+        password: password
+
+        encryptionAtHost: encryptionAtHost
+
+        akvName: akvName
+        akvResourceGroupName: akvResourceGroupName
+    }
+}
+
+output vmName string = (useCMK) ? vmWithCMK.outputs.vmName : vmWithoutCMK.outputs.vmName
+output vmId string = (useCMK) ? vmWithCMK.outputs.vmId : vmWithoutCMK.outputs.vmId
+output nicId string = (useCMK) ? vmWithCMK.outputs.nicId : vmWithoutCMK.outputs.nicId

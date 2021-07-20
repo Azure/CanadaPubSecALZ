@@ -4,15 +4,16 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-targetScope = 'subscription'
-
 @minValue(1)
 param loopCounter int
 
+@minLength(2)
+@maxLength(50)
+param waitNamePrefix string
+
 @batchSize(1)
 module wait 'waitOnARM.bicep' = [for i in range(1, loopCounter): {
-  name: 'waitOnArm-${i}'
-  scope: subscription()
+  name: '${waitNamePrefix}-${i}'
   params: {
     input: 'waitOnArm-${i}'
   }

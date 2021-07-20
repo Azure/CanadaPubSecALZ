@@ -4,14 +4,24 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param privateEndpointSubnetId string
-param blobPrivateZoneId string
-param dfsPrivateZoneId string
 param name string = 'datalake${uniqueString(resourceGroup().id)}'
 param tags object = {}
 
+param privateEndpointSubnetId string
+param blobPrivateZoneId string
+param dfsPrivateZoneId string
 
-resource datalake 'Microsoft.Storage/storageAccounts@2019-06-01' = {
+@description('When true, customer managed key is used for encryption')
+param useCMK bool
+@description('Required when useCMK=true')
+param keyVaultName string
+@description('Required when useCMK=true')
+param keyVaultResourceGroupName string
+@description('Required when useCMK=true')
+param deploymentScriptIdentityId string
+
+/* Storage Account */
+resource storage 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   location: resourceGroup().location
   name: name
   tags: tags
@@ -28,6 +38,28 @@ resource datalake 'Microsoft.Storage/storageAccounts@2019-06-01' = {
     minimumTlsVersion: 'TLS1_2'
     supportsHttpsTrafficOnly: true
     allowBlobPublicAccess: false
+    encryption: {
+      requireInfrastructureEncryption: true
+      keySource: 'Microsoft.Storage'
+      services: {
+        blob: {
+          enabled: true
+          keyType: 'Account'
+        }
+        file: {
+          enabled: true
+          keyType: 'Account'
+        }
+        queue: {
+          enabled: true
+          keyType: 'Account'
+        }
+        table: {
+          enabled: true
+          keyType: 'Account'
+        }
+      }
+    }
     networkAcls: {
       defaultAction: 'Deny'
       bypass: 'AzureServices,Logging,Metrics'
@@ -35,18 +67,33 @@ resource datalake 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   }
 }
 
+/* Customer Managed Keys - configured after the storage account is created with managed key */
+module enableCMK 'storage-enable-cmk.bicep' = if (useCMK) {
+  name: 'deploy-cmk-${name}'
+  params: {
+    storageAccountName: storage.name
+    storageResourceGroupName: resourceGroup().name
+
+    keyVaultName: keyVaultName
+    keyVaultResourceGroupName: keyVaultResourceGroupName
+
+    deploymentScriptIdentityId: deploymentScriptIdentityId
+  }  
+}
+
+/* Private Endpoints */
 resource datalake_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   location: resourceGroup().location
-  name: '${datalake.name}-blob-endpoint'
+  name: '${storage.name}-blob-endpoint'
   properties: {
     subnet: {
       id: privateEndpointSubnetId
     }
     privateLinkServiceConnections: [
       {
-        name: '${datalake.name}-blob-endpoint'
+        name: '${storage.name}-blob-endpoint'
         properties: {
-          privateLinkServiceId: datalake.id
+          privateLinkServiceId: storage.id
           groupIds: [
             'blob'
           ]
@@ -58,16 +105,16 @@ resource datalake_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
 
 resource datalake_dfs_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   location: resourceGroup().location
-  name: '${datalake.name}-dfs-endpoint'
+  name: '${storage.name}-dfs-endpoint'
   properties: {
     subnet: {
       id: privateEndpointSubnetId
     }
     privateLinkServiceConnections: [
       {
-        name: '${datalake.name}-dfs-endpoint'
+        name: '${storage.name}-dfs-endpoint'
         properties: {
-          privateLinkServiceId: datalake.id
+          privateLinkServiceId: storage.id
           groupIds: [
             'dfs'
           ]
@@ -91,7 +138,6 @@ resource datalake_blob_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDns
   }
 }
 
-
 resource datalake_dfs_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = {
   name: '${datalake_dfs_pe.name}/default'
   properties: {
@@ -106,4 +152,5 @@ resource datalake_dfs_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZ
   }
 }
 
-output storageId string = datalake.id
+output storageId string = storage.id
+output storageName string = storage.name

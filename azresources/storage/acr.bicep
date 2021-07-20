@@ -4,83 +4,61 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param privateEndpointSubnetId string
-param privateZoneId string
-param quarantinePolicy string = 'disabled'
-param trustPolicyType string = 'Notary'
-param trustPolicyStatus string = 'enabled'
-param retentionPolicyDays int = 30
-param retentionPolicyStatus string = 'enabled'
 param name string = 'acr${uniqueString(resourceGroup().id)}'
 param tags object = {}
 
+param deployPrivateZone bool
+param privateEndpointSubnetId string
+param privateZoneId string
 
-resource acr 'Microsoft.ContainerRegistry/registries@2019-12-01-preview' = {
-  name: name
-  tags: tags
-  location: resourceGroup().location
-  sku: {
-    name: 'Premium'
-  }
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    adminUserEnabled: true
-    networkRuleSet: {
-      defaultAction: 'Deny'
-    }
-    policies: {
-      quarantinePolicy: {
-        status: quarantinePolicy
-      }
-      trustPolicy: {
-        type: trustPolicyType
-        status: trustPolicyStatus
-      }
-      retentionPolicy: {
-        days: retentionPolicyDays
-        status: retentionPolicyStatus
-      }
-    }
-    dataEndpointEnabled: false
-    publicNetworkAccess: 'Disabled'
+@description('When true, customer managed key will be enabled')
+param useCMK bool
+@description('Required when useCMK=true')
+param akvResourceGroupName string
+@description('Required when useCMK=true')
+param akvName string
+@description('Required when useCMK=true')
+param deploymentScriptIdentityId string
+
+module acrIdentity '../iam/userAssignedIdentity.bicep' = {
+  name: '${name}-managed-identity'
+  params: {
+    name: '${name}-managed-identity'
   }
 }
 
-resource acr_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
-  name: '${acr.name}-endpoint'
-  properties: {
-    subnet: {
-      id: privateEndpointSubnetId
-    }
-    privateLinkServiceConnections: [
-      {
-        name: '${acr.name}-endpoint'
-        properties: {
-          privateLinkServiceId: acr.id
-          groupIds: [
-            'registry'
-          ]
-        }
-      }
-    ]
+module acrWithCMK 'acr-with-cmk.bicep' = if (useCMK) {
+  name: 'deploy-acr-with-cmk'
+  params: {
+    name: name
+    tags: tags
+
+    userAssignedIdentityId: acrIdentity.outputs.identityId
+    userAssignedIdentityPrincipalId: acrIdentity.outputs.identityPrincipalId
+    userAssignedIdentityClientId: acrIdentity.outputs.identityClientId
+
+    deployPrivateZone: deployPrivateZone
+    privateEndpointSubnetId: privateEndpointSubnetId
+    privateZoneId: privateZoneId    
+
+    deploymentScriptIdentityId: deploymentScriptIdentityId
+    akvResourceGroupName: akvResourceGroupName
+    akvName: akvName
+  } 
+}
+
+module acrWithoutCMK 'acr-without-cmk.bicep' = if (!useCMK) {
+  name: 'deploy-acr-without-cmk'
+  params: {
+    name: name
+    tags: tags
+
+    userAssignedIdentityId: acrIdentity.outputs.identityId
+
+    deployPrivateZone: deployPrivateZone
+    privateEndpointSubnetId: privateEndpointSubnetId
+    privateZoneId: privateZoneId    
   }
 }
 
-resource acr_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = {
-  name: '${acr_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink-azurecr-io'
-        properties: {
-          privateDnsZoneId: privateZoneId
-        }
-      }
-    ]
-  }
-}
-
-output acrId string = acr.id
+output acrId string = useCMK ? acrWithCMK.outputs.acrId : acrWithoutCMK.outputs.acrId

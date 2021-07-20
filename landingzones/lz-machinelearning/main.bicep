@@ -30,11 +30,8 @@ param rgSelfHostedRuntimeName string
 param automationAccountName string
 
 // VNET
-param deploySubnetsInExistingVnet bool
 param vnetName string
 param vnetAddressSpace string
-
-param hubVnetId string
 
 // Internal Foundational Elements (OZ) Subnet
 param subnetFoundationalElementsName string
@@ -70,8 +67,8 @@ param subnetPrivateEndpointsPrefix string
 param subnetAKSName string
 param subnetAKSPrefix string
 
-// AKS version
-param aksVersion string
+// Hub Virtual Network for virtual network peering
+param hubVnetId string
 
 // Virtual Appliance IP
 param egressVirtualApplianceIp string
@@ -79,6 +76,9 @@ param egressVirtualApplianceIp string
 // Hub IP Ranges
 param hubRFC1918IPRange string
 param hubCGNATIPRange string
+
+// AKS version
+param aksVersion string
 
 // parameters for Budget
 param createBudget bool = true
@@ -117,7 +117,6 @@ param deploySQLMI bool
 @description('Should ADF Self Hosted Integration Runtime VM be deployed in environment')
 param deploySelfhostIRVM bool
 
-
 @description('If SQL Database is selected to be deployed, enter username. Otherwise, you can enter blank')
 @secure()
 param sqldbUsername string
@@ -128,9 +127,12 @@ param sqlmiUsername string
 @secure()
 param selfHostedVMUsername string
 
+@description('When true, customer managed keys are used for Azure resources')
+param useCMK bool = false
+
 // Configure generic subscription
 module genericSubscription '../lz-generic-subscription/main.bicep' = {
-  name: 'genericSubscription'
+  name: 'deploy-generic-subscription-archetype'
   scope: subscription()
   params: {
     createBudget: createBudget
@@ -157,8 +159,6 @@ module genericSubscription '../lz-generic-subscription/main.bicep' = {
 
     rgNetworkWatcherName: rgNetworkWatcherName
     rgAutomationName: rgAutomationName
-    rgVnetName: rgVnetName
-
     automationAccountName: automationAccountName
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
@@ -167,17 +167,18 @@ module genericSubscription '../lz-generic-subscription/main.bicep' = {
     hubCGNATIPRange: hubCGNATIPRange
     hubRFC1918IPRange: hubRFC1918IPRange
 
-    deploySubnetsInExistingVnet: deploySubnetsInExistingVnet
-    vnetName: vnetName
-    vnetAddressSpace: vnetAddressSpace
-    subnetFoundationalElementsName: subnetFoundationalElementsName
-    subnetFoundationalElementsPrefix: subnetFoundationalElementsPrefix
-    subnetPresentationName: subnetPresentationName
-    subnetPresentationPrefix: subnetPresentationPrefix
-    subnetApplicationName: subnetApplicationName
-    subnetApplicationPrefix: subnetApplicationPrefix
-    subnetDataName: subnetDataName
-    subnetDataPrefix: subnetDataPrefix
+    deployVnet: false
+    rgVnetName: ''
+    vnetName: ''
+    vnetAddressSpace: ''
+    subnetFoundationalElementsName: ''
+    subnetFoundationalElementsPrefix: ''
+    subnetPresentationName: ''
+    subnetPresentationPrefix: ''
+    subnetApplicationName: ''
+    subnetApplicationPrefix: ''
+    subnetDataName: ''
+    subnetDataPrefix: ''
   }
 }
 
@@ -186,7 +187,7 @@ module landingZone 'lz.bicep' = {
   dependsOn: [
     genericSubscription
   ]
-  name: 'machinelearning-lz'
+  name: 'deploy-machinelearning-archetype'
   scope: subscription()
   params: {
     tagClientOrganization: tagClientOrganization
@@ -198,15 +199,13 @@ module landingZone 'lz.bicep' = {
   
     securityContactEmail: securityContactEmail
 
+    rgExistingAutomationName: rgAutomationName
     rgVnetName: rgVnetName
     rgComputeName: rgComputeName
     rgMonitorName: rgMonitorName
     rgSecurityName: rgSecurityName
     rgSelfHostedRuntimeName: rgSelfHostedRuntimeName
     rgStorageName: rgStorageName
-
-    vnetId: genericSubscription.outputs.vnetId
-    vnetName: vnetName
 
     deploySQLDB: deploySQLDB
     deploySQLMI: deploySQLMI
@@ -215,6 +214,26 @@ module landingZone 'lz.bicep' = {
     sqldbUsername: sqldbUsername
     sqlmiUsername: sqlmiUsername
     selfHostedVMUsername: selfHostedVMUsername
+
+    hubVnetId: hubVnetId
+    egressVirtualApplianceIp: egressVirtualApplianceIp
+    hubCGNATIPRange: hubCGNATIPRange
+    hubRFC1918IPRange: hubRFC1918IPRange
+
+    vnetName: vnetName
+    vnetAddressSpace: vnetAddressSpace
+
+    subnetFoundationalElementsName: subnetFoundationalElementsName
+    subnetFoundationalElementsPrefix: subnetFoundationalElementsPrefix
+
+    subnetPresentationName: subnetPresentationName
+    subnetPresentationPrefix: subnetPresentationPrefix
+
+    subnetApplicationName: subnetApplicationName
+    subnetApplicationPrefix: subnetApplicationPrefix
+
+    subnetDataName: subnetDataName
+    subnetDataPrefix: subnetDataPrefix
 
     subnetDatabricksPrivateName: subnetDatabricksPrivateName
     subnetDatabricksPrivatePrefix: subnetDatabricksPrivatePrefix
@@ -233,12 +252,12 @@ module landingZone 'lz.bicep' = {
 
     aksVersion: aksVersion
     
-    adfSelfHostedRuntimeSubnetId: '${genericSubscription.outputs.vnetId}/subnets/${subnetDataName}'
-
     secretExpiryInDays: secretExpiryInDays
 
     selfHostedRuntimeVmSize: selfHostedRuntimeVmSize
 
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
+
+    useCMK: useCMK
   }
 }

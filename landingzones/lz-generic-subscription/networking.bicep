@@ -5,7 +5,6 @@
 // ----------------------------------------------------------------------------------
 
 // VNET
-param deploySubnetsInExistingVnet bool
 param vnetName string
 param vnetAddressSpace string
 
@@ -209,7 +208,7 @@ resource udrData 'Microsoft.Network/routeTables@2020-06-01' = {
 }
 
 // Virtual Network
-resource vnetNew 'Microsoft.Network/virtualNetworks@2020-06-01' = if (!deploySubnetsInExistingVnet) {
+resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   name: vnetName
   location: resourceGroup().location
   properties: {
@@ -218,102 +217,74 @@ resource vnetNew 'Microsoft.Network/virtualNetworks@2020-06-01' = if (!deploySub
         vnetAddressSpace
       ]
     }
-  }
-}
-
-resource vnetExisting 'Microsoft.Network/virtualNetworks@2020-06-01' existing = if (deploySubnetsInExistingVnet) {
-  name: vnetName
-}
-
-resource subnetFoundationalElements 'Microsoft.Network/virtualNetworks/subnets@2020-07-01' = {
-  dependsOn: [
-    vnetPeeringSpokeToHub
-  ]
-  name: '${!deploySubnetsInExistingVnet ? vnetNew.name : vnetExisting.name}/${subnetFoundationalElementsName}'
-  properties: {
-    addressPrefix: subnetFoundationalElementsPrefix
-    routeTable: {
-      id: udrFoundationalElements.id
-    }
-    networkSecurityGroup: {
-      id: nsgFoundationalElements.id
-    }
-  }
-}
-
-resource subnetPresentation 'Microsoft.Network/virtualNetworks/subnets@2020-07-01' = {
-  dependsOn: [
-    vnetExisting
-    vnetNew
-    subnetFoundationalElements
-  ]
-  name: '${vnetName}/${subnetPresentationName}'
-  properties: {
-    addressPrefix: subnetPresentationPrefix
-    routeTable: {
-      id: udrPresentation.id
-    }
-    networkSecurityGroup: {
-      id: nsgPresentation.id
-    }
-  }
-}
-
-resource subnetApplication 'Microsoft.Network/virtualNetworks/subnets@2020-07-01' = {
-  dependsOn: [
-    vnetExisting
-    vnetNew
-    subnetPresentation
-  ]
-  name: '${vnetName}/${subnetApplicationName}'
-  properties: {
-    addressPrefix: subnetApplicationPrefix
-    routeTable: {
-      id: udrApplication.id
-    }
-    networkSecurityGroup: {
-      id: nsgApplication.id
-    }
-  }
-}
-
-resource subnetData 'Microsoft.Network/virtualNetworks/subnets@2020-07-01' = {
-  dependsOn: [
-    vnetExisting
-    vnetNew
-    subnetApplication
-  ]
-  name: '${vnetName}/${subnetDataName}'
-  properties: {
-    addressPrefix: subnetDataPrefix
-    routeTable: {
-      id: udrData.id
-    }
-    networkSecurityGroup: {
-      id: nsgData.id
-    }
+    subnets: [
+      {
+        name: subnetFoundationalElementsName
+        properties: {
+          addressPrefix: subnetFoundationalElementsPrefix
+          routeTable: {
+            id: udrFoundationalElements.id
+          }
+          networkSecurityGroup: {
+            id: nsgFoundationalElements.id
+          }
+        }        
+      }
+      {
+        name: subnetPresentationName
+        properties: {
+          addressPrefix: subnetPresentationPrefix
+          routeTable: {
+            id: udrPresentation.id
+          }
+          networkSecurityGroup: {
+            id: nsgPresentation.id
+          }
+        }
+      }
+      {
+        name: subnetApplicationName
+        properties: {
+          addressPrefix: subnetApplicationPrefix
+          routeTable: {
+            id: udrApplication.id
+          }
+          networkSecurityGroup: {
+            id: nsgApplication.id
+          }
+        }
+      }
+      {
+        name: subnetDataName
+        properties: {
+          addressPrefix: subnetDataPrefix
+          routeTable: {
+            id: udrData.id
+          }
+          networkSecurityGroup: {
+            id: nsgData.id
+          }
+        } 
+      }
+    ]
   }
 }
 
 module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = if (!empty(hubVnetId)) {
-  dependsOn: [
-    vnetExisting
-    vnetNew
-  ]
-  name: 'spokeToHubPeer'
+  name: 'deploy-vnet-peering-spoke-to-hub'
   scope: resourceGroup()
   params: {
-    peeringName: '${vnetName}-SpokeToHub'
+    peeringName: 'SpokeToHub-${vnet.name}'
     allowForwardedTraffic: true
     allowVirtualNetworkAccess: true
-    sourceVnetName: vnetName
+    sourceVnetName: vnet.name
     targetVnetId: hubVnetId
     //useRemoteGateways: true
   }
 }
 
-output vnetId string = deploySubnetsInExistingVnet ? vnetExisting.id : vnetNew.id
-output foundationalElementSubnetId string = '${vnetName}/subnets/${subnetFoundationalElementsName}'
-output presentationSubnetId string = '${vnetName}/subnets/${subnetPresentationName}'
-output applicationSubnetId string = '${vnetName}/subnets/${subnetApplicationName}'
-output dataSubnetId string = '${vnetName}/subnets/${subnetDataName}'
+output vnetId string = vnet.id
+output foundationalElementSubnetId string = '${vnet.id}/subnets/${subnetFoundationalElementsName}'
+output presentationSubnetId string = '${vnet.id}/subnets/${subnetPresentationName}'
+output applicationSubnetId string = '${vnet.id}/subnets/${subnetApplicationName}'
+output dataSubnetId string = '${vnet.id}/subnets/${subnetDataName}'

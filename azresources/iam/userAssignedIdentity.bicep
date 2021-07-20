@@ -4,14 +4,13 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param roleDefinitionId string
-param resourceSPObjectIds array = []
+param name string
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for spId in resourceSPObjectIds: {
-  name: guid(resourceGroup().id, spId, roleDefinitionId)
-  properties: {
-    roleDefinitionId: roleDefinitionId
-    principalId: spId
-    principalType: 'ServicePrincipal'
-  }
-}]
+resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: name
+  location: resourceGroup().location
+}
+
+output identityId string = identity.id
+output identityPrincipalId string = identity.properties.principalId
+output identityClientId string = identity.properties.clientId

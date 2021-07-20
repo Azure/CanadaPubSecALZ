@@ -65,6 +65,19 @@ resource podSecurityBaselineStandardsPolicySetAssignment 'Microsoft.Authorizatio
 
 // These role assignments are required to allow Policy Assignment to remediate.
 
+// Contributor role is required to support customer-managed keys for AKS.  Permission: Microsoft.Compute/diskEncryptionSets/read
+// A custom role can be created to support this scenario as well.
+resource policySetRoleAssignmentContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(policyAssignmentManagementGroupId, 'aks', 'Contributor')
+  scope: managementGroup()
+  properties: {
+    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    principalId: policySetAssignment.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+/*
 resource policySetRoleAssignmentAKSContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(policyAssignmentManagementGroupId, 'aks', 'Azure Kubernetes Service Contributor Role')
   scope: managementGroup()
@@ -84,3 +97,4 @@ resource policySetRoleAssignmentVMContributor 'Microsoft.Authorization/roleAssig
     principalType: 'ServicePrincipal'
   }
 }
+*/
