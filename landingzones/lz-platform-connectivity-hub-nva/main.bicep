@@ -74,6 +74,8 @@ param hubSubnetMrzIntAddressPrefix string       //= '10.18.0.96/27'
 param hubSubnetHAName string                    //= 'HASubnet'
 param hubSubnetHAAddressPrefix string           //= '10.18.0.128/28'
 
+param hubSubnetGatewaySubnetPrefix string       //= '10.18.1.0/27'
+
 param bastionName string                        //= 'pubsecHubBastion'
 param hubSubnetBastionAddressPrefix string      //= '192.168.0.0/24'
 
@@ -158,7 +160,7 @@ var tags = {
 }
 
 module subScaffold '../scaffold-subscription.bicep' = {
-  name: 'subscription-scaffold'
+  name: 'configure-subscription'
   scope: subscription()
   params: {
     subscriptionOwnerGroupObjectIds: subscriptionOwnerGroupObjectIds
@@ -195,25 +197,10 @@ resource rgHubVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   tags: tags
 }
 
-module rgDdosDeleteLock '../../azresources/util/delete-lock.bicep' = if (deployDdosStandard) {
-  name: 'rgDdosDeleteLock'
-  scope: rgDdos
-}
-
-module rgHubDeleteLock '../../azresources/util/delete-lock.bicep' = {
-  name: 'rgHubDeleteLock'
-  scope: rgHubVnet
-}
-
 resource rgMrzVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgMrzName
   location: deployment().location
   tags: tags
-}
-
-module rgMrzDeleteLock '../../azresources/util/delete-lock.bicep' = {
-  name: 'rgMrzDeleteLock'
-  scope: rgMrzVnet
 }
 
 resource rgPaz 'Microsoft.Resources/resourceGroups@2020-06-01' = {
@@ -222,13 +209,28 @@ resource rgPaz 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   tags: tags
 }
 
+module rgDdosDeleteLock '../../azresources/util/delete-lock.bicep' = if (deployDdosStandard) {
+  name: 'deploy-delete-lock-${rgDdosName}'
+  scope: rgDdos
+}
+
+module rgHubDeleteLock '../../azresources/util/delete-lock.bicep' = {
+  name: 'deploy-delete-lock-${rgHubName}'
+  scope: rgHubVnet
+}
+
+module rgMrzDeleteLock '../../azresources/util/delete-lock.bicep' = {
+  name: 'deploy-delete-lock-${rgMrzName}'
+  scope: rgMrzVnet
+}
+
 module rgPazDeleteLock '../../azresources/util/delete-lock.bicep' = {
-  name: 'rgPazDeleteLock'
+  name: 'deploy-delete-lock-${rgPazName}'
   scope: rgPaz
 }
 
 module ddosPlan '../../azresources/network/ddos-standard.bicep' = if (deployDdosStandard) {
-  name: 'ddosPlan'
+  name: 'deploy-ddos-standard-plan'
   scope: rgDdos
   params: {
     ddosPlanName: ddosPlanName
@@ -236,7 +238,7 @@ module ddosPlan '../../azresources/network/ddos-standard.bicep' = if (deployDdos
 }
 
 module udrPrdSpokes '../../azresources/network/udr/udr-custom.bicep' = {
-  name: 'PrdSpokesUdr'
+  name: 'deploy-route-table-PrdSpokesUdr'
   scope: rgHubVnet
   params:{
     name: 'PrdSpokesUdr'
@@ -283,7 +285,7 @@ module udrPrdSpokes '../../azresources/network/udr/udr-custom.bicep' = {
 }
 
 module udrMrzSpoke '../../azresources/network/udr/udr-custom.bicep' = {
-  name: 'MrzSpokeUdr'
+  name: 'deploy-route-table-MrzSpokeUdr'
   scope: rgHubVnet
   params:{
     name: 'MrzSpokeUdr'
@@ -320,7 +322,7 @@ module udrMrzSpoke '../../azresources/network/udr/udr-custom.bicep' = {
 }
 
 module udrpaz '../../azresources/network/udr/udr-custom.bicep' = {
-  name: 'PazSubnetUdr'
+  name: 'deploy-route-table-PazSubnetUdr'
   scope: rgHubVnet
   params:{
     name: 'PazSubnetUdr'
@@ -338,7 +340,7 @@ module udrpaz '../../azresources/network/udr/udr-custom.bicep' = {
 }
 
 module hubVnet './hub-vnet.bicep' = { 
-  name: hubVnetName
+  name: 'deploy-hub-vnet-${hubVnetName}'
   scope: rgHubVnet
   params: {
     vnetName: hubVnetName
@@ -368,6 +370,8 @@ module hubVnet './hub-vnet.bicep' = {
     eanSubnetName: hubEanSubnetName
     eanSubnetAddressPrefix: hubEanSubnetAddressPrefix
 
+    hubSubnetGatewaySubnetPrefix: hubSubnetGatewaySubnetPrefix
+
     bastionSubnetAddressPrefix: hubSubnetBastionAddressPrefix
 
     ddosStandardPlanId: deployDdosStandard ? ddosPlan.outputs.ddosPlanId : ''
@@ -375,7 +379,7 @@ module hubVnet './hub-vnet.bicep' = {
 }
 
 module mrzVnet './mrz-vnet.bicep' = {
-  name: mrzVnetName
+  name: 'deploy-management-vnet-${mrzVnetName}'
   scope: rgMrzVnet
   params: {
     vnetName: mrzVnetName
@@ -410,7 +414,7 @@ module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = {
     hubVnet
     mrzVnet
   ]
-  name: 'spokeToHubPeer'
+  name: 'deploy-vnet-peering-spoke-to-hub'
   scope: rgMrzVnet
   params: {
     peeringName: '${mrzVnetName}-to-${hubVnetName}'
@@ -427,7 +431,7 @@ module vnetPeeringHubToSpoke '../../azresources/network/vnet-peering.bicep' = {
     hubVnet
     mrzVnet
   ]
-  name: 'hubToSpokePeer'
+  name: 'deploy-vnet-peering-hub-to-spoke'
   scope: rgHubVnet
   params: {
     peeringName: '${hubVnetName}-to-${mrzVnetName}'
@@ -440,7 +444,7 @@ module vnetPeeringHubToSpoke '../../azresources/network/vnet-peering.bicep' = {
 }
 
 module bastion '../../azresources/compute/bastion.bicep' = {
-  name: bastionName
+  name: 'deploy-bastion'
   scope: rgHubVnet
   params: {
     bastionName: bastionName
@@ -449,7 +453,7 @@ module bastion '../../azresources/compute/bastion.bicep' = {
 }
 
 module ProdFW1_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
-  name: 'ProdFW1_fortigate'
+  name: 'deploy-nva-ProdFW1_fortigate'
   scope: rgHubVnet
   params: {
     availabilityZone: '1' //make it a parameter with a default value (in the params.json file)
@@ -469,7 +473,7 @@ module ProdFW1_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFor
 }
 
 module ProdFW1_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFortigateFW) {
-  name: 'ProdFW1_ubuntu'
+  name: 'deploy-nva-ProdFW1_ubuntu'
   scope: rgHubVnet
   params: {
     availabilityZone: fwProdVM1AvailabilityZone //make it a parameter with a default value (in the params.json file)
@@ -489,7 +493,7 @@ module ProdFW1_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFort
 }
 
 module ProdFW2_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
-  name: 'ProdFW2_fortigate'
+  name: 'deploy-nva-ProdFW2_fortigate'
   scope: rgHubVnet
   params: {
     availabilityZone: fwProdVM2AvailabilityZone
@@ -509,7 +513,7 @@ module ProdFW2_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFor
 }
 
 module ProdFW2_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFortigateFW) {
-  name: 'ProdFW2_ubuntu'
+  name: 'deploy-nva-ProdFW2_ubuntu'
   scope: rgHubVnet
   params: {
     availabilityZone: '2'
@@ -529,7 +533,7 @@ module ProdFW2_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFort
 }
 
 module DevFW1 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
-  name: 'DevFW1_fortigate'
+  name: 'deploy-nva-DevFW1_fortigate'
   scope: rgHubVnet
   params: {
     availabilityZone: fwDevVM1AvailabilityZone
@@ -549,7 +553,7 @@ module DevFW1 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
 }
 
 module DevFW2 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
-  name: 'DevFW2_fortigate'
+  name: 'deploy-nva-DevFW2_fortigate'
   scope: rgHubVnet
   params: {
     availabilityZone: fwDevVM2AvailabilityZone
@@ -569,7 +573,7 @@ module DevFW2 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
 }
 
 module ProdFWs_ILB './lb-firewalls-hub.bicep' = {
-  name: 'ProdFWs_ILB'
+  name: 'deploy-internal-loadblancer-ProdFWs_ILB'
   scope: rgHubVnet
   params: {
     name:           fwProdILBName
@@ -592,7 +596,7 @@ module ProdFWs_ILB './lb-firewalls-hub.bicep' = {
 }
 
 module DevFWs_ILB './lb-firewalls-hub.bicep' = {
-  name: 'DevFWs_ILB'
+  name: 'deploy-internal-loadblancer-DevFWs_ILB'
   scope: rgHubVnet
   params: {
     name:           fwDevILBName
