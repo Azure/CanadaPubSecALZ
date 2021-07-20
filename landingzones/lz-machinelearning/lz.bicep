@@ -352,6 +352,10 @@ module sqlDb '../../azresources/sql/sqldb.bicep' = if (deploySQLDB == true) {
     saLoggingName: storageLogging.outputs.storageName
     storagePath: storageLogging.outputs.storagePath
     securityContactEmail: securityContactEmail
+
+    useCMK: useCMK
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
