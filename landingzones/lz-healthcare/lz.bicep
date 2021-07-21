@@ -97,6 +97,7 @@ var amlName = 'aml${uniqueString(rgCompute.id)}'
 var acrName = 'acr${uniqueString(rgStorage.id)}'
 var aiName = 'ai${uniqueString(rgMonitor.id)}'
 var synapseName = 'syn${uniqueString(rgMonitor.id)}'
+var fhirName = 'fhir${uniqueString(rgCompute.id)}'
 
 var tags = {
   ClientOrganization: tagClientOrganization
@@ -491,5 +492,18 @@ module roleAssignADFToAKV '../../azresources/iam/resource/key-vault-role-assignm
     keyVaultName: keyVault.outputs.akvName
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6') // Key Vault Secrets User
     resourceSPObjectIds: array(adf.outputs.identityPrincipalId)
+  }
+}
+
+// FHIR
+
+module fhir '../../azresources/compute/fhir.bicep' = {
+  name: 'deploy-fhir'
+  scope: rgCompute
+  params: {
+    name: fhirName
+    tags: tags
+    privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
+    privateZoneId: networking.outputs.fhirPrivateZoneId
   }
 }

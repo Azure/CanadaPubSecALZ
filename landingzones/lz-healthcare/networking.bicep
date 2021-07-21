@@ -455,6 +455,15 @@ module privatezone_azureml_notebook '../../azresources/network/private-zone.bice
   }
 }
 
+module privatezone_fhir '../../azresources/network/private-zone.bicep' = {
+  name: 'deploy-privatezone-fhir'
+  scope: resourceGroup()
+  params: {
+    zone: 'privatelink.azurehealthcareapis.com'
+    vnetId: vnet.id
+  }
+}
+
 output vnetId string = vnet.id
 
 output foundationalElementSubnetId string = '${vnet.id}/subnets/${subnetFoundationalElementsName}'
@@ -476,3 +485,4 @@ output acrPrivateZoneId string = privatezone_acr.outputs.privateZoneId
 output sqlDBPrivateZoneId string = privatezone_sqldb.outputs.privateZoneId
 output amlApiPrivateZoneId string = privatezone_azureml_api.outputs.privateZoneId
 output amlNotebooksPrivateZoneId string = privatezone_azureml_notebook.outputs.privateZoneId
+output fhirPrivateZoneId string = privatezone_fhir.outputs.privateZoneId
