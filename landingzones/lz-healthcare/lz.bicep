@@ -114,6 +114,12 @@ resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' existing =
   name: rgExistingAutomationName
 }
 
+resource rgVnet 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: rgVnetName
+  location: azureRegion
+  tags: tags
+}
+
 resource rgStorage 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgStorageName
   location: azureRegion
@@ -210,7 +216,7 @@ module rgComputeDeploymentScriptPermissionCleanup '../../azresources/util/deploy
 //virtual network deployment
 module networking 'networking.bicep' = {
   name: 'deploy-networking'
-  scope: resourceGroup(rgVnetName)
+  scope: rgVnet
   params: {
     vnetName: vnetName
     vnetAddressSpace: vnetAddressSpace
