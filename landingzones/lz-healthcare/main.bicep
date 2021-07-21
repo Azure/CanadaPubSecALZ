@@ -30,11 +30,8 @@ param rgSelfHostedRuntimeName string
 param automationAccountName string
 
 // VNET
-param deploySubnetsInExistingVnet bool
 param vnetName string
 param vnetAddressSpace string
-
-param hubVnetId string
 
 // Internal Foundational Elements (OZ) Subnet
 param subnetFoundationalElementsName string
@@ -53,7 +50,6 @@ param subnetDataName string
 param subnetDataPrefix string
 
 // Delegated Subnets
-
 param subnetDatabricksPublicName string
 param subnetDatabricksPublicPrefix string
 
@@ -67,6 +63,9 @@ param subnetPrivateEndpointsPrefix string
 // Synapse Subnet
 param subnetSynapseName string
 param subnetSynapsePrefix string
+
+// Hub Virtual Network for virtual network peering
+param hubVnetId string
 
 // Virtual Appliance IP
 param egressVirtualApplianceIp string
@@ -108,16 +107,19 @@ param budgetTimeGrain string = 'Monthly'
 @description('Should ADF Self Hosted Integration Runtime VM be deployed in environment')
 param deploySelfhostIRVM bool
 
-
-@secure()
-param synapseUsername string
 @description('If ADF Self Hosted Integration Runtime VM is selected to be deployed, enter username. Otherwise, you can enter blank')
 @secure()
 param selfHostedVMUsername string
 
+@secure()
+param synapseUsername string
+
+@description('When true, customer managed keys are used for Azure resources')
+param useCMK bool = false
+
 // Configure generic subscription
 module genericSubscription '../lz-generic-subscription/main.bicep' = {
-  name: 'genericSubscription'
+  name: 'deploy-generic-subscription-archetype'
   scope: subscription()
   params: {
     createBudget: createBudget
@@ -144,27 +146,27 @@ module genericSubscription '../lz-generic-subscription/main.bicep' = {
 
     rgNetworkWatcherName: rgNetworkWatcherName
     rgAutomationName: rgAutomationName
-    rgVnetName: rgVnetName
-
     automationAccountName: automationAccountName
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
-    egressVirtualApplianceIp: egressVirtualApplianceIp
-    hubVnetId: hubVnetId
-    hubCGNATIPRange: hubCGNATIPRange
-    hubRFC1918IPRange: hubRFC1918IPRange
+    deployVnet: false
 
-    deploySubnetsInExistingVnet: deploySubnetsInExistingVnet
-    vnetName: vnetName
-    vnetAddressSpace: vnetAddressSpace
-    subnetFoundationalElementsName: subnetFoundationalElementsName
-    subnetFoundationalElementsPrefix: subnetFoundationalElementsPrefix
-    subnetPresentationName: subnetPresentationName
-    subnetPresentationPrefix: subnetPresentationPrefix
-    subnetApplicationName: subnetApplicationName
-    subnetApplicationPrefix: subnetApplicationPrefix
-    subnetDataName: subnetDataName
-    subnetDataPrefix: subnetDataPrefix
+    rgVnetName: ''
+    vnetName: ''
+    vnetAddressSpace: ''
+    subnetFoundationalElementsName: ''
+    subnetFoundationalElementsPrefix: ''
+    subnetPresentationName: ''
+    subnetPresentationPrefix: ''
+    subnetApplicationName: ''
+    subnetApplicationPrefix: ''
+    subnetDataName: ''
+    subnetDataPrefix: ''
+
+    egressVirtualApplianceIp: ''
+    hubVnetId: ''
+    hubCGNATIPRange: ''
+    hubRFC1918IPRange: ''
   }
 }
 
@@ -173,7 +175,7 @@ module landingZone 'lz.bicep' = {
   dependsOn: [
     genericSubscription
   ]
-  name: 'healthcare-lz'
+  name: 'deploy-healthcare-archetype'
   scope: subscription()
   params: {
     tagClientOrganization: tagClientOrganization
@@ -182,7 +184,8 @@ module landingZone 'lz.bicep' = {
     tagProjectContact: tagProjectContact
     tagProjectName: tagProjectName
     tagTechnicalContact: tagTechnicalContact
-
+  
+    rgExistingAutomationName: rgAutomationName
     rgVnetName: rgVnetName
     rgComputeName: rgComputeName
     rgMonitorName: rgMonitorName
@@ -190,12 +193,28 @@ module landingZone 'lz.bicep' = {
     rgSelfHostedRuntimeName: rgSelfHostedRuntimeName
     rgStorageName: rgStorageName
 
-    vnetId: genericSubscription.outputs.vnetId
-    vnetName: vnetName
-
     deploySelfhostIRVM: deploySelfhostIRVM
-
     selfHostedVMUsername: selfHostedVMUsername
+
+    hubVnetId: hubVnetId
+    egressVirtualApplianceIp: egressVirtualApplianceIp
+    hubCGNATIPRange: hubCGNATIPRange
+    hubRFC1918IPRange: hubRFC1918IPRange
+
+    vnetName: vnetName
+    vnetAddressSpace: vnetAddressSpace
+
+    subnetFoundationalElementsName: subnetFoundationalElementsName
+    subnetFoundationalElementsPrefix: subnetFoundationalElementsPrefix
+
+    subnetPresentationName: subnetPresentationName
+    subnetPresentationPrefix: subnetPresentationPrefix
+
+    subnetApplicationName: subnetApplicationName
+    subnetApplicationPrefix: subnetApplicationPrefix
+
+    subnetDataName: subnetDataName
+    subnetDataPrefix: subnetDataPrefix
 
     subnetDatabricksPrivateName: subnetDatabricksPrivateName
     subnetDatabricksPrivatePrefix: subnetDatabricksPrivatePrefix
@@ -208,13 +227,13 @@ module landingZone 'lz.bicep' = {
 
     subnetSynapseName: subnetSynapseName
     subnetSynapsePrefix: subnetSynapsePrefix
-
+  
     synapseUsername: synapseUsername
-    
-    adfSelfHostedRuntimeSubnetId: '${genericSubscription.outputs.vnetId}/subnets/${subnetDataName}'
 
     secretExpiryInDays: secretExpiryInDays
 
     selfHostedRuntimeVmSize: selfHostedRuntimeVmSize
+
+    useCMK: useCMK
   }
 }

@@ -92,9 +92,6 @@
     "automationAccountName": {
       "value": "automation6756-test"
     },
-    "deploySubnetsInExistingVnet": {
-      "value": false
-    },
     "vnetName": {
       "value": "vnet"
     },
@@ -160,6 +157,9 @@
     },
     "secretExpiryInDays": {
       "value": 3650
+    },
+    "useCMK": {
+      "value": false
     }
   }
 }
