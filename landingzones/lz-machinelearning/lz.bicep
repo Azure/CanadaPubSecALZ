@@ -533,8 +533,8 @@ module aml '../../azresources/analytics/aml/main.bicep' = {
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
 
     useCMK: useCMK
-    akvResourceGroupName: useCMK ? rgSecurity.name : ''
-    akvName: useCMK ? keyVault.outputs.akvName : ''
+    akvResourceGroupName: rgSecurity.name
+    akvName: keyVault.outputs.akvName
   }
 }
 
