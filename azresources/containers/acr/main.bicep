@@ -20,7 +20,7 @@ param akvName string
 @description('Required when useCMK=true')
 param deploymentScriptIdentityId string
 
-module acrIdentity '../iam/userAssignedIdentity.bicep' = {
+module acrIdentity '../../iam/userAssignedIdentity.bicep' = {
   name: '${name}-managed-identity'
   params: {
     name: '${name}-managed-identity'

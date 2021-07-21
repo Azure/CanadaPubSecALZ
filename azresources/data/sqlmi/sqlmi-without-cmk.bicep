@@ -42,7 +42,7 @@ resource sqlmi 'Microsoft.Sql/managedInstances@2020-11-01-preview' = {
   }
 }
 
-module roleAssignSQLMIToSALogging '../../azresources/iam/resource/storageRoleAssignmentToSP.bicep' = {
+module roleAssignSQLMIToSALogging '../../iam/resource/storageRoleAssignmentToSP.bicep' = {
   name: 'rbac-${name}-logging-storage-account'
   params: {
     storageAccountName: saLoggingName

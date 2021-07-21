@@ -30,7 +30,7 @@ resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   name: akvName  
 }
 
-module akvKey '../security/key-vault-key-rsa2048.bicep' = {
+module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
   name: 'add-cmk-${sqlServerName}'
   scope: resourceGroup(akvResourceGroupName)
   params: {
@@ -54,7 +54,7 @@ resource sqlserver 'Microsoft.Sql/servers@2019-06-01-preview' = {
   }
 }
 
-module akvRoleAssignmentForCMK '../iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
+module akvRoleAssignmentForCMK '../../iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
   name: 'rbac-${sqlServerName}-key-vault'
   scope: resourceGroup(akvResourceGroupName)
   params: {
@@ -64,7 +64,7 @@ module akvRoleAssignmentForCMK '../iam/resource/keyVaultRoleAssignmentToSP.bicep
   }
 }
 
-module roleAssignSQLToSALogging '../../azresources/iam/resource/storageRoleAssignmentToSP.bicep' = {
+module roleAssignSQLToSALogging '../../iam/resource/storageRoleAssignmentToSP.bicep' = {
   name: 'rbac-${sqlServerName}-logging-storage-account'
   params: {
     storageAccountName: saLoggingName

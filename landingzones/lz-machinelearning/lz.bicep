@@ -292,7 +292,7 @@ module keyVault '../../azresources/security/key-vault.bicep' = {
   }
 }
 
-module sqlMi '../../azresources/sql/sqlmi.bicep' = if (deploySQLMI == true) {
+module sqlMi '../../azresources/data/sqlmi/main.bicep' = if (deploySQLMI == true) {
   name: 'deploy-sqlmi'
   scope: rgStorage
   params: {
@@ -339,7 +339,7 @@ module storageLogging '../../azresources/storage/storage-generalpurpose.bicep' =
   }
 }
 
-module sqlDb '../../azresources/sql/sqldb.bicep' = if (deploySQLDB == true) {
+module sqlDb '../../azresources/data/sqldb/main.bicep' = if (deploySQLDB == true) {
   name: 'deploy-sqldb'
   scope: rgStorage
   params: {
@@ -386,7 +386,7 @@ module egressLb '../../azresources/network/lb-egress.bicep' = {
   }
 }
 
-module databricks '../../azresources/compute/databricks.bicep' = {
+module databricks '../../azresources/analytics/databricks/main.bicep' = {
   name: 'deploy-databricks'
   scope: rgCompute
   params: {
@@ -402,7 +402,7 @@ module databricks '../../azresources/compute/databricks.bicep' = {
   }
 }
 
-module aks '../../azresources/compute/aks-kubenet.bicep' = {
+module aks '../../azresources/containers/aks-kubenet/main.bicep' = {
   name: 'deploy-aks'
   scope: rgCompute
   params: {
@@ -432,7 +432,7 @@ module aks '../../azresources/compute/aks-kubenet.bicep' = {
   }
 }
 
-module adf '../../azresources/compute/adf.bicep' = {
+module adf '../../azresources/analytics/adf/main.bicep' = {
   name: 'deploy-adf'
   scope: rgCompute
   params: {
@@ -449,7 +449,7 @@ module adf '../../azresources/compute/adf.bicep' = {
 }
 
 // vm provisioned as part for the integration runtime for ADF
-module vm '../../azresources/compute/vm-win2019.bicep' = [for (vmName, i) in adfIRVMNames: if (deploySelfhostIRVM == true) {
+module vm '../../azresources/compute/vm-win2019/main.bicep' = [for (vmName, i) in adfIRVMNames: if (deploySelfhostIRVM == true) {
   name: 'deploy-ir-${vmName}'
   scope: rgSelfhosted
   params: {
@@ -470,7 +470,7 @@ module vm '../../azresources/compute/vm-win2019.bicep' = [for (vmName, i) in adf
   }
 }]
 
-module acr '../../azresources/storage/acr.bicep' = {
+module acr '../../azresources/containers/acr/main.bicep' = {
   name: 'deploy-acr'
   scope: rgStorage
   params: {
@@ -519,7 +519,7 @@ module dataLakeMetaData '../../azresources/storage/storage-generalpurpose.bicep'
   }
 }
 
-module aml '../../azresources/compute/aml.bicep' = {
+module aml '../../azresources/analytics/aml/main.bicep' = {
   name: 'deploy-aml'
   scope: rgCompute
   params: {

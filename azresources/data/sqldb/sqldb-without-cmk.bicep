@@ -37,7 +37,7 @@ resource sqlserver 'Microsoft.Sql/servers@2019-06-01-preview' = {
   }
 }
 
-module roleAssignSQLToSALogging '../../azresources/iam/resource/storageRoleAssignmentToSP.bicep' = {
+module roleAssignSQLToSALogging '../../iam/resource/storageRoleAssignmentToSP.bicep' = {
   name: 'rbac-${sqlServerName}-key-vault'
   params: {
     storageAccountName: saLoggingName

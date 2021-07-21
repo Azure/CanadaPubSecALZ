@@ -17,7 +17,7 @@ param akvResourceGroupName string
 @description('Required when useCMK=true')
 param akvName string
 
-module identity '../iam/userAssignedIdentity.bicep' = {
+module identity '../../iam/userAssignedIdentity.bicep' = {
   name: 'deploy-create-user-assigned-identity'
   params: {
     name: '${name}-managed-identity'
