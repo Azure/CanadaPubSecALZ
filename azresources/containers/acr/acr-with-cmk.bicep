@@ -51,7 +51,7 @@ module tempAkvKey '../../security/key-vault-key-rsa2048.bicep' = {
   }
 }
 
-module tempAkvRoleAssignmentForCMK '../../iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
+module tempAkvRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-sp.bicep' = {
   name: 'rbac-add-temp-${name}-${tempKeyVaultName}'
   params: {
     keyVaultName: tempAkv.outputs.akvName
@@ -153,7 +153,7 @@ resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   name: akvName  
 }
 
-module akvRoleAssignmentForCMK '../../iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
+module akvRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-sp.bicep' = {
   name: 'rbac-${acr.name}-key-vault'
   scope: resourceGroup(akvResourceGroupName)
   params: {

@@ -21,7 +21,7 @@ resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   name: akvName  
 }
 
-module akvRoleAssignmentForCMK '../../iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
+module akvRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-sp.bicep' = {
   name: 'rbac-${name}-key-vault'
   scope: resourceGroup(akvResourceGroupName)
   params: {

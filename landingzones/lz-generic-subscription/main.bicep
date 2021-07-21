@@ -155,7 +155,7 @@ module vnet 'networking.bicep' = if (deployVnet) {
 }
 
 // Automation
-module automationAccount '../../azresources/automation/automationAccount.bicep' = {
+module automationAccount '../../azresources/automation/automation-account.bicep' = {
   name: 'deploy-automation-account'
   scope: rgAutomation
   params: {

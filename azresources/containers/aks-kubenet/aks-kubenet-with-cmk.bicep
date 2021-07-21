@@ -66,7 +66,7 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2020-12-01' = {
   }
 }
 
-module diskEncryptionSetRoleAssignmentForCMK '../../iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
+module diskEncryptionSetRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-sp.bicep' = {
   name: 'rbac-${diskEncryptionSet.name}-key-vault'
   scope: resourceGroup(akvResourceGroupName)
   params: {

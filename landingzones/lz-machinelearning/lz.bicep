@@ -171,7 +171,7 @@ resource rgSelfhosted 'Microsoft.Resources/resourceGroups@2020-06-01' = if (depl
 }
 
 // Prepare for CMK deployments
-module deploymentScriptIdentity '../../azresources/iam/userAssignedIdentity.bicep' = if (useDeploymentScripts) {
+module deploymentScriptIdentity '../../azresources/iam/user-assigned-identity.bicep' = if (useDeploymentScripts) {
   name: 'deploy-ds-managed-identity'
   scope: rgAutomation
   params: {
@@ -179,7 +179,7 @@ module deploymentScriptIdentity '../../azresources/iam/userAssignedIdentity.bice
   }
 }
 
-module rgStorageDeploymentScriptRBAC '../../azresources/iam/resourceGroupRoleAssignmentToSP.bicep' = if (useDeploymentScripts) {
+module rgStorageDeploymentScriptRBAC '../../azresources/iam/resourceGroup/role-assignment-to-sp.bicep' = if (useDeploymentScripts) {
   scope: rgStorage
   name: 'rbac-ds-${rgStorageName}'
   params: {
@@ -189,7 +189,7 @@ module rgStorageDeploymentScriptRBAC '../../azresources/iam/resourceGroupRoleAss
   }  
 }
 
-module rgComputeDeploymentScriptRBAC '../../azresources/iam/resourceGroupRoleAssignmentToSP.bicep' = if (useDeploymentScripts) {
+module rgComputeDeploymentScriptRBAC '../../azresources/iam/resourceGroup/role-assignment-to-sp.bicep' = if (useDeploymentScripts) {
   scope: rgCompute
   name: 'rbac-ds-${rgComputeName}'
   params: {
@@ -649,7 +649,7 @@ module akvselfHostedVMPassword '../../azresources/security/key-vault-secret.bice
 }
 
 // Key Vault Secrets User - used for accessing secrets in ADF pipelines
-module roleAssignADFToAKV '../../azresources/iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
+module roleAssignADFToAKV '../../azresources/iam/resource/key-vault-role-assignment-to-sp.bicep' = {
   name: 'rbac-${adfName}-${akvName}'
   scope: rgSecurity
   params: {

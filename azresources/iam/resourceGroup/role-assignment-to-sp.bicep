@@ -16,7 +16,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-prev
   }
 }]
 
-module roleAssignmentWait '../util/wait.bicep' = [for (spId, idx) in resourceSPObjectIds: {
+module roleAssignmentWait '../../util/wait.bicep' = [for (spId, idx) in resourceSPObjectIds: {
   name: '${roleAssignment[idx].name}-wait'
   scope: resourceGroup()
   params: {
