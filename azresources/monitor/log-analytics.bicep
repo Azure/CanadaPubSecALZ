@@ -10,7 +10,7 @@ param tags object = {}
 
 var workspaceRetentionInDays = 730
 
-module automationAccount '../automation/automationAccount.bicep' = {
+module automationAccount '../automation/automation-account.bicep' = {
   name: 'automation-account'
   params: {
     automationAccountName: automationAccountName

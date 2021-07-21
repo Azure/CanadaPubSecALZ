@@ -6,14 +6,20 @@
 
 param subnetId string
 param vmName string
-param vmSize string
+param vmSize string = 'Standard_DS1_v2'
 
 param username string
 @secure()
 param password string
 
-param availabilityZone string
-param enableAcceleratedNetworking bool
+param availabilityZone string = '1'
+param enableAcceleratedNetworking bool = false
+
+param publisher string = 'Canonical'
+param offer string = 'UbuntuServer'
+param sku string = '18.04-LTS'
+param version string = 'latest' 
+param storageAccountType string = 'StandardSSD_LRS'
 
 param akvResourceGroupName string
 param akvName string
@@ -26,7 +32,7 @@ resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
     name: akvName
 }
 
-module akvKey '../security/key-vault-key-rsa2048.bicep' = {
+module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
     name: 'add-cmk-${vmName}'
     scope: resourceGroup(akvResourceGroupName)
     params: {
@@ -51,7 +57,7 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2020-12-01' = {
     }
 }
 
-module diskEncryptionSetRoleAssignmentForCMK '../iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
+module diskEncryptionSetRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-sp.bicep' = {
     name: 'rbac-${diskEncryptionSet.name}-key-vault'
     scope: resourceGroup(akvResourceGroupName)
     params: {
@@ -63,8 +69,8 @@ module diskEncryptionSetRoleAssignmentForCMK '../iam/resource/keyVaultRoleAssign
 
 resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
     name: '${vmName}-nic'
-    location: resourceGroup().location
-    properties: {
+     location: resourceGroup().location
+     properties: {
         enableAcceleratedNetworking: enableAcceleratedNetworking
         ipConfigurations: [
             {
@@ -79,14 +85,10 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
                 }
             }
         ]
-    }
+     }
 }
 
 resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
-    dependsOn: [
-        diskEncryptionSetRoleAssignmentForCMK
-    ]
-
     name: vmName
     location: resourceGroup().location
     zones: [
@@ -105,17 +107,17 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
         }
         storageProfile: {
             imageReference: {
-                publisher: 'MicrosoftWindowsServer'
-                offer: 'WindowsServer'
-                sku: '2019-Datacenter'
-                version: 'latest'
+                publisher: publisher
+                offer: offer
+                sku: sku
+                version: version
             }
             osDisk: {
                 name: '${vmName}-os'
                 caching: 'ReadWrite'
                 createOption: 'FromImage'
                 managedDisk: {
-                    storageAccountType: 'Premium_LRS'
+                    storageAccountType: storageAccountType
                     diskEncryptionSet: {
                         id: diskEncryptionSet.id
                     }

@@ -35,7 +35,7 @@ steps:
         sed -i 's~{{var-logging-logAnalyticsWorkspaceResourceId}}~$(var-logging-logAnalyticsWorkspaceResourceId)~g' ${{ policy }}.properties.json
         sed -i 's~{{var-logging-logAnalyticsWorkspaceId}}~$(var-logging-logAnalyticsWorkspaceId)~g' ${{ policy }}.properties.json
 
-        cat ${{ policy }}.properties.json
+        cat ${{ policy }}.properties.json ; echo
 
         echo "Deploying ${{ policy }}.bicep using ${{ parameters.deployOperation}} operation..."
 

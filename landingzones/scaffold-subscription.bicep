@@ -70,8 +70,8 @@ module budget '../azresources/cost/budget-subscription.bicep' = if (createBudget
 
 // Role Assignments based on Security Groups
 var ownerRoleDefinitionId = '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-module group_roleAssignment_Owner '../azresources/iam/subscription/roleAssignmentToGroup.bicep' = if (!(empty(subscriptionOwnerGroupObjectIds))) {
-  name: 'ownerAssignmentToGroup'
+module group_roleAssignment_Owner '../azresources/iam/subscription/role-assignment-to-group.bicep' = if (!(empty(subscriptionOwnerGroupObjectIds))) {
+  name: 'rbac-assign-owner-to-sg'
   scope: subscription()
   params: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ownerRoleDefinitionId)
@@ -80,8 +80,8 @@ module group_roleAssignment_Owner '../azresources/iam/subscription/roleAssignmen
 }
 
 var contributorRoleDefinitionId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-module group_roleAssignment_Contributor '../azresources/iam/subscription/roleAssignmentToGroup.bicep' = if (!(empty(subscriptionContributorGroupObjectIds))) {
-  name: 'contributorAssignmentToGroup'
+module group_roleAssignment_Contributor '../azresources/iam/subscription/role-assignment-to-group.bicep' = if (!(empty(subscriptionContributorGroupObjectIds))) {
+  name: 'rbac-assign-contributor-to-sg'
   scope: subscription()
   params: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', contributorRoleDefinitionId)
@@ -90,8 +90,8 @@ module group_roleAssignment_Contributor '../azresources/iam/subscription/roleAss
 }
 
 var readerRoleDefinitionId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-module group_roleAssignment_Reader '../azresources/iam/subscription/roleAssignmentToGroup.bicep' = if (!(empty(subscriptionReaderGroupObjectIds))) {
-  name: 'readerAssignmentToGroup'
+module group_roleAssignment_Reader '../azresources/iam/subscription/role-assignment-to-group.bicep' = if (!(empty(subscriptionReaderGroupObjectIds))) {
+  name: 'rbac-assign-reader-to-sg'
   scope: subscription()
   params: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', readerRoleDefinitionId)

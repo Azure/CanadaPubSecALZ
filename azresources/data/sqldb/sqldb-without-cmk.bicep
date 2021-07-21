@@ -4,13 +4,15 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+param sqlServerName string = 'sqlserver${uniqueString(resourceGroup().id)}'
+
 param privateEndpointSubnetId string
 param privateZoneId string
-param sqlServerName string = 'sqlserver${uniqueString(resourceGroup().id)}'
+
 param securityContactEmail string
+
 param saLoggingName string
 param storagePath string
-
 
 param tags object = {}
 
@@ -35,8 +37,8 @@ resource sqlserver 'Microsoft.Sql/servers@2019-06-01-preview' = {
   }
 }
 
-module roleAssignSQLToSALogging '../../azresources/iam/resource/storageRoleAssignmentToSP.bicep' = {
-  name: 'roleAssignSQLToSALogging'
+module roleAssignSQLToSALogging '../../iam/resource/storage-role-assignment-to-sp.bicep' = {
+  name: 'rbac-${sqlServerName}-key-vault'
   params: {
     storageAccountName: saLoggingName
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')

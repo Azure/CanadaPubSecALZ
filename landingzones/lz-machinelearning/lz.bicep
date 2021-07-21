@@ -171,7 +171,7 @@ resource rgSelfhosted 'Microsoft.Resources/resourceGroups@2020-06-01' = if (depl
 }
 
 // Prepare for CMK deployments
-module deploymentScriptIdentity '../../azresources/iam/userAssignedIdentity.bicep' = if (useDeploymentScripts) {
+module deploymentScriptIdentity '../../azresources/iam/user-assigned-identity.bicep' = if (useDeploymentScripts) {
   name: 'deploy-ds-managed-identity'
   scope: rgAutomation
   params: {
@@ -179,7 +179,7 @@ module deploymentScriptIdentity '../../azresources/iam/userAssignedIdentity.bice
   }
 }
 
-module rgStorageDeploymentScriptRBAC '../../azresources/iam/resourceGroupRoleAssignmentToSP.bicep' = if (useDeploymentScripts) {
+module rgStorageDeploymentScriptRBAC '../../azresources/iam/resourceGroup/role-assignment-to-sp.bicep' = if (useDeploymentScripts) {
   scope: rgStorage
   name: 'rbac-ds-${rgStorageName}'
   params: {
@@ -189,7 +189,7 @@ module rgStorageDeploymentScriptRBAC '../../azresources/iam/resourceGroupRoleAss
   }  
 }
 
-module rgComputeDeploymentScriptRBAC '../../azresources/iam/resourceGroupRoleAssignmentToSP.bicep' = if (useDeploymentScripts) {
+module rgComputeDeploymentScriptRBAC '../../azresources/iam/resourceGroup/role-assignment-to-sp.bicep' = if (useDeploymentScripts) {
   scope: rgCompute
   name: 'rbac-ds-${rgComputeName}'
   params: {
@@ -292,18 +292,27 @@ module keyVault '../../azresources/security/key-vault.bicep' = {
   }
 }
 
-module sqlMi '../../azresources/sql/sqlmi.bicep' = if (deploySQLMI == true) {
+module sqlMi '../../azresources/data/sqlmi/main.bicep' = if (deploySQLMI == true) {
   name: 'deploy-sqlmi'
   scope: rgStorage
   params: {
     tags: tags
+    
     name: sqlMiName
+    
     subnetId: networking.outputs.sqlMiSubnetId
+    
     sqlmiUsername: sqlmiUsername
     sqlmiPassword: sqlmiPassword
+
     saLoggingName: storageLogging.outputs.storageName
     storagePath: storageLogging.outputs.storagePath
+    
     securityContactEmail: securityContactEmail
+
+    useCMK: useCMK
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
@@ -330,7 +339,7 @@ module storageLogging '../../azresources/storage/storage-generalpurpose.bicep' =
   }
 }
 
-module sqlDb '../../azresources/sql/sqldb.bicep' = if (deploySQLDB == true) {
+module sqlDb '../../azresources/data/sqldb/main.bicep' = if (deploySQLDB == true) {
   name: 'deploy-sqldb'
   scope: rgStorage
   params: {
@@ -343,6 +352,10 @@ module sqlDb '../../azresources/sql/sqldb.bicep' = if (deploySQLDB == true) {
     saLoggingName: storageLogging.outputs.storageName
     storagePath: storageLogging.outputs.storagePath
     securityContactEmail: securityContactEmail
+
+    useCMK: useCMK
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
@@ -373,7 +386,7 @@ module egressLb '../../azresources/network/lb-egress.bicep' = {
   }
 }
 
-module databricks '../../azresources/compute/databricks.bicep' = {
+module databricks '../../azresources/analytics/databricks/main.bicep' = {
   name: 'deploy-databricks'
   scope: rgCompute
   params: {
@@ -389,7 +402,7 @@ module databricks '../../azresources/compute/databricks.bicep' = {
   }
 }
 
-module aks '../../azresources/compute/aks-kubenet.bicep' = {
+module aks '../../azresources/containers/aks-kubenet/main.bicep' = {
   name: 'deploy-aks'
   scope: rgCompute
   params: {
@@ -419,7 +432,7 @@ module aks '../../azresources/compute/aks-kubenet.bicep' = {
   }
 }
 
-module adf '../../azresources/compute/adf.bicep' = {
+module adf '../../azresources/analytics/adf/main.bicep' = {
   name: 'deploy-adf'
   scope: rgCompute
   params: {
@@ -436,7 +449,7 @@ module adf '../../azresources/compute/adf.bicep' = {
 }
 
 // vm provisioned as part for the integration runtime for ADF
-module vm '../../azresources/compute/vm-win2019.bicep' = [for (vmName, i) in adfIRVMNames: if (deploySelfhostIRVM == true) {
+module vm '../../azresources/compute/vm-win2019/main.bicep' = [for (vmName, i) in adfIRVMNames: if (deploySelfhostIRVM == true) {
   name: 'deploy-ir-${vmName}'
   scope: rgSelfhosted
   params: {
@@ -457,7 +470,7 @@ module vm '../../azresources/compute/vm-win2019.bicep' = [for (vmName, i) in adf
   }
 }]
 
-module acr '../../azresources/storage/acr.bicep' = {
+module acr '../../azresources/containers/acr/main.bicep' = {
   name: 'deploy-acr'
   scope: rgStorage
   params: {
@@ -506,7 +519,7 @@ module dataLakeMetaData '../../azresources/storage/storage-generalpurpose.bicep'
   }
 }
 
-module aml '../../azresources/compute/aml.bicep' = {
+module aml '../../azresources/analytics/aml/main.bicep' = {
   name: 'deploy-aml'
   scope: rgCompute
   params: {
@@ -636,7 +649,7 @@ module akvselfHostedVMPassword '../../azresources/security/key-vault-secret.bice
 }
 
 // Key Vault Secrets User - used for accessing secrets in ADF pipelines
-module roleAssignADFToAKV '../../azresources/iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
+module roleAssignADFToAKV '../../azresources/iam/resource/key-vault-role-assignment-to-sp.bicep' = {
   name: 'rbac-${adfName}-${akvName}'
   scope: rgSecurity
   params: {

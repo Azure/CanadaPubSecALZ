@@ -443,7 +443,7 @@ module vnetPeeringHubToSpoke '../../azresources/network/vnet-peering.bicep' = {
   }
 }
 
-module bastion '../../azresources/compute/bastion.bicep' = {
+module bastion '../../azresources/network/bastion.bicep' = {
   name: 'deploy-bastion'
   scope: rgHubVnet
   params: {

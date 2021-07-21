@@ -35,7 +35,7 @@ param tempKeyVaultName string = 'tmpkv${uniqueString(utcNow())}'
   Create a temporary key vault and key to setup CMK.  These will be deleted at the end of deployment using deployment script.
   See: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-customer-managed-keys#advanced-scenario-key-vault-firewall  
 */
-module tempAkv '../security/key-vault.bicep' = {
+module tempAkv '../../security/key-vault.bicep' = {
   name: 'deploy-keyvault-temp'
   params: {
     name: tempKeyVaultName
@@ -43,7 +43,7 @@ module tempAkv '../security/key-vault.bicep' = {
   }
 }
 
-module tempAkvKey '../security/key-vault-key-rsa2048.bicep' = {
+module tempAkvKey '../../security/key-vault-key-rsa2048.bicep' = {
   name: 'add-temp-cmk-akv-${name}'
   params: {
     akvName: tempAkv.outputs.akvName
@@ -51,7 +51,7 @@ module tempAkvKey '../security/key-vault-key-rsa2048.bicep' = {
   }
 }
 
-module tempAkvRoleAssignmentForCMK '../iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
+module tempAkvRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-sp.bicep' = {
   name: 'rbac-add-temp-${name}-${tempKeyVaultName}'
   params: {
     keyVaultName: tempAkv.outputs.akvName
@@ -153,7 +153,7 @@ resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   name: akvName  
 }
 
-module akvRoleAssignmentForCMK '../iam/resource/keyVaultRoleAssignmentToSP.bicep' = {
+module akvRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-sp.bicep' = {
   name: 'rbac-${acr.name}-key-vault'
   scope: resourceGroup(akvResourceGroupName)
   params: {
@@ -163,7 +163,7 @@ module akvRoleAssignmentForCMK '../iam/resource/keyVaultRoleAssignmentToSP.bicep
   }
 }
 
-module akvKey '../security/key-vault-key-rsa2048.bicep' = {
+module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
   name: 'add-cmk-${acr.name}'
   scope: resourceGroup(akvResourceGroupName)
   params: {
@@ -180,7 +180,7 @@ var cliCmkRotateCommand = '''
     --identity '[system]' --debug
 '''
    
-module rotateCmk '../util/deploymentScript.bicep' = { 
+module rotateCmk '../../util/deploymentScript.bicep' = { 
   dependsOn: [
     akvRoleAssignmentForCMK
   ]
@@ -197,7 +197,7 @@ var cliCmkCleanUpCommand = '''
   az keyvault delete -g {0} -n {1}
 '''
    
-module cleanupCmk '../util/deploymentScript.bicep' = { 
+module cleanupCmk '../../util/deploymentScript.bicep' = { 
   dependsOn: [
     rotateCmk
   ]

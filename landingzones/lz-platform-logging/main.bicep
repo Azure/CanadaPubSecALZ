@@ -58,7 +58,7 @@ resource rgLogging 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   tags: tags
 }
 
-module logAnalytics '../../azresources/monitor/logAnalytics.bicep' = {
+module logAnalytics '../../azresources/monitor/log-analytics.bicep' = {
   name: logAnalyticsWorkspaceName
   scope: rgLogging
   params: {
