@@ -162,11 +162,6 @@ module genericSubscription '../lz-generic-subscription/main.bicep' = {
     automationAccountName: automationAccountName
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
-    egressVirtualApplianceIp: egressVirtualApplianceIp
-    hubVnetId: hubVnetId
-    hubCGNATIPRange: hubCGNATIPRange
-    hubRFC1918IPRange: hubRFC1918IPRange
-
     deployVnet: false
     rgVnetName: ''
     vnetName: ''
@@ -179,6 +174,11 @@ module genericSubscription '../lz-generic-subscription/main.bicep' = {
     subnetApplicationPrefix: ''
     subnetDataName: ''
     subnetDataPrefix: ''
+
+    egressVirtualApplianceIp: ''
+    hubVnetId: ''
+    hubCGNATIPRange: ''
+    hubRFC1918IPRange: ''
   }
 }
 
