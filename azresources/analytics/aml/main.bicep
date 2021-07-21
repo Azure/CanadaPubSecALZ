@@ -15,10 +15,10 @@ param tags object = {}
 
 @description('When true, customer managed key will be enabled')
 param useCMK bool
-@description('Required when useCMK=true')
+
 param akvResourceGroupName string
-@description('Required when useCMK=true')
 param akvName string
+
 @description('Enabling high business impact workspace')
 param enableHbiWorkspace bool = true
 
