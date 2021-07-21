@@ -525,13 +525,16 @@ module aml '../../azresources/analytics/aml/main.bicep' = {
   params: {
     name: amlName
     tags: tags
-    keyVaultId: keyVault.outputs.akvId
     containerRegistryId: acr.outputs.acrId
     storageAccountId: dataLakeMetaData.outputs.storageId
     appInsightsId: appInsights.outputs.aiId
     privateZoneAzureMLApiId: networking.outputs.amlApiPrivateZoneId
     privateZoneAzureMLNotebooksId: networking.outputs.amlNotebooksPrivateZoneId
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
+
+    useCMK: useCMK
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
