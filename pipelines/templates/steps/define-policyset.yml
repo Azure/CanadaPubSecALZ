@@ -33,7 +33,7 @@ steps:
         echo "Populating templated properties in ${{ policy }}.properties.json"
         sed -i 's~{{var-topLevelManagementGroupName}}~$(var-topLevelManagementGroupName)~g' ${{ policy }}.properties.json
 
-        cat ${{ policy }}.properties.json
+        cat ${{ policy }}.properties.json ; echo
 
         echo "Deploying ${{ policy }}.bicep using ${{ parameters.deployOperation}} operation..."
 
