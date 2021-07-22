@@ -108,8 +108,6 @@ var tags = {
   TechnicalContact: tagTechnicalContact
 }
 
-var useDeploymentScripts = useCMK
-
 //resource group deployments
 resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' existing = {
   name: rgExistingAutomationName
@@ -152,7 +150,7 @@ resource rgSelfhosted 'Microsoft.Resources/resourceGroups@2020-06-01' = if (depl
 }
 
 // Prepare for CMK deployments
-module deploymentScriptIdentity '../../azresources/iam/user-assigned-identity.bicep' = if (useDeploymentScripts) {
+module deploymentScriptIdentity '../../azresources/iam/user-assigned-identity.bicep' = {
   name: 'deploy-ds-managed-identity'
   scope: rgAutomation
   params: {
@@ -160,23 +158,23 @@ module deploymentScriptIdentity '../../azresources/iam/user-assigned-identity.bi
   }
 }
 
-module rgStorageDeploymentScriptRBAC '../../azresources/iam/resourceGroup/role-assignment-to-sp.bicep' = if (useDeploymentScripts) {
+module rgStorageDeploymentScriptRBAC '../../azresources/iam/resourceGroup/role-assignment-to-sp.bicep' = {
   scope: rgStorage
   name: 'rbac-ds-${rgStorageName}'
   params: {
      // Owner - this role is cleaned up as part of this deployment
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
-    resourceSPObjectIds: useDeploymentScripts ? array(deploymentScriptIdentity.outputs.identityPrincipalId) : []
+    resourceSPObjectIds: array(deploymentScriptIdentity.outputs.identityPrincipalId)
   }  
 }
 
-module rgComputeDeploymentScriptRBAC '../../azresources/iam/resourceGroup/role-assignment-to-sp.bicep' = if (useDeploymentScripts) {
+module rgComputeDeploymentScriptRBAC '../../azresources/iam/resourceGroup/role-assignment-to-sp.bicep' = {
   scope: rgCompute
   name: 'rbac-ds-${rgComputeName}'
   params: {
      // Owner - this role is cleaned up as part of this deployment
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
-    resourceSPObjectIds: useDeploymentScripts ? array(deploymentScriptIdentity.outputs.identityPrincipalId) : []
+    resourceSPObjectIds: array(deploymentScriptIdentity.outputs.identityPrincipalId)
   }  
 }
 
@@ -185,22 +183,23 @@ var azCliCommandDeploymentScriptPermissionCleanup = '''
   az role assignment delete --assignee {0} --scope {1}
 '''
 
-module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploymentScript.bicep' = if (useDeploymentScripts) {
+module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploymentScript.bicep' = {
   dependsOn: [
     acr
     dataLake
+    synapse
   ]
 
   scope: rgAutomation
   name: 'ds-rbac-${rgStorageName}-cleanup'
   params: {
-    deploymentScript: format(azCliCommandDeploymentScriptPermissionCleanup, useDeploymentScripts ? deploymentScriptIdentity.outputs.identityPrincipalId : '', rgStorage.id)
-    deploymentScriptIdentityId: useDeploymentScripts ? deploymentScriptIdentity.outputs.identityId : ''
+    deploymentScript: format(azCliCommandDeploymentScriptPermissionCleanup, deploymentScriptIdentity.outputs.identityPrincipalId, rgStorage.id)
+    deploymentScriptIdentityId: deploymentScriptIdentity.outputs.identityId
     deploymentScriptName: 'ds-rbac-${rgStorageName}-cleanup'
   }  
 }
 
-module rgComputeDeploymentScriptPermissionCleanup '../../azresources/util/deploymentScript.bicep' = if (useDeploymentScripts) {
+module rgComputeDeploymentScriptPermissionCleanup '../../azresources/util/deploymentScript.bicep' = {
   dependsOn: [
     dataLakeMetaData
   ]
@@ -208,8 +207,8 @@ module rgComputeDeploymentScriptPermissionCleanup '../../azresources/util/deploy
   scope: rgAutomation
   name: 'ds-rbac-${rgComputeName}-cleanup'
   params: {
-    deploymentScript: format(azCliCommandDeploymentScriptPermissionCleanup, useDeploymentScripts ? deploymentScriptIdentity.outputs.identityPrincipalId : '', rgCompute.id)
-    deploymentScriptIdentityId: useDeploymentScripts ? deploymentScriptIdentity.outputs.identityId : ''
+    deploymentScript: format(azCliCommandDeploymentScriptPermissionCleanup, deploymentScriptIdentity.outputs.identityPrincipalId, rgCompute.id)
+    deploymentScriptIdentityId: deploymentScriptIdentity.outputs.identityId
     deploymentScriptName: 'ds-rbac-${rgComputeName}-cleanup'
   }  
 }
@@ -291,16 +290,6 @@ module dataLake '../../azresources/storage/storage-adlsgen2.bicep' = {
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
     keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
     keyVaultName: useCMK ? keyVault.outputs.akvName : ''
-  }
-}
-
-var dataLakeSynapseFSName = 'synapsecontainer'
-module dataLakeSynapseFS '../../azresources/storage/storage-adlsgen2-fs.bicep' = {
-  name: 'deploy-datalake-fs-for-synapse'
-  scope: rgStorage
-  params: {
-    adlsName: dataLake.outputs.storageName
-    fsName: dataLakeSynapseFSName
   }
 }
 
@@ -442,8 +431,10 @@ module synapse '../../azresources/analytics/synapse/main.bicep' = {
     computeSubnetId: networking.outputs.synapseSubnetId
     managedResourceGroupName: '${rgCompute.name}-${synapseName}-${uniqueString(rgCompute.id)}'
 
-    adlsDfsUri: dataLake.outputs.primaryDfsEndpoint
-    adlsFSName: dataLakeSynapseFSName
+    deploymentScriptIdentityId: deploymentScriptIdentity.outputs.identityId
+    adlsResourceGroupName: rgStorage.name
+    adlsName: dataLake.outputs.storageName
+    adlsFSName: 'synapsecontainer'
     
     synapseUsername: synapseUsername 
     synapsePassword: synapsePassword
