@@ -422,7 +422,7 @@ module synapse '../../azresources/analytics/synapse/main.bicep' = {
     synapseName: synapseName
     computeSubnetId: networking.outputs.synapseSubnetId
     tags: tags
-    managedResourceGroupName: 'synapse-rg-${rgCompute.name}-${uniqueString(rgCompute.id)}'
+    managedResourceGroupName: '${rgCompute.name}-${synapseName}-${uniqueString(rgCompute.id)}'
     synapseUsername: synapseUsername 
     synapsePassword: synapsePassword
   }
