@@ -18,7 +18,7 @@ param akvResourceGroupName string
 param akvName string
 
 @description('Enabling high business impact workspace')
-param enableHbiWorkspace bool = true
+param enableHbiWorkspace bool = false
 
 resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   scope: resourceGroup(akvResourceGroupName)
