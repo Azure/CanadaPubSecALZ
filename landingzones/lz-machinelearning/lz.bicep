@@ -367,7 +367,11 @@ module dataLake '../../azresources/storage/storage-adlsgen2.bicep' = {
     name: datalakeStorageName
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
+
+    deployBlobPrivateZone: true
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateZoneId
+    
+    deployDfsPrivateZone: true
     dfsPrivateZoneId: networking.outputs.dataLakeDfsPrivateZoneId
 
     useCMK: useCMK

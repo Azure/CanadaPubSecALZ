@@ -265,7 +265,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
           networkSecurityGroup: {
             id: nsgFoundationalElements.id
           }
-        }        
+        }
       }
       {
         name: subnetPresentationName
@@ -301,13 +301,18 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
           networkSecurityGroup: {
             id: nsgData.id
           }
-        } 
+        }
       }
       {
         name: subnetPrivateEndpointsName
         properties: {
           addressPrefix: subnetPrivateEndpointsPrefix
           privateEndpointNetworkPolicies: 'Disabled'
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.Storage'
+            }
+          ]
         }
       }
       {

@@ -277,13 +277,30 @@ module dataLake '../../azresources/storage/storage-adlsgen2.bicep' = {
     name: datalakeStorageName
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
+
+    deployBlobPrivateZone: true
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateZoneId
+
+    deployDfsPrivateZone: true
     dfsPrivateZoneId: networking.outputs.dataLakeDfsPrivateZoneId
+
+    defaultNetworkAcls: 'Deny'
+    subnetIdForVnetRestriction: array(networking.outputs.privateEndpointSubnetId)
 
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
     keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
     keyVaultName: useCMK ? keyVault.outputs.akvName : ''
+  }
+}
+
+var dataLakeSynapseFSName = 'synapsecontainer'
+module dataLakeSynapseFS '../../azresources/storage/storage-adlsgen2-fs.bicep' = {
+  name: 'deploy-datalake-fs-for-synapse'
+  scope: rgStorage
+  params: {
+    adlsName: dataLake.outputs.storageName
+    fsName: dataLakeSynapseFSName
   }
 }
 
@@ -420,9 +437,14 @@ module synapse '../../azresources/analytics/synapse/main.bicep' = {
   scope: rgCompute
   params: {
     synapseName: synapseName
-    computeSubnetId: networking.outputs.synapseSubnetId
     tags: tags
+
+    computeSubnetId: networking.outputs.synapseSubnetId
     managedResourceGroupName: '${rgCompute.name}-${synapseName}-${uniqueString(rgCompute.id)}'
+
+    adlsDfsUri: dataLake.outputs.primaryDfsEndpoint
+    adlsFSName: dataLakeSynapseFSName
+    
     synapseUsername: synapseUsername 
     synapsePassword: synapsePassword
   }

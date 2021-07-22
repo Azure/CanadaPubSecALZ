@@ -6,45 +6,18 @@
 
 param synapseName string
 param tags object = {}
+
+param adlsDfsUri string
+param adlsFSName string
+
 param managedResourceGroupName string
+param computeSubnetId string
+
 param synapseUsername string
 @secure()
 param synapsePassword string
 
-param computeSubnetId string
-
-resource synapseadlegen2 'Microsoft.Storage/storageAccounts@2019-06-01' = {
-  location: resourceGroup().location
-  name: 'synadlsg2${uniqueString(resourceGroup().id)}'
-  identity: {
-    type: 'SystemAssigned'
-  }
-  kind: 'StorageV2'
-  sku: {
-    name: 'Standard_GRS'
-  }
-  tags: tags
-  properties: {
-    accessTier: 'Hot'
-    isHnsEnabled: true
-    supportsHttpsTrafficOnly: true
-    allowBlobPublicAccess: false
-  }
-}
-
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-02-01' = {
-  dependsOn: [
-    synapseadlegen2
-  ]
-  name: '${synapseadlegen2.name}/default/synapsecontainer'
-}
-
-
 resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
-  dependsOn: [
-    synapseadlegen2
-    container
-  ]
   name: synapseName
   tags: tags
   location: resourceGroup().location
@@ -64,8 +37,8 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
       publicNetworkAccess: 'Disabled'
     }
     defaultDataLakeStorage: {
-      accountUrl: synapseadlegen2.properties.primaryEndpoints.dfs
-      filesystem: 'synapsecontainer'
+      accountUrl: adlsDfsUri
+      filesystem: adlsFSName
     }
   }
   identity: {
