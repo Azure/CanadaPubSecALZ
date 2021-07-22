@@ -130,6 +130,9 @@ param selfHostedVMUsername string
 @description('When true, customer managed keys are used for Azure resources')
 param useCMK bool = false
 
+@description('When true, Azure ML workspace has high business impact')
+param enableHbiWorkspace bool = false
+
 // Configure generic subscription
 module genericSubscription '../lz-generic-subscription/main.bicep' = {
   name: 'deploy-generic-subscription-archetype'
@@ -259,5 +262,7 @@ module landingZone 'lz.bicep' = {
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
     useCMK: useCMK
+
+    enableHbiWorkspace: enableHbiWorkspace
   }
 }

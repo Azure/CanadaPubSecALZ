@@ -15,7 +15,7 @@ param privateZoneAzureMLNotebooksId string
 param tags object = {}
 
 @description('Enabling high business impact workspace')
-param enableHbiWorkspace bool = true
+param enableHbiWorkspace bool = false
 
 resource aml 'Microsoft.MachineLearningServices/workspaces@2020-08-01' = {
   name: name
