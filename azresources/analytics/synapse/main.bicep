@@ -79,7 +79,7 @@ var azCliCommand = '''
 '''
 
 module addResourceAccess '../../util/deploymentScript.bicep' = { 
-  name: 'grant-access-from-resource-instance-to-${adlsName}'
+  name: 'grant-resource-instance-access-${synapse.name}-to-${adlsName}'
   params: {
     deploymentScript: format(azCliCommand, synapse.id, subscription().tenantId, adlsResourceGroupName, adlsName)
     deploymentScriptName: 'grant-access-${synapse.name}-${adlsName}'
