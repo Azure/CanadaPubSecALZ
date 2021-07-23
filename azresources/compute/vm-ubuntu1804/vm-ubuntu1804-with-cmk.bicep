@@ -89,6 +89,10 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
 }
 
 resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
+    dependsOn: [
+        diskEncryptionSetRoleAssignmentForCMK
+    ]
+    
     name: vmName
     location: resourceGroup().location
     zones: [

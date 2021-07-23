@@ -100,6 +100,9 @@ param selfHostedVMUsername string
 @description('When true, customer managed keys are used for Azure resources')
 param useCMK bool
 
+@description('When true, Azure ML workspace has high business impact workspace enabled')
+param enableHbiWorkspace bool
+
 var sqldbPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldbUsername))}'
 var sqlmiPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqlmiUsername))}'
 var selfHostedVMPassword = '${uniqueString(rgCompute.id)}*${toUpper(uniqueString(selfHostedVMUsername))}'
@@ -529,13 +532,17 @@ module aml '../../azresources/analytics/aml/main.bicep' = {
   params: {
     name: amlName
     tags: tags
-    keyVaultId: keyVault.outputs.akvId
     containerRegistryId: acr.outputs.acrId
     storageAccountId: dataLakeMetaData.outputs.storageId
     appInsightsId: appInsights.outputs.aiId
     privateZoneAzureMLApiId: networking.outputs.amlApiPrivateZoneId
     privateZoneAzureMLNotebooksId: networking.outputs.amlNotebooksPrivateZoneId
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
+    enableHbiWorkspace: enableHbiWorkspace
+
+    useCMK: useCMK
+    akvResourceGroupName: rgSecurity.name
+    akvName: keyVault.outputs.akvName
   }
 }
 

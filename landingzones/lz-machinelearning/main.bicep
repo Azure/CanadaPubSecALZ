@@ -130,6 +130,9 @@ param selfHostedVMUsername string
 @description('When true, customer managed keys are used for Azure resources')
 param useCMK bool = false
 
+@description('When true, Azure ML workspace has high business impact')
+param enableHbiWorkspace bool = false
+
 // Configure generic subscription
 module genericSubscription '../lz-generic-subscription/main.bicep' = {
   name: 'deploy-generic-subscription-archetype'
@@ -162,11 +165,6 @@ module genericSubscription '../lz-generic-subscription/main.bicep' = {
     automationAccountName: automationAccountName
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
-    egressVirtualApplianceIp: egressVirtualApplianceIp
-    hubVnetId: hubVnetId
-    hubCGNATIPRange: hubCGNATIPRange
-    hubRFC1918IPRange: hubRFC1918IPRange
-
     deployVnet: false
     rgVnetName: ''
     vnetName: ''
@@ -179,6 +177,11 @@ module genericSubscription '../lz-generic-subscription/main.bicep' = {
     subnetApplicationPrefix: ''
     subnetDataName: ''
     subnetDataPrefix: ''
+
+    egressVirtualApplianceIp: ''
+    hubVnetId: ''
+    hubCGNATIPRange: ''
+    hubRFC1918IPRange: ''
   }
 }
 
@@ -259,5 +262,7 @@ module landingZone 'lz.bicep' = {
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
     useCMK: useCMK
+
+    enableHbiWorkspace: enableHbiWorkspace
   }
 }
