@@ -71,10 +71,10 @@
             "value": "10.18.0.36"
         },        
         "rgVnetName": {
-            "value": "rgVnet072021W3"
+            "value": "rgVnet072021W4"
         },
         "rgAutomationName": {
-            "value": "rgAutomation072021W3"
+            "value": "rgAutomation072021W4"
         },
         "deployVnet": {
             "value": true
