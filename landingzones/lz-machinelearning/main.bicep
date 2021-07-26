@@ -133,63 +133,33 @@ param useCMK bool = false
 @description('When true, Azure ML workspace has high business impact')
 param enableHbiWorkspace bool = false
 
-// Configure generic subscription
-module genericSubscription '../lz-generic-subscription/main.bicep' = {
-  name: 'deploy-generic-subscription-archetype'
+// Scaffold subscription
+module subScaffold '../scaffold-subscription.bicep' = {
+  name: 'configure-subscription'
   scope: subscription()
   params: {
-    createBudget: createBudget
-    budgetAmount: budgetAmount
-    budgetName: budgetName
-    budgetNotificationEmailAddress: budgetNotificationEmailAddress
-    budgetStartDate: budgetStartDate
-    budgetTimeGrain: budgetTimeGrain
-
     subscriptionOwnerGroupObjectIds: subscriptionOwnerGroupObjectIds
     subscriptionContributorGroupObjectIds: subscriptionContributorGroupObjectIds
     subscriptionReaderGroupObjectIds: subscriptionReaderGroupObjectIds
+
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
     
     securityContactEmail: securityContactEmail
     securityContactPhone: securityContactPhone
-
+    
+    createBudget: createBudget
+    budgetName: budgetName
+    budgetAmount: budgetAmount
+    budgetTimeGrain: budgetTimeGrain
+    budgetStartDate: budgetStartDate
+    budgetNotificationEmailAddress: budgetNotificationEmailAddress
+    
     tagISSO: tagISSO
-    tagClientOrganization: tagClientOrganization
-    tagCostCenter: tagCostCenter
-    tagDataSensitivity: tagDataSensitivity
-    tagProjectContact: tagProjectContact
-    tagProjectName: tagProjectName
-    tagTechnicalContact: tagTechnicalContact
-
-    rgNetworkWatcherName: rgNetworkWatcherName
-    rgAutomationName: rgAutomationName
-    automationAccountName: automationAccountName
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-
-    deployVnet: false
-    rgVnetName: ''
-    vnetName: ''
-    vnetAddressSpace: ''
-    subnetFoundationalElementsName: ''
-    subnetFoundationalElementsPrefix: ''
-    subnetPresentationName: ''
-    subnetPresentationPrefix: ''
-    subnetApplicationName: ''
-    subnetApplicationPrefix: ''
-    subnetDataName: ''
-    subnetDataPrefix: ''
-
-    egressVirtualApplianceIp: ''
-    hubVnetId: ''
-    hubCGNATIPRange: ''
-    hubRFC1918IPRange: ''
   }
 }
 
-// Overlay Machine Learning landing zone
+// Deploy Machine Learning Landing Zone
 module landingZone 'lz.bicep' = {
-  dependsOn: [
-    genericSubscription
-  ]
   name: 'deploy-machinelearning-archetype'
   scope: subscription()
   params: {
@@ -202,13 +172,16 @@ module landingZone 'lz.bicep' = {
   
     securityContactEmail: securityContactEmail
 
-    rgExistingAutomationName: rgAutomationName
+    rgAutomationName: rgAutomationName
+    rgNetworkWatcherName: rgNetworkWatcherName
     rgVnetName: rgVnetName
     rgComputeName: rgComputeName
     rgMonitorName: rgMonitorName
     rgSecurityName: rgSecurityName
     rgSelfHostedRuntimeName: rgSelfHostedRuntimeName
     rgStorageName: rgStorageName
+
+    automationAccountName: automationAccountName
 
     deploySQLDB: deploySQLDB
     deploySQLMI: deploySQLMI

@@ -24,13 +24,16 @@ param tagProjectContact string
 param tagProjectName string
 param tagTechnicalContact string
 
-param rgExistingAutomationName string
+param rgAutomationName string
+param rgNetworkWatcherName string
 param rgVnetName string
 param rgStorageName string
 param rgComputeName string
 param rgSecurityName string
 param rgMonitorName string
 param rgSelfHostedRuntimeName string
+
+param automationAccountName string
 
 param vnetName string
 param vnetAddressSpace string
@@ -133,8 +136,16 @@ var tags = {
 var useDeploymentScripts = useCMK
 
 //resource group deployments
-resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' existing = {
-  name: rgExistingAutomationName
+resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
+  name: rgNetworkWatcherName
+  location: azureRegion
+  tags: tags
+}
+
+resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
+  name: rgAutomationName
+  location: azureRegion
+  tags: tags
 }
 
 resource rgVnet 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -171,6 +182,16 @@ resource rgSelfhosted 'Microsoft.Resources/resourceGroups@2020-06-01' = if (depl
   name: rgSelfHostedRuntimeName
   location: azureRegion
   tags: tags
+}
+
+// Automation
+module automationAccount '../../azresources/automation/automation-account.bicep' = {
+  name: 'deploy-automation-account'
+  scope: rgAutomation
+  params: {
+    automationAccountName: automationAccountName
+    tags: tags
+  }
 }
 
 // Prepare for CMK deployments
