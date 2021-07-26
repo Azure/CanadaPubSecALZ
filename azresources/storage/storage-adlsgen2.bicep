@@ -7,9 +7,22 @@
 param name string = 'datalake${uniqueString(resourceGroup().id)}'
 param tags object = {}
 
+@description('Required if private zones are used')
 param privateEndpointSubnetId string
+
+@description('When true, blob private zone is created')
+param deployBlobPrivateZone bool
+@description('Required when deployBlobPrivateZone=true')
 param blobPrivateZoneId string
+
+@description('When true, blob private zone is created')
+param deployDfsPrivateZone bool
+@description('Required when deployFilePrivateZone=true')
 param dfsPrivateZoneId string
+
+param defaultNetworkAcls string = 'deny'
+param bypassNetworkAcls string = 'AzureServices,Logging,Metrics'
+param subnetIdForVnetRestriction array = []
 
 @description('When true, customer managed key is used for encryption')
 param useCMK bool
@@ -22,9 +35,9 @@ param deploymentScriptIdentityId string
 
 /* Storage Account */
 resource storage 'Microsoft.Storage/storageAccounts@2019-06-01' = {
+  tags: tags
   location: resourceGroup().location
   name: name
-  tags: tags
   identity: {
     type: 'SystemAssigned'
   }
@@ -61,8 +74,12 @@ resource storage 'Microsoft.Storage/storageAccounts@2019-06-01' = {
       }
     }
     networkAcls: {
-      defaultAction: 'Deny'
-      bypass: 'AzureServices,Logging,Metrics'
+      defaultAction: defaultNetworkAcls
+      bypass: bypassNetworkAcls
+      virtualNetworkRules: [for subnetId in subnetIdForVnetRestriction: {
+        id: subnetId
+        action: 'Allow'
+      }]
     }
   }
 }
@@ -82,7 +99,7 @@ module enableCMK 'storage-enable-cmk.bicep' = if (useCMK) {
 }
 
 /* Private Endpoints */
-resource datalake_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
+resource datalake_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployBlobPrivateZone) {
   location: resourceGroup().location
   name: '${storage.name}-blob-endpoint'
   properties: {
@@ -103,7 +120,7 @@ resource datalake_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   }
 }
 
-resource datalake_dfs_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
+resource datalake_dfs_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployDfsPrivateZone) {
   location: resourceGroup().location
   name: '${storage.name}-dfs-endpoint'
   properties: {
@@ -124,7 +141,7 @@ resource datalake_dfs_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   }
 }
 
-resource datalake_blob_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = {
+resource datalake_blob_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = if (deployBlobPrivateZone) {
   name: '${datalake_blob_pe.name}/default'
   properties: {
     privateDnsZoneConfigs: [
@@ -138,7 +155,7 @@ resource datalake_blob_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDns
   }
 }
 
-resource datalake_dfs_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = {
+resource datalake_dfs_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = if (deployDfsPrivateZone) {
   name: '${datalake_dfs_pe.name}/default'
   properties: {
     privateDnsZoneConfigs: [
@@ -152,5 +169,6 @@ resource datalake_dfs_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZ
   }
 }
 
-output storageId string = storage.id
 output storageName string = storage.name
+output storageId string = storage.id
+output primaryDfsEndpoint string = storage.properties.primaryEndpoints.dfs

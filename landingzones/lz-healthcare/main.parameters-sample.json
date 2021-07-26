@@ -1,0 +1,165 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "securityContactEmail": {
+      "value": "hudua@microsoft.com"
+    },
+    "securityContactPhone": {
+      "value": "6047647018"
+    },
+    "createBudget": {
+      "value": false
+    },
+    "budgetName": {
+      "value": "SubscriptionBudget"
+    },
+    "budgetAmount": {
+      "value": 100
+    },
+    "budgetTimeGrain": {
+      "value": "Monthly"
+    },
+    "budgetNotificationEmailAddress": {
+      "value": "hudua@microsoft.com"
+    },
+    "tagISSO": {
+      "value": "tbd"
+    },
+    "tagClientOrganization": {
+      "value": "tbd"
+    },
+    "tagCostCenter": {
+      "value": "tbd"
+    },
+    "tagDataSensitivity": {
+      "value": "tbd"
+    },
+    "tagProjectContact": {
+      "value": "tbd"
+    },
+    "tagProjectName": {
+      "value": "tbd"
+    },
+    "tagTechnicalContact": {
+      "value": "tbd"
+    },
+    "subscriptionOwnerGroupObjectIds": {
+      "value": []
+    },
+    "subscriptionContributorGroupObjectIds": {
+      "value": []
+    },
+    "subscriptionReaderGroupObjectIds": {
+      "value": []
+    },
+    "egressVirtualApplianceIp": {
+      "value": "20.0.0.4"
+    },
+    "hubVnetId": {
+      "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourceGroups/dnd-lz/providers/Microsoft.Network/virtualNetworks/vnet"
+    },
+    "hubRFC1918IPRange": {
+      "value": "20.0.0.0/16"
+    },
+    "hubCGNATIPRange": {
+      "value": "100.90.0.0/16"
+    },
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourcegroups/dnd-lz/providers/microsoft.operationalinsights/workspaces/dnd-la"
+    },
+    "rgVnetName": {
+      "value": "azmlNetwork6756-test"
+    },
+    "rgAutomationName": {
+      "value": "azmlAutomation6756-test"
+    },
+    "rgStorageName": {
+      "value": "azmlStorage6756-test"
+    },
+    "rgComputeName": {
+      "value": "azmlCompute6756-test"
+    },
+    "rgSecurityName": {
+      "value": "azmlSecurity6756-test"
+    },
+    "rgMonitorName": {
+      "value": "azmlMonitor6756-test"
+    },
+    "rgSelfHostedRuntimeName": {
+      "value": "azmlSelfHostingIR6756-test"
+    },
+    "automationAccountName": {
+      "value": "automation6756-test"
+    },
+    "vnetName": {
+      "value": "vnet"
+    },
+    "vnetAddressSpace": {
+      "value": "10.0.0.0/16"
+    },
+    "subnetFoundationalElementsName": {
+      "value": "foundationalElements"
+    },
+    "subnetFoundationalElementsPrefix": {
+      "value": "10.0.1.0/25"
+    },
+    "subnetPresentationName": {
+      "value": "presentation"
+    },
+    "subnetPresentationPrefix": {
+      "value": "10.0.2.0/25"
+    },
+    "subnetApplicationName": {
+      "value": "application"
+    },
+    "subnetApplicationPrefix": {
+      "value": "10.0.3.0/25"
+    },
+    "subnetDataName": {
+      "value": "data"
+    },
+    "subnetDataPrefix": {
+      "value": "10.0.4.0/25"
+    },
+    "subnetDatabricksPublicName": {
+      "value": "databrickspublic"
+    },
+    "subnetDatabricksPublicPrefix": {
+      "value": "10.0.6.0/25"
+    },
+    "subnetDatabricksPrivateName": {
+      "value": "databricksprivate"
+    },
+    "subnetDatabricksPrivatePrefix": {
+      "value": "10.0.7.0/25"
+    },
+    "subnetPrivateEndpointsName": {
+      "value": "privateendpoints"
+    },
+    "subnetPrivateEndpointsPrefix": {
+      "value": "10.0.8.0/25"
+    },
+    "subnetSynapseName": {
+      "value": "synapse"
+    },
+    "subnetSynapsePrefix": {
+      "value": "10.0.9.0/25"
+    },
+    "deploySelfhostIRVM": {
+      "value": true
+    },
+    "selfHostedVMUsername": {
+      "value": "azadmin"
+    },
+    "synapseUsername": {
+      "value": "azadmin"
+    },
+    "secretExpiryInDays": {
+      "value": 3650
+    },
+    "useCMK": {
+      "value": false
+    }
+  }
+}
