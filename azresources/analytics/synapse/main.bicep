@@ -54,9 +54,9 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
     managedVirtualNetworkSettings: {
       preventDataExfiltration: false
     }
-    networkSettings: {
-      publicNetworkAccess: 'Disabled'
-    }
+
+    publicNetworkAccess: 'Disabled'
+
     defaultDataLakeStorage: {
       accountUrl: adls.properties.primaryEndpoints.dfs
       filesystem: adlsFSName
