@@ -20,7 +20,7 @@
                     "level": "error"
                 },
                 "no-hardcoded-env-urls": {
-                    "level": "warning"
+                    "level": "error"
                 }
             }
         }

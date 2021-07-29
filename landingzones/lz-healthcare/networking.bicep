@@ -383,7 +383,7 @@ module privatezone_sqldb '../../azresources/network/private-zone.bicep' = {
   name: 'deploy-privatezone-sqldb'
   scope: resourceGroup()
   params: {
-    zone: 'privatelink.database.windows.net'
+    zone: 'privatelink${environment().suffixes.sqlServerHostname}'
     vnetId: vnet.id
   }
 }
@@ -419,7 +419,7 @@ module privatezone_datalake_blob '../../azresources/network/private-zone.bicep' 
   name: 'deploy-privatezone-blob'
   scope: resourceGroup()
   params: {
-    zone: 'privatelink.blob.core.windows.net'
+    zone: 'privatelink.blob.${environment().suffixes.storage}'
     vnetId: vnet.id
   }
 }
@@ -428,7 +428,7 @@ module privatezone_datalake_dfs '../../azresources/network/private-zone.bicep' =
   name: 'deploy-privatezone-dfs'
   scope: resourceGroup()
   params: {
-    zone: 'privatelink.dfs.core.windows.net'
+    zone: 'privatelink.dfs.${environment().suffixes.storage}'
     vnetId: vnet.id
   }
 }
@@ -437,7 +437,7 @@ module privatezone_datalake_file '../../azresources/network/private-zone.bicep' 
   name: 'deploy-privatezone-file'
   scope: resourceGroup()
   params: {
-    zone: 'privatelink.file.core.windows.net'
+    zone: 'privatelink.file.${environment().suffixes.storage}'
     vnetId: vnet.id
   }
 }
