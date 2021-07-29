@@ -4,6 +4,28 @@
     "parameters": {
         "policyAssignmentManagementGroupId": {
             "value": "{{var-topLevelManagementGroupName}}"
+        },
+        "requiredRetentionDays": {
+            "value": "730"
+        },
+        "approvedVMExtensions": {
+            "value": [
+                "AzureDiskEncryption",
+                "AzureDiskEncryptionForLinux",
+                "ConfigurationforWindows",
+                "DependencyAgentWindows",
+                "DependencyAgentLinux",
+                "IaaSAntimalware",
+                "IaaSDiagnostics",
+                "LinuxDiagnostic",
+                "MicrosoftMonitoringAgent",
+                "NetworkWatcherAgentLinux",
+                "NetworkWatcherAgentWindows",
+                "OmsAgentForLinux",
+                "VMSnapshot",
+                "VMSnapshotLinux",
+                "WindowsAgent.AzureSecurityCenter"
+            ]
         }
     }
 }

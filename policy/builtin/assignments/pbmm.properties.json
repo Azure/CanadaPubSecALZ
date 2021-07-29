@@ -7,6 +7,12 @@
         },
         "logAnalyticsWorkspaceId": {
             "value": "{{var-logging-logAnalyticsWorkspaceId}}"
+        },
+        "listOfMembersToExcludeFromWindowsVMAdministratorsGroup": {
+            "value": "__tbd__implementation_specific__"
+        },
+        "listOfMembersToIncludeInWindowsVMAdministratorsGroup": {
+            "value": "__tbd__implementation_specific__"
         }
     }
 }

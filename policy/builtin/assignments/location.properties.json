@@ -4,6 +4,12 @@
     "parameters": {
         "policyAssignmentManagementGroupId": {
             "value": "{{var-topLevelManagementGroupName}}"
+        },
+        "allowedLocations": {
+            "value": [
+                "canadacentral",
+                "canadaeast"
+            ]
         }
     }
 }

@@ -27,7 +27,7 @@ var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssi
 var policyScopedId = resourceId('Microsoft.Authorization/policySetDefinitions', policyId)
 
 resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
-  name: 'assign-${uniqueString('hitrust-hipaa-', policyAssignmentManagementGroupId)}'
+  name: 'hipaa-${uniqueString('hitrust-hipaa-', policyAssignmentManagementGroupId)}'
   properties: {
     displayName: assignmentName
     policyDefinitionId: policyScopedId

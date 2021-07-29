@@ -9,6 +9,9 @@ targetScope = 'managementGroup'
 param policyAssignmentManagementGroupId string
 param logAnalyticsWorkspaceId string
 
+param listOfMembersToExcludeFromWindowsVMAdministratorsGroup string
+param listOfMembersToIncludeInWindowsVMAdministratorsGroup string
+
 var policyId = 'cf25b9c1-bd23-4eb6-bd2c-f4f3ac644a5f' // NIST SP 800-53 R4 
 var assignmentName = 'NIST SP 800-53 R4'
 
@@ -16,7 +19,7 @@ var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssi
 var policyScopedId = resourceId('Microsoft.Authorization/policySetDefinitions', policyId)
 
 resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
-  name: 'assign-${uniqueString('nist-sp-800-53-r4-',policyAssignmentManagementGroupId)}'
+  name: 'nistr4-${uniqueString('nist-sp-800-53-r4-',policyAssignmentManagementGroupId)}'
   properties: {
     displayName: assignmentName
     policyDefinitionId: policyScopedId
@@ -28,10 +31,10 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
         value: logAnalyticsWorkspaceId
        }
        listOfMembersToExcludeFromWindowsVMAdministratorsGroup: {
-        value: 'excludedUser'
+        value: listOfMembersToExcludeFromWindowsVMAdministratorsGroup
        }
        listOfMembersToIncludeInWindowsVMAdministratorsGroup: {
-        value: 'includedUser'
+        value: listOfMembersToIncludeInWindowsVMAdministratorsGroup
        }
     }
     enforcementMode: 'Default'

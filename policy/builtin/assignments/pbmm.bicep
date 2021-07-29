@@ -9,6 +9,9 @@ targetScope = 'managementGroup'
 param policyAssignmentManagementGroupId string
 param logAnalyticsWorkspaceId string
 
+param listOfMembersToExcludeFromWindowsVMAdministratorsGroup string
+param listOfMembersToIncludeInWindowsVMAdministratorsGroup string
+
 var policyId = '4c4a5f27-de81-430b-b4e5-9cbd50595a87' // Canada Federal PBMM
 var assignmentName = 'Canada Federal PBMM'
 
@@ -16,7 +19,7 @@ var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssi
 var policyScopedId = resourceId('Microsoft.Authorization/policySetDefinitions', policyId)
 
 resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
-  name: 'assign-${uniqueString('pbmm-',policyAssignmentManagementGroupId)}'
+  name: 'pbmm-${uniqueString('pbmm-',policyAssignmentManagementGroupId)}'
   properties: {
     displayName: assignmentName
     policyDefinitionId: policyScopedId
@@ -28,10 +31,10 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
         value: logAnalyticsWorkspaceId
        }
        listOfMembersToExcludeFromWindowsVMAdministratorsGroup: {
-        value: 'excludedUser'
+        value: listOfMembersToExcludeFromWindowsVMAdministratorsGroup
        }
        listOfMembersToIncludeInWindowsVMAdministratorsGroup: {
-        value: 'includedUser'
+        value: listOfMembersToIncludeInWindowsVMAdministratorsGroup
        }
     }
     enforcementMode: 'Default'
