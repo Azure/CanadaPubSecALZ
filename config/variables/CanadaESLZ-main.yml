@@ -31,6 +31,7 @@ variables:
   var-logging-logAnalyticsResourceGroupName: pubSecLogAnalyticsRG
   var-logging-logAnalyticsWorkspaceName: pubSecLogAnalytics
   var-logging-logAnalyticsAutomationAccountName: pubSecLogAnalyticsAutomation
+  var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
   var-logging-securityContactEmail: sesivan@microsoft.com
   var-logging-securityContactPhone: 6472960698
   var-logging-createBudget: false
