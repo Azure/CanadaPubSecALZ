@@ -10,6 +10,7 @@ param hubCGNATIPRange string
 
 param logAnalyticsWorkspaceResourceId string
 
+param deploySQLDB bool
 param useCMK bool
 
 param testRunnerCleanupAfterDeployment bool = true
@@ -63,7 +64,8 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
     // Data Zone (HRZ) Subnet
     subnetDataName: 'data'
     subnetDataPrefix: '10.1.4.0/25'
-       
+  
+    // Databricks
     subnetDatabricksPublicName: 'databrickspublic'
     subnetDatabricksPublicPrefix: '10.1.5.0/25'
     
@@ -73,10 +75,13 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
     // Synapse
     subnetSynapseName: 'synapse'
     subnetSynapsePrefix: '10.1.7.0/25'
+
+    subnetWebAppName: 'webapp'
+    subnetWebAppPrefix: '10.1.8.0/25'
     
     // Priavte Endpoint Subnet
     subnetPrivateEndpointsName: 'privateendpoints'
-    subnetPrivateEndpointsPrefix: '10.1.8.0/25'
+    subnetPrivateEndpointsPrefix: '10.1.9.0/25'
        
     // Hub Virtual Network for virtual network peering
     hubVnetId: hubVnetId
@@ -98,8 +103,10 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
     secretExpiryInDays: 365
 
     deploySelfhostIRVM: true
+    deploySQLDB: deploySQLDB
     useCMK: useCMK
 
+    sqldbUsername: 'azadmin'
     synapseUsername: 'azadmin'
     selfHostedVMUsername: 'azadmin'
    

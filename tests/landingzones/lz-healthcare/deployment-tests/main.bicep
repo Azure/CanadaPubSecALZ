@@ -3,10 +3,22 @@ targetScope = 'subscription'
 var testScenarios = [
   {
     enabled: true
+    deploySQLDB: true
     useCMK: false
   }
   {
     enabled: true
+    deploySQLDB: true
+    useCMK: true
+  }
+  {
+    enabled: true
+    deploySQLDB: false
+    useCMK: false
+  }
+  {
+    enabled: true
+    deploySQLDB: false
     useCMK: true
   }
 ]
@@ -77,6 +89,7 @@ module runner 'test-runner.bicep' =  [for (scenario, i) in testScenarios: if (sc
 
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.workspaceResourceId
 
+    deploySQLDB: scenario.deploySQLDB
     useCMK: scenario.useCMK
 
     testRunnerCleanupAfterDeployment: true

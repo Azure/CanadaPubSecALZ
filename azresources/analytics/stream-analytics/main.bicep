@@ -4,18 +4,20 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param name string = 'aiweb-${uniqueString(resourceGroup().id)}'
+param name string
 param tags object = {}
 
-resource ai 'Microsoft.Insights/components@2020-02-02-preview' = {
+
+resource streamanalytics 'Microsoft.StreamAnalytics/streamingjobs@2017-04-01-preview' = {
   name: name
   tags: tags
   location: resourceGroup().location
-  kind: 'web'
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
-    Application_Type: 'web'
+    sku: {
+      name: 'Standard'
+    }
   }
 }
-
-output aiId string = ai.id
-output aiIKey string = ai.properties.InstrumentationKey

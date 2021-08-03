@@ -60,6 +60,10 @@ param subnetDatabricksPrivatePrefix string
 param subnetPrivateEndpointsName string
 param subnetPrivateEndpointsPrefix string
 
+// Web App Subnet
+param subnetWebAppName string
+param subnetWebAppPrefix string
+
 // Synapse Subnet
 param subnetSynapseName string
 param subnetSynapsePrefix string
@@ -104,6 +108,9 @@ param selfHostedRuntimeVmSize string = 'Standard_D8s_v3'
 param budgetTimeGrain string = 'Monthly'
 
 // ML landing zone parameters - start
+@description('Should SQL Database be deployed in environment')
+param deploySQLDB bool
+
 @description('Should ADF Self Hosted Integration Runtime VM be deployed in environment')
 param deploySelfhostIRVM bool
 
@@ -113,6 +120,10 @@ param selfHostedVMUsername string
 
 @secure()
 param synapseUsername string
+
+@description('If SQL Database is selected to be deployed, enter username. Otherwise, you can enter blank')
+@secure()
+param sqldbUsername string
 
 @description('When true, customer managed keys are used for Azure resources')
 param useCMK bool = false
@@ -153,6 +164,8 @@ module landingZone 'lz.bicep' = {
     tagProjectContact: tagProjectContact
     tagProjectName: tagProjectName
     tagTechnicalContact: tagTechnicalContact
+
+    securityContactEmail: securityContactEmail
   
     rgAutomationName: rgAutomationName
     rgNetworkWatcherName: rgNetworkWatcherName
@@ -164,6 +177,9 @@ module landingZone 'lz.bicep' = {
     rgStorageName: rgStorageName
 
     automationAccountName: automationAccountName
+
+    deploySQLDB: deploySQLDB
+    sqldbUsername: sqldbUsername
 
     deploySelfhostIRVM: deploySelfhostIRVM
     selfHostedVMUsername: selfHostedVMUsername
@@ -196,6 +212,9 @@ module landingZone 'lz.bicep' = {
 
     subnetPrivateEndpointsName: subnetPrivateEndpointsName
     subnetPrivateEndpointsPrefix: subnetPrivateEndpointsPrefix
+
+    subnetWebAppName: subnetWebAppName
+    subnetWebAppPrefix: subnetWebAppPrefix
 
     subnetSynapseName: subnetSynapseName
     subnetSynapsePrefix: subnetSynapsePrefix

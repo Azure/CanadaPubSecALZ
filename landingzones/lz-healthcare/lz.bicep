@@ -8,8 +8,13 @@ targetScope = 'subscription'
 
 param azureRegion string = deployment().location
 
+@description('Should SQL Database be deployed in environment')
+param deploySQLDB bool
+
 @description('Should ADF Self Hosted Integration Runtime VM be deployed in environment')
 param deploySelfhostIRVM bool
+
+param securityContactEmail string
 
 param tagClientOrganization string
 param tagCostCenter string
@@ -57,15 +62,22 @@ param subnetApplicationPrefix string
 param subnetDataName string
 param subnetDataPrefix string
 
+// Databricks
 param subnetDatabricksPublicName string
 param subnetDatabricksPublicPrefix string
 
 param subnetDatabricksPrivateName string
 param subnetDatabricksPrivatePrefix string
 
+// Private Endpoints
 param subnetPrivateEndpointsName string
 param subnetPrivateEndpointsPrefix string
 
+// Web App Subnet
+param subnetWebAppName string
+param subnetWebAppPrefix string
+
+// Synapse Analytics
 param subnetSynapseName string
 param subnetSynapsePrefix string
 
@@ -80,6 +92,10 @@ param selfHostedRuntimeVmSize string
 @secure()
 param synapseUsername string
 
+@description('If SQL Database is selected to be deployed, enter username. Otherwise, you can enter blank')
+@secure()
+param sqldbUsername string
+
 @description('If ADF Self Hosted Integration Runtime VM is selected to be deployed, enter username. Otherwise, you can enter blank')
 @secure()
 param selfHostedVMUsername string
@@ -87,6 +103,7 @@ param selfHostedVMUsername string
 @description('When true, customer managed keys are used for Azure resources')
 param useCMK bool
 
+var sqldbPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldbUsername))}'
 var synapsePassword = '${uniqueString(rgCompute.id)}*${toUpper(uniqueString(synapseUsername))}'
 var selfHostedVMPassword = '${uniqueString(rgCompute.id)}*${toUpper(uniqueString(selfHostedVMUsername))}'
 
@@ -95,12 +112,20 @@ var databricksEgressLbName = 'egressLb'
 var datalakeStorageName = 'datalake${uniqueString(rgStorage.id)}'
 var amlMetaStorageName = 'amlmeta${uniqueString(rgCompute.id)}'
 var akvName = 'akv${uniqueString(rgSecurity.id)}'
+var sqlServerName = 'sqlserver${uniqueString(rgStorage.id)}'
 var adfName = 'adf${uniqueString(rgCompute.id)}'
 var amlName = 'aml${uniqueString(rgCompute.id)}'
 var acrName = 'acr${uniqueString(rgStorage.id)}'
 var aiName = 'ai${uniqueString(rgMonitor.id)}'
+var storageLoggingName = 'salogging${uniqueString(rgStorage.id)}'
 var synapseName = 'syn${uniqueString(rgMonitor.id)}'
 var fhirName = 'fhir${uniqueString(rgCompute.id)}'
+var azfuncStorageName = 'azfuncstg${uniqueString(rgCompute.id)}'
+var azfuncName = 'azfunc${uniqueString(rgCompute.id)}'
+var azfunhpName = 'azfunchp${uniqueString(rgCompute.id)}'
+var stranalyticsName = 'strana${uniqueString(rgCompute.id)}'
+var eventhubName = 'eventhub${uniqueString(rgCompute.id)}'
+
 
 var tags = {
   ClientOrganization: tagClientOrganization
@@ -208,6 +233,7 @@ module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploy
   dependsOn: [
     acr
     dataLake
+    storageLogging
     synapse
   ]
 
@@ -267,6 +293,9 @@ module networking 'networking.bicep' = {
     
     subnetPrivateEndpointsName: subnetPrivateEndpointsName
     subnetPrivateEndpointsPrefix: subnetPrivateEndpointsPrefix
+
+    subnetWebAppName: subnetWebAppName
+    subnetWebAppPrefix: subnetWebAppPrefix
         
     subnetSynapseName: subnetSynapseName
     subnetSynapsePrefix: subnetSynapsePrefix
@@ -286,6 +315,49 @@ module keyVault '../../azresources/security/key-vault.bicep' = {
     deployPrivateEndpoint: true
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.keyVaultPrivateZoneId
+  }
+}
+
+module storageLogging '../../azresources/storage/storage-generalpurpose.bicep' = {
+  name: 'deploy-storage-for-logging'
+  scope: rgStorage
+  params: {
+    tags: tags
+    name: storageLoggingName
+
+    privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
+    blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateZoneId
+    filePrivateZoneId: networking.outputs.dataLakeFilePrivateZoneId
+    deployBlobPrivateZone: false
+    deployFilePrivateZone: false
+    
+    defaultNetworkAcls: 'Deny'
+    subnetIdForVnetRestriction: []
+
+    useCMK: useCMK
+    deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
+    keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
+    keyVaultName: useCMK ? keyVault.outputs.akvName : ''
+  }
+}
+
+module sqlDb '../../azresources/data/sqldb/main.bicep' = if (deploySQLDB == true) {
+  name: 'deploy-sqldb'
+  scope: rgStorage
+  params: {
+    tags: tags
+    sqlServerName: sqlServerName
+    privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
+    privateZoneId: networking.outputs.sqlDBPrivateZoneId
+    sqldbUsername: sqldbUsername
+    sqldbPassword: sqldbPassword
+    saLoggingName: storageLogging.outputs.storageName
+    storagePath: storageLogging.outputs.storagePath
+    securityContactEmail: securityContactEmail
+
+    useCMK: useCMK
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
@@ -480,6 +552,48 @@ module akvsynapseUsername '../../azresources/security/key-vault-secret.bicep' = 
   }
 }
 
+module akvSqlDbUsername '../../azresources/security/key-vault-secret.bicep' = if (deploySQLDB == true) {
+  dependsOn: [
+    keyVault
+  ]
+  name: 'add-akv-secret-sqldbUsername'
+  scope: rgSecurity
+  params: {
+    akvName: akvName
+    secretName: 'sqldbUsername'
+    secretValue: sqldbUsername
+    secretExpiryInDays: secretExpiryInDays
+  }
+}
+
+module akvSqlDbPassword '../../azresources/security/key-vault-secret.bicep' = if (deploySQLDB == true) {
+  dependsOn: [
+    keyVault
+  ]
+  name: 'add-akv-secret-sqldbPassword'
+  scope: rgSecurity
+  params: {
+    akvName: akvName
+    secretName: 'sqldbPassword'
+    secretValue: sqldbPassword
+    secretExpiryInDays: secretExpiryInDays
+  }
+}
+
+module akvSqlDbConnection '../../azresources/security/key-vault-secret.bicep' = if (deploySQLDB == true) {
+  dependsOn: [
+    keyVault
+  ]
+  name: 'add-akv-secret-SqlDbConnectionString'
+  scope: rgSecurity
+  params: {
+    akvName: akvName
+    secretName: 'SqlDbConnectionString'
+    secretValue: 'Server=tcp:${deploySQLDB ? sqlDb.outputs.sqlDbFqdn : ''},1433;Initial Catalog=${sqlServerName};Persist Security Info=False;User ID=${sqldbUsername};Password=${sqldbPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+    secretExpiryInDays: secretExpiryInDays
+  }
+}
+
 module akvsynapsePassword '../../azresources/security/key-vault-secret.bicep' = {
   dependsOn: [
     keyVault
@@ -543,5 +657,79 @@ module fhir '../../azresources/compute/fhir.bicep' = {
     tags: tags
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.fhirPrivateZoneId
+  }
+}
+
+
+// AzFunc
+module functionStorage '../../azresources/storage/storage-generalpurpose.bicep' = {
+  name: 'deploy-function-storage'
+  scope: rgCompute
+  params: {
+    tags: tags
+    name: azfuncStorageName
+
+    privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
+    blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateZoneId
+    filePrivateZoneId: networking.outputs.dataLakeFilePrivateZoneId
+    deployBlobPrivateZone: true
+    deployFilePrivateZone: true
+
+    useCMK: useCMK
+    deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
+    keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
+    keyVaultName: useCMK ? keyVault.outputs.akvName : ''
+  }
+}
+
+module functionAppServicePlan '../../azresources/compute/web/app-service-plan-linux.bicep' = {
+  name: 'deploy-functions-plan'
+  scope: rgCompute
+  params: {
+    name: azfunhpName
+    skuName: 'S1'
+    skuTier: 'Standard'
+
+    tags: tags
+  }
+}
+
+module functionApp '../../azresources/compute/web/functions-python-linux.bicep' = {
+  name: 'deploy-azure-function'
+  scope: rgCompute
+  params: {
+    name: azfuncName
+    appServicePlanId: functionAppServicePlan.outputs.planId
+    
+    aiIKey: appInsights.outputs.aiIKey
+
+    storageName: functionStorage.outputs.storageName
+    storageId: functionStorage.outputs.storageId
+    
+    vnetIntegrationSubnetId: networking.outputs.webAppSubnetId
+    
+    tags: tags
+  }
+}
+
+// Streaming Analytics
+module streamanalytics '../../azresources/analytics/stream-analytics/main.bicep' = {
+  name: 'deploy-stream-analytics'
+  scope: rgCompute
+  params: {
+    name: stranalyticsName
+    tags: tags
+  }
+}
+
+// Event Hub
+module eventhub '../../azresources/integration/eventhub.bicep' = {
+  name: 'deploy-eventhub'
+  scope: rgCompute
+  params: {
+    name: eventhubName
+    tags: tags
+    privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
+    privateZoneEventHubId : networking.outputs.eventhubPrivateZoneId
   }
 }

@@ -139,14 +139,26 @@
         "subnetPrivateEndpointsPrefix": {
             "value": "10.5.7.0/25"
         },
+        "subnetWebAppName": {
+            "value": "webapp"
+        },
+        "subnetWebAppPrefix": {
+            "value": "10.5.8.0/25"
+        },
         "subnetSynapseName": {
             "value": "synapse"
         },
         "subnetSynapsePrefix": {
-            "value": "10.5.8.0/25"
+            "value": "10.5.9.0/25"
+        },
+        "deploySQLDB": {
+            "value": true
         },
         "deploySelfhostIRVM": {
             "value": true
+        },
+        "sqldbUsername": {
+            "value": "azadmin"
         },
         "selfHostedVMUsername": {
             "value": "azadmin"

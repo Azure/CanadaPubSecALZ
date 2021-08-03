@@ -4,18 +4,24 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param name string = 'aiweb-${uniqueString(resourceGroup().id)}'
+param name string
+param skuName string
+param skuTier string
+
 param tags object = {}
 
-resource ai 'Microsoft.Insights/components@2020-02-02-preview' = {
+resource plan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: name
-  tags: tags
   location: resourceGroup().location
-  kind: 'web'
+  tags: tags
+  kind: 'Linux'
+  sku: {
+    name: skuName
+    tier: skuTier
+  }
   properties: {
-    Application_Type: 'web'
+    reserved: true
   }
 }
 
-output aiId string = ai.id
-output aiIKey string = ai.properties.InstrumentationKey
+output planId string = plan.id

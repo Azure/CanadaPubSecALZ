@@ -44,6 +44,10 @@ param subnetDatabricksPrivatePrefix string
 param subnetPrivateEndpointsName string
 param subnetPrivateEndpointsPrefix string
 
+// Web App Subnet
+param subnetWebAppName string
+param subnetWebAppPrefix string
+
 // Synapse Analytics Subnet
 param subnetSynapseName string
 param subnetSynapsePrefix string
@@ -316,6 +320,20 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
         }
       }
       {
+        name: subnetWebAppName
+        properties: {
+          addressPrefix: subnetWebAppPrefix
+          delegations: [
+            {
+              name: 'webapp'
+              properties: {
+                serviceName: 'Microsoft.Web/serverFarms'
+              }
+            }
+          ]
+        }
+      }
+      {
         name: subnetDatabricksPublicName
         properties: {
           addressPrefix: subnetDatabricksPublicPrefix
@@ -469,6 +487,16 @@ module privatezone_fhir '../../azresources/network/private-zone.bicep' = {
   }
 }
 
+module privatezone_eventhub '../../azresources/network/private-zone.bicep' = {
+  name: 'deploy-privatezone-eventhub'
+  scope: resourceGroup()
+  params: {
+    zone: 'privatelink.servicebus.windows.net'
+    vnetId: vnet.id
+  }
+}
+
+
 output vnetId string = vnet.id
 
 output foundationalElementSubnetId string = '${vnet.id}/subnets/${subnetFoundationalElementsName}'
@@ -476,6 +504,7 @@ output presentationSubnetId string = '${vnet.id}/subnets/${subnetPresentationNam
 output applicationSubnetId string = '${vnet.id}/subnets/${subnetApplicationName}'
 output dataSubnetId string = '${vnet.id}/subnets/${subnetDataName}'
 output privateEndpointSubnetId string = '${vnet.id}/subnets/${subnetPrivateEndpointsName}'
+output webAppSubnetId string = '${vnet.id}/subnets/${subnetWebAppName}'
 output synapseSubnetId string = '${vnet.id}/subnets/${subnetSynapseName}'
 
 output databricksPublicSubnetName string = subnetDatabricksPublicName
@@ -491,3 +520,4 @@ output sqlDBPrivateZoneId string = privatezone_sqldb.outputs.privateZoneId
 output amlApiPrivateZoneId string = privatezone_azureml_api.outputs.privateZoneId
 output amlNotebooksPrivateZoneId string = privatezone_azureml_notebook.outputs.privateZoneId
 output fhirPrivateZoneId string = privatezone_fhir.outputs.privateZoneId
+output eventhubPrivateZoneId string = privatezone_eventhub.outputs.privateZoneId
