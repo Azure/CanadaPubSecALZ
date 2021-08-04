@@ -6,6 +6,14 @@
 param name string
 param appServicePlanId string
 
+@allowed([
+  'Python|3.9'
+  'Python|3.8'
+  'Python|3.7'
+  'Python|3.6'
+])
+param stack string = 'Python|3.9'
+
 param storageName string
 param storageId string
 
@@ -27,16 +35,13 @@ resource function_app 'Microsoft.Web/sites@2020-06-01' = {
     serverFarmId: appServicePlanId
     clientAffinityEnabled: true
     siteConfig: {
-      linuxFxVersion: 'Python|3.9'
+      linuxFxVersion: stack
       use32BitWorkerProcess: false
+      vnetRouteAllEnabled: true
       appSettings: [
         {
           name: 'WEBSITE_DNS_SERVER'
           value: '168.63.129.16'
-        }
-        {
-          name: 'WEBSITE_VNET_ROUTE_ALL'
-          value: '1'
         }
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
