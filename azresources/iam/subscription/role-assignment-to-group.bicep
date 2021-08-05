@@ -7,9 +7,9 @@
 targetScope = 'subscription'
 
 param roleDefinitionId string
-param subscriptionContributorGroupObjectIds array = []
+param groupObjectIds array = []
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for groupId in subscriptionContributorGroupObjectIds: {
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for groupId in groupObjectIds: {
   name: guid(subscription().id, groupId, roleDefinitionId)
   scope: subscription()
   properties: {

@@ -45,7 +45,7 @@ resource setTagISSO 'Microsoft.Resources/tags@2020-10-01' = {
 }
 
 // Configure Security Center
-module securityCenter '../azresources/security-center/enable-asc.bicep' = {
+module securityCenter '../azresources/security-center/asc.bicep' = {
   name: 'configure-security-center'
   scope: subscription()
   params: {
@@ -75,7 +75,7 @@ module group_roleAssignment_Owner '../azresources/iam/subscription/role-assignme
   scope: subscription()
   params: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ownerRoleDefinitionId)
-    subscriptionContributorGroupObjectIds: subscriptionOwnerGroupObjectIds
+    groupObjectIds: subscriptionOwnerGroupObjectIds
   }
 }
 
@@ -85,7 +85,7 @@ module group_roleAssignment_Contributor '../azresources/iam/subscription/role-as
   scope: subscription()
   params: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', contributorRoleDefinitionId)
-    subscriptionContributorGroupObjectIds: subscriptionContributorGroupObjectIds
+    groupObjectIds: subscriptionContributorGroupObjectIds
   }
 }
 
@@ -95,6 +95,6 @@ module group_roleAssignment_Reader '../azresources/iam/subscription/role-assignm
   scope: subscription()
   params: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', readerRoleDefinitionId)
-    subscriptionContributorGroupObjectIds: subscriptionReaderGroupObjectIds
+    groupObjectIds: subscriptionReaderGroupObjectIds
   }
 }
