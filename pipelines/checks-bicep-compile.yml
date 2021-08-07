@@ -4,11 +4,7 @@
 # OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 # ----------------------------------------------------------------------------------
 
-trigger: 
-  batch: true
-  branches:
-    include:
-     - main
+trigger: none
 
 pool:
   vmImage: ubuntu-latest
@@ -35,7 +31,6 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-
-                find . -type f -name '*.bicep' | xargs -tn1 -P 2 az bicep build -f 
+                find . -type f -name '*.bicep' | xargs -tn1 az bicep build -f 
               
               workingDirectory: ${{ variables['Build.SourcesDirectory'] }}
