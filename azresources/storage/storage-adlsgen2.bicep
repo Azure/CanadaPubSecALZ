@@ -95,7 +95,7 @@ module enableCMK 'storage-enable-cmk.bicep' = if (useCMK) {
     keyVaultResourceGroupName: keyVaultResourceGroupName
 
     deploymentScriptIdentityId: deploymentScriptIdentityId
-  }  
+  }
 }
 
 /* Private Endpoints */
@@ -118,6 +118,20 @@ resource datalake_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (
       }
     ]
   }
+
+  resource datalake_blob_pe_dns_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink_blob_core_windows_net'
+          properties: {
+            privateDnsZoneId: blobPrivateZoneId
+          }
+        }
+      ]
+    }
+  }
 }
 
 resource datalake_dfs_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployDfsPrivateZone) {
@@ -139,33 +153,19 @@ resource datalake_dfs_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (d
       }
     ]
   }
-}
 
-resource datalake_blob_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = if (deployBlobPrivateZone) {
-  name: '${datalake_blob_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink_blob_core_windows_net'
-        properties: {
-          privateDnsZoneId: blobPrivateZoneId
+  resource datalake_dfs_pe_dns_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink_dfs_core_windows_net'
+          properties: {
+            privateDnsZoneId: dfsPrivateZoneId
+          }
         }
-      }
-    ]
-  }
-}
-
-resource datalake_dfs_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = if (deployDfsPrivateZone) {
-  name: '${datalake_dfs_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink_dfs_core_windows_net'
-        properties: {
-          privateDnsZoneId: dfsPrivateZoneId
-        }
-      }
-    ]
+      ]
+    }
   }
 }
 

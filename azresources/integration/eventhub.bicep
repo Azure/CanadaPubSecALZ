@@ -9,8 +9,6 @@ param capacityvalue int = 1
 param privateEndpointSubnetId string
 param privateZoneEventHubId string
 
-
-
 resource eventhub 'Microsoft.EventHub/namespaces@2021-01-01-preview' = {
   name: name
   location: resourceGroup().location
@@ -28,7 +26,6 @@ resource eventhub 'Microsoft.EventHub/namespaces@2021-01-01-preview' = {
     zoneRedundant: true
   }
 }
-
 
 resource eventhub_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   location: resourceGroup().location
@@ -49,19 +46,18 @@ resource eventhub_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
       }
     ]
   }
-}
 
-resource eventhub_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = {
-  name: '${eventhub_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink-eventhub-ms'
-        properties: {
-          privateDnsZoneId: privateZoneEventHubId
+  resource eventhub_dns_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink-eventhub-ms'
+          properties: {
+            privateDnsZoneId: privateZoneEventHubId
+          }
         }
-      }
-    ]
+      ]
+    }
   }
 }
-

@@ -4,7 +4,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-
 param privateEndpointSubnetId string
 param privateZoneId string
 param name string = 'fhir${uniqueString(resourceGroup().id)}'
@@ -23,7 +22,6 @@ resource fhir 'Microsoft.HealthcareApis/services@2021-01-11' = {
     }
   }
 }
-
 
 resource fhir_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   location: resourceGroup().location
@@ -44,18 +42,18 @@ resource fhir_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
       }
     ]
   }
-}
 
-resource fhir_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = {
-  name: '${fhir_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink-api-fhir-ms'
-        properties: {
-          privateDnsZoneId: privateZoneId
+  resource fhir_pe_dns_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink-api-fhir-ms'
+          properties: {
+            privateDnsZoneId: privateZoneId
+          }
         }
-      }
-    ]
+      ]
+    }
   }
 }

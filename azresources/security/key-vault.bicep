@@ -33,11 +33,11 @@ resource akv 'Microsoft.KeyVault/vaults@2019-09-01' = {
       family: 'A'
     }
     tenantId: subscription().tenantId
-    
+
     enableSoftDelete: true
     enablePurgeProtection: true
     softDeleteRetentionInDays: softDeleteRetentionInDays
-    
+
     enabledForDeployment: enabledForDeployment
     enabledForDiskEncryption: enabledForDiskEncryption
     enabledForTemplateDeployment: enabledForTemplateDeployment
@@ -69,19 +69,19 @@ resource akv_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployPriv
       }
     ]
   }
-}
 
-resource akv_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = if (deployPrivateEndpoint) {
-  name: '${akv_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink_vaultcore_azure_net'
-        properties: {
-          privateDnsZoneId: privateZoneId
+  resource akv_pe_dns_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink_vaultcore_azure_net'
+          properties: {
+            privateDnsZoneId: privateZoneId
+          }
         }
-      }
-    ]
+      ]
+    }
   }
 }
 

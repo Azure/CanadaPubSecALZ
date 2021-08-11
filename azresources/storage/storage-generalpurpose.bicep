@@ -95,7 +95,7 @@ module enableCMK 'storage-enable-cmk.bicep' = if (useCMK) {
     keyVaultResourceGroupName: keyVaultResourceGroupName
 
     deploymentScriptIdentityId: deploymentScriptIdentityId
-  }  
+  }
 }
 
 /* Private Endpoints */
@@ -118,9 +118,23 @@ resource storage_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (d
       }
     ]
   }
+
+  resource storage_blob_pe_dns_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink_blob_core_windows_net'
+          properties: {
+            privateDnsZoneId: blobPrivateZoneId
+          }
+        }
+      ]
+    }
+  }
 }
 
-resource storage_file_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployFilePrivateZone == true){
+resource storage_file_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployFilePrivateZone == true) {
   location: resourceGroup().location
   name: '${storage.name}-file-endpoint'
   properties: {
@@ -139,33 +153,19 @@ resource storage_file_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (d
       }
     ]
   }
-}
 
-resource storage_blob_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = if (deployBlobPrivateZone == true) {
-  name: '${storage_blob_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink_blob_core_windows_net'
-        properties: {
-          privateDnsZoneId: blobPrivateZoneId
+  resource storage_file_pe_dns_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink_file_core_windows_net'
+          properties: {
+            privateDnsZoneId: filePrivateZoneId
+          }
         }
-      }
-    ]
-  }
-}
-
-resource storage_file_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = if (deployFilePrivateZone == true) {
-  name: '${storage_file_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink_file_core_windows_net'
-        properties: {
-          privateDnsZoneId: filePrivateZoneId
-        }
-      }
-    ]
+      ]
+    }
   }
 }
 

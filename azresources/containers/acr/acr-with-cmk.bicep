@@ -80,7 +80,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2020-11-01-preview' = {
   }
   properties: {
     adminUserEnabled: true
-    
+
     networkRuleSet: {
       defaultAction: 'Deny'
     }
@@ -98,12 +98,12 @@ resource acr 'Microsoft.ContainerRegistry/registries@2020-11-01-preview' = {
         status: retentionPolicyStatus
       }
     }
-    
+
     encryption: {
       status: 'enabled'
       keyVaultProperties: {
         identity: userAssignedIdentityClientId
-        keyIdentifier: tempAkvKey.outputs.keyUri 
+        keyIdentifier: tempAkvKey.outputs.keyUri
       }
     }
 
@@ -131,26 +131,26 @@ resource acr_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployPriv
       }
     ]
   }
-}
 
-resource acr_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = if (deployPrivateZone) {
-  name: '${acr_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink-azurecr-io'
-        properties: {
-          privateDnsZoneId: privateZoneId
+  resource acr_pe_dns_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink-azurecr-io'
+          properties: {
+            privateDnsZoneId: privateZoneId
+          }
         }
-      }
-    ]
+      ]
+    }
   }
 }
 
 // rotate from temporary key-vault to permanent key-vault & system-managed identity
 resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   scope: resourceGroup(akvResourceGroupName)
-  name: akvName  
+  name: akvName
 }
 
 module akvRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-sp.bicep' = {
@@ -179,8 +179,8 @@ var cliCmkRotateCommand = '''
     --key-encryption-key {2} \
     --identity '[system]' --debug
 '''
-   
-module rotateCmk '../../util/deploymentScript.bicep' = { 
+
+module rotateCmk '../../util/deploymentScript.bicep' = {
   dependsOn: [
     akvRoleAssignmentForCMK
   ]
@@ -196,12 +196,12 @@ module rotateCmk '../../util/deploymentScript.bicep' = {
 var cliCmkCleanUpCommand = '''
   az keyvault delete -g {0} -n {1}
 '''
-   
-module cleanupCmk '../../util/deploymentScript.bicep' = { 
+
+module cleanupCmk '../../util/deploymentScript.bicep' = {
   dependsOn: [
     rotateCmk
   ]
-  
+
   name: 'cleanup-cmk-${tempKeyVaultName}'
   params: {
     deploymentScript: format(cliCmkCleanUpCommand, resourceGroup().name, tempAkv.outputs.akvName)

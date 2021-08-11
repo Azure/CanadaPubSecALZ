@@ -22,7 +22,7 @@ param enableHbiWorkspace bool = false
 
 resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   scope: resourceGroup(akvResourceGroupName)
-  name: akvName  
+  name: akvName
 }
 
 module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
@@ -63,7 +63,6 @@ resource aml 'Microsoft.MachineLearningServices/workspaces@2020-08-01' = {
   }
 }
 
-
 resource aml_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   location: resourceGroup().location
   name: '${aml.name}-endpoint'
@@ -83,24 +82,24 @@ resource aml_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
       }
     ]
   }
-}
 
-resource aml_pe_dns_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = {
-  name: '${aml_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink-api-azureml-ms'
-        properties: {
-          privateDnsZoneId: privateZoneAzureMLApiId
+  resource aml_pe_dns_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink-api-azureml-ms'
+          properties: {
+            privateDnsZoneId: privateZoneAzureMLApiId
+          }
         }
-      }
-      {
-        name: 'privatelink-notebooks-azureml-ms'
-        properties: {
-          privateDnsZoneId: privateZoneAzureMLNotebooksId
+        {
+          name: 'privatelink-notebooks-azureml-ms'
+          properties: {
+            privateDnsZoneId: privateZoneAzureMLNotebooksId
+          }
         }
-      }
-    ]
+      ]
+    }
   }
 }
