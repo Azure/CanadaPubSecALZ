@@ -22,6 +22,8 @@ param synapsePrivateZoneId string
 param synapseDevPrivateZoneId string
 param synapseSqlPrivateZoneId string
 
+param deploymentScriptIdentityId string
+
 resource adls 'Microsoft.Storage/storageAccounts@2019-06-01' existing = {
   scope: resourceGroup(adlsResourceGroupName)
   name: adlsName
@@ -70,6 +72,16 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
   identity: {
     type: 'SystemAssigned'
   }
+
+  // Assign the workspace's system-assigned managed identity CONTROL permissions to SQL pools for pipeline integration
+  resource synapse_msi_sql_control_settings 'managedIdentitySqlControlSettings@2021-05-01' = {
+    name: 'default'
+    properties: {
+      grantSqlControlToManagedIdentity: {
+        desiredState: 'Enabled'
+      }
+    }
+  }
 }
 
 resource synapse_workspace_web_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
@@ -91,19 +103,19 @@ resource synapse_workspace_web_pe 'Microsoft.Network/privateEndpoints@2020-06-01
       }
     ]
   }
-}
 
-resource synapse_workspace_web_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = {
-  name: '${synapse_workspace_web_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink-synapse-workspace-web'
-        properties: {
-          privateDnsZoneId: synapsePrivateZoneId
+  resource synapse_workspace_web_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink-synapse-workspace-web'
+          properties: {
+            privateDnsZoneId: synapsePrivateZoneId
+          }
         }
-      }
-    ]
+      ]
+    }
   }
 }
 
@@ -126,19 +138,19 @@ resource synapse_workspace_dev_pe 'Microsoft.Network/privateEndpoints@2020-06-01
       }
     ]
   }
-}
 
-resource synapse_workspace_dev_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = {
-  name: '${synapse_workspace_dev_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink-synapse-workspace-dev'
-        properties: {
-          privateDnsZoneId: synapseDevPrivateZoneId
+  resource synapse_workspace_dev_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink-synapse-workspace-dev'
+          properties: {
+            privateDnsZoneId: synapseDevPrivateZoneId
+          }
         }
-      }
-    ]
+      ]
+    }
   }
 }
 
@@ -161,19 +173,19 @@ resource synapse_workspace_sql_pe 'Microsoft.Network/privateEndpoints@2020-06-01
       }
     ]
   }
-}
 
-resource synapse_workspace_sql_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = {
-  name: '${synapse_workspace_sql_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink-synapse-workspace-sql'
-        properties: {
-          privateDnsZoneId: synapseSqlPrivateZoneId
+  resource synapse_workspace_sql_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink-synapse-workspace-sql'
+          properties: {
+            privateDnsZoneId: synapseSqlPrivateZoneId
+          }
         }
-      }
-    ]
+      ]
+    }
   }
 }
 
@@ -196,28 +208,49 @@ resource synapse_workspace_sql_on_demand_pe 'Microsoft.Network/privateEndpoints@
       }
     ]
   }
-}
 
-resource synapse_workspace_sql_on_demand_reg 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-06-01' = {
-  name: '${synapse_workspace_sql_on_demand_pe.name}/default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink-synapse-workspace-sql-ondemand'
-        properties: {
-          privateDnsZoneId: synapseSqlPrivateZoneId
+  resource synapse_workspace_sql_on_demand_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink-synapse-workspace-sql-ondemand'
+          properties: {
+            privateDnsZoneId: synapseSqlPrivateZoneId
+          }
         }
-      }
-    ]
+      ]
+    }
   }
 }
 
-// Assign the workspace's system-assigned managed identity CONTROL permissions to SQL pools for pipeline integration
-resource synapse_msi_sql_control_settings 'Microsoft.Synapse/workspaces/managedIdentitySqlControlSettings@2021-05-01' = {
-  name: '${synapse.name}/default'
-  properties: {
-    grantSqlControlToManagedIdentity: {
-      desiredState: 'Enabled'
-    }
+// Grant Synapse access to ADLS Gen2 as Storage Blob Data Contributor
+module roleAssignSynapseToADLSGen2 '../../iam/resource/storage-role-assignment-to-sp.bicep' = {
+  name: 'rbac-${synapse.name}-${adls.name}'
+  scope: resourceGroup(adlsResourceGroupName)
+  params: {
+    storageAccountName: adlsName
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe') // Storage Blob Data Contributor
+    resourceSPObjectIds: array(synapse.identity.principalId)
+  }
+}
+
+// Grant access from Azure resource instances
+var azCliCommand = '''
+  az extension add -n storage-preview
+
+  az storage account network-rule add \
+  --resource-id {0} \
+  --tenant-id {1} \
+  -g {2} \
+  --account-name {3}
+'''
+
+module addResourceAccess '../../util/deploymentScript.bicep' = {
+  name: 'grant-resource-instance-access-${adlsName}'
+  params: {
+    deploymentScript: format(azCliCommand, synapse.id, subscription().tenantId, adlsResourceGroupName, adlsName)
+    deploymentScriptName: 'grant-access-${synapse.name}-${adlsName}'
+    deploymentScriptIdentityId: deploymentScriptIdentityId
   }
 }

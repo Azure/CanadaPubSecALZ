@@ -209,6 +209,7 @@ module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploy
     acr
     dataLake
     storageLogging
+    synapse
   ]
 
   scope: rgAutomation
@@ -487,6 +488,8 @@ module synapse '../../azresources/analytics/synapse/main.bicep' = {
     
     synapseUsername: synapseUsername 
     synapsePassword: synapsePassword
+
+    deploymentScriptIdentityId: deploymentScriptIdentity.outputs.identityId
   }
 }
 
