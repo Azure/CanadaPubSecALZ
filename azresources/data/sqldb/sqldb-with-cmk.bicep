@@ -52,6 +52,48 @@ resource sqlserver 'Microsoft.Sql/servers@2019-06-01-preview' = {
     minimalTlsVersion: '1.2'
     publicNetworkAccess: 'Disabled'
   }
+
+  resource sqlserver_audit 'auditingSettings@2020-11-01-preview' = {
+    name: 'default'
+    properties: {
+      isAzureMonitorTargetEnabled: true
+      state: 'Enabled'
+    }
+  }
+  
+  resource sqlserver_devopsAudit 'devOpsAuditingSettings@2020-11-01-preview' = {
+    name: 'default'
+    properties: {
+      isAzureMonitorTargetEnabled: true
+      state: 'Enabled'
+    }
+  }
+
+  resource sqlserver_securityAlertPolicies 'securityAlertPolicies@2020-11-01-preview' = {
+    name: 'Default'
+    properties: {
+      state: 'Enabled'
+      emailAccountAdmins: false
+    }
+  }
+}
+
+resource sqlserver_va 'Microsoft.Sql/servers/vulnerabilityAssessments@2020-11-01-preview' = {
+  name: '${sqlServerName}/default'
+  dependsOn: [
+    sqlserver
+    roleAssignSQLToSALogging
+  ]
+  properties: {
+    storageContainerPath: '${storagePath}vulnerability-assessment'
+    recurringScans: {
+      isEnabled: true
+      emailSubscriptionAdmins: true
+      emails: [
+        securityContactEmail
+      ]
+    }
+  }
 }
 
 module akvRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-sp.bicep' = {
@@ -121,58 +163,6 @@ resource sqlserver_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
         }
       ]
     }
-  }
-}
-
-resource sqlserver_sap 'Microsoft.Sql/servers/securityAlertPolicies@2020-11-01-preview' = {
-  name: '${sqlServerName}/default'
-  dependsOn: [
-    sqlserver
-  ]
-  properties: {
-    state: 'Enabled'
-    emailAccountAdmins: false
-  }
-}
-
-resource sqlserver_va 'Microsoft.Sql/servers/vulnerabilityAssessments@2020-11-01-preview' = {
-  name: '${sqlServerName}/default'
-  dependsOn: [
-    sqlserver
-    sqlserver_sap
-    roleAssignSQLToSALogging
-  ]
-  properties: {
-    storageContainerPath: '${storagePath}vulnerability-assessment'
-    recurringScans: {
-      isEnabled: true
-      emailSubscriptionAdmins: true
-      emails: [
-        securityContactEmail
-      ]
-    }
-  }
-}
-
-resource sqlserveraudit 'Microsoft.Sql/servers/auditingSettings@2020-11-01-preview' = {
-  name: '${sqlServerName}/Default'
-  dependsOn: [
-    sqlserver
-  ]
-  properties: {
-    isAzureMonitorTargetEnabled: true
-    state: 'Enabled'
-  }
-}
-
-resource sqlserverdevopsaudit 'Microsoft.Sql/servers/devOpsAuditingSettings@2020-11-01-preview' = {
-  name: '${sqlServerName}/Default'
-  dependsOn: [
-    sqlserver
-  ]
-  properties: {
-    isAzureMonitorTargetEnabled: true
-    state: 'Enabled'
   }
 }
 
