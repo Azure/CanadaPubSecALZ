@@ -12,6 +12,8 @@ param azureRegion string = deployment().location
 param subscriptionOwnerGroupObjectIds array = []
 param subscriptionContributorGroupObjectIds array = []
 param subscriptionReaderGroupObjectIds array = []
+param subscriptionAppOwnerGroupObjectIds array = []
+param lzAppOwnerRoleDefinitionId string = ''
 
 // parameters for Azure Security Center
 param logAnalyticsWorkspaceResourceId string
@@ -92,6 +94,8 @@ module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
   scope: subscription()
   params: {
+    lzAppOwnerRoleDefinitionId: lzAppOwnerRoleDefinitionId
+    subscriptionAppOwnerGroupObjectIds: subscriptionAppOwnerGroupObjectIds
     subscriptionOwnerGroupObjectIds: subscriptionOwnerGroupObjectIds
     subscriptionContributorGroupObjectIds: subscriptionContributorGroupObjectIds
     subscriptionReaderGroupObjectIds: subscriptionReaderGroupObjectIds

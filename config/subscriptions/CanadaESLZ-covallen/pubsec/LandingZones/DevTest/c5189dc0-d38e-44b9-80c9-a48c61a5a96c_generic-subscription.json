@@ -3,10 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "securityContactEmail": {
-            "value": "sesivan@microsoft.com"
+            "value": "covallen@microsoft.com"
         },
         "securityContactPhone": {
-            "value": "6472960698"
+            "value": "6136082678"
         },
         "createBudget": {
             "value": false
@@ -21,7 +21,7 @@
             "value": "Monthly"
         },
         "budgetNotificationEmailAddress": {
-            "value": "sesivan@microsoft.com"
+            "value": "covallen@microsoft.com"
         },
         "automationAccountName": {
             "value": "automation"
@@ -48,18 +48,18 @@
             "value": "tbd"
         },
         "lzAppOwnerRoleDefinitionId": {
-            "value": ""
+            "value": "b4c87314-c1a1-5320-9c43-779585186bcc"
           },
+
         "subscriptionAppOwnerGroupObjectIds": {
-           "value": []
+           "value": ["69a7326d-59ec-41ed-9fa3-170e78edf5e3"
+        ]
           },
         "subscriptionOwnerGroupObjectIds": {
             "value": []
         },
         "subscriptionContributorGroupObjectIds": {
-            "value": [
-                "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-            ]
+            "value": [            ]
         },
         "subscriptionReaderGroupObjectIds": {
             "value": []
@@ -68,13 +68,13 @@
             "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsecPrdHubPbRsg/providers/Microsoft.Network/virtualNetworks/pubsecHubVnet"
         },
         "hubRFC1918IPRange": {
-            "value": "10.18.0.0/22"
+            "value": "10.20.0.0/22"
         },
         "hubCGNATIPRange": {
-            "value": "100.60.0.0/16"
+            "value": "100.98.0.0/16"
         },
         "egressVirtualApplianceIp": {
-            "value": "10.18.0.36"
+            "value": "10.20.0.36"
         },        
         "rgVnetName": {
             "value": "rgVnet072021W4"

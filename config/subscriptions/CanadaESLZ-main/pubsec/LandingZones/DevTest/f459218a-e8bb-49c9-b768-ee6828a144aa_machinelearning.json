@@ -44,6 +44,12 @@
     "tagTechnicalContact": {
       "value": "tbd"
     },
+    "lzAppOwnerRoleDefinitionId": {
+      "value": ""
+    },
+    "subscriptionAppOwnerGroupObjectIds": {
+      "value": []
+     },
     "subscriptionOwnerGroupObjectIds": {
       "value": []
     },

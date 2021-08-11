@@ -1,0 +1,171 @@
+# ----------------------------------------------------------------------------------
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+# Environment YAML files can be used to supplement
+# the variables specified in 'config/variables/common.yml'. You can:
+#   * Override existing common-vars.yml variable value settings, and
+#   * Create new variable values not present in common-vars.yml
+#
+# The naming convention for these YAML files is:
+#   {organization}-{branch}.yml
+#
+# where {organization} is the organization variable from the
+#         common.yml file
+# and   {branch} is the Azure Repos branch name used by the
+#         currently executing pipeline.
+
+
+
+variables:
+  # Management Groups
+  var-parentManagementGroupId: 50ad62e2-e38e-447b-bd1c-6243bfe8d2e3
+  var-topLevelManagementGroupName: pubsec
+  serviceConnection: covallen-spn-azure
+
+  # Logging
+  var-logging-managementGroupId: pubsecPlatform
+  var-logging-subscriptionId: f4675b81-af03-4711-8ec6-5060d9f6a300
+  var-logging-subscriptionOwnerGroupObjectIds: '[]'
+  var-logging-subscriptionContributorGroupObjectIds: '[]'
+  var-logging-subscriptionReaderGroupObjectIds: '[]'
+  var-logging-logAnalyticsResourceGroupName: pubSecLogAnalyticsRG
+  var-logging-logAnalyticsWorkspaceName: pubSecLogAnalytics
+  var-logging-logAnalyticsAutomationAccountName: pubSecLogAnalyticsAutomation
+  var-logging-securityContactEmail: covallen@microsoft.com
+  var-logging-securityContactPhone: 6136082678
+  var-logging-createBudget: false
+  var-logging-budgetName: SubscriptionBudget
+  var-logging-budgetAmount: 100
+  var-logging-budgetTimeGrain: Monthly
+  var-logging-budgetNotificationEmailAddress: covallen@microsoft.com
+  var-logging-tagISSO: tbd
+  var-logging-tagClientOrganization: tbd
+  var-logging-tagCostCenter: tbd
+  var-logging-tagDataSensitivity: tbd
+  var-logging-tagProjectContact: tbd
+  var-logging-tagProjectName: tbd
+  var-logging-tagTechnicalContact: tbd
+
+  # Hub Networking
+  var-hubnetwork-managementGroupId: pubsecPlatform
+  var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
+  var-hubnetwork-subscriptionOwnerGroupObjectIds: '[]'
+  var-hubnetwork-subscriptionContributorGroupObjectIds: '[]'
+  var-hubnetwork-subscriptionReaderGroupObjectIds: '[]'
+  var-hubnetwork-securityContactEmail: sesivan@microsoft.com
+  var-hubnetwork-securityContactPhone: 6472960698
+  var-hubnetwork-createBudget: false
+  var-hubnetwork-budgetName: SubscriptionBudget
+  var-hubnetwork-budgetAmount: 100
+  var-hubnetwork-budgetTimeGrain: Monthly
+  var-hubnetwork-budgetNotificationEmailAddress: sesivan@microsoft.com
+  var-hubnetwork-tagISSO: tbd
+  var-hubnetwork-tagClientOrganization: tbd
+  var-hubnetwork-tagCostCenter: tbd
+  var-hubnetwork-tagDataSensitivity: tbd
+  var-hubnetwork-tagProjectContact: tbd
+  var-hubnetwork-tagProjectName: tbd
+  var-hubnetwork-tagTechnicalContact: tbd
+  var-hubnetwork-budgetStartDate: yyyy-MM-01
+
+  ## Hub Networking - DDOS
+  var-hubnetwork-deployDdosStandard: false
+  var-hubnetwork-rgDdosName: 'pubsecDdosPbRsg'
+  var-hubnetwork-ddosPlanName: 'pubsecDdosPlan'
+
+  ## Hub Networking - Core Virtual Network
+  var-hubnetwork-rgHubName: pubsecPrdHubPbRsg
+  var-hubnetwork-hubVnetName: pubsecHubVnet
+  var-hubnetwork-hubVnetAddressPrefixRFC1918: 10.22.0.0/22
+  var-hubnetwork-hubVnetAddressPrefixCGNAT: 100.98.0.0/16
+  var-hubnetwork-hubVnetAddressPrefixBastion: 192.168.0.0/16
+
+  var-hubnetwork-hubEanSubnetName: EanSubnet
+  var-hubnetwork-hubEanSubnetAddressPrefix: 10.22.0.0/27
+
+  var-hubnetwork-hubPublicSubnetName: PublicSubnet
+  var-hubnetwork-hubPublicSubnetAddressPrefix: 100.98.0.0/24
+
+  var-hubnetwork-hubPazSubnetName: PAZSubnet
+  var-hubnetwork-hubPazSubnetAddressPrefix: 100.98.1.0/24
+
+  var-hubnetwork-hubDevIntSubnetName: DevIntSubnet
+  var-hubnetwork-hubDevIntSubnetAddressPrefix: 10.22.0.64/27
+
+  var-hubnetwork-hubSubnetProdIntName: PrdIntSubnet
+  var-hubnetwork-hubSubnetProdIntAddressPrefix: 10.22.0.32/27
+
+  var-hubnetwork-hubSubnetMrzIntName: MrzSubnet
+  var-hubnetwork-hubSubnetMrzIntAddressPrefix: 10.22.0.96/27
+
+  var-hubnetwork-hubSubnetHAName: HASubnet
+  var-hubnetwork-hubSubnetHAAddressPrefix: 10.22.0.128/28
+
+  var-hubnetwork-hubSubnetGatewaySubnetPrefix: 10.22.1.0/27
+
+  var-hubnetwork-hubSubnetBastionAddressPrefix: 192.168.0.0/24
+  var-hubnetwork-bastionName: pubsecHubBastion
+
+  ## Hub Networking - Firewall Virtual Appliances
+  var-hubnetwork-deployFirewallVMs: false
+  var-hubnetwork-useFortigateFW: false
+
+  ### Hub Networking - Firewall Virtual Appliances - For Non-production Traffic
+  var-hubnetwork-fwDevILBName: pubsecDevFWsILB
+  var-hubnetwork-fwDevVMSku: Standard_D8s_v4
+  var-hubnetwork-fwDevVM1Name: pubsecDevFW1
+  var-hubnetwork-fwDevVM2Name: pubsecDevFW2
+  var-hubnetwork-fwDevILBExternalFacingIP: 100.98.0.7
+  var-hubnetwork-fwDevVM1ExternalFacingIP: 100.98.0.8
+  var-hubnetwork-fwDevVM2ExternalFacingIP: 100.98.0.9
+  var-hubnetwork-fwDevILBMrzIntIP: 10.22.0.103
+  var-hubnetwork-fwDevVM1MrzIntIP: 10.22.0.104
+  var-hubnetwork-fwDevVM2MrzIntIP: 10.22.0.105
+  var-hubnetwork-fwDevILBDevIntIP: 10.22.0.68
+  var-hubnetwork-fwDevVM1DevIntIP: 10.22.0.69
+  var-hubnetwork-fwDevVM2DevIntIP: 10.22.0.70
+  var-hubnetwork-fwDevVM1HAIP: 10.22.0.134
+  var-hubnetwork-fwDevVM2HAIP: 10.22.0.135
+
+  ### Hub Networking - Firewall Virtual Appliances - For Production Traffic
+  var-hubnetwork-fwProdILBName: pubsecProdFWsILB
+  var-hubnetwork-fwProdVMSku: Standard_F8s_v2
+  var-hubnetwork-fwProdVM1Name: pubsecProdFW1
+  var-hubnetwork-fwProdVM2Name: pubsecProdFW2
+  var-hubnetwork-fwProdILBExternalFacingIP: 100.98.0.4
+  var-hubnetwork-fwProdVM1ExternalFacingIP: 100.98.0.5
+  var-hubnetwork-fwProdVM2ExternalFacingIP: 100.98.0.6
+  var-hubnetwork-fwProdILBMrzIntIP: 10.22.0.100
+  var-hubnetwork-fwProdVM1MrzIntIP: 10.22.0.101
+  var-hubnetwork-fwProdVM2MrzIntIP: 10.22.0.102
+  var-hubnetwork-fwProdILBPrdIntIP: 10.22.0.36
+  var-hubnetwork-fwProdVM1PrdIntIP: 10.22.0.37
+  var-hubnetwork-fwProdVM2PrdIntIP: 10.22.0.38
+  var-hubnetwork-fwProdVM1HAIP: 10.22.0.132
+  var-hubnetwork-fwProdVM2HAIP: 10.22.0.133
+
+  ## Hub Networking - Management Restricted Zone Virtual Network
+  var-hubnetwork-rgMrzName: pubsecPrdMrzPbRsg
+  var-hubnetwork-mrzVnetName: pubsecMrzVnet
+  var-hubnetwork-mrzVnetAddressPrefixRFC1918: 10.22.4.0/22
+
+  var-hubnetwork-mrzMazSubnetName: MazSubnet
+  var-hubnetwork-mrzMazSubnetAddressPrefix: 10.22.4.0/25
+  
+  var-hubnetwork-mrzInfSubnetName: InfSubnet
+  var-hubnetwork-mrzInfSubnetAddressPrefix: 10.22.4.128/25
+  
+  var-hubnetwork-mrzSecSubnetName: SecSubnet
+  var-hubnetwork-mrzSecSubnetAddressPrefix: 10.22.5.0/26
+  
+  var-hubnetwork-mrzLogSubnetName: LogSubnet
+  var-hubnetwork-mrzLogSubnetAddressPrefix: 10.22.5.64/26
+  
+  var-hubnetwork-mrzMgmtSubnetName: MgmtSubnet
+  var-hubnetwork-mrzMgmtSubnetAddressPrefix: 10.22.5.128/26
+
+  ## Hub Networking - Public Zone
+  var-hubnetwork-rgPazName: pubsecPazPbRsg

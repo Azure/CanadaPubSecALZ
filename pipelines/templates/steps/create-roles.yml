@@ -1,0 +1,45 @@
+# ----------------------------------------------------------------------------------
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: description
+    type: string
+  - name: workingDir
+    type: string
+  - name: deployTemplates
+    type: object  
+  - name: deployOperation
+    type: string
+    default: create
+    values:
+      - create
+      - what-if    
+  
+steps:
+
+- ${{ each role in parameters.deployTemplates }}:
+  - task: AzureCLI@2
+    displayName: '${{ parameters.description }} - ${{ role }}.bicep'
+    inputs:
+      azureSubscription: $(serviceConnection)
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      managementgroup: $(var-topLevelManagementGroupName)
+      inlineScript: |
+        $(var-bashPreInjectScript)
+
+        az bicep upgrade
+
+        echo "Deploying ${{ role }}.bicep using ${{ parameters.deployOperation}} operation..."
+
+        az deployment mg ${{ parameters.deployOperation }} \
+            --template-file ${{ role }}.bicep \
+            --location $(deploymentRegion) \
+            --management-group-id $(var-topLevelManagementGroupName) \
+            --parameters assignableMgId=$(var-topLevelManagementGroupName)
+
+        $(var-bashPostInjectScript)
+      workingDirectory: ${{ parameters.workingDir }}

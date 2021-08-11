@@ -6,10 +6,12 @@
 
 targetScope = 'subscription'
 
-// Owner Group
+// RBAC assignments
 param subscriptionOwnerGroupObjectIds array = []
 param subscriptionContributorGroupObjectIds array = []
 param subscriptionReaderGroupObjectIds array = []
+param lzAppOwnerRoleDefinitionId string = ''
+param subscriptionAppOwnerGroupObjectIds array = []
 
 // parameters for Azure Security Center
 param logAnalyticsWorkspaceResourceId string
@@ -96,5 +98,14 @@ module group_roleAssignment_Reader '../azresources/iam/subscription/role-assignm
   params: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', readerRoleDefinitionId)
     groupObjectIds: subscriptionReaderGroupObjectIds
+  }
+}
+
+module group_roleAssignment_LZAppowner '../azresources/iam/subscription/role-assignment-to-group.bicep' = if (!(empty(subscriptionAppOwnerGroupObjectIds)) && (!(empty(lzAppOwnerRoleDefinitionId)))) {
+  name: 'rbac-assign-lzappowner-to-sg'
+  scope: subscription()
+  params: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', lzAppOwnerRoleDefinitionId)
+    groupObjectIds: subscriptionAppOwnerGroupObjectIds
   }
 }
