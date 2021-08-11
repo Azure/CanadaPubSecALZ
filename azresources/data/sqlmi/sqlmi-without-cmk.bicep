@@ -40,25 +40,16 @@ resource sqlmi 'Microsoft.Sql/managedInstances@2020-11-01-preview' = {
     vCores: vCores
     storageSizeInGB: storageSizeInGB
   }
-}
 
-module roleAssignSQLMIToSALogging '../../iam/resource/storage-role-assignment-to-sp.bicep' = {
-  name: 'rbac-${name}-logging-storage-account'
-  params: {
-    storageAccountName: saLoggingName
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
-    resourceSPObjectIds: array(sqlmi.identity.principalId)
-  }
-}
-
-resource sqlmi_sap 'Microsoft.Sql/managedInstances/securityAlertPolicies@2020-11-01-preview' = {
-  name: '${name}/default'
-  dependsOn: [
-    sqlmi
-  ]
-  properties: {
-    state: 'Enabled'
-    emailAccountAdmins: false
+  resource sqlmi_securityAlertPolicies 'securityAlertPolicies@2020-11-01-preview' = {
+    name: 'Default'
+    dependsOn: [
+      sqlmi
+    ]
+    properties: {
+      state: 'Enabled'
+      emailAccountAdmins: false
+    }
   }
 }
 
@@ -66,7 +57,6 @@ resource sqlmi_va 'Microsoft.Sql/managedInstances/vulnerabilityAssessments@2020-
   name: '${name}/default'
   dependsOn: [
     sqlmi
-    sqlmi_sap
     roleAssignSQLMIToSALogging
   ]
   properties: {
@@ -78,6 +68,15 @@ resource sqlmi_va 'Microsoft.Sql/managedInstances/vulnerabilityAssessments@2020-
         securityContactEmail
       ]
     }
+  }
+}
+
+module roleAssignSQLMIToSALogging '../../iam/resource/storage-role-assignment-to-sp.bicep' = {
+  name: 'rbac-${name}-logging-storage-account'
+  params: {
+    storageAccountName: saLoggingName
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
+    resourceSPObjectIds: array(sqlmi.identity.principalId)
   }
 }
 

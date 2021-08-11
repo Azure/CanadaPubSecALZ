@@ -58,6 +58,32 @@ resource sqlmi 'Microsoft.Sql/managedInstances@2020-11-01-preview' = {
     vCores: vCores
     storageSizeInGB: storageSizeInGB
   }
+
+  resource sqlmi_securityAlertPolicies 'securityAlertPolicies@2020-11-01-preview' = {
+    name: 'Default'
+    properties: {
+      state: 'Enabled'
+      emailAccountAdmins: false
+    }
+  }
+}
+
+resource sqlmi_va 'Microsoft.Sql/managedInstances/vulnerabilityAssessments@2020-11-01-preview' = {
+  name: '${name}/default'
+  dependsOn: [
+    sqlmi
+    roleAssignSQLMIToSALogging
+  ]
+  properties: {
+    storageContainerPath: '${storagePath}vulnerability-assessment'
+    recurringScans: {
+      isEnabled: true
+      emailSubscriptionAdmins: true
+      emails: [
+        securityContactEmail
+      ]
+    }
+  }
 }
 
 module akvRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-sp.bicep' = {
@@ -92,36 +118,6 @@ module enableTDE 'sqlmi-with-cmk-enable-tde.bicep' = {
     akvKeyName: akvKey.outputs.keyName
     akvKeyVersion: akvKey.outputs.keyVersion
     keyUriWithVersion: akvKey.outputs.keyUriWithVersion
-  }
-}
-
-resource sqlmi_sap 'Microsoft.Sql/managedInstances/securityAlertPolicies@2020-11-01-preview' = {
-  name: '${name}/default'
-  dependsOn: [
-    sqlmi
-  ]
-  properties: {
-    state: 'Enabled'
-    emailAccountAdmins: false
-  }
-}
-
-resource sqlmi_va 'Microsoft.Sql/managedInstances/vulnerabilityAssessments@2020-11-01-preview' = {
-  name: '${name}/default'
-  dependsOn: [
-    sqlmi
-    sqlmi_sap
-    roleAssignSQLMIToSALogging
-  ]
-  properties: {
-    storageContainerPath: '${storagePath}vulnerability-assessment'
-    recurringScans: {
-      isEnabled: true
-      emailSubscriptionAdmins: true
-      emails: [
-        securityContactEmail
-      ]
-    }
   }
 }
 
