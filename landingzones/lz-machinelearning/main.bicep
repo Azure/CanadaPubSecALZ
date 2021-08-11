@@ -26,7 +26,6 @@ param rgStorageName string
 param rgComputeName string
 param rgSecurityName string
 param rgMonitorName string
-param rgSelfHostedRuntimeName string
 
 // Automation
 param automationAccountName string
@@ -101,9 +100,6 @@ param tagProjectContact string
 param tagProjectName string
 param tagTechnicalContact string
 
-// parameters for vmsize
-param selfHostedRuntimeVmSize string = 'Standard_D8s_v3'
-
 @allowed([
   'Monthly'
   'Quarterly'
@@ -116,8 +112,6 @@ param budgetTimeGrain string = 'Monthly'
 param deploySQLDB bool
 @description('Should SQL Managed Instance be deployed in environment')
 param deploySQLMI bool
-@description('Should ADF Self Hosted Integration Runtime VM be deployed in environment')
-param deploySelfhostIRVM bool
 
 @description('If SQL Database is selected to be deployed, enter username. Otherwise, you can enter blank')
 @secure()
@@ -125,9 +119,6 @@ param sqldbUsername string
 @description('If SQL Managed Instance is selected to be deployed, enter username. Otherwise, you can enter blank')
 @secure()
 param sqlmiUsername string
-@description('If ADF Self Hosted Integration Runtime VM is selected to be deployed, enter username. Otherwise, you can enter blank')
-@secure()
-param selfHostedVMUsername string
 
 @description('When true, customer managed keys are used for Azure resources')
 param useCMK bool = false
@@ -182,18 +173,15 @@ module landingZone 'lz.bicep' = {
     rgComputeName: rgComputeName
     rgMonitorName: rgMonitorName
     rgSecurityName: rgSecurityName
-    rgSelfHostedRuntimeName: rgSelfHostedRuntimeName
     rgStorageName: rgStorageName
 
     automationAccountName: automationAccountName
 
     deploySQLDB: deploySQLDB
     deploySQLMI: deploySQLMI
-    deploySelfhostIRVM: deploySelfhostIRVM
 
     sqldbUsername: sqldbUsername
     sqlmiUsername: sqlmiUsername
-    selfHostedVMUsername: selfHostedVMUsername
 
     hubVnetId: hubVnetId
     egressVirtualApplianceIp: egressVirtualApplianceIp
@@ -233,8 +221,6 @@ module landingZone 'lz.bicep' = {
     aksVersion: aksVersion
     
     secretExpiryInDays: secretExpiryInDays
-
-    selfHostedRuntimeVmSize: selfHostedRuntimeVmSize
 
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 

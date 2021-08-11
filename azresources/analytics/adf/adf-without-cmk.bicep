@@ -25,12 +25,26 @@ resource adf 'Microsoft.DataFactory/factories@2018-06-01' = {
   properties: {
     publicNetworkAccess: 'Disabled'
   }
-}
 
-resource adfIR 'Microsoft.DataFactory/factories/integrationRuntimes@2018-06-01' = {
-  name: '${adf.name}/SelfHostedIR'
-  properties: {
-    type: 'SelfHosted'
+  resource managedVnet 'managedVirtualNetworks@2018-06-01' = {
+    name: 'default'
+    properties: {}
+  }
+
+  resource autoResolveIR 'integrationRuntimes@2018-06-01' = {
+    name: 'AutoResolveIntegrationRuntime'
+    properties: {
+      type: 'Managed'
+      managedVirtualNetwork: {
+        type: 'ManagedVirtualNetworkReference'
+        referenceName: managedVnet.name
+      }
+      typeProperties: {
+        computeProperties: {
+          location: 'AutoResolve'
+        }
+      }
+    }
   }
 }
 

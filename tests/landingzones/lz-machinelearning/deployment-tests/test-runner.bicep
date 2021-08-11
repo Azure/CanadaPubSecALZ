@@ -23,7 +23,6 @@ var rgStorageName = '${testRunnerId}Storage'
 var rgComputeName = '${testRunnerId}Compute'
 var rgSecurityName = '${testRunnerId}Security'
 var rgMonitorName = '${testRunnerId}Monitor'
-var rgSelfHostedRuntimeName = '${testRunnerId}SelfHostingIR'
 
 var tagProjectName = '${testRunnerId}ProjectName'
 
@@ -41,7 +40,6 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
     rgComputeName: rgComputeName
     rgSecurityName: rgSecurityName
     rgMonitorName: rgMonitorName
-    rgSelfHostedRuntimeName: rgSelfHostedRuntimeName
     
     // Automation
     automationAccountName: '${testRunnerId}AutomationAccount'
@@ -108,12 +106,10 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
 
     deploySQLDB: deploySQLDB
     deploySQLMI: deploySQLMI
-    deploySelfhostIRVM: true
     useCMK: useCMK
 
     sqldbUsername: 'azadmin'
     sqlmiUsername: 'azadmin'
-    selfHostedVMUsername: 'azadmin'
    
     // parameters for Tags
     tagISSO: '${testRunnerId}ISSO'
@@ -145,7 +141,6 @@ var cleanUpScript = '''
   az group delete --name {4} --yes
   az group delete --name {5} --yes
   az group delete --name {6} --yes
-  az group delete --name {7} --yes
 
 '''
 
@@ -157,7 +152,7 @@ module testCleanup '../../../../azresources/util/deploymentScript.bicep' = if (t
   scope: resourceGroup(deploymentScriptResourceGroupName) 
   name: 'cleanup-test-${testRunnerId}'
   params: {
-    deploymentScript: format(cleanUpScript, subscription().subscriptionId, rgAutomationName, rgMonitorName, rgSecurityName, rgSelfHostedRuntimeName, rgComputeName, rgStorageName, rgVnetName)
+    deploymentScript: format(cleanUpScript, subscription().subscriptionId, rgAutomationName, rgMonitorName, rgSecurityName, rgComputeName, rgStorageName, rgVnetName)
     deploymentScriptName: 'cleanup-test-${testRunnerId}'
     deploymentScriptIdentityId: deploymentScriptIdentityId
     timeout: 'PT6H'

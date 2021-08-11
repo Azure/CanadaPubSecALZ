@@ -18,7 +18,7 @@ param akvName string
 
 resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   scope: resourceGroup(akvResourceGroupName)
-  name: akvName  
+  name: akvName
 }
 
 module akvRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-sp.bicep' = {
@@ -65,12 +65,26 @@ resource adf 'Microsoft.DataFactory/factories@2018-06-01' = {
       keyVersion: akvKey.outputs.keyVersion
     }
   }
-}
 
-resource adfIR 'Microsoft.DataFactory/factories/integrationRuntimes@2018-06-01' = {
-  name: '${adf.name}/SelfHostedIR'
-  properties: {
-    type: 'SelfHosted'
+  resource managedVnet 'managedVirtualNetworks@2018-06-01' = {
+    name: 'default'
+    properties: {}
+  }
+
+  resource autoResolveIR 'integrationRuntimes@2018-06-01' = {
+    name: 'AutoResolveIntegrationRuntime'
+    properties: {
+      type: 'Managed'
+      managedVirtualNetwork: {
+        type: 'ManagedVirtualNetworkReference'
+        referenceName: managedVnet.name
+      }
+      typeProperties: {
+        computeProperties: {
+          location: 'AutoResolve'
+        }
+      }
+    }
   }
 }
 

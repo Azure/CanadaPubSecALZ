@@ -26,7 +26,6 @@ param rgStorageName string
 param rgComputeName string
 param rgSecurityName string
 param rgMonitorName string
-param rgSelfHostedRuntimeName string
 
 // Automation
 param automationAccountName string
@@ -95,9 +94,6 @@ param tagProjectContact string
 param tagProjectName string
 param tagTechnicalContact string
 
-// parameters for vmsize
-param selfHostedRuntimeVmSize string = 'Standard_D8s_v3'
-
 @allowed([
   'Monthly'
   'Quarterly'
@@ -108,13 +104,6 @@ param budgetTimeGrain string = 'Monthly'
 // ML landing zone parameters - start
 @description('Should SQL Database be deployed in environment')
 param deploySQLDB bool
-
-@description('Should ADF Self Hosted Integration Runtime VM be deployed in environment')
-param deploySelfhostIRVM bool
-
-@description('If ADF Self Hosted Integration Runtime VM is selected to be deployed, enter username. Otherwise, you can enter blank')
-@secure()
-param selfHostedVMUsername string
 
 @secure()
 param synapseUsername string
@@ -173,16 +162,12 @@ module landingZone 'lz.bicep' = {
     rgComputeName: rgComputeName
     rgMonitorName: rgMonitorName
     rgSecurityName: rgSecurityName
-    rgSelfHostedRuntimeName: rgSelfHostedRuntimeName
     rgStorageName: rgStorageName
 
     automationAccountName: automationAccountName
 
     deploySQLDB: deploySQLDB
     sqldbUsername: sqldbUsername
-
-    deploySelfhostIRVM: deploySelfhostIRVM
-    selfHostedVMUsername: selfHostedVMUsername
 
     hubVnetId: hubVnetId
     egressVirtualApplianceIp: egressVirtualApplianceIp
@@ -219,8 +204,6 @@ module landingZone 'lz.bicep' = {
     synapseUsername: synapseUsername
 
     secretExpiryInDays: secretExpiryInDays
-
-    selfHostedRuntimeVmSize: selfHostedRuntimeVmSize
 
     useCMK: useCMK
   }

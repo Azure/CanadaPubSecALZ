@@ -11,9 +11,6 @@ param azureRegion string = deployment().location
 @description('Should SQL Database be deployed in environment')
 param deploySQLDB bool
 
-@description('Should ADF Self Hosted Integration Runtime VM be deployed in environment')
-param deploySelfhostIRVM bool
-
 param securityContactEmail string
 
 param tagClientOrganization string
@@ -30,7 +27,6 @@ param rgStorageName string
 param rgComputeName string
 param rgSecurityName string
 param rgMonitorName string
-param rgSelfHostedRuntimeName string
 
 param automationAccountName string
 
@@ -79,12 +75,6 @@ param subnetWebAppPrefix string
 
 param secretExpiryInDays int
 
-param adfIRVMNames array = [
-  'SelfHostedVm1'
-]
-
-param selfHostedRuntimeVmSize string
-
 @secure()
 param synapseUsername string
 
@@ -92,16 +82,11 @@ param synapseUsername string
 @secure()
 param sqldbUsername string
 
-@description('If ADF Self Hosted Integration Runtime VM is selected to be deployed, enter username. Otherwise, you can enter blank')
-@secure()
-param selfHostedVMUsername string
-
 @description('When true, customer managed keys are used for Azure resources')
 param useCMK bool
 
 var sqldbPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldbUsername))}'
 var synapsePassword = '${uniqueString(rgCompute.id)}*${toUpper(uniqueString(synapseUsername))}'
-var selfHostedVMPassword = '${uniqueString(rgCompute.id)}*${toUpper(uniqueString(selfHostedVMUsername))}'
 
 var databricksName = 'databricks'
 var databricksEgressLbName = 'egressLb'
@@ -171,12 +156,6 @@ resource rgSecurity 'Microsoft.Resources/resourceGroups@2020-06-01' = {
 
 resource rgMonitor 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgMonitorName
-  location: azureRegion
-  tags: tags
-}
-
-resource rgSelfhosted 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deploySelfhostIRVM == true) {
-  name: rgSelfHostedRuntimeName
   location: azureRegion
   tags: tags
 }
@@ -419,28 +398,6 @@ module adf '../../azresources/analytics/adf/main.bicep' = {
   }
 }
 
-// vm provisioned as part for the integration runtime for ADF
-module vm '../../azresources/compute/vm-win2019/main.bicep' = [for (vmName, i) in adfIRVMNames: if (deploySelfhostIRVM == true) {
-  name: 'deploy-ir-${vmName}'
-  scope: rgSelfhosted
-  params: {
-    vmName: vmName
-    vmSize: selfHostedRuntimeVmSize
-
-    availabilityZone: string((i % 3) + 1)
-
-    subnetId: networking.outputs.dataSubnetId
-    enableAcceleratedNetworking: false
-
-    username: selfHostedVMUsername
-    password: selfHostedVMPassword
-    
-    useCMK: useCMK
-    akvResourceGroupName: useCMK ? rgSecurity.name : ''
-    akvName: useCMK ? keyVault.outputs.akvName : ''
-  }
-}]
-
 module acr '../../azresources/containers/acr/main.bicep' = {
   name: 'deploy-acr'
   scope: rgStorage
@@ -599,34 +556,6 @@ module akvsynapsePassword '../../azresources/security/key-vault-secret.bicep' = 
     akvName: akvName
     secretName: 'synapsePassword'
     secretValue: synapsePassword
-    secretExpiryInDays: secretExpiryInDays
-  }
-}
-
-module akvselfHostedVMUsername '../../azresources/security/key-vault-secret.bicep' = if (deploySelfhostIRVM == true) {
-  dependsOn: [
-    keyVault
-  ]
-  name: 'add-akv-secret-selfHostedVMUsername'
-  scope: rgSecurity
-  params: {
-    akvName: akvName
-    secretName: 'selfHostedVMUsername'
-    secretValue: selfHostedVMUsername
-    secretExpiryInDays: secretExpiryInDays
-  }
-}
-
-module akvselfHostedVMPassword '../../azresources/security/key-vault-secret.bicep' = if (deploySelfhostIRVM == true) {
-  dependsOn: [
-    keyVault
-  ]
-  name: 'add-akv-secret-selfHostedVMPassword'
-  scope: rgSecurity
-  params: {
-    akvName: akvName
-    secretName: 'selfHostedVMPassword'
-    secretValue: selfHostedVMPassword
     secretExpiryInDays: secretExpiryInDays
   }
 }

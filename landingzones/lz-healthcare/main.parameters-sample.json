@@ -92,9 +92,6 @@
     "rgMonitorName": {
       "value": "azmlMonitor6756-test"
     },
-    "rgSelfHostedRuntimeName": {
-      "value": "azmlSelfHostingIR6756-test"
-    },
     "automationAccountName": {
       "value": "automation6756-test"
     },
@@ -155,13 +152,7 @@
     "deploySQLDB": {
       "value": true
     },
-    "deploySelfhostIRVM": {
-      "value": true
-    },
     "sqldbUsername": {
-      "value": "azadmin"
-    },
-    "selfHostedVMUsername": {
       "value": "azadmin"
     },
     "synapseUsername": {

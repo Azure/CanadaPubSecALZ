@@ -92,9 +92,6 @@
     "rgMonitorName": {
       "value": "azmlMonitor6656-2-cmk"
     },
-    "rgSelfHostedRuntimeName": {
-      "value": "azmlSelfHostingIR6656-2-cmk"
-    },
     "automationAccountName": {
       "value": "automation6656-2-cmk"
     },
@@ -167,16 +164,10 @@
     "deploySQLMI": {
       "value": false
     },
-    "deploySelfhostIRVM": {
-      "value": true
-    },
     "sqldbUsername": {
       "value": "azadmin"
     },
     "sqlmiUsername": {
-      "value": "azadmin"
-    },
-    "selfHostedVMUsername": {
       "value": "azadmin"
     },
     "secretExpiryInDays": {

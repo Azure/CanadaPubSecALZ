@@ -91,9 +91,6 @@
         "rgMonitorName": {
             "value": "health072021W4Monitor"
         },
-        "rgSelfHostedRuntimeName": {
-            "value": "health072021W4SelfHostingIR"
-        },
         "automationAccountName": {
             "value": "health072021W4automation"
         },
@@ -154,13 +151,7 @@
         "deploySQLDB": {
             "value": true
         },
-        "deploySelfhostIRVM": {
-            "value": true
-        },
         "sqldbUsername": {
-            "value": "azadmin"
-        },
-        "selfHostedVMUsername": {
             "value": "azadmin"
         },
         "synapseUsername": {
