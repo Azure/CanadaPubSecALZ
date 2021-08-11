@@ -145,12 +145,6 @@
         "subnetWebAppPrefix": {
             "value": "10.5.8.0/25"
         },
-        "subnetSynapseName": {
-            "value": "synapse"
-        },
-        "subnetSynapsePrefix": {
-            "value": "10.5.9.0/25"
-        },
         "deploySQLDB": {
             "value": true
         },

@@ -64,10 +64,6 @@ param subnetPrivateEndpointsPrefix string
 param subnetWebAppName string
 param subnetWebAppPrefix string
 
-// Synapse Subnet
-param subnetSynapseName string
-param subnetSynapsePrefix string
-
 // Hub Virtual Network for virtual network peering
 param hubVnetId string
 
@@ -215,9 +211,6 @@ module landingZone 'lz.bicep' = {
 
     subnetWebAppName: subnetWebAppName
     subnetWebAppPrefix: subnetWebAppPrefix
-
-    subnetSynapseName: subnetSynapseName
-    subnetSynapsePrefix: subnetSynapsePrefix
   
     synapseUsername: synapseUsername
 

@@ -72,16 +72,13 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
     subnetDatabricksPrivateName: 'databricksprivate'
     subnetDatabricksPrivatePrefix: '10.1.6.0/25'
 
-    // Synapse
-    subnetSynapseName: 'synapse'
-    subnetSynapsePrefix: '10.1.7.0/25'
-
+    // Web App
     subnetWebAppName: 'webapp'
-    subnetWebAppPrefix: '10.1.8.0/25'
+    subnetWebAppPrefix: '10.1.7.0/25'
     
     // Priavte Endpoint Subnet
     subnetPrivateEndpointsName: 'privateendpoints'
-    subnetPrivateEndpointsPrefix: '10.1.9.0/25'
+    subnetPrivateEndpointsPrefix: '10.1.8.0/25'
        
     // Hub Virtual Network for virtual network peering
     hubVnetId: hubVnetId

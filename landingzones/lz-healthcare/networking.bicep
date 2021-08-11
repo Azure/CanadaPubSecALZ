@@ -48,10 +48,6 @@ param subnetPrivateEndpointsPrefix string
 param subnetWebAppName string
 param subnetWebAppPrefix string
 
-// Synapse Analytics Subnet
-param subnetSynapseName string
-param subnetSynapsePrefix string
-
 // Network Security Groups
 resource nsgFoundationalElements 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
   name: '${subnetFoundationalElementsName}Nsg'
@@ -373,12 +369,6 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
           ]
         }
       }
-      {
-        name: subnetSynapseName
-        properties: {
-          addressPrefix: subnetSynapsePrefix
-        }
-      }
     ]
   }
 }
@@ -496,6 +486,33 @@ module privatezone_eventhub '../../azresources/network/private-zone.bicep' = {
   }
 }
 
+module privatezone_synapse '../../azresources/network/private-zone.bicep' = {
+  name: 'deploy-privatezone-synapse'
+  scope: resourceGroup()
+  params: {
+    zone: 'privatelink.azuresynapse.net'
+    vnetId: vnet.id
+  }
+}
+
+module privatezone_synapse_dev '../../azresources/network/private-zone.bicep' = {
+  name: 'deploy-privatezone-synapse-dev'
+  scope: resourceGroup()
+  params: {
+    zone: 'privatelink.dev.azuresynapse.net'
+    vnetId: vnet.id
+  }
+}
+
+module privatezone_synapse_sql '../../azresources/network/private-zone.bicep' = {
+  name: 'deploy-privatezone-synapse-sql'
+  scope: resourceGroup()
+  params: {
+    zone: 'privatelink.sql.azuresynapse.net'
+    vnetId: vnet.id
+  }
+}
+
 
 output vnetId string = vnet.id
 
@@ -505,7 +522,6 @@ output applicationSubnetId string = '${vnet.id}/subnets/${subnetApplicationName}
 output dataSubnetId string = '${vnet.id}/subnets/${subnetDataName}'
 output privateEndpointSubnetId string = '${vnet.id}/subnets/${subnetPrivateEndpointsName}'
 output webAppSubnetId string = '${vnet.id}/subnets/${subnetWebAppName}'
-output synapseSubnetId string = '${vnet.id}/subnets/${subnetSynapseName}'
 
 output databricksPublicSubnetName string = subnetDatabricksPublicName
 output databricksPrivateSubnetName string = subnetDatabricksPrivateName
@@ -521,3 +537,6 @@ output amlApiPrivateZoneId string = privatezone_azureml_api.outputs.privateZoneI
 output amlNotebooksPrivateZoneId string = privatezone_azureml_notebook.outputs.privateZoneId
 output fhirPrivateZoneId string = privatezone_fhir.outputs.privateZoneId
 output eventhubPrivateZoneId string = privatezone_eventhub.outputs.privateZoneId
+output synapsePrivateZoneId string = privatezone_synapse.outputs.privateZoneId
+output synapseDevPrivateZoneId string = privatezone_synapse_dev.outputs.privateZoneId
+output synapseSqlPrivateZoneId string = privatezone_synapse_sql.outputs.privateZoneId

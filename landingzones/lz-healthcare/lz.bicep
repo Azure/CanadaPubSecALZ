@@ -77,10 +77,6 @@ param subnetPrivateEndpointsPrefix string
 param subnetWebAppName string
 param subnetWebAppPrefix string
 
-// Synapse Analytics
-param subnetSynapseName string
-param subnetSynapsePrefix string
-
 param secretExpiryInDays int
 
 param adfIRVMNames array = [
@@ -234,7 +230,6 @@ module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploy
     acr
     dataLake
     storageLogging
-    synapse
   ]
 
   scope: rgAutomation
@@ -296,9 +291,6 @@ module networking 'networking.bicep' = {
 
     subnetWebAppName: subnetWebAppName
     subnetWebAppPrefix: subnetWebAppPrefix
-        
-    subnetSynapseName: subnetSynapseName
-    subnetSynapsePrefix: subnetSynapsePrefix
   }
 }
 
@@ -377,7 +369,7 @@ module dataLake '../../azresources/storage/storage-adlsgen2.bicep' = {
     dfsPrivateZoneId: networking.outputs.dataLakeDfsPrivateZoneId
 
     defaultNetworkAcls: 'Deny'
-    subnetIdForVnetRestriction: array(networking.outputs.privateEndpointSubnetId)
+    subnetIdForVnetRestriction: []
 
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
@@ -525,13 +517,16 @@ module synapse '../../azresources/analytics/synapse/main.bicep' = {
     synapseName: synapseName
     tags: tags
 
-    computeSubnetId: networking.outputs.synapseSubnetId
     managedResourceGroupName: '${rgCompute.name}-${synapseName}-${uniqueString(rgCompute.id)}'
 
-    deploymentScriptIdentityId: deploymentScriptIdentity.outputs.identityId
     adlsResourceGroupName: rgStorage.name
     adlsName: dataLake.outputs.storageName
     adlsFSName: 'synapsecontainer'
+
+    privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
+    synapsePrivateZoneId: networking.outputs.synapsePrivateZoneId
+    synapseDevPrivateZoneId: networking.outputs.synapseDevPrivateZoneId
+    synapseSqlPrivateZoneId: networking.outputs.synapseSqlPrivateZoneId
     
     synapseUsername: synapseUsername 
     synapsePassword: synapsePassword
