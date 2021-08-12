@@ -110,6 +110,38 @@
                       {
                         "category": "instancePools",
                         "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "sqlanalytics",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "genie",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "globalInitScripts",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "iamRole",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "mlflowExperiment",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "featureStore",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "RemoteHistoryService",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "mlflowAcledArtifact",
+                        "enabled": "[parameters('logsEnabled')]"
                       }
                     ]
                   }
