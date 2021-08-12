@@ -5,8 +5,10 @@
 // ----------------------------------------------------------------------------------
 
 param name string
-//just an example
-param routes array = [
+
+/*
+Example for routes array:
+
   {
     name: 'table1'
     properties: {
@@ -23,7 +25,9 @@ param routes array = [
       nextHopIpAddress: '10.0.0.5'
     }
   }
-]
+*/
+param routes array = []
+
 resource udr 'Microsoft.Network/routeTables@2020-11-01' = {
   name: name
   location: resourceGroup().location

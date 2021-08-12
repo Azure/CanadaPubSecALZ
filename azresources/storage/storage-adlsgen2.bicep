@@ -84,6 +84,14 @@ resource storage 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   }
 }
 
+resource threatProtection 'Microsoft.Security/advancedThreatProtectionSettings@2019-01-01' = {
+  name: 'current'
+  scope: storage
+  properties: {
+    isEnabled: true
+  }
+}
+
 /* Customer Managed Keys - configured after the storage account is created with managed key */
 module enableCMK 'storage-enable-cmk.bicep' = if (useCMK) {
   name: 'deploy-cmk-${name}'

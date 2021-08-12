@@ -80,7 +80,7 @@ resource sqlserver_va 'Microsoft.Sql/servers/vulnerabilityAssessments@2020-11-01
 }
 
 module roleAssignSQLToSALogging '../../iam/resource/storage-role-assignment-to-sp.bicep' = {
-  name: 'rbac-${sqlServerName}-key-vault'
+  name: 'rbac-${sqlServerName}-logging-storage-account'
   params: {
     storageAccountName: saLoggingName
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')

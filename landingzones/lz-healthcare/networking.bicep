@@ -89,6 +89,17 @@ module nsgDatabricks '../../azresources/network/nsg/nsg-databricks.bicep' = {
   }
 }
 
+// Network security groups (NSGs): You can block outbound traffic with an NSG that's placed on your integration subnet.
+// The inbound rules don't apply because you can't use VNet Integration to provide inbound access to your app.
+// At the moment, there are no outbound rules to block outbound traffic
+// See https://docs.microsoft.com/azure/app-service/web-sites-integrate-with-vnet#regional-vnet-integration
+module nsgWebApp '../../azresources/network/nsg/nsg-empty.bicep' = {
+  name: 'deploy-nsg-webapp'
+  params: {
+    name: '${subnetWebAppName}Nsg'
+  }
+}
+
 // Route Tables
 resource udrFoundationalElements 'Microsoft.Network/routeTables@2020-06-01' = {
   name: '${subnetFoundationalElementsName}Udr'
@@ -244,6 +255,17 @@ module udrDatabricksPrivate '../../azresources/network/udr/udr-databricks-privat
   }
 }
 
+// Route tables (UDRs): You can place a route table on the integration subnet to send outbound traffic where you want.
+// At the moment, the route table is empty but rules can be added to force tunnel.
+// See https://docs.microsoft.com/azure/app-service/web-sites-integrate-with-vnet#regional-vnet-integration
+module udrWebApp '../../azresources/network/udr/udr-custom.bicep' = {
+  name: 'deploy-route-table-web-app'
+  params: {
+    name: '${subnetWebAppName}Udr'
+    routes: []
+  }
+}
+
 // Virtual Network
 resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   name: vnetName
@@ -319,6 +341,12 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
         name: subnetWebAppName
         properties: {
           addressPrefix: subnetWebAppPrefix
+          networkSecurityGroup: {
+            id: nsgWebApp.outputs.nsgId
+          }
+          routeTable: {
+            id: udrWebApp.outputs.udrId
+          }
           delegations: [
             {
               name: 'webapp'
@@ -512,7 +540,6 @@ module privatezone_synapse_sql '../../azresources/network/private-zone.bicep' = 
     vnetId: vnet.id
   }
 }
-
 
 output vnetId string = vnet.id
 

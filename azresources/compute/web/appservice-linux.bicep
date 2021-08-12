@@ -10,9 +10,9 @@ param name string
   'DOTNETCORE|2.1'
   'NODE|14-lts'
   'NODE|12-lts'
-  'Python|3.8'
-  'Python|3.7'
-  'Python|3.6'
+  'PYTHON|3.8'
+  'PYTHON|3.7'
+  'PYTHON|3.6'
 ])
 param stack string
 param appServicePlanId string
@@ -62,12 +62,12 @@ resource app 'Microsoft.Web/sites@2020-06-01' = {
       ]
     }
   }
-}
 
-resource app_vnet 'Microsoft.Web/sites/networkConfig@2020-06-01' = {
-  name: '${app.name}/VirtualNetwork'
-  properties: {
-    subnetResourceId: vnetIntegrationSubnetId
-    swiftSupported: true
-  } 
+  resource app_vnet 'networkConfig@2020-06-01' = {
+    name: 'virtualNetwork'
+    properties: {
+      subnetResourceId: vnetIntegrationSubnetId
+      swiftSupported: true
+    }
+  }
 }

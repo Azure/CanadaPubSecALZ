@@ -489,6 +489,11 @@ module synapse '../../azresources/analytics/synapse/main.bicep' = {
     synapseUsername: synapseUsername 
     synapsePassword: synapsePassword
 
+    loggingStorageAccountResourceGroupName: rgStorage.name
+    loggingStorageAccountName: storageLogging.outputs.storageName
+    loggingStoragePath: storageLogging.outputs.storagePath
+    securityContactEmail: securityContactEmail
+
     deploymentScriptIdentityId: deploymentScriptIdentity.outputs.identityId
   }
 }

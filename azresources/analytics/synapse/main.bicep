@@ -22,6 +22,12 @@ param synapsePrivateZoneId string
 param synapseDevPrivateZoneId string
 param synapseSqlPrivateZoneId string
 
+param securityContactEmail string
+
+param loggingStorageAccountResourceGroupName string
+param loggingStorageAccountName string
+param loggingStoragePath string
+
 param deploymentScriptIdentityId string
 
 resource adls 'Microsoft.Storage/storageAccounts@2019-06-01' existing = {
@@ -81,6 +87,49 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
         desiredState: 'Enabled'
       }
     }
+  }
+
+  resource synapse_audit 'auditingSettings@2021-05-01' = {
+    name: 'default'
+    properties: {
+      isAzureMonitorTargetEnabled: true
+      state: 'Enabled'
+    }
+  }
+
+  resource synapse_securityAlertPolicies 'securityAlertPolicies@2021-05-01' = {
+    name: 'Default'
+    properties: {
+      state: 'Enabled'
+      emailAccountAdmins: false
+    }
+  }
+}
+
+resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-05-01' = {
+  name: '${synapse.name}/default'
+  dependsOn: [
+    roleAssignSynapseToSALogging
+  ]
+  properties: {
+    storageContainerPath: '${loggingStoragePath}vulnerability-assessment'
+    recurringScans: {
+      isEnabled: true
+      emailSubscriptionAdmins: true
+      emails: [
+        securityContactEmail
+      ]
+    }
+  }
+}
+
+module roleAssignSynapseToSALogging '../../iam/resource/storage-role-assignment-to-sp.bicep' = {
+  name: 'rbac-${synapse.name}-logging-storage-account'
+  scope: resourceGroup(loggingStorageAccountResourceGroupName)
+  params: {
+    storageAccountName: loggingStorageAccountName
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
+    resourceSPObjectIds: array(synapse.identity.principalId)
   }
 }
 

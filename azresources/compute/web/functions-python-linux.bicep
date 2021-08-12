@@ -7,12 +7,12 @@ param name string
 param appServicePlanId string
 
 @allowed([
-  'Python|3.9'
-  'Python|3.8'
-  'Python|3.7'
-  'Python|3.6'
+  'PYTHON|3.9'
+  'PYTHON|3.8'
+  'PYTHON|3.7'
+  'PYTHON|3.6'
 ])
-param stack string = 'Python|3.9'
+param stack string = 'PYTHON|3.9'
 
 param storageName string
 param storageId string
@@ -34,10 +34,13 @@ resource function_app 'Microsoft.Web/sites@2020-06-01' = {
     httpsOnly: true
     serverFarmId: appServicePlanId
     clientAffinityEnabled: true
+    clientCertEnabled: true
     siteConfig: {
       linuxFxVersion: stack
       use32BitWorkerProcess: false
       vnetRouteAllEnabled: true
+      ftpsState: 'FtpsOnly'
+      http20Enabled: true
       appSettings: [
         {
           name: 'WEBSITE_DNS_SERVER'
@@ -62,12 +65,12 @@ resource function_app 'Microsoft.Web/sites@2020-06-01' = {
       ]
     }
   }
-}
 
-resource function_app_vnet 'Microsoft.Web/sites/networkConfig@2020-06-01' = {
-  name: '${function_app.name}/VirtualNetwork'
-  properties: {
-    subnetResourceId: vnetIntegrationSubnetId
-    swiftSupported: true
-  } 
+  resource function_app_vnet 'networkConfig@2020-06-01' = {
+    name: 'virtualNetwork'
+    properties: {
+      subnetResourceId: vnetIntegrationSubnetId
+      swiftSupported: true
+    }
+  }
 }
