@@ -331,8 +331,8 @@ module storageLogging '../../azresources/storage/storage-generalpurpose.bicep' =
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateZoneId
     filePrivateZoneId: networking.outputs.dataLakeFilePrivateZoneId
-    deployBlobPrivateZone: false
-    deployFilePrivateZone: false
+    deployBlobPrivateZone: true
+    deployFilePrivateZone: true
     
     defaultNetworkAcls: 'Deny'
     subnetIdForVnetRestriction: array(networking.outputs.sqlMiSubnetId)
