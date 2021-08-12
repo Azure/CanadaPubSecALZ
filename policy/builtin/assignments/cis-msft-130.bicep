@@ -11,6 +11,7 @@ param policyAssignmentManagementGroupId string
 param requiredRetentionDays string
 param approvedVMExtensions array
 param networkWatcherRgName string = 'NetworkWatcherRG'
+param linuxPythonLatestVersion string
 
 var policyId = '612b5213-9160-4969-8578-1518bd2a000c' // CIS Microsoft Azure Foundations Benchmark 1.3.0
 var assignmentName = 'CIS Microsoft Azure Foundations Benchmark 1.3.0'
@@ -35,6 +36,9 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
       }
       'approvedExtensions-c0e996f8-39cf-4af9-9f45-83fbde810432': {
         value: approvedVMExtensions
+      }
+      LinuxPythonLatestVersion: {
+        value: linuxPythonLatestVersion
       }
     }
     enforcementMode: 'Default'

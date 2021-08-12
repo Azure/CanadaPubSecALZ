@@ -26,6 +26,9 @@
                 "VMSnapshotLinux",
                 "WindowsAgent.AzureSecurityCenter"
             ]
+        },
+        "linuxPythonLatestVersion": {
+            "value": "3.9"
         }
     }
 }
