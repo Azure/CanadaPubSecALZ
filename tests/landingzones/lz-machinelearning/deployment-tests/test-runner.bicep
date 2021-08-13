@@ -31,7 +31,7 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
   scope: subscription()
   params: {
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    securityContactEmail: 'sesivan@microsoft.com'
+    securityContactEmail: 'alzcanadapubsec@microsoft.com'
     securityContactPhone: '555-555-5555'
 
     rgVnetName: rgVnetName
@@ -99,7 +99,7 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
     createBudget: false
     budgetName: ''
     budgetAmount: 0
-    budgetNotificationEmailAddress: 'canadaeslz@microsoft.com'
+    budgetNotificationEmailAddress: 'alzcanadapubsec@microsoft.com'
         
     // parameter for expiry of key vault secrets in days
     secretExpiryInDays: 365

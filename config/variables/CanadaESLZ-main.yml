@@ -32,13 +32,13 @@ variables:
   var-logging-logAnalyticsWorkspaceName: pubSecLogAnalytics
   var-logging-logAnalyticsAutomationAccountName: pubSecLogAnalyticsAutomation
   var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
-  var-logging-securityContactEmail: sesivan@microsoft.com
-  var-logging-securityContactPhone: 6472960698
+  var-logging-securityContactEmail: alzcanadapubsec@microsoft.com
+  var-logging-securityContactPhone: 5555555555
   var-logging-createBudget: false
   var-logging-budgetName: SubscriptionBudget
   var-logging-budgetAmount: 100
   var-logging-budgetTimeGrain: Monthly
-  var-logging-budgetNotificationEmailAddress: sesivan@microsoft.com
+  var-logging-budgetNotificationEmailAddress: alzcanadapubsec@microsoft.com
   var-logging-tagISSO: tbd
   var-logging-tagClientOrganization: tbd
   var-logging-tagCostCenter: tbd
@@ -53,13 +53,13 @@ variables:
   var-hubnetwork-subscriptionOwnerGroupObjectIds: '[]'
   var-hubnetwork-subscriptionContributorGroupObjectIds: '["38f33f7e-a471-4630-8ce9-c6653495a2ee"]'
   var-hubnetwork-subscriptionReaderGroupObjectIds: '[]'
-  var-hubnetwork-securityContactEmail: sesivan@microsoft.com
-  var-hubnetwork-securityContactPhone: 6472960698
+  var-hubnetwork-securityContactEmail: alzcanadapubsec@microsoft.com
+  var-hubnetwork-securityContactPhone: 5555555555
   var-hubnetwork-createBudget: false
   var-hubnetwork-budgetName: SubscriptionBudget
   var-hubnetwork-budgetAmount: 100
   var-hubnetwork-budgetTimeGrain: Monthly
-  var-hubnetwork-budgetNotificationEmailAddress: sesivan@microsoft.com
+  var-hubnetwork-budgetNotificationEmailAddress: alzcanadapubsec@microsoft.com
   var-hubnetwork-tagISSO: tbd
   var-hubnetwork-tagClientOrganization: tbd
   var-hubnetwork-tagCostCenter: tbd

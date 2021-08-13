@@ -3,10 +3,10 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "securityContactEmail": {
-      "value": "sesivan@microsoft.com"
+      "value": "alzcanadapubsec@microsoft.com"
     },
     "securityContactPhone": {
-      "value": "6472960000"
+      "value": "5555555555"
     },
     "createBudget": {
       "value": false
@@ -21,7 +21,7 @@
       "value": "Monthly"
     },
     "budgetNotificationEmailAddress": {
-      "value": "sesivan@microsoft.com"
+      "value": "alzcanadapubsec@microsoft.com"
     },
     "tagISSO": {
       "value": "tbd"

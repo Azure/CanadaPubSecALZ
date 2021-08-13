@@ -43,7 +43,7 @@ stages:
   #       timeoutInMinutes: 2
   #       inputs:
   #         notifyUsers: |
-  #           skeeler@microsoft.com
+  #           alzcanadapubsec@microsoft.com
   #           doic-release-approvers@microsoft.onmicrosoft.com
   #         instructions: 'Review release and resume or reject'
   #         onTimeout: 'reject'

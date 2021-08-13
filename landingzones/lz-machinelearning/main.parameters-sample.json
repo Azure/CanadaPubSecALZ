@@ -3,10 +3,10 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "securityContactEmail": {
-      "value": "hudua@microsoft.com"
+      "value": "alzcanadapubsec@microsoft.com"
     },
     "securityContactPhone": {
-      "value": "6047647018"
+      "value": "5555555555"
     },
     "createBudget": {
       "value": false
@@ -21,7 +21,7 @@
       "value": "Monthly"
     },
     "budgetNotificationEmailAddress": {
-      "value": "hudua@microsoft.com"
+      "value": "alzcanadapubsec@microsoft.com"
     },
     "tagISSO": {
       "value": "tbd"
@@ -63,7 +63,7 @@
       "value": "20.0.0.4"
     },
     "hubVnetId": {
-      "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourceGroups/dnd-lz/providers/Microsoft.Network/virtualNetworks/vnet"
+      "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourceGroups/pubsec-lz/providers/Microsoft.Network/virtualNetworks/vnet"
     },
     "hubRFC1918IPRange": {
       "value": "20.0.0.0/16"
@@ -72,7 +72,7 @@
       "value": "100.90.0.0/16"
     },
     "logAnalyticsWorkspaceResourceId": {
-      "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourcegroups/dnd-lz/providers/microsoft.operationalinsights/workspaces/dnd-la"
+      "value": "/subscriptions/a1d2d1d8-471c-4d71-9cfa-bd8edfedafbc/resourcegroups/pubsec-lz/providers/microsoft.operationalinsights/workspaces/pubsec-la"
     },
     "rgVnetName": {
       "value": "azmlNetwork6656-2-cmk"
