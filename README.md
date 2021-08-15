@@ -46,6 +46,10 @@ multiple types of workloads including App Dev and Data & AI.
 
 * Compliant on all Azure Policies when the reference implementation is deployed.  This is due to the shared responsibility of cloud and customers can choose the Azure Policies to exclude.  For example, using Azure Firewall is an Azure Policy that will be non-compliant since majority of the Public Sector customers use Network Virtual Appliances such as Fortinet.  Customers must review [Azure Security Center Regulatory Compliance dashboard](https://docs.microsoft.com/azure/security-center/update-regulatory-compliance-packages) and apply appropriate exemptions.
 
+## Contributing
+
+See [Contributing Reference Implementation](CONTRIBUTING.md) for information on building/running the code, contributing code, contributing examples and contributing feature requests or bug reports.
+
 ## Telemetry
 
 This reference implementation does not collect any telemetry.  However, Project Bicep [collects telemetry in some scenarios](https://github.com/Azure/bicep/blob/main/README.md#telemetry) as part of improving the product.
@@ -57,7 +61,6 @@ All files except for [Super-Linter](https://github.com/github/super-linter) in t
 
 Super-Linter in this project is provided as an example for enabling source code linting capabilities.  [It is subjected to the license based on it's repository](https://github.com/github/super-linter).
 
+## Trademark
 
-## Contributing
-
-See [Contributing Reference Implementation](CONTRIBUTING.md) for information on building/running the code, contributing code, contributing examples and contributing feature requests or bug reports.
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks). Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party’s policies.
