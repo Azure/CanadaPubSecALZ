@@ -21,7 +21,7 @@ trigger: none
   #     - azresources/*
   #     - config/*
   #     - landingzones/*
-  #     - pipelines/*
+  #     - .pipelines/*
 
 variables:
 - name: devops-org-name

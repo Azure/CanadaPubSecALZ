@@ -12,8 +12,8 @@ trigger:
   paths:
     include:
       - policy
-      - pipelines/policy.yml
-      - pipelines/templates/steps/deploy-policy.yml
+      - .pipelines/policy.yml
+      - .pipelines/templates/steps/deploy-policy.yml
 
 resources:
   pipelines:
