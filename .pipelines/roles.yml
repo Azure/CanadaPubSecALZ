@@ -12,7 +12,7 @@ trigger:
   paths:
     include:
       - roles
-      - pipelines/roles.yml
+      - .pipelines/roles.yml
 
 resources:
   pipelines:

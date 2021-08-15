@@ -12,8 +12,8 @@ trigger:
   paths:
     include:
       - management-groups
-      - pipelines/management-groups.yml
-      - pipelines/templates/steps/deploy-management-groups.yml
+      - .pipelines/management-groups.yml
+      - .pipelines/templates/steps/deploy-management-groups.yml
 
 variables:
 - name: devops-org-name

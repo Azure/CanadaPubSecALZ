@@ -12,8 +12,8 @@ trigger:
   paths:
     include:
       - landingzones/lz-platform-logging
-      - pipelines/platform-logging.yml
-      - pipelines/templates/steps/deploy-platform-logging.yml
+      - .pipelines/platform-logging.yml
+      - .pipelines/templates/steps/deploy-platform-logging.yml
 
 resources:
   pipelines:
