@@ -93,7 +93,7 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
     hubCGNATIPRange: hubCGNATIPRange
     
     // AKS version
-    aksVersion: '1.20.7'
+    aksVersion: '1.21.2'
     
     // parameters for Budget
     createBudget: false
