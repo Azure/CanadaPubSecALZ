@@ -45,15 +45,6 @@ stages:
     displayName: Custom Roles Job
 
     steps:
-  
-    # Required due to https://github.com/Azure/bicep/issues/2243 or upgrade to AzCLI 2.22.1+
-    - task: Bash@3
-      displayName: Upgrade Azure CLI
-      enabled: false
-      inputs:
-        targetType: 'inline'
-        script: 'az upgrade -y'
-
     - template: templates/steps/create-roles.yml
       parameters:
         description: 'Create Custom Roles'

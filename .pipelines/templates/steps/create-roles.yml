@@ -31,8 +31,6 @@ steps:
       inlineScript: |
         $(var-bashPreInjectScript)
 
-        az bicep upgrade
-
         echo "Deploying ${{ role }}.bicep using ${{ parameters.deployOperation}} operation..."
 
         az deployment mg ${{ parameters.deployOperation }} \

@@ -28,9 +28,9 @@ variables:
   var-logging-subscriptionOwnerGroupObjectIds: '[]'
   var-logging-subscriptionContributorGroupObjectIds: '["38f33f7e-a471-4630-8ce9-c6653495a2ee"]'
   var-logging-subscriptionReaderGroupObjectIds: '[]'
-  var-logging-logAnalyticsResourceGroupName: pubSecLogAnalyticsRG
-  var-logging-logAnalyticsWorkspaceName: pubSecLogAnalytics
-  var-logging-logAnalyticsAutomationAccountName: pubSecLogAnalyticsAutomation
+  var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
+  var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
+  var-logging-logAnalyticsAutomationAccountName: automation-account
   var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
   var-logging-securityContactEmail: alzcanadapubsec@microsoft.com
   var-logging-securityContactPhone: 5555555555
@@ -71,12 +71,12 @@ variables:
 
   ## Hub Networking - DDOS
   var-hubnetwork-deployDdosStandard: true
-  var-hubnetwork-rgDdosName: 'pubsecDdosPbRsg'
-  var-hubnetwork-ddosPlanName: 'pubsecDdosPlan'
+  var-hubnetwork-rgDdosName: pubsec-ddos-rg
+  var-hubnetwork-ddosPlanName: ddos-plan
 
   ## Hub Networking - Core Virtual Network
-  var-hubnetwork-rgHubName: pubsecPrdHubPbRsg
-  var-hubnetwork-hubVnetName: pubsecHubVnet
+  var-hubnetwork-rgHubName: pubsec-hub-networking-rg
+  var-hubnetwork-hubVnetName: hub-vnet
   var-hubnetwork-hubVnetAddressPrefixRFC1918: 10.18.0.0/22
   var-hubnetwork-hubVnetAddressPrefixCGNAT: 100.60.0.0/16
   var-hubnetwork-hubVnetAddressPrefixBastion: 192.168.0.0/16
@@ -105,14 +105,14 @@ variables:
   var-hubnetwork-hubSubnetGatewaySubnetPrefix: 10.18.1.0/27
 
   var-hubnetwork-hubSubnetBastionAddressPrefix: 192.168.0.0/24
-  var-hubnetwork-bastionName: pubsecHubBastion
+  var-hubnetwork-bastionName: bastion
 
   ## Hub Networking - Firewall Virtual Appliances
   var-hubnetwork-deployFirewallVMs: false
   var-hubnetwork-useFortigateFW: false
 
   ### Hub Networking - Firewall Virtual Appliances - For Non-production Traffic
-  var-hubnetwork-fwDevILBName: pubsecDevFWsILB
+  var-hubnetwork-fwDevILBName: pubsecDevFWILB
   var-hubnetwork-fwDevVMSku: Standard_D8s_v4
   var-hubnetwork-fwDevVM1Name: pubsecDevFW1
   var-hubnetwork-fwDevVM2Name: pubsecDevFW2
@@ -129,7 +129,7 @@ variables:
   var-hubnetwork-fwDevVM2HAIP: 10.18.0.135
 
   ### Hub Networking - Firewall Virtual Appliances - For Production Traffic
-  var-hubnetwork-fwProdILBName: pubsecProdFWsILB
+  var-hubnetwork-fwProdILBName: pubsecProdFWILB
   var-hubnetwork-fwProdVMSku: Standard_F8s_v2
   var-hubnetwork-fwProdVM1Name: pubsecProdFW1
   var-hubnetwork-fwProdVM2Name: pubsecProdFW2
@@ -146,8 +146,8 @@ variables:
   var-hubnetwork-fwProdVM2HAIP: 10.18.0.133
 
   ## Hub Networking - Management Restricted Zone Virtual Network
-  var-hubnetwork-rgMrzName: pubsecPrdMrzPbRsg
-  var-hubnetwork-mrzVnetName: pubsecMrzVnet
+  var-hubnetwork-rgMrzName: pubsec-management-restricted-zone-rg
+  var-hubnetwork-mrzVnetName: management-restricted-vnet
   var-hubnetwork-mrzVnetAddressPrefixRFC1918: 10.18.4.0/22
 
   var-hubnetwork-mrzMazSubnetName: MazSubnet
@@ -166,4 +166,4 @@ variables:
   var-hubnetwork-mrzMgmtSubnetAddressPrefix: 10.18.5.128/26
 
   ## Hub Networking - Public Zone
-  var-hubnetwork-rgPazName: pubsecPazPbRsg
+  var-hubnetwork-rgPazName: pubsec-public-access-zone-rg

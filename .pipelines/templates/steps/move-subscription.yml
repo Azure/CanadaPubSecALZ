@@ -34,8 +34,6 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      az bicep upgrade
-
       echo "Moving subscription ${{ parameters.subscriptionGuid }} to management group ${{ parameters.managementGroup }}..."
 
       deployName='move-subscription-${{ parameters.subscriptionGuid }}-${{ parameters.subscriptionLocation }}'

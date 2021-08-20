@@ -52,7 +52,7 @@ jobs:
                   exit 1
                 else
                   subscription=${lines[0]}
-                  echo "  - partial connfiguration file specifier resolved to: ${subscription}"
+                  echo "  - partial configuration file specifier resolved to: ${subscription}"
                 fi
               else
                 echo

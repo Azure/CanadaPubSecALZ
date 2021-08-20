@@ -22,8 +22,18 @@ parameters:
 
 steps:
 
+- template: ./move-subscription.yml
+  parameters:
+    managementGroup: $(var-logging-managementGroupId)
+    subscriptionGuid: $(var-logging-subscriptionId)
+    subscriptionLocation: $(deploymentRegion)
+    templateDirectory: $(Build.SourcesDirectory)/landingzones/utils/mg-move
+    templateFile: move-subscription.bicep
+    workingDir: ${{ parameters.workingDir }}/utils/mg-move
+
+
 - task: AzureCLI@2
-  displayName: ${{ parameters.description }} - Register Providers
+  displayName: Register Resource Providers
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
@@ -39,31 +49,7 @@ steps:
 
 
 - task: AzureCLI@2
-  displayName: ${{ parameters.description }} - Move Subscription
-  inputs:
-    azureSubscription: $(serviceConnection)
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      $(var-bashPreInjectScript)
-
-      az bicep upgrade
-
-      echo "Deploying ${{ parameters.moveTemplate }} using ${{ parameters.deployOperation}} operation..."
-
-      az deployment mg ${{ parameters.deployOperation }} \
-        --location $(deploymentRegion) \
-        --management-group-id $(var-logging-managementGroupId) \
-        --template-file ${{ parameters.moveTemplate }} \
-        --parameters \
-            managementGroupId='$(var-logging-managementGroupId)' \
-            subscriptionId='$(var-logging-subscriptionId)'
-
-      $(var-bashPostInjectScript)
-    workingDirectory: '${{ parameters.workingDir }}/utils/mg-move'
-
-- task: AzureCLI@2
-  displayName: ${{ parameters.description}} - Configure Subscription
+  displayName: Configure Logging
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'

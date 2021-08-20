@@ -76,14 +76,6 @@ stages:
       parameters:
         json: ${{ convertToJson(variables) }}
   
-    # Required due to https://github.com/Azure/bicep/issues/2243 or upgrade to AzCLI 2.22.1+
-    - task: Bash@3
-      displayName: Upgrade Azure CLI
-      enabled: false
-      inputs:
-        targetType: 'inline'
-        script: 'az upgrade -y'
-
     - template: templates/steps/define-policy.yml
       parameters:
         description: 'Define Policies'
@@ -116,14 +108,6 @@ stages:
     - template: templates/steps/show-variables.yml
       parameters:
         json: ${{ convertToJson(variables) }}
-
-    # Required due to https://github.com/Azure/bicep/issues/2243 or upgrade to AzCLI 2.22.1+
-    - task: Bash@3
-      displayName: Upgrade Azure CLI
-      enabled: false
-      inputs:
-        targetType: 'inline'
-        script: 'az upgrade -y'
 
     - template: templates/steps/assign-policy.yml
       parameters:

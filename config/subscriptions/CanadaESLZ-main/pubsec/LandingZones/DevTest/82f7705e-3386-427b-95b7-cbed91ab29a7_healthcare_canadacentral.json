@@ -23,9 +23,6 @@
         "budgetNotificationEmailAddress": {
             "value": "alzcanadapubsec@microsoft.com"
         },
-        "automationAccountName": {
-            "value": "automation"
-        },
         "tagISSO": {
             "value": "tbd"
         },
@@ -51,8 +48,8 @@
             "value": ""
           },
         "subscriptionAppOwnerGroupObjectIds": {
-           "value": []
-          },
+            "value": []
+           },
         "subscriptionOwnerGroupObjectIds": {
             "value": []
         },
@@ -65,7 +62,7 @@
             "value": []
         },
         "hubVnetId": {
-            "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsecPrdHubPbRsg/providers/Microsoft.Network/virtualNetworks/pubsecHubVnet"
+            "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet"
         },
         "hubRFC1918IPRange": {
             "value": "10.18.0.0/22"
@@ -75,45 +72,96 @@
         },
         "egressVirtualApplianceIp": {
             "value": "10.18.0.36"
-        },        
+        },
         "rgVnetName": {
-            "value": "rgVnet082021W3"
+            "value": "health082021W4Network"
         },
         "rgAutomationName": {
-            "value": "rgAutomation082021W3"
+            "value": "health082021W4Automation"
         },
-        "deployVnet": {
-            "value": true
+        "rgStorageName": {
+            "value": "health082021W4Storage"
+        },
+        "rgComputeName": {
+            "value": "health082021W4Compute"
+        },
+        "rgSecurityName": {
+            "value": "health082021W4Security"
+        },
+        "rgMonitorName": {
+            "value": "health082021W4Monitor"
+        },
+        "automationAccountName": {
+            "value": "health082021W4automation"
         },
         "vnetName": {
-            "value": "vnet"
+            "value": "health082021W4vnet"
         },
         "vnetAddressSpace": {
-            "value": "10.2.0.0/16"
+            "value": "10.5.0.0/16"
         },
         "subnetFoundationalElementsName": {
             "value": "foundationalElements"
         },
         "subnetFoundationalElementsPrefix": {
-            "value": "10.2.1.0/25"
+            "value": "10.5.1.0/25"
         },
         "subnetPresentationName": {
             "value": "presentation"
         },
         "subnetPresentationPrefix": {
-            "value": "10.2.2.0/25"
+            "value": "10.5.2.0/25"
         },
         "subnetApplicationName": {
             "value": "application"
         },
         "subnetApplicationPrefix": {
-            "value": "10.2.3.0/25"
+            "value": "10.5.3.0/25"
         },
         "subnetDataName": {
             "value": "data"
         },
         "subnetDataPrefix": {
-            "value": "10.2.4.0/25"
+            "value": "10.5.4.0/25"
+        },
+        "subnetDatabricksPublicName": {
+            "value": "databrickspublic"
+        },
+        "subnetDatabricksPublicPrefix": {
+            "value": "10.5.5.0/25"
+        },
+        "subnetDatabricksPrivateName": {
+            "value": "databricksprivate"
+        },
+        "subnetDatabricksPrivatePrefix": {
+            "value": "10.5.6.0/25"
+        },
+        "subnetPrivateEndpointsName": {
+            "value": "privateendpoints"
+        },
+        "subnetPrivateEndpointsPrefix": {
+            "value": "10.5.7.0/25"
+        },
+        "subnetWebAppName": {
+            "value": "webapp"
+        },
+        "subnetWebAppPrefix": {
+            "value": "10.5.8.0/25"
+        },
+        "deploySQLDB": {
+            "value": true
+        },
+        "sqldbUsername": {
+            "value": "azadmin"
+        },
+        "synapseUsername": {
+            "value": "azadmin"
+        },
+        "secretExpiryInDays": {
+            "value": 3650
+        },
+        "useCMK": {
+            "value": false
         }
     }
 }

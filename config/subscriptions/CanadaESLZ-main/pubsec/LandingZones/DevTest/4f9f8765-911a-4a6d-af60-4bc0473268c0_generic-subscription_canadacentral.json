@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "securityContactEmail": {
-            "value": "skeeler@microsoft.com"
+            "value": "alzcanadapubsec@microsoft.com"
         },
         "securityContactPhone": {
             "value": "5555555555"
@@ -21,7 +21,7 @@
             "value": "Monthly"
         },
         "budgetNotificationEmailAddress": {
-            "value": "skeeler@microsoft.com"
+            "value": "alzcanadapubsec@microsoft.com"
         },
         "automationAccountName": {
             "value": "automation"
@@ -58,14 +58,14 @@
         },
         "subscriptionContributorGroupObjectIds": {
             "value": [
-                "ae712826-a993-4819-a167-4045d965b5a5"
+                "38f33f7e-a471-4630-8ce9-c6653495a2ee"
             ]
         },
         "subscriptionReaderGroupObjectIds": {
             "value": []
         },
         "hubVnetId": {
-            "value": "/subscriptions/248e2ceb-23b4-41e7-bd3f-3d28594ca842/resourceGroups/pubsecPrdHubPbRsg/providers/Microsoft.Network/virtualNetworks/pubsecHubVnet"
+            "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet"
         },
         "hubRFC1918IPRange": {
             "value": "10.18.0.0/22"
@@ -77,10 +77,10 @@
             "value": "10.18.0.36"
         },        
         "rgVnetName": {
-            "value": "rgVnet2108001"
+            "value": "rgVnet082021W4"
         },
         "rgAutomationName": {
-            "value": "rgAutomation2108001"
+            "value": "rgAutomation082021W4"
         },
         "deployVnet": {
             "value": true

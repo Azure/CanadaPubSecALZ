@@ -62,7 +62,7 @@
       "value": []
     },
     "hubVnetId": {
-      "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsecPrdHubPbRsg/providers/Microsoft.Network/virtualNetworks/pubsecHubVnet"
+      "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet"
     },
     "hubRFC1918IPRange": {
       "value": "10.18.0.0/22"
@@ -74,85 +74,85 @@
       "value": "10.18.0.36"
     },
     "rgVnetName": {
-      "value": "azmlnocmk082021W3Network"
+      "value": "azmlcmk082021W4Network"
     },
     "rgAutomationName": {
-      "value": "azmlnocmk082021W3Automation"
+      "value": "azmlcmk082021W4Automation"
     },
     "rgStorageName": {
-      "value": "azmlnocmk082021W3Storage"
+      "value": "azmlcmk082021W4Storage"
     },
     "rgComputeName": {
-      "value": "azmlnocmk082021W3Compute"
+      "value": "azmlcmk082021W4Compute"
     },
     "rgSecurityName": {
-      "value": "azmlnocmk082021W3Security"
+      "value": "azmlcmk082021W4Security"
     },
     "rgMonitorName": {
-      "value": "azmlnocmk082021W3Monitor"
+      "value": "azmlcmk082021W4Monitor"
     },
     "automationAccountName": {
-      "value": "azmlnocmk082021W3automation"
+      "value": "azmlcmk082021W4automation"
     },
     "vnetName": {
-      "value": "azmlnocmk082021W3vnet"
+      "value": "azmlcmk082021W4vnet"
     },
     "vnetAddressSpace": {
-      "value": "10.3.0.0/16"
+      "value": "10.1.0.0/16"
     },
     "subnetFoundationalElementsName": {
       "value": "foundationalElements"
     },
     "subnetFoundationalElementsPrefix": {
-      "value": "10.3.1.0/25"
+      "value": "10.1.1.0/25"
     },
     "subnetPresentationName": {
       "value": "presentation"
     },
     "subnetPresentationPrefix": {
-      "value": "10.3.2.0/25"
+      "value": "10.1.2.0/25"
     },
     "subnetApplicationName": {
       "value": "application"
     },
     "subnetApplicationPrefix": {
-      "value": "10.3.3.0/25"
+      "value": "10.1.3.0/25"
     },
     "subnetDataName": {
       "value": "data"
     },
     "subnetDataPrefix": {
-      "value": "10.3.4.0/25"
+      "value": "10.1.4.0/25"
     },
     "subnetSQLMIName": {
       "value": "sqlmi"
     },
     "subnetSQLMIPrefix": {
-      "value": "10.3.5.0/25"
+      "value": "10.1.5.0/25"
     },
     "subnetDatabricksPublicName": {
       "value": "databrickspublic"
     },
     "subnetDatabricksPublicPrefix": {
-      "value": "10.3.6.0/25"
+      "value": "10.1.6.0/25"
     },
     "subnetDatabricksPrivateName": {
       "value": "databricksprivate"
     },
     "subnetDatabricksPrivatePrefix": {
-      "value": "10.3.7.0/25"
+      "value": "10.1.7.0/25"
     },
     "subnetPrivateEndpointsName": {
       "value": "privateendpoints"
     },
     "subnetPrivateEndpointsPrefix": {
-      "value": "10.3.8.0/25"
+      "value": "10.1.8.0/25"
     },
     "subnetAKSName": {
       "value": "aks"
     },
     "subnetAKSPrefix": {
-      "value": "10.3.9.0/25"
+      "value": "10.1.9.0/25"
     },
     "aksVersion": {
       "value": "1.21.2"
@@ -173,7 +173,7 @@
       "value": 3650
     },
     "useCMK": {
-      "value": false
+      "value": true
     }
   }
 }
