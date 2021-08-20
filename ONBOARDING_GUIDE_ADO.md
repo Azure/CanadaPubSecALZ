@@ -67,12 +67,12 @@ variables:
 
     *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
-    1.	Go to Pipelines
-    2.	New Pipeline
-    3.	Choose Azure Repos Git
-    4.	Select Repository
-    5.	Select Existing Azure Pipeline YAML file
-    6.	Identify the pipeline in `.pipelines/management-groups.yml`.
+    1.    Go to Pipelines
+    2.    New Pipeline
+    3.    Choose Azure Repos Git
+    4.    Select Repository
+    5.    Select Existing Azure Pipeline YAML file
+    6.    Identify the pipeline in `.pipelines/management-groups.yml`.
     7.  Save the pipeline (don't run it yet)
     8.  Rename the pipeline to `management-groups-ci`
 
@@ -88,7 +88,7 @@ At least one Azure AD Security Group is required for role assignment.  Role assi
 
 ### Step 4.2:  Update configuration files in git repository
 
-Set the configuration parameters even if there’s an existing central Log Analytics Workspace.  These settings are used by other deployments such as Azure Policy for Log Analytics.  In this case, use the values of the existing Log Analytics Workspace.
+Set the configuration parameters even if there's an existing central Log Analytics Workspace.  These settings are used by other deployments such as Azure Policy for Log Analytics.  In this case, use the values of the existing Log Analytics Workspace.
 
 When a Log Analytics Workspace & Automation account already exists, enter Subscription ID, Resource Group, Log Analytics Workspace name and Automation account name.  The automation will update the existing deployment instead of creating new resources.
 
@@ -136,12 +136,12 @@ When a Log Analytics Workspace & Automation account already exists, enter Subscr
 
     *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
-    1.	Go to Pipelines
-    2.	New Pipeline
-    3.	Choose Azure Repos Git
-    4.	Select Repository
-    5.	Select Existing Azure Pipeline YAML file
-    6.	Identify the pipeline in `.pipelines/platform-logging.yml`.
+    1.    Go to Pipelines
+    2.    New Pipeline
+    3.    Choose Azure Repos Git
+    4.    Select Repository
+    5.    Select Existing Azure Pipeline YAML file
+    6.    Identify the pipeline in `.pipelines/platform-logging.yml`.
     7.  Save the pipeline (don't run it yet)
     8.  Rename the pipeline to `platform-logging-ci`
 
@@ -154,12 +154,12 @@ When a Log Analytics Workspace & Automation account already exists, enter Subscr
 
     *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
-    1.	Go to Pipelines
-    2.	New Pipeline
-    3.	Choose Azure Repos Git
-    4.	Select Repository
-    5.	Select Existing Azure Pipeline YAML file
-    6.	Identify the pipeline in `.pipelines/policy.yml`.
+    1.    Go to Pipelines
+    2.    New Pipeline
+    3.    Choose Azure Repos Git
+    4.    Select Repository
+    5.    Select Existing Azure Pipeline YAML file
+    6.    Identify the pipeline in `.pipelines/policy.yml`.
     7.  Save the pipeline (don't run it yet)
     8.  Rename the pipeline to `policy-ci`
 
@@ -173,12 +173,12 @@ When a Log Analytics Workspace & Automation account already exists, enter Subscr
 
     *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
-    1.	Go to Pipelines
-    2.	New Pipeline
-    3.	Choose Azure Repos Git
-    4.	Select Repository
-    5.	Select Existing Azure Pipeline YAML file
-    6.	Identify the pipeline in `.pipelines/roles.yml`.
+    1.    Go to Pipelines
+    2.    New Pipeline
+    3.    Choose Azure Repos Git
+    4.    Select Repository
+    5.    Select Existing Azure Pipeline YAML file
+    6.    Identify the pipeline in `.pipelines/roles.yml`.
     7.  Save the pipeline (don't run it yet)
     8.  Rename the pipeline to `roles-ci`
 
@@ -346,63 +346,90 @@ When a Log Analytics Workspace & Automation account already exists, enter Subscr
     var-hubnetwork-rgPazName: pubsec-public-access-zone-rg
     ```
 
-2.	Configure Variable Group:  firewall-secrets
+2. Configure Variable Group:  firewall-secrets
 
     * In Azure DevOps, go to Pipelines -> Library
-
     * Select + Variable group
-    
     * Set Variable group name:  firewall-secrets
-    
     * Add two variables:
 
-        These two variables are used when creating Firewall virtual machines.  These are temporary passwords and recommended to be changed after creation. The same username and password are used for all virtual machines.
+      These two variables are used when creating Firewall virtual machines.  These are temporary passwords and recommended to be changed after creation. The same username and password are used for all virtual machines.
 
-        When creating both variables, toggle the lock icon to make it a secret.  This ensures that the values are not shown in logs nor to Azure DevOps users.
+      When creating both variables, toggle the lock icon to make it a secret.  This ensures that the values are not shown in logs nor to Azure DevOps users.
 
-        Write down the username and password as it’s not retrievable once saved.
+      Write down the username and password as it's not retrievable once saved.
 
         * var-hubnetwork-fwUsername
         * var-hubnetwork-fwPassword
 
     * Click Save 
 
-3.	Configure Pipeline for Platform – Hub Networking using NVAs
+3. Configure Pipeline for Platform – Hub Networking using NVAs
 
-    *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
+    > Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.
 
-    1.	Go to Pipelines
-    2.	New Pipeline
-    3.	Choose Azure Repos Git
-    4.	Select Repository
-    5.	Select Existing Azure Pipeline YAML file
-    6.	Identify the pipeline in `.pipelines/platform-connectivity-hub-nva.yml`.
-    7.  Save the pipeline (don't run it yet)
-    8.  Rename the pipeline to `platform-connectivity-hub-nva-ci`
+    1. Go to Pipelines
+    2. New Pipeline
+    3. Choose Azure Repos Git
+    4. Select Repository
+    5. Select Existing Azure Pipeline YAML file
+    6. Identify the pipeline in `.pipelines/platform-connectivity-hub-nva.yml`.
+    7. Save the pipeline (don't run it yet)
+    8. Rename the pipeline to `platform-connectivity-hub-nva-ci`
 
-4.	Configure Pipeline permissions for the secrets.
+4. Configure Pipeline permissions for the secrets.
 
     * In Azure DevOps, go to Pipelines -> Library
-    * Select variable group previously created (i.e. “firewall-secrets”)
-    * Click “Pipeline Permissions”, and in resulting dialog window:
-        * Click “Restrict permission”
-        * Click “+” button
-        * Select the “platform-connectivity-hub-nva-ci” pipeline
+    * Select variable group previously created (i.e. "firewall-secrets")
+    * Click "Pipeline Permissions", and in resulting dialog window:
+        * Click "Restrict permission"
+        * Click "+" button
+        * Select the "platform-connectivity-hub-nva-ci" pipeline
         * Close the dialog window
 
-5.	Run pipeline and wait for completion.
+5. Run pipeline and wait for completion.
 
 ## Step 8:  Configure Subscription Archetype
 
-1.	Configure Pipeline definition for subscription archetypes
+1. Configure Pipeline definition for subscription archetypes
 
-    *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
+    > Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.
 
-    1.	Go to Pipelines
-    2.	New Pipeline
-    3.	Choose Azure Repos Git
-    4.	Select Repository
-    5.	Select Existing Azure Pipeline YAML file
-    6.	Identify the pipeline in `.pipelines/subscriptions.yml`.
-    7.  Save the pipeline (don't run it yet)
-    8.  Rename the pipeline to `subscription-ci`
+    1. Go to Pipelines
+    2. New Pipeline
+    3. Choose Azure Repos Git
+    4. Select Repository
+    5. Select Existing Azure Pipeline YAML file
+    6. Identify the pipeline in `.pipelines/subscriptions.yml`.
+    7. Save the pipeline (don't run it yet)
+    8. Rename the pipeline to `subscription-ci`
+
+2. Create a subscription configuration file (JSON)
+
+    1. Make a copy of an existing subscription configuration file under `config/subscriptions/CanadaESLZ-main` as a starting point
+
+    2. Be sure to rename the file in one of the following formats:
+       * `[GUID]_[TYPE].json`
+       * `[GUID]_[TYPE]_[LOCATION].json`
+
+       Replace `[GUID]` with the subscription GUID. Replace `[TYPE]` with the subscription archetype. Optionally, add (replace) `[LOCATION]` with an Azure deployment location, e.g. `canadacentral`. If you do not specify a location in the configuration file name, the `deploymentRegion` variable will be used by default.
+
+       > If a fourth specifier is added to the configuration filename at some future point and you do not want to supply an explicit deployment location in the third part of the configuration file name, you can either leave it empty (two consecutive underscore characters) or provide the case-sensitive value `default` to signal the `deploymentRegion` variable value should be used.
+
+    3. Save the subscription configuration file in a subfolder (under `config/subscriptions`) that is named for your Azure DevOps organization combined with the branch name corresponding to your deployment environment. For example, if your Azure DevOps organization name is `Contoso` and your Azure Repos branch for the target deployment environment is `main`, then the subfolder name would be `Contoso-main`.
+
+    4. Update the contents of the newly created subscription configuration file to match your deployment environment.
+
+    5. Commit the subscription file to Azure Repos.
+
+3. Run the subscription pipeline
+
+    1. In Azure DevOps, go to Pipelines
+    2. Select the `subscription-ci` pipeline and run it.
+
+       > The `subscription-ci` pipeline YAML is configured, by default, to **not** run automatically; you can change this if desired.
+
+    3. In the Run Pipelines dialog window, enter the first 4 digits of your new subscription configuration file name (4 is usually enough of the GUID to uniquely identify the subscription) between the square brackets in the `subscriptions` parameter field. For example: `[802e]`.
+
+    4. In the Run Pipelines dialog window, click the `Run` button to start the pipeline.
+
