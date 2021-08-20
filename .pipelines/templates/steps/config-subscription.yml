@@ -9,6 +9,8 @@ parameters:
     type: string
   - name: subscriptionType
     type: string
+  - name: subscriptionLocation
+    type: string
   - name: filename
     type: string
   - name: workingDir
@@ -27,12 +29,15 @@ steps:
       $(var-bashPreInjectScript)
 
       template="landingzones/lz-${{ parameters.subscriptionType}}/main.bicep"
+      deployName='main-${{ parameters.subscriptionGuid }}-${{ parameters.subscriptionLocation }}'
+      deployName=${deployName:0:63}
 
       echo "Configuring subscription ${{ parameters.subscriptionGuid }} using template ${template} ..."
       az deployment sub $(deployOperation) \
         --subscription ${{ parameters.subscriptionGuid }} \
-        --location $(deploymentRegion) \
+        --location ${{ parameters.subscriptionLocation }} \
         --template-file $(Build.SourcesDirectory)/${template} \
+        --name ${deployName} \
         --parameters @${{ parameters.filename }} \
           logAnalyticsWorkspaceResourceId='$(var-logging-logAnalyticsWorkspaceResourceId)'
 
@@ -46,12 +51,15 @@ steps:
         hubSubscriptionId=`echo $hubVnetId | cut -d '/' -f 3`
         spokeRgName=`jq -r .parameters.rgVnetName.value "${{ parameters.filename }}"`
         spokeVnetName=`jq -r .parameters.vnetName.value "${{ parameters.filename }}"`
-    
+
+        deployName='peer-to-hub-${{ parameters.subscriptionGuid }}-${{ parameters.subscriptionLocation }}'
+        deployName=${deployName:0:63}
+          
         az deployment sub create \
-            --location $(deploymentRegion) \
+            --location ${{ parameters.subscriptionLocation }} \
             --subscription $hubSubscriptionId \
             --template-file $(Build.SourcesDirectory)/landingzones/utils/network/peer-to-hub.bicep \
-            --name 'peer-to-hub-${{ parameters.subscriptionGuid }}' \
+            --name ${deployName} \
             --parameters \
                 hubVnetId=$hubVnetId \
                 spokeSubId=${{ parameters.subscriptionGuid }} \

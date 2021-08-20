@@ -18,6 +18,8 @@ parameters:
     type: string
   - name: subscriptionGuid
     type: string
+  - name: subscriptionLocation
+    type: string
   - name: workingDir
     type: string
 
@@ -36,11 +38,14 @@ steps:
 
       echo "Moving subscription ${{ parameters.subscriptionGuid }} to management group ${{ parameters.managementGroup }}..."
 
+      deployName='move-subscription-${{ parameters.subscriptionGuid }}-${{ parameters.subscriptionLocation }}'
+      deployName=${deployName:0:63}
+
       az deployment mg $(deployOperation) \
-        --location $(deploymentRegion) \
+        --location ${{ parameters.subscriptionLocation }} \
         --management-group-id ${{ parameters.managementGroup }} \
         --template-file ${{ parameters.templateFile }} \
-        --name 'move-subscription-${{ parameters.subscriptionGuid }}' \
+        --name ${deployName} \
         --parameters \
             managementGroupId='${{ parameters.managementGroup }}' \
             subscriptionId='${{ parameters.subscriptionGuid }}'

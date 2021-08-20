@@ -76,17 +76,41 @@ jobs:
               # Deconstruct file name
               echo
               echo "Analyzing subscription configuration file name..."
-              readarray -t fparts < <(echo ${filename} | tr "_" "\n")
+              readarray -t fparts < <(echo ${filename} | sed 's/\.json$//g' | tr "_" "\n")
+              fparts_num=${#fparts[@]}
+              sub_guid=''
+              sub_type=''
+              sub_loc=$(deploymentRegion)
               sub_guid_index=0
               sub_type_index=1
-              if [ ${#fparts[@]} == 2 ]; then
+              sub_loc_index=2
+
+              # Parse required subscription GUID
+              if [[ ${fparts_num} > ${sub_guid_index} ]]; then
                   sub_guid=${fparts[$sub_guid_index]}
-                  echo "  - subscription GUID: ${sub_guid}"
-                  sub_type=$(echo ${fparts[$sub_type_index]} | sed 's/\.json$//g')
-                  echo "  - template type: ${sub_type}"
-              else
+              fi
+
+              # Parse required template type
+              if [[ ${fparts_num} > ${sub_type_index} ]]; then
+                  sub_type=${fparts[$sub_type_index]}
+              fi
+
+              # Parse optional location
+              if [[ ${fparts_num} > ${sub_loc_index} ]]; then
+                  if [[ -n ${fparts[$sub_loc_index]} && ${fparts[$sub_loc_index]} != 'default' ]]; then
+                      sub_loc=${fparts[$sub_loc_index]}
+                  fi
+              fi
+
+              # Emit parsed values: Subscription GUID, Template Type, Location
+              echo "  - subscription GUID: ${sub_guid}"
+              echo "  - template type: ${sub_type}"
+              echo "  - location: ${sub_loc}"
+
+              # Validate JSON configuration file name by testing parts
+              if [[ -z ${sub_guid} || -z ${sub_type} ]]; then
                   echo
-                  echo "##vso[task.logissue type=error]Invalid configuration file name format (${filename}). It must be in the form [SubGuid]_[TemplateType].json"
+                  echo "##vso[task.logissue type=error]Invalid configuration file name format (${filename}). It must be in the form [SubGuid]_[TemplateType].json or [SubGuid]_[TemplateType]_[Location].json"
                   exit 1
               fi
 
@@ -98,7 +122,8 @@ jobs:
               echo "##vso[task.setvariable variable=MgmtGroup;isoutput=true]${mgmt_group}"
               echo "##vso[task.setvariable variable=SubGuid;isoutput=true]${sub_guid}"
               echo "##vso[task.setvariable variable=SubType;isoutput=true]${sub_type}"
-              
+              echo "##vso[task.setvariable variable=SubLocation;isoutput=true]${sub_loc}"
+
               $(var-bashPostInjectScript)
 
             workingDirectory: ${{ variables['Build.SourcesDirectory'] }}
@@ -126,4 +151,5 @@ jobs:
             mgmtgroup: $(ParseSubscription.MgmtGroup)
             subguid: $(ParseSubscription.SubGuid)
             subtype: $(ParseSubscription.SubType)
+            sublocation: $(ParseSubscription.SubLocation)
 
