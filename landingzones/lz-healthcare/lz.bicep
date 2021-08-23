@@ -495,6 +495,10 @@ module synapse '../../azresources/analytics/synapse/main.bicep' = {
     securityContactEmail: securityContactEmail
 
     deploymentScriptIdentityId: deploymentScriptIdentity.outputs.identityId
+
+    useCMK: useCMK
+    akvResourceGroupName: rgSecurity.name
+    akvName: keyVault.outputs.akvName
   }
 }
 
