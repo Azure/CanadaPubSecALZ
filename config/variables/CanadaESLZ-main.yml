@@ -70,7 +70,7 @@ variables:
   var-hubnetwork-budgetStartDate: yyyy-MM-01
 
   ## Hub Networking - DDOS
-  var-hubnetwork-deployDdosStandard: true
+  var-hubnetwork-deployDdosStandard: false
   var-hubnetwork-rgDdosName: pubsec-ddos-rg
   var-hubnetwork-ddosPlanName: ddos-plan
 
