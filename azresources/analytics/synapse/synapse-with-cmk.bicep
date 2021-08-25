@@ -114,40 +114,9 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
       }
     }
   }
-
-  resource synapse_audit 'auditingSettings@2021-05-01' = {
-    name: 'default'
-    properties: {
-      isAzureMonitorTargetEnabled: true
-      state: 'Enabled'
-    }
-  }
-
-  resource synapse_securityAlertPolicies 'securityAlertPolicies@2021-05-01' = {
-    name: 'Default'
-    properties: {
-      state: 'Enabled'
-      emailAccountAdmins: false
-    }
-  }
 }
 
-resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-05-01' = {
-  name: '${synapse.name}/default'
-  dependsOn: [
-    roleAssignSynapseToSALogging
-  ]
-  properties: {
-    storageContainerPath: '${loggingStoragePath}vulnerability-assessment'
-    recurringScans: {
-      isEnabled: true
-      emailSubscriptionAdmins: true
-      emails: [
-        securityContactEmail
-      ]
-    }
-  }
-}
+
 
 module roleAssignSynapseToSALogging '../../iam/resource/storage-role-assignment-to-sp.bicep' = {
   name: 'rbac-${synapse.name}-logging-storage-account'
@@ -340,5 +309,73 @@ module akvRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-
     keyVaultName: akv.name
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6') // Key Vault Crypto Service Encryption User
     resourceSPObjectIds: array(synapse.identity.principalId)
+  }
+}
+
+
+resource cmkActivation 'Microsoft.Synapse/workspaces/keys@2021-06-01-preview' = {
+  dependsOn: [
+    akvRoleAssignmentForCMK
+  ]
+  name: '${synapseName}/cmk-synapse-${synapseName}'
+  properties: {
+    isActiveCMK: true
+    keyVaultUrl: akvKey.outputs.keyUri
+  }
+}
+
+module wait '../../util/wait.bicep' = {
+  dependsOn: [
+    cmkActivation
+  ]
+  name: 'wait-for-cmk-activation'
+  params: {
+    loopCounter: 120
+    waitNamePrefix: 'wait-for-cmk-activation'
+  }
+}
+
+resource synapse_audit 'Microsoft.Synapse/workspaces/auditingSettings@2021-05-01' = {
+  dependsOn: [
+    cmkActivation
+    wait
+  ]
+  name: '${synapseName}/default'
+  properties: {
+    isAzureMonitorTargetEnabled: true
+    state: 'Enabled'
+  }
+}
+
+resource synapse_securityAlertPolicies 'Microsoft.Synapse/workspaces/securityAlertPolicies@2021-05-01' = {
+  dependsOn: [
+    cmkActivation
+    wait
+  ]
+  name: '${synapseName}/Default'
+  properties: {
+    state: 'Enabled'
+    emailAccountAdmins: false
+  }
+}
+
+resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-05-01' = {
+  dependsOn: [
+    cmkActivation
+    wait
+    synapse_audit
+    synapse_securityAlertPolicies
+    roleAssignSynapseToSALogging
+  ]
+  name: '${synapseName}/default'
+  properties: {
+    storageContainerPath: '${loggingStoragePath}vulnerability-assessment'
+    recurringScans: {
+      isEnabled: true
+      emailSubscriptionAdmins: true
+      emails: [
+        securityContactEmail
+      ]
+    }
   }
 }
