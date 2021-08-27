@@ -23,6 +23,8 @@ var testScenarios = [
   }
 ]
 
+var testRunnerCleanupAfterDeployment = true
+
 var tags = {
   ClientOrganization: 'tbd'
   CostCenter: 'tbd'
@@ -92,7 +94,7 @@ module runner 'test-runner.bicep' =  [for (scenario, i) in testScenarios: if (sc
     deploySQLDB: scenario.deploySQLDB
     useCMK: scenario.useCMK
 
-    testRunnerCleanupAfterDeployment: true
+    testRunnerCleanupAfterDeployment: testRunnerCleanupAfterDeployment
   }
 }]
 

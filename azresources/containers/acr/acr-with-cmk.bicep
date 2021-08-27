@@ -172,40 +172,25 @@ module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
   }
 }
 
-var cliCmkRotateCommand = '''
+var cliCmkRotateCmkAndCleanUpCommand = '''
   az acr encryption rotate-key \
     -g {0} \
     -n {1} \
     --key-encryption-key {2} \
-    --identity '[system]' --debug
+    --identity '[system]'
+
+  az keyvault delete -g {0} -n {3}
 '''
 
-module rotateCmk '../../util/deploymentScript.bicep' = {
+module rotateCmkAndCleanUp '../../util/deploymentScript.bicep' = {
   dependsOn: [
     akvRoleAssignmentForCMK
   ]
 
-  name: 'rotate-cmk-acr-${acr.name}'
+  name: 'rotate-cmk-and-clean-up-acr-${acr.name}'
   params: {
-    deploymentScript: format(cliCmkRotateCommand, resourceGroup().name, name, akvKey.outputs.keyUri)
-    deploymentScriptName: 'rotate-cmk-acr-${acr.name}-ds'
-    deploymentScriptIdentityId: deploymentScriptIdentityId
-  }
-}
-
-var cliCmkCleanUpCommand = '''
-  az keyvault delete -g {0} -n {1}
-'''
-
-module cleanupCmk '../../util/deploymentScript.bicep' = {
-  dependsOn: [
-    rotateCmk
-  ]
-
-  name: 'cleanup-cmk-${tempKeyVaultName}'
-  params: {
-    deploymentScript: format(cliCmkCleanUpCommand, resourceGroup().name, tempAkv.outputs.akvName)
-    deploymentScriptName: 'cleanup-cmk-${tempKeyVaultName}-ds'
+    deploymentScript: format(cliCmkRotateCmkAndCleanUpCommand, resourceGroup().name, name, akvKey.outputs.keyUri, tempAkv.outputs.akvName)
+    deploymentScriptName: 'rotate-cmk-and-clean-up-acr-${acr.name}-ds'
     deploymentScriptIdentityId: deploymentScriptIdentityId
   }
 }
