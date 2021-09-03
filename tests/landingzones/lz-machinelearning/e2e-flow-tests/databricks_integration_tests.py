@@ -48,15 +48,15 @@ secret1pw = retrieved_secret.value
 # COMMAND ----------
 
 import pandas as pd
-spark_df = spark.createDataFrame(pd.DataFrame({'hello':[1,2]})).write.csv('abfss://test@storageaccount.dfs.core.windows.net/test.csv')
+spark_df = spark.createDataFrame(pd.DataFrame({'hello':[1,2]})).write.csv('abfss://test@<storageaccountname>.dfs.core.windows.net/test.csv')
 
 # COMMAND ----------
 
-dbutils.fs.ls("abfss://test@storageaccount.dfs.core.windows.net")
+dbutils.fs.ls("abfss://test@<storageaccountname>.dfs.core.windows.net")
 
 # COMMAND ----------
 
-sparkDf = spark.read.csv('abfss://test@storageaccount.dfs.core.windows.net/test.csv')
+sparkDf = spark.read.csv('abfss://test@<storageaccountname>.dfs.core.windows.net/test.csv')
 
 # COMMAND ----------
 
@@ -72,7 +72,7 @@ secret1pw = dbutils.secrets.get(scope = 'test', key = 'sqldbPassword')
 
 # COMMAND ----------
 
-jdbcHostname = "sqlserver.database.windows.net"
+jdbcHostname = ""
 jdbcDatabase = "test"
 jdbcPort = 1433
 jdbcUrl = "jdbc:sqlserver://{0}:{1};databaseName={2};user={3};password={4}".format(jdbcHostname, jdbcPort, jdbcDatabase, "login", secret1pw)
@@ -98,7 +98,7 @@ secret2pw = dbutils.secrets.get(scope = 'test', key = 'sqlmiPassword')
 
 # COMMAND ----------
 
-jdbcHostname = "sqlserver.mi.database.windows.net"
+jdbcHostname = ""
 jdbcDatabase = "test"
 jdbcPort = 1433
 jdbcUrl = "jdbc:sqlserver://{0}:{1};databaseName={2};user={3};password={4}".format(jdbcHostname, jdbcPort, jdbcDatabase, "login", secret1pw)
