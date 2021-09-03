@@ -1,12 +1,14 @@
 name: Bicep Build Test
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
     paths:
       - "**.bicep"
-  workflow_dispatch: {}
 
 jobs:
   bicep_unit_tests:
