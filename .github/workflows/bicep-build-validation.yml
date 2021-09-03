@@ -1,0 +1,28 @@
+name: Bicep Build Test
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**.bicep"
+  workflow_dispatch: {}
+
+jobs:
+  bicep_unit_tests:
+    name: Validate Bicep Syntax
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Transpile
+        shell: pwsh
+        run: |
+          Get-ChildItem -Recurse -Filter '*.bicep' | ForEach-Object {
+              Write-Information "==> Attempting Bicep Build For File: $_.FullName" -InformationAction Continue
+              bicep build $_.FullName
+          }
