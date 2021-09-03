@@ -1,4 +1,4 @@
-name: Bicep Build Test
+name: Validate Bicep Syntax
 
 on:
   pull_request:
