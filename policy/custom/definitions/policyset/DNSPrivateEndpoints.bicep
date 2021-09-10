@@ -10,6 +10,33 @@ param policyDefinitionManagementGroupId string
 
 var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)
 
+var privateDNSZones = [
+  {
+    zone: 'privatelink.blob.${environment().suffixes.storage}'
+    groupId: 'blob'
+  }
+  {
+    zone: 'privatelink.blob.${environment().suffixes.storage}'
+    groupId: 'blob_secondary'
+  }
+  {
+    zone: 'privatelink.table.${environment().suffixes.storage}'
+    groupId: 'table'
+  }
+  {
+    zone: 'privatelink.table.${environment().suffixes.storage}'
+    groupId: 'table_secondary'
+  }
+  {
+    zone: 'privatelink.queue.${environment().suffixes.storage}'
+    groupId: 'queue'
+  }
+  {
+    zone: 'privatelink.queue.${environment().suffixes.storage}'
+    groupId: 'queue_secondary'
+  }
+]
+
 resource dnsPolicySet 'Microsoft.Authorization/policySetDefinitions@2020-03-01' = {
   name: 'custom-central-dns-private-endpoints'
   properties: {
@@ -28,19 +55,20 @@ resource dnsPolicySet 'Microsoft.Authorization/policySetDefinitions@2020-03-01' 
         displayName: 'DNS for Private Endpoints'
       }
     ]
-    policyDefinitions: [
-      {
+    policyDefinitions: [for privateDNSZone in privateDNSZones: {
         groupNames: [
           'NETWORK'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'DNS-PE-Storage-Blob')
-        policyDefinitionReferenceId: toLower(replace('DNS for Private Endpoints - Storage Account - Blob', ' ', '-'))
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'DNS-PrivateEndpoints')
+        policyDefinitionReferenceId: toLower('${privateDNSZone.zone}-${privateDNSZone.groupId}')
         parameters: {
           privateDnsZoneId: {
-            value: '[concat(\'/subscriptions/\',parameters(\'privateDNSZoneSubscriptionId\'),\'/resourcegroups/\',parameters(\'privateDNSZoneResourceGroupName\'),\'/providers/Microsoft.Network/privateDnsZones/privatelink.blob.${environment().suffixes.storage}\')]'
+            value: '[[concat(\'/subscriptions/\',parameters(\'privateDNSZoneSubscriptionId\'),\'/resourcegroups/\',parameters(\'privateDNSZoneResourceGroupName\'),\'/providers/Microsoft.Network/privateDnsZones/${privateDNSZone.zone}\')]'
+          }
+          groupId: {
+            value: privateDNSZone.groupId
           }
         }
-      }
-    ]
+    }]
   }
 }
