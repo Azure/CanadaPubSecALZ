@@ -4,6 +4,250 @@
     "parameters": {
         "policyDefinitionManagementGroupId": {
             "value": "{{var-topLevelManagementGroupName}}"
+        },
+        "privateDNSZones": {
+            "value": [
+                {
+                    "serviceName": "Azure Automation",
+                    "zone": "privatelink.azure-automation.net",
+                    "groupId": "Webhook"
+                },
+                {
+                    "serviceName": "Azure Automation",
+                    "zone": "privatelink.azure-automation.net",
+                    "groupId": "DSCAndHybridWorker"
+                },
+                {
+                    "serviceName": "Azure SQL Database",
+                    "zone": "privatelink.database.windows.net",
+                    "groupId": "sqlServer"
+                },
+                {
+                    "serviceName": "Azure Synapse Analytics",
+                    "zone": "privatelink.sql.azuresynapse.net",
+                    "groupId": "Sql"
+                },
+                {
+                    "serviceName": "Azure Synapse Analytics",
+                    "zone": "privatelink.sql.azuresynapse.net",
+                    "groupId": "SqlOnDemand"
+                },
+                {
+                    "serviceName": "Azure Synapse Analytics",
+                    "zone": "privatelink.sql.azuresynapse.net",
+                    "groupId": "Dev"
+                },
+                {
+                    "serviceName": "Azure Synapse Studio",
+                    "zone": "privatelink.azuresynapse.net",
+                    "groupId": "Web"
+                },
+                {
+                    "serviceName": "Storage Account",
+                    "zone": "privatelink.blob.core.windows.net",
+                    "groupId": "blob"
+                },
+                {
+                    "serviceName": "Storage Account",
+                    "zone": "privatelink.blob.core.windows.net",
+                    "groupId": "blob_secondary"
+                },
+                {
+                    "serviceName": "Storage Account",
+                    "zone": "privatelink.table.core.windows.net",
+                    "groupId": "table"
+                },
+                {
+                    "serviceName": "Storage Account",
+                    "zone": "privatelink.table.core.windows.net",
+                    "groupId": "table_secondary"
+                },
+                {
+                    "serviceName": "Storage Account",
+                    "zone": "privatelink.queue.core.windows.net",
+                    "groupId": "queue"
+                },
+                {
+                    "serviceName": "Storage Account",
+                    "zone": "privatelink.queue.core.windows.net",
+                    "groupId": "queue_secondary"
+                },
+                {
+                    "serviceName": "Storage Account",
+                    "zone": "privatelink.file.core.windows.net",
+                    "groupId": "file"
+                },
+                {
+                    "serviceName": "Storage Account",
+                    "zone": "privatelink.file.core.windows.net",
+                    "groupId": "file_secondary"
+                },
+                {
+                    "serviceName": "Storage Account",
+                    "zone": "privatelink.web.core.windows.net",
+                    "groupId": "web"
+                },
+                {
+                    "serviceName": "Storage Account",
+                    "zone": "privatelink.web.core.windows.net",
+                    "groupId": "web_secondary"
+                },
+                {
+                    "serviceName": "ADLS Gen2",
+                    "zone": "privatelink.dfs.core.windows.net",
+                    "groupId": "dfs"
+                },
+                {
+                    "serviceName": "ADLS Gen2",
+                    "zone": "privatelink.dfs.core.windows.net",
+                    "groupId": "dfs_secondary"
+                },
+                {
+                    "serviceName": "Cosmos DB",
+                    "zone": "privatelink.documents.azure.com",
+                    "groupId": "SQL"
+                },
+                {
+                    "serviceName": "Cosmos DB",
+                    "zone": "privatelink.mongo.cosmos.azure.com",
+                    "groupId": "MongoDB"
+                },
+                {
+                    "serviceName": "Cosmos DB",
+                    "zone": "privatelink.cassandra.cosmos.azure.com",
+                    "groupId": "Cassandra"
+                },
+                {
+                    "serviceName": "Cosmos DB",
+                    "zone": "privatelink.gremlin.cosmos.azure.com",
+                    "groupId": "Gremlin"
+                },
+                {
+                    "serviceName": "Cosmos DB",
+                    "zone": "privatelink.table.cosmos.azure.com",
+                    "groupId": "Table"
+                },
+                {
+                    "serviceName": "Azure Database for PostgreSQL - Single server",
+                    "zone": "privatelink.postgres.database.azure.com",
+                    "groupId": "postgresqlServer"
+                },
+                {
+                    "serviceName": "Azure Database for MySQL",
+                    "zone": "privatelink.mysql.database.azure.com",
+                    "groupId": "mysqlServer"
+                },
+                {
+                    "serviceName": "Azure Database for MariaDB",
+                    "zone": "privatelink.mariadb.database.azure.com",
+                    "groupId": "mariadbServer"
+                },
+                {
+                    "serviceName": "Azure Key Vault",
+                    "zone": "privatelink.vaultcore.azure.net",
+                    "groupId": "vault"
+                },
+                {
+                    "serviceName": "Azure Kubernetes Service - Kubernetes API - Canada Central",
+                    "zone": "privatelink.canadacentral.azmk8s.io",
+                    "groupId": "management"
+                },
+                {
+                    "serviceName": "Azure Kubernetes Service - Kubernetes API - Canada East",
+                    "zone": "privatelink.canadaeast.azmk8s.io",
+                    "groupId": "management"
+                },
+                {
+                    "serviceName": "Azure Search",
+                    "zone": "privatelink.search.windows.net",
+                    "groupId": "searchService"
+                },
+                {
+                    "serviceName": "Azure Container Registry",
+                    "zone": "privatelink.azurecr.io",
+                    "groupId": "registry"
+                },
+                {
+                    "serviceName": "Azure Backup - Canada Central",
+                    "zone": "privatelink.canadacentral.backup.windowsazure.com",
+                    "groupId": "AzureBackup"
+                },
+                {
+                    "serviceName": "Azure Backup - Canada East",
+                    "zone": "privatelink.canadaeast.backup.windowsazure.com",
+                    "groupId": "AzureBackup"
+                },
+                {
+                    "serviceName": "Azure Site Recovery - Canada Central",
+                    "zone": "canadacentral.privatelink.siterecovery.windowsazure.com",
+                    "groupId": "AzureSiteRecovery"
+                },
+                {
+                    "serviceName": "Azure Site Recovery - Canada East",
+                    "zone": "canadaeast.privatelink.siterecovery.windowsazure.com",
+                    "groupId": "AzureSiteRecovery"
+                },
+                {
+                    "serviceName": "Azure Event Hubs and Azure Service Bus",
+                    "zone": "privatelink.servicebus.windows.net",
+                    "groupId": "namespace"
+                },
+                {
+                    "serviceName": "Azure Event Grid",
+                    "zone": "privatelink.eventgrid.azure.net",
+                    "groupId": "topic"
+                },
+                {
+                    "serviceName": "Azure Event Grid",
+                    "zone": "privatelink.eventgrid.azure.net",
+                    "groupId": "domain"
+                },
+                {
+                    "serviceName": "Azure Web Apps",
+                    "zone": "privatelink.azurewebsites.net",
+                    "groupId": "sites"
+                },
+                {
+                    "serviceName": "Azure Machine Learning API",
+                    "zone": "privatelink.api.azureml.ms",
+                    "groupId": "amlworkspace"
+                },
+                {
+                    "serviceName": "Azure Machine Learning Notebooks",
+                    "zone": "privatelink.notebooks.azure.net",
+                    "groupId": "amlworkspace"
+                },
+                {
+                    "serviceName": "Cognitive Services",
+                    "zone": "privatelink.cognitiveservices.azure.com",
+                    "groupId": "account"
+                },
+                {
+                    "serviceName": "Azure File Sync",
+                    "zone": "privatelink.afs.azure.net",
+                    "groupId": "afs"
+                },
+                {
+                    "serviceName": "Azure Data Factory",
+                    "zone": "privatelink.datafactory.azure.net",
+                    "groupId": "dataFactory"
+                },
+                {
+                    "serviceName": "Azure Data Factory",
+                    "zone": "privatelink.adf.azure.com",
+                    "groupId": "portal"
+                },
+                {
+                    "serviceName": "Azure Cache for Redis",
+                    "zone": "privatelink.redis.cache.windows.net",
+                    "groupId": "redisCache"
+                },
+                {
+                    "serviceName": "Azure Cache for Redis Enterprise",
+                    "zone": "privatelink.redisenterprise.cache.azure.net",
+                    "groupId": "redisCache"
+                }
+            ]
         }
     }
 }

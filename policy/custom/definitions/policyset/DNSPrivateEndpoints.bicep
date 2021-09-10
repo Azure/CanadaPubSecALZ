@@ -8,34 +8,35 @@ targetScope = 'managementGroup'
 
 param policyDefinitionManagementGroupId string
 
-var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)
-
-var privateDNSZones = [
+/*
+Format of the array of objects
+[
   {
-    serviceName: 'Storage Account'
-    zone: 'privatelink.blob.${environment().suffixes.storage}'
-    groupId: 'blob'
-  }
-  {
-    serviceName: 'Storage Account'
-    zone: 'privatelink.blob.${environment().suffixes.storage}'
-    groupId: 'blob_secondary'
+    serviceName: 'Cosmos DB'
+    zone: 'privatelink.documents.azure.com'
+    groupId: 'SQL'
   }
 ]
+*/
+param privateDNSZones array
 
-var policyDefinition = json(loadTextContent('templates/DNS-PrivateEndpoints/azurepolicy.json'))
+var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)
+var customPolicyDefinition = json(loadTextContent('templates/DNS-PrivateEndpoints/azurepolicy.json'))
+
+// To batch delete policies using Azure CLI, use:
+// az policy definition list --management-group pubsec --query "[?contains(id,'dns-pe-')].name" -o tsv | xargs -tn1 -P 5 az policy definition delete --management-group pubsec --name
 
 resource policy 'Microsoft.Authorization/policyDefinitions@2020-09-01' = [for privateDNSZone in privateDNSZones: {
-  name: toLower(replace('${policyDefinition.name} ${privateDNSZone.serviceName} ${privateDNSZone.groupId}', ' ', '-'))
+  name: 'dns-pe-${uniqueString(privateDNSZone.zone, privateDNSZone.groupId)}'
   properties: {
     metadata: {
       zone: privateDNSZone.zone
       groupId: privateDNSZone.groupId
     }
-    displayName: '${policyDefinition.properties.displayName} - ${privateDNSZone.zone} - ${privateDNSZone.groupId}'
-    mode: policyDefinition.properties.mode
-    policyRule: policyDefinition.properties.policyRule
-    parameters: policyDefinition.properties.parameters
+    displayName: '${customPolicyDefinition.properties.displayName} - ${privateDNSZone.zone} - ${privateDNSZone.groupId}'
+    mode: customPolicyDefinition.properties.mode
+    policyRule: customPolicyDefinition.properties.policyRule
+    parameters: customPolicyDefinition.properties.parameters
   }
 }]
 
