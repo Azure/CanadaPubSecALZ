@@ -12,32 +12,34 @@ var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/manag
 
 var privateDNSZones = [
   {
+    serviceName: 'Storage Account'
     zone: 'privatelink.blob.${environment().suffixes.storage}'
     groupId: 'blob'
   }
   {
+    serviceName: 'Storage Account'
     zone: 'privatelink.blob.${environment().suffixes.storage}'
     groupId: 'blob_secondary'
   }
-  {
-    zone: 'privatelink.table.${environment().suffixes.storage}'
-    groupId: 'table'
-  }
-  {
-    zone: 'privatelink.table.${environment().suffixes.storage}'
-    groupId: 'table_secondary'
-  }
-  {
-    zone: 'privatelink.queue.${environment().suffixes.storage}'
-    groupId: 'queue'
-  }
-  {
-    zone: 'privatelink.queue.${environment().suffixes.storage}'
-    groupId: 'queue_secondary'
-  }
 ]
 
-resource dnsPolicySet 'Microsoft.Authorization/policySetDefinitions@2020-03-01' = {
+var policyDefinition = json(loadTextContent('templates/DNS-PrivateEndpoints/azurepolicy.json'))
+
+resource policy 'Microsoft.Authorization/policyDefinitions@2020-09-01' = [for privateDNSZone in privateDNSZones: {
+  name: toLower(replace('${policyDefinition.name} ${privateDNSZone.serviceName} ${privateDNSZone.groupId}', ' ', '-'))
+  properties: {
+    metadata: {
+      zone: privateDNSZone.zone
+      groupId: privateDNSZone.groupId
+    }
+    displayName: '${policyDefinition.properties.displayName} - ${privateDNSZone.zone} - ${privateDNSZone.groupId}'
+    mode: policyDefinition.properties.mode
+    policyRule: policyDefinition.properties.policyRule
+    parameters: policyDefinition.properties.parameters
+  }
+}]
+
+resource policySet 'Microsoft.Authorization/policySetDefinitions@2020-09-01' = {
   name: 'custom-central-dns-private-endpoints'
   properties: {
     displayName: 'Custom - Central DNS for Private Endpoints'
@@ -55,11 +57,11 @@ resource dnsPolicySet 'Microsoft.Authorization/policySetDefinitions@2020-03-01' 
         displayName: 'DNS for Private Endpoints'
       }
     ]
-    policyDefinitions: [for privateDNSZone in privateDNSZones: {
+    policyDefinitions: [for (privateDNSZone, i) in privateDNSZones: {
         groupNames: [
           'NETWORK'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'DNS-PrivateEndpoints')
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope,'Microsoft.Authorization/policyDefinitions', policy[i].name)
         policyDefinitionReferenceId: toLower('${privateDNSZone.zone}-${privateDNSZone.groupId}')
         parameters: {
           privateDnsZoneId: {
