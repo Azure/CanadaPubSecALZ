@@ -34,7 +34,7 @@
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Synapse/workspaces",
-                    "zone": "privatelink.sql.azuresynapse.net",
+                    "zone": "privatelink.dev.azuresynapse.net",
                     "groupId": "Dev"
                 },
                 {
@@ -251,6 +251,11 @@
                     "privateLinkServiceNamespace": "Microsoft.Cache/RedisEnterprise",
                     "zone": "privatelink.redisenterprise.cache.azure.net",
                     "groupId": "redisCache"
+                },
+                {
+                    "privateLinkServiceNamespace": "Microsoft.HealthcareApis/services",
+                    "zone": "privatelink.azurehealthcareapis.com",
+                    "groupId": "fhir"
                 }
             ]
         }
