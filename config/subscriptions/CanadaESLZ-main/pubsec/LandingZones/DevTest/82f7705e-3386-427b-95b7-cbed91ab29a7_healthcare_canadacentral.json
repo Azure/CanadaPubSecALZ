@@ -74,28 +74,28 @@
             "value": "10.18.0.36"
         },
         "rgVnetName": {
-            "value": "health082021W4Network"
+            "value": "health092021W3Network"
         },
         "rgAutomationName": {
-            "value": "health082021W4Automation"
+            "value": "health092021W3Automation"
         },
         "rgStorageName": {
-            "value": "health082021W4Storage"
+            "value": "health092021W3Storage"
         },
         "rgComputeName": {
-            "value": "health082021W4Compute"
+            "value": "health092021W3Compute"
         },
         "rgSecurityName": {
-            "value": "health082021W4Security"
+            "value": "health092021W3Security"
         },
         "rgMonitorName": {
-            "value": "health082021W4Monitor"
+            "value": "health092021W3Monitor"
         },
         "automationAccountName": {
-            "value": "health082021W4automation"
+            "value": "health092021W3automation"
         },
         "vnetName": {
-            "value": "health082021W4vnet"
+            "value": "health092021W3vnet"
         },
         "vnetAddressSpace": {
             "value": "10.5.0.0/16"
