@@ -70,7 +70,7 @@ variables:
   var-hubnetwork-budgetStartDate: yyyy-MM-01
 
   ## Hub Networking - Private Dns Zones
-  var-hubnetwork-deployPrivateDnsZones: false
+  var-hubnetwork-deployPrivateDnsZones: true
   var-hubnetwork-rgPrivateDnsZonesName: pubsec-dns-rg
 
   ## Hub Networking - DDOS
