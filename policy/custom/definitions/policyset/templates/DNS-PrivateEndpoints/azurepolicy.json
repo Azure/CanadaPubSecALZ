@@ -2,9 +2,15 @@
   "type": "Microsoft.Authorization/policyDefinitions",
   "name": "DNS-PE",
   "properties": {
-    "displayName": "DNS for Private Endpoints",
+    "displayName": "DNS",
     "mode": "Indexed",
     "parameters": {
+      "privateLinkServiceNamespace": {
+        "type": "String",
+        "metadata": {
+          "displayName": "privateLinkServiceNamespace"
+        }
+      },
       "privateDnsZoneId": {
         "type": "String",
         "metadata": {
@@ -25,6 +31,10 @@
           {
             "field": "type",
             "equals": "Microsoft.Network/privateEndpoints"
+          },
+          {
+            "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId",
+            "contains": "[parameters('privateLinkServiceNamespace')]"
           },
           {
             "count": {

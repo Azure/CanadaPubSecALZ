@@ -12,7 +12,7 @@ param policyDefinitionManagementGroupId string
 Format of the array of objects
 [
   {
-    serviceName: 'Cosmos DB'
+    privateLinkServiceNamespace: 'Microsoft.AzureCosmosDB/databaseAccounts'
     zone: 'privatelink.documents.azure.com'
     groupId: 'SQL'
   }
@@ -27,13 +27,14 @@ var customPolicyDefinition = json(loadTextContent('templates/DNS-PrivateEndpoint
 // az policy definition list --management-group pubsec --query "[?contains(id,'dns-pe-')].name" -o tsv | xargs -tn1 -P 5 az policy definition delete --management-group pubsec --name
 
 resource policy 'Microsoft.Authorization/policyDefinitions@2020-09-01' = [for privateDNSZone in privateDNSZones: {
-  name: 'dns-pe-${uniqueString(privateDNSZone.zone, privateDNSZone.groupId)}'
+  name: 'dns-pe-${uniqueString(privateDNSZone.privateLinkServiceNamespace, privateDNSZone.zone, privateDNSZone.groupId)}'
   properties: {
     metadata: {
+      privateLinkServiceNamespace: privateDNSZone.privateLinkServiceNamespace
       zone: privateDNSZone.zone
       groupId: privateDNSZone.groupId
     }
-    displayName: '${customPolicyDefinition.properties.displayName} - ${privateDNSZone.zone} - ${privateDNSZone.groupId}'
+    displayName: '${customPolicyDefinition.properties.displayName} - ${privateDNSZone.zone} - ${privateDNSZone.privateLinkServiceNamespace} - ${privateDNSZone.groupId}'
     mode: customPolicyDefinition.properties.mode
     policyRule: customPolicyDefinition.properties.policyRule
     parameters: customPolicyDefinition.properties.parameters
@@ -63,8 +64,11 @@ resource policySet 'Microsoft.Authorization/policySetDefinitions@2020-09-01' = {
           'NETWORK'
         ]
         policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope,'Microsoft.Authorization/policyDefinitions', policy[i].name)
-        policyDefinitionReferenceId: toLower('${privateDNSZone.zone}-${privateDNSZone.groupId}')
+        policyDefinitionReferenceId: toLower('${privateDNSZone.zone}-${privateDNSZone.groupId}-${uniqueString(privateDNSZone.privateLinkServiceNamespace)}')
         parameters: {
+          privateLinkServiceNamespace: {
+            value: privateDNSZone.privateLinkServiceNamespace
+          }
           privateDnsZoneId: {
             value: '[[concat(\'/subscriptions/\',parameters(\'privateDNSZoneSubscriptionId\'),\'/resourcegroups/\',parameters(\'privateDNSZoneResourceGroupName\'),\'/providers/Microsoft.Network/privateDnsZones/${privateDNSZone.zone}\')]'
           }
