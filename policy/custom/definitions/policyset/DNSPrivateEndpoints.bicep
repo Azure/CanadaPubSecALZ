@@ -20,6 +20,9 @@ Format of the array of objects
 */
 param privateDNSZones array
 
+var policySetName = 'custom-central-dns-private-endpoints'
+var policySetDisplayName = 'Custom - Central DNS for Private Endpoints'
+
 var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)
 var customPolicyDefinition = json(loadTextContent('templates/DNS-PrivateEndpoints/azurepolicy.json'))
 
@@ -42,9 +45,9 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2020-09-01' = [for pr
 }]
 
 resource policySet 'Microsoft.Authorization/policySetDefinitions@2020-09-01' = {
-  name: 'custom-central-dns-private-endpoints'
+  name: policySetName
   properties: {
-    displayName: 'Custom - Central DNS for Private Endpoints'
+    displayName: policySetDisplayName
     parameters: {
       privateDNSZoneSubscriptionId: {
         type: 'String'
