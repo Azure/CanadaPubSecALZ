@@ -75,6 +75,13 @@ param subnetPrivateEndpointsPrefix string
 param subnetAKSName string
 param subnetAKSPrefix string
 
+// Private DNS Zones
+param privateDnsManagedByHub bool
+@description('Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubSubscriptionId string
+@description('Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubResourceGroupName string
+
 param secretExpiryInDays int
 
 param aksVersion string
@@ -278,6 +285,10 @@ module networking 'networking.bicep' = {
     
     subnetAKSName: subnetAKSName
     subnetAKSPrefix: subnetAKSPrefix
+
+    privateDnsManagedByHub: privateDnsManagedByHub
+    privateDnsManagedByHubSubscriptionId: privateDnsManagedByHubSubscriptionId
+    privateDnsManagedByHubResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 

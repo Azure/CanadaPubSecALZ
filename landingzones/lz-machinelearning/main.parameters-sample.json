@@ -155,6 +155,15 @@
     "subnetAKSPrefix": {
       "value": "10.0.9.0/25"
     },
+    "privateDnsManagedByHub": {
+      "value": false
+    },
+    "privateDnsManagedByHubSubscriptionId": {
+      "value": ""
+    },
+    "privateDnsManagedByHubResourceGroupName": {
+      "value": ""
+    },
     "aksVersion": {
       "value": "1.21.2"
     },

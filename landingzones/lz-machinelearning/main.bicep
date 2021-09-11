@@ -78,6 +78,13 @@ param egressVirtualApplianceIp string
 param hubRFC1918IPRange string
 param hubCGNATIPRange string
 
+// Private DNS Zones
+param privateDnsManagedByHub bool = false
+@description('Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubSubscriptionId string = ''
+@description('Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubResourceGroupName string = ''
+
 // AKS version
 param aksVersion string
 
@@ -217,6 +224,10 @@ module landingZone 'lz.bicep' = {
 
     subnetAKSName: subnetAKSName
     subnetAKSPrefix: subnetAKSPrefix
+
+    privateDnsManagedByHub: privateDnsManagedByHub
+    privateDnsManagedByHubSubscriptionId: privateDnsManagedByHub ? privateDnsManagedByHubSubscriptionId : ''
+    privateDnsManagedByHubResourceGroupName: privateDnsManagedByHub ? privateDnsManagedByHubResourceGroupName : ''
 
     aksVersion: aksVersion
     
