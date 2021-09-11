@@ -16,7 +16,7 @@ var policyId = 'custom-central-dns-private-endpoints'
 var assignmentName = 'Custom - Central DNS for Private Endpoints'
 
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
-var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policyDefinitions/${policyId}'
+var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${policyId}'
 
 resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
   name: 'dns-pe-${uniqueString(policyAssignmentManagementGroupId)}'
