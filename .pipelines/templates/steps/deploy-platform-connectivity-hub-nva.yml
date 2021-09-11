@@ -66,6 +66,8 @@ steps:
           tagProjectContact='$(var-hubnetwork-tagProjectContact)' \
           tagProjectName='$(var-hubnetwork-tagProjectName)' \
           tagTechnicalContact='$(var-hubnetwork-tagTechnicalContact)' \
+          deployPrivateDnsZones='$(var-hubnetwork-deployPrivateDnsZones)' \
+          rgPrivateDnsZonesName='$(var-hubnetwork-rgPrivateDnsZonesName)' \
           deployDdosStandard='$(var-hubnetwork-deployDdosStandard)' \
           rgDdosName='$(var-hubnetwork-rgDdosName)' \
           ddosPlanName='$(var-hubnetwork-ddosPlanName)' \

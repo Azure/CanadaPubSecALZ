@@ -69,6 +69,10 @@ variables:
   var-hubnetwork-tagTechnicalContact: tbd
   var-hubnetwork-budgetStartDate: yyyy-MM-01
 
+  ## Hub Networking - Private Dns Zones
+  var-hubnetwork-deployPrivateDnsZones: true
+  var-hubnetwork-rgPrivateDnsZonesName: pubsec-dns-rg
+
   ## Hub Networking - DDOS
   var-hubnetwork-deployDdosStandard: false
   var-hubnetwork-rgDdosName: pubsec-ddos-rg

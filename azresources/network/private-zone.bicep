@@ -8,20 +8,41 @@ param zone string
 param vnetId string
 param registrationEnabled bool = false
 
-resource privateZone 'Microsoft.Network/privateDnsZones@2018-09-01' = {
+param dnsManagedBySpoke bool = false
+param dnsManagedByHubSubscriptionId string = ''
+param dnsManagedByHubResourceGroupName string = ''
+
+// When DNS Zone is managed in the Spoke
+resource privateDnsZoneInSpoke 'Microsoft.Network/privateDnsZones@2018-09-01' = if (dnsManagedBySpoke) {
   name: zone
   location: 'global'
 }
 
-resource virtualNetworkLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01' = {
-  name: '${privateZone.name}/${uniqueString(vnetId)}'
-  location: 'global'
-  properties: {
-    virtualNetwork: {
-      id: vnetId
-    }
+module privateDnsZoneVirtualNetworkLinkInSpoke 'private-dns-zone-virtual-network-link.bicep' = if (dnsManagedBySpoke) {
+  name: 'configure-${zone}-vnetlink-in-spoke'
+  params: {
+    name: uniqueString(vnetId)
+    vnetId: vnetId
+    zone: zone
     registrationEnabled: registrationEnabled
   }
 }
 
-output privateZoneId string = privateZone.id
+// When DNS Zone is managed in the Hub
+resource privateDnsZoneInHub 'Microsoft.Network/privateDnsZones@2018-09-01' existing = if (!dnsManagedBySpoke) {
+  scope: resourceGroup(dnsManagedByHubSubscriptionId, dnsManagedByHubResourceGroupName)
+  name: zone
+}
+
+module privateDnsZoneVirtualNetworkLinkInHub 'private-dns-zone-virtual-network-link.bicep' = if (!dnsManagedBySpoke) {
+  name: 'configure-${zone}-vnetlink-in-hub'
+  scope: resourceGroup(dnsManagedByHubSubscriptionId, dnsManagedByHubResourceGroupName)
+  params: {
+    name: uniqueString(vnetId)
+    vnetId: vnetId
+    zone: zone
+    registrationEnabled: registrationEnabled
+  }
+}
+
+output privateZoneId string = dnsManagedBySpoke ? privateDnsZoneInSpoke.id : privateDnsZoneInHub.id

@@ -6,7 +6,7 @@
 
 param vnetId string
 
-param privateZones array = [
+param privateDnsZones array = [
   'privatelink.azure-automation.net'
   'privatelink${environment().suffixes.sqlServerHostname}'
   'privatelink.blob.${environment().suffixes.storage}'
@@ -51,7 +51,7 @@ param privateZones array = [
   'privatelink.redis.cache.windows.net'
 ]
 
-module privateZone 'private-zone.bicep' = [for zone in privateZones: {
+module privateZone 'private-zone.bicep' = [for zone in privateDnsZones: {
   name: replace(zone, '.', '_')
   scope: resourceGroup()
   params: {
