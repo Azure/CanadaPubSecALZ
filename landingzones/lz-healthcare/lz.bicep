@@ -73,6 +73,13 @@ param subnetPrivateEndpointsPrefix string
 param subnetWebAppName string
 param subnetWebAppPrefix string
 
+// Private DNS Zones
+param privateDnsManagedByHub bool
+@description('Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubSubscriptionId string
+@description('Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubResourceGroupName string
+
 param secretExpiryInDays int
 
 @secure()
@@ -271,6 +278,10 @@ module networking 'networking.bicep' = {
 
     subnetWebAppName: subnetWebAppName
     subnetWebAppPrefix: subnetWebAppPrefix
+
+    privateDnsManagedByHub: privateDnsManagedByHub
+    privateDnsManagedByHubSubscriptionId: privateDnsManagedByHubSubscriptionId
+    privateDnsManagedByHubResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 

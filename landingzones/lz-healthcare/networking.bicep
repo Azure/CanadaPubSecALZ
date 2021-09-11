@@ -48,6 +48,13 @@ param subnetPrivateEndpointsPrefix string
 param subnetWebAppName string
 param subnetWebAppPrefix string
 
+// Private DNS Zones
+param privateDnsManagedByHub bool
+@description('Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubSubscriptionId string
+@description('Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubResourceGroupName string
+
 // Network Security Groups
 resource nsgFoundationalElements 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
   name: '${subnetFoundationalElementsName}Nsg'
@@ -414,13 +421,17 @@ module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = if
   }
 }
 
-// Private Zones
+// Private DNS Zones
 module privatezone_sqldb '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-sqldb'
   scope: resourceGroup()
   params: {
     zone: 'privatelink${environment().suffixes.sqlServerHostname}'
     vnetId: vnet.id
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -430,6 +441,10 @@ module privatezone_adf '../../azresources/network/private-dns-zone.bicep' = {
   params: {
     zone: 'privatelink.datafactory.azure.net'
     vnetId: vnet.id
+    
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -439,6 +454,10 @@ module privatezone_keyvault '../../azresources/network/private-dns-zone.bicep' =
   params: {
     zone: 'privatelink.vaultcore.azure.net'
     vnetId: vnet.id
+    
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -448,6 +467,10 @@ module privatezone_acr '../../azresources/network/private-dns-zone.bicep' = {
   params: {
     zone: 'privatelink.azurecr.io'
     vnetId: vnet.id
+    
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -457,6 +480,10 @@ module privatezone_datalake_blob '../../azresources/network/private-dns-zone.bic
   params: {
     zone: 'privatelink.blob.${environment().suffixes.storage}'
     vnetId: vnet.id
+    
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -466,6 +493,10 @@ module privatezone_datalake_dfs '../../azresources/network/private-dns-zone.bice
   params: {
     zone: 'privatelink.dfs.${environment().suffixes.storage}'
     vnetId: vnet.id
+    
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -475,6 +506,10 @@ module privatezone_datalake_file '../../azresources/network/private-dns-zone.bic
   params: {
     zone: 'privatelink.file.${environment().suffixes.storage}'
     vnetId: vnet.id
+    
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -484,6 +519,10 @@ module privatezone_azureml_api '../../azresources/network/private-dns-zone.bicep
   params: {
     zone: 'privatelink.api.azureml.ms'
     vnetId: vnet.id
+    
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -493,6 +532,10 @@ module privatezone_azureml_notebook '../../azresources/network/private-dns-zone.
   params: {
     zone: 'privatelink.notebooks.azure.net'
     vnetId: vnet.id
+    
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -502,6 +545,10 @@ module privatezone_fhir '../../azresources/network/private-dns-zone.bicep' = {
   params: {
     zone: 'privatelink.azurehealthcareapis.com'
     vnetId: vnet.id
+    
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -511,6 +558,10 @@ module privatezone_eventhub '../../azresources/network/private-dns-zone.bicep' =
   params: {
     zone: 'privatelink.servicebus.windows.net'
     vnetId: vnet.id
+    
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -520,6 +571,10 @@ module privatezone_synapse '../../azresources/network/private-dns-zone.bicep' = 
   params: {
     zone: 'privatelink.azuresynapse.net'
     vnetId: vnet.id
+    
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -529,6 +584,10 @@ module privatezone_synapse_dev '../../azresources/network/private-dns-zone.bicep
   params: {
     zone: 'privatelink.dev.azuresynapse.net'
     vnetId: vnet.id
+    
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -538,6 +597,10 @@ module privatezone_synapse_sql '../../azresources/network/private-dns-zone.bicep
   params: {
     zone: 'privatelink.sql.azuresynapse.net'
     vnetId: vnet.id
+    
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 

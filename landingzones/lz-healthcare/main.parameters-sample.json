@@ -149,6 +149,15 @@
     "subnetWebAppPrefix": {
       "value": "10.0.9.0/25"
     },
+    "privateDnsManagedByHub": {
+      "value": false
+    },
+    "privateDnsManagedByHubSubscriptionId": {
+      "value": ""
+    },
+    "privateDnsManagedByHubResourceGroupName": {
+      "value": ""
+    },
     "deploySQLDB": {
       "value": true
     },

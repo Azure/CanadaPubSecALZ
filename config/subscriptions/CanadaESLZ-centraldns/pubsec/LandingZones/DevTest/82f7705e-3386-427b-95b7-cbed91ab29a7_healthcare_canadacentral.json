@@ -46,10 +46,10 @@
         },
         "lzAppOwnerRoleDefinitionId": {
             "value": ""
-          },
+        },
         "subscriptionAppOwnerGroupObjectIds": {
             "value": []
-           },
+        },
         "subscriptionOwnerGroupObjectIds": {
             "value": []
         },
@@ -147,6 +147,15 @@
         },
         "subnetWebAppPrefix": {
             "value": "10.5.8.0/25"
+        },
+        "privateDnsManagedByHub": {
+            "value": true
+        },
+        "privateDnsManagedByHubSubscriptionId": {
+            "value": "ed7f4eed-9010-4227-b115-2a5e37728f27"
+        },
+        "privateDnsManagedByHubResourceGroupName": {
+            "value": "pubsec-dns-rg"
         },
         "deploySQLDB": {
             "value": true
