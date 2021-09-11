@@ -27,7 +27,7 @@ module privateDnsZoneVirtualNetworkLinkNew 'private-dns-zone-virtual-network-lin
   params: {
     name: uniqueString(vnetId)
     vnetId: vnetId
-    zone: zone
+    zone: privateDnsZoneNew.name
     registrationEnabled: registrationEnabled
   }
 }
@@ -44,7 +44,7 @@ module privateDnsZoneVirtualNetworkLinkExisting 'private-dns-zone-virtual-networ
   params: {
     name: uniqueString(vnetId)
     vnetId: vnetId
-    zone: zone
+    zone: privateDnsZoneExisting.name
     registrationEnabled: registrationEnabled
   }
 }
