@@ -425,7 +425,7 @@ module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = if
 }
 
 // Private DNS Zones
-module privatezone_sqldb '../../azresources/network/private-zone.bicep' = {
+module privatezone_sqldb '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-sqldb'
   scope: resourceGroup()
   params: {
@@ -438,7 +438,7 @@ module privatezone_sqldb '../../azresources/network/private-zone.bicep' = {
   }
 }
 
-module privatezone_adf '../../azresources/network/private-zone.bicep' = {
+module privatezone_adf '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-adf'
   scope: resourceGroup()
   params: {
@@ -451,7 +451,7 @@ module privatezone_adf '../../azresources/network/private-zone.bicep' = {
   }
 }
 
-module privatezone_keyvault '../../azresources/network/private-zone.bicep' = {
+module privatezone_keyvault '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-keyvault'
   scope: resourceGroup()
   params: {
@@ -464,7 +464,7 @@ module privatezone_keyvault '../../azresources/network/private-zone.bicep' = {
   }
 }
 
-module privatezone_acr '../../azresources/network/private-zone.bicep' = {
+module privatezone_acr '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-acr'
   scope: resourceGroup()
   params: {
@@ -477,7 +477,7 @@ module privatezone_acr '../../azresources/network/private-zone.bicep' = {
   }
 }
 
-module privatezone_datalake_blob '../../azresources/network/private-zone.bicep' = {
+module privatezone_datalake_blob '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-blob'
   scope: resourceGroup()
   params: {
@@ -490,7 +490,7 @@ module privatezone_datalake_blob '../../azresources/network/private-zone.bicep' 
   }
 }
 
-module privatezone_datalake_dfs '../../azresources/network/private-zone.bicep' = {
+module privatezone_datalake_dfs '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-dfs'
   scope: resourceGroup()
   params: {
@@ -503,7 +503,7 @@ module privatezone_datalake_dfs '../../azresources/network/private-zone.bicep' =
   }
 }
 
-module privatezone_datalake_file '../../azresources/network/private-zone.bicep' = {
+module privatezone_datalake_file '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-file'
   scope: resourceGroup()
   params: {
@@ -516,7 +516,7 @@ module privatezone_datalake_file '../../azresources/network/private-zone.bicep' 
   }
 }
 
-module privatezone_azureml_api '../../azresources/network/private-zone.bicep' = {
+module privatezone_azureml_api '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-azureml-api'
   scope: resourceGroup()
   params: {
@@ -529,7 +529,7 @@ module privatezone_azureml_api '../../azresources/network/private-zone.bicep' = 
   }
 }
 
-module privatezone_azureml_notebook '../../azresources/network/private-zone.bicep' = {
+module privatezone_azureml_notebook '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-azureml-notebook'
   scope: resourceGroup()
   params: {

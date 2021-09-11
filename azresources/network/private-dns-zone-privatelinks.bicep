@@ -59,7 +59,7 @@ param privateDnsZones array = [
   'privatelink.redis.cache.windows.net'
 ]
 
-module dnsZone 'private-zone.bicep' = [for zone in privateDnsZones: {
+module dnsZone 'private-dns-zone.bicep' = [for zone in privateDnsZones: {
   name: replace(zone, '.', '_')
   scope: resourceGroup()
   params: {
