@@ -304,7 +304,7 @@ module keyVault '../../azresources/security/key-vault.bicep' = {
 
     deployPrivateEndpoint: true
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
-    privateZoneId: networking.outputs.keyVaultPrivateZoneId
+    privateZoneId: networking.outputs.keyVaultPrivateDnsZoneId
   }
 }
 
@@ -340,8 +340,8 @@ module storageLogging '../../azresources/storage/storage-generalpurpose.bicep' =
     name: storageLoggingName
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
-    blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateZoneId
-    filePrivateZoneId: networking.outputs.dataLakeFilePrivateZoneId
+    blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
+    filePrivateZoneId: networking.outputs.dataLakeFilePrivateDnsZoneId
     deployBlobPrivateZone: true
     deployFilePrivateZone: true
     
@@ -362,7 +362,7 @@ module sqlDb '../../azresources/data/sqldb/main.bicep' = if (deploySQLDB == true
     tags: tags
     sqlServerName: sqlServerName
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
-    privateZoneId: networking.outputs.sqlDBPrivateZoneId
+    privateZoneId: networking.outputs.sqlDBPrivateDnsZoneId
     sqldbUsername: sqldbUsername
     sqldbPassword: sqldbPassword
     saLoggingName: storageLogging.outputs.storageName
@@ -385,10 +385,10 @@ module dataLake '../../azresources/storage/storage-adlsgen2.bicep' = {
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
 
     deployBlobPrivateZone: true
-    blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateZoneId
+    blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
     
     deployDfsPrivateZone: true
-    dfsPrivateZoneId: networking.outputs.dataLakeDfsPrivateZoneId
+    dfsPrivateZoneId: networking.outputs.dataLakeDfsPrivateDnsZoneId
 
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
@@ -460,7 +460,7 @@ module adf '../../azresources/analytics/adf/main.bicep' = {
     tags: tags
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
-    privateZoneId: networking.outputs.adfPrivateZoneId
+    privateZoneId: networking.outputs.adfPrivateDnsZoneId
 
     useCMK: useCMK
     akvResourceGroupName: useCMK ? rgSecurity.name : ''
@@ -477,7 +477,7 @@ module acr '../../azresources/containers/acr/main.bicep' = {
 
     deployPrivateZone: true
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
-    privateZoneId: networking.outputs.acrPrivateZoneId
+    privateZoneId: networking.outputs.acrPrivateDnsZoneId
 
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
@@ -505,8 +505,8 @@ module dataLakeMetaData '../../azresources/storage/storage-generalpurpose.bicep'
     name: amlMetaStorageName
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
-    blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateZoneId
-    filePrivateZoneId: networking.outputs.dataLakeFilePrivateZoneId
+    blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
+    filePrivateZoneId: networking.outputs.dataLakeFilePrivateDnsZoneId
     deployBlobPrivateZone: true
     deployFilePrivateZone: true
 
@@ -526,8 +526,8 @@ module aml '../../azresources/analytics/aml/main.bicep' = {
     containerRegistryId: acr.outputs.acrId
     storageAccountId: dataLakeMetaData.outputs.storageId
     appInsightsId: appInsights.outputs.aiId
-    privateZoneAzureMLApiId: networking.outputs.amlApiPrivateZoneId
-    privateZoneAzureMLNotebooksId: networking.outputs.amlNotebooksPrivateZoneId
+    privateZoneAzureMLApiId: networking.outputs.amlApiPrivateDnsZoneId
+    privateZoneAzureMLNotebooksId: networking.outputs.amlNotebooksPrivateDnsZoneId
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     enableHbiWorkspace: enableHbiWorkspace
 

@@ -49,4 +49,4 @@ module privateDnsZoneVirtualNetworkLinkExisting 'private-dns-zone-virtual-networ
   }
 }
 
-output privateZoneId string = dnsCreateNewZone ? privateDnsZoneNew.id : privateDnsZoneExisting.id
+output privateDnsZoneId string = dnsCreateNewZone ? privateDnsZoneNew.id : privateDnsZoneExisting.id
