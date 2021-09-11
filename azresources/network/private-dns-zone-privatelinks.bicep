@@ -6,6 +6,14 @@
 
 param vnetId string
 
+param dnsCreateNewZone bool = true
+
+@description('Required when dnsCreateNewZone=false')
+param dnsExistingZoneSubscriptionId string = ''
+
+@description('Required when dnsCreateNewZone=false')
+param dnsExistingZoneResourceGroupName string = ''
+
 param privateDnsZones array = [
   'privatelink.azure-automation.net'
   'privatelink${environment().suffixes.sqlServerHostname}'
@@ -57,5 +65,11 @@ module privateZone 'private-zone.bicep' = [for zone in privateDnsZones: {
   params: {
     zone: zone
     vnetId: vnetId
+
+    registrationEnabled: false
+
+    dnsCreateNewZone: dnsCreateNewZone
+    dnsExistingZoneSubscriptionId: dnsExistingZoneSubscriptionId
+    dnsExistingZoneResourceGroupName: dnsExistingZoneResourceGroupName
   }
 }]

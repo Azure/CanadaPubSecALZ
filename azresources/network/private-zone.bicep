@@ -8,17 +8,21 @@ param zone string
 param vnetId string
 param registrationEnabled bool = false
 
-param dnsManagedBySpoke bool = false
-param dnsManagedByHubSubscriptionId string = ''
-param dnsManagedByHubResourceGroupName string = ''
+param dnsCreateNewZone bool = true
+
+@description('Required when dnsCreateNewZone=false')
+param dnsExistingZoneSubscriptionId string = ''
+
+@description('Required when dnsCreateNewZone=false')
+param dnsExistingZoneResourceGroupName string = ''
 
 // When DNS Zone is managed in the Spoke
-resource privateDnsZoneInSpoke 'Microsoft.Network/privateDnsZones@2018-09-01' = if (dnsManagedBySpoke) {
+resource privateDnsZoneNew 'Microsoft.Network/privateDnsZones@2018-09-01' = if (dnsCreateNewZone) {
   name: zone
   location: 'global'
 }
 
-module privateDnsZoneVirtualNetworkLinkInSpoke 'private-dns-zone-virtual-network-link.bicep' = if (dnsManagedBySpoke) {
+module privateDnsZoneVirtualNetworkLinkNew 'private-dns-zone-virtual-network-link.bicep' = if (dnsCreateNewZone) {
   name: 'configure-${zone}-vnetlink-in-spoke'
   params: {
     name: uniqueString(vnetId)
@@ -29,14 +33,14 @@ module privateDnsZoneVirtualNetworkLinkInSpoke 'private-dns-zone-virtual-network
 }
 
 // When DNS Zone is managed in the Hub
-resource privateDnsZoneInHub 'Microsoft.Network/privateDnsZones@2018-09-01' existing = if (!dnsManagedBySpoke) {
-  scope: resourceGroup(dnsManagedByHubSubscriptionId, dnsManagedByHubResourceGroupName)
+resource privateDnsZoneExisting 'Microsoft.Network/privateDnsZones@2018-09-01' existing = if (!dnsCreateNewZone) {
+  scope: resourceGroup(dnsExistingZoneSubscriptionId, dnsExistingZoneResourceGroupName)
   name: zone
 }
 
-module privateDnsZoneVirtualNetworkLinkInHub 'private-dns-zone-virtual-network-link.bicep' = if (!dnsManagedBySpoke) {
+module privateDnsZoneVirtualNetworkLinkExisting 'private-dns-zone-virtual-network-link.bicep' = if (!dnsCreateNewZone) {
   name: 'configure-${zone}-vnetlink-in-hub'
-  scope: resourceGroup(dnsManagedByHubSubscriptionId, dnsManagedByHubResourceGroupName)
+  scope: resourceGroup(dnsExistingZoneSubscriptionId, dnsExistingZoneResourceGroupName)
   params: {
     name: uniqueString(vnetId)
     vnetId: vnetId
@@ -45,4 +49,4 @@ module privateDnsZoneVirtualNetworkLinkInHub 'private-dns-zone-virtual-network-l
   }
 }
 
-output privateZoneId string = dnsManagedBySpoke ? privateDnsZoneInSpoke.id : privateDnsZoneInHub.id
+output privateZoneId string = dnsCreateNewZone ? privateDnsZoneNew.id : privateDnsZoneExisting.id

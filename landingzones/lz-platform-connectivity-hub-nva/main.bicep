@@ -419,11 +419,12 @@ module mrzVnet './mrz-vnet.bicep' = {
   }
 }
 
-module privateEndpointDnsZones '../../azresources/network/private-dns-zone-privatelinks.bicep' = if (deployPrivateDnsZones) {
+module privatelinkDnsZones '../../azresources/network/private-dns-zone-privatelinks.bicep' = if (deployPrivateDnsZones) {
   name: 'deploy-privatelink-private-dns-zones'
   scope: rgPrivateDnsZones
   params: {
     vnetId: hubVnet.outputs.hubVnetId
+    dnsCreateNewZone: true
   }
 }
 
