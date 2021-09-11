@@ -18,6 +18,7 @@ param privateDnsZones array = [
   'privatelink.azure-automation.net'
   'privatelink${environment().suffixes.sqlServerHostname}'
   'privatelink.sql.azuresynapse.net'
+  'privatelink.dev.azuresynapse.net'
   'privatelink.azuresynapse.net'
   'privatelink.blob.${environment().suffixes.storage}'
   'privatelink.table.${environment().suffixes.storage}'
@@ -61,6 +62,7 @@ param privateDnsZones array = [
   'privatelink.redis.cache.windows.net'
   'privatelink.redisenterprise.cache.azure.net'
   'privatelink.purview.azure.com'
+  'privatelink.azurehealthcareapis.com'
 ]
 
 module dnsZone 'private-dns-zone.bicep' = [for zone in privateDnsZones: {
