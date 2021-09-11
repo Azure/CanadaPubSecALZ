@@ -23,7 +23,7 @@ resource privateDnsZoneNew 'Microsoft.Network/privateDnsZones@2018-09-01' = if (
 }
 
 module privateDnsZoneVirtualNetworkLinkNew 'private-dns-zone-virtual-network-link.bicep' = if (dnsCreateNewZone) {
-  name: 'configure-${zone}-vnetlink-in-spoke'
+  name: 'configure-vnetlink-use-new-${uniqueString(zone)}'
   params: {
     name: uniqueString(vnetId)
     vnetId: vnetId
@@ -39,7 +39,7 @@ resource privateDnsZoneExisting 'Microsoft.Network/privateDnsZones@2018-09-01' e
 }
 
 module privateDnsZoneVirtualNetworkLinkExisting 'private-dns-zone-virtual-network-link.bicep' = if (!dnsCreateNewZone) {
-  name: 'configure-${zone}-vnetlink-in-hub'
+  name: 'configure-vnetlink-use-existing-${uniqueString(zone)}'
   scope: resourceGroup(dnsExistingZoneSubscriptionId, dnsExistingZoneResourceGroupName)
   params: {
     name: uniqueString(vnetId)
