@@ -17,6 +17,8 @@ param dnsExistingZoneResourceGroupName string = ''
 param privateDnsZones array = [
   'privatelink.azure-automation.net'
   'privatelink${environment().suffixes.sqlServerHostname}'
+  'privatelink.sql.azuresynapse.net'
+  'privatelink.azuresynapse.net'
   'privatelink.blob.${environment().suffixes.storage}'
   'privatelink.table.${environment().suffixes.storage}'
   'privatelink.queue.${environment().suffixes.storage}'
@@ -57,6 +59,8 @@ param privateDnsZones array = [
   'privatelink.datafactory.azure.net'
   'privatelink.adf.azure.com'
   'privatelink.redis.cache.windows.net'
+  'privatelink.redisenterprise.cache.azure.net'
+  'privatelink.purview.azure.com'
 ]
 
 module dnsZone 'private-dns-zone.bicep' = [for zone in privateDnsZones: {
