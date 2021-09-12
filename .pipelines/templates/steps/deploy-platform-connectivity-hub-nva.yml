@@ -32,6 +32,21 @@ steps:
     workingDir: ${{ parameters.workingDir }}/utils/mg-move
 
 - task: AzureCLI@2
+  displayName: Register Resource Providers
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      az account set -s $(var-logging-subscriptionId)
+      
+      az provider register -n Microsoft.ContainerService --subscription '$(var-logging-subscriptionId)'
+
+      $(var-bashPostInjectScript)
+
+- task: AzureCLI@2
   displayName: Configure Hub Networking
   inputs:
     azureSubscription: $(serviceConnection)
