@@ -26,6 +26,36 @@ var policySetDisplayName = 'Custom - Central DNS for Private Endpoints'
 var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)
 var customPolicyDefinition = json(loadTextContent('templates/DNS-PrivateEndpoints/azurepolicy.json'))
 
+var policySetDefinitionsPrivateDNSZonesDINE = [for (privateDNSZone, i) in privateDNSZones: {
+  groupNames: [
+    'NETWORK'
+  ]
+  policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', policy[i].name)
+  policyDefinitionReferenceId: toLower('${privateDNSZone.zone}-${privateDNSZone.groupId}-${uniqueString(privateDNSZone.privateLinkServiceNamespace)}')
+  parameters: {
+    privateLinkServiceNamespace: {
+      value: privateDNSZone.privateLinkServiceNamespace
+    }
+    privateDnsZoneId: {
+      value: '[[concat(\'/subscriptions/\',parameters(\'privateDNSZoneSubscriptionId\'),\'/resourcegroups/\',parameters(\'privateDNSZoneResourceGroupName\'),\'/providers/Microsoft.Network/privateDnsZones/${privateDNSZone.zone}\')]'
+    }
+    groupId: {
+      value: privateDNSZone.groupId
+    }
+  }
+}]
+
+var policySetDefinitionsPrivateDNSZonesDeny = [
+  {
+    groupNames: [
+      'NETWORK'
+    ]
+    policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'DNS-PE-BlockPrivateDNSZones-PrivateLinks')
+    policyDefinitionReferenceId: toLower(replace('DNS - Deny privatelinks Private DNS Zones', ' ', '-'))
+    parameters: {}
+  }
+]
+
 // To batch delete policies using Azure CLI, use:
 // az policy definition list --management-group pubsec --query "[?contains(id,'dns-pe-')].name" -o tsv | xargs -tn1 -P 5 az policy definition delete --management-group pubsec --name
 
@@ -62,23 +92,6 @@ resource policySet 'Microsoft.Authorization/policySetDefinitions@2020-09-01' = {
         displayName: 'DNS for Private Endpoints'
       }
     ]
-    policyDefinitions: [for (privateDNSZone, i) in privateDNSZones: {
-        groupNames: [
-          'NETWORK'
-        ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope,'Microsoft.Authorization/policyDefinitions', policy[i].name)
-        policyDefinitionReferenceId: toLower('${privateDNSZone.zone}-${privateDNSZone.groupId}-${uniqueString(privateDNSZone.privateLinkServiceNamespace)}')
-        parameters: {
-          privateLinkServiceNamespace: {
-            value: privateDNSZone.privateLinkServiceNamespace
-          }
-          privateDnsZoneId: {
-            value: '[[concat(\'/subscriptions/\',parameters(\'privateDNSZoneSubscriptionId\'),\'/resourcegroups/\',parameters(\'privateDNSZoneResourceGroupName\'),\'/providers/Microsoft.Network/privateDnsZones/${privateDNSZone.zone}\')]'
-          }
-          groupId: {
-            value: privateDNSZone.groupId
-          }
-        }
-    }]
+    policyDefinitions: union(policySetDefinitionsPrivateDNSZonesDINE, policySetDefinitionsPrivateDNSZonesDeny)
   }
 }
