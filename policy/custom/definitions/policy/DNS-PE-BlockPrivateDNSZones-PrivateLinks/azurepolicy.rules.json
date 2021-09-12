@@ -6,8 +6,16 @@
         "equals": "Microsoft.Network/privateDnsZones"
       },
       {
-        "field": "name",
-        "like": "privatelink*"
+        "anyOf": [
+          {
+            "field": "name",
+            "like": "privatelink*"
+          },
+          {
+            "field": "name",
+            "like": "*privatelink"
+          }
+        ]
       }
     ]
   },
