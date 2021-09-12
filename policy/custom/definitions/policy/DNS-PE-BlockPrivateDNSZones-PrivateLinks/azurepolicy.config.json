@@ -1,0 +1,4 @@
+{
+    "name": "Deny Azure Private DNS Zones for privatelinks",
+    "mode": "indexed"
+}
