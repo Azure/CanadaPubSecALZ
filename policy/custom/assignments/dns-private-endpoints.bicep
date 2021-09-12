@@ -24,7 +24,11 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
     displayName: assignmentName
     policyDefinitionId: policyScopedId
     scope: scope
-    notScopes: []
+    notScopes: [
+      // exclude the resource group where the private dns zones will be created.  This allows for Private DNS Zone creation in this resource group
+      // but blocked in all other scopes
+      resourceId(privateDNSZoneSubscriptionId, 'Microsoft.Resources/resourceGroups', privateDNSZoneResourceGroupName)
+    ]
     parameters: {
       privateDNSZoneSubscriptionId: {
         value: privateDNSZoneSubscriptionId
