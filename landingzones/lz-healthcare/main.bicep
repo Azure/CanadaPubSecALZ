@@ -75,6 +75,13 @@ param egressVirtualApplianceIp string
 param hubRFC1918IPRange string
 param hubCGNATIPRange string
 
+// Private DNS Zones
+param privateDnsManagedByHub bool = false
+@description('Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubSubscriptionId string = ''
+@description('Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubResourceGroupName string = ''
+
 // parameters for Budget
 param createBudget bool = true
 param budgetName string
@@ -200,6 +207,10 @@ module landingZone 'lz.bicep' = {
 
     subnetWebAppName: subnetWebAppName
     subnetWebAppPrefix: subnetWebAppPrefix
+
+    privateDnsManagedByHub: privateDnsManagedByHub
+    privateDnsManagedByHubSubscriptionId: privateDnsManagedByHub ? privateDnsManagedByHubSubscriptionId : ''
+    privateDnsManagedByHubResourceGroupName: privateDnsManagedByHub ? privateDnsManagedByHubResourceGroupName : ''
   
     synapseUsername: synapseUsername
 

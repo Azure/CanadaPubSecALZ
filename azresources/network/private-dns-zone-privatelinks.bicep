@@ -6,9 +6,20 @@
 
 param vnetId string
 
-param privateZones array = [
+param dnsCreateNewZone bool = true
+
+@description('Required when dnsCreateNewZone=false')
+param dnsExistingZoneSubscriptionId string = ''
+
+@description('Required when dnsCreateNewZone=false')
+param dnsExistingZoneResourceGroupName string = ''
+
+param privateDnsZones array = [
   'privatelink.azure-automation.net'
   'privatelink${environment().suffixes.sqlServerHostname}'
+  'privatelink.sql.azuresynapse.net'
+  'privatelink.dev.azuresynapse.net'
+  'privatelink.azuresynapse.net'
   'privatelink.blob.${environment().suffixes.storage}'
   'privatelink.table.${environment().suffixes.storage}'
   'privatelink.queue.${environment().suffixes.storage}'
@@ -29,10 +40,9 @@ param privateZones array = [
   'privatelink.search.windows.net'
   'privatelink.azurecr.io'
   'privatelink.azconfig.io'
-  'privatelink.canadacentral.backup.windowsazure.com'
-  'privatelink.canadaeast.backup.windowsazure.com'
-  'canadacentral.privatelink.siterecovery.windowsazure.com'
-  'canadaeast.privatelink.siterecovery.windowsazure.com'
+  'privatelink.cnc.backup.windowsazure.com'
+  'privatelink.cne.backup.windowsazure.com'
+  'privatelink.siterecovery.windowsazure.com'
   'privatelink.servicebus.windows.net'
   'privatelink.azure-devices.net'
   'privatelink.eventgrid.azure.net'
@@ -49,13 +59,22 @@ param privateZones array = [
   'privatelink.datafactory.azure.net'
   'privatelink.adf.azure.com'
   'privatelink.redis.cache.windows.net'
+  'privatelink.redisenterprise.cache.azure.net'
+  'privatelink.purview.azure.com'
+  'privatelink.azurehealthcareapis.com'
 ]
 
-module privateZone 'private-zone.bicep' = [for zone in privateZones: {
+module dnsZone 'private-dns-zone.bicep' = [for zone in privateDnsZones: {
   name: replace(zone, '.', '_')
   scope: resourceGroup()
   params: {
     zone: zone
     vnetId: vnetId
+
+    registrationEnabled: false
+
+    dnsCreateNewZone: dnsCreateNewZone
+    dnsExistingZoneSubscriptionId: dnsExistingZoneSubscriptionId
+    dnsExistingZoneResourceGroupName: dnsExistingZoneResourceGroupName
   }
 }]

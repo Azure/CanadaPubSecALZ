@@ -8,7 +8,8 @@ param name string = 'adf${uniqueString(resourceGroup().id)}'
 param tags object = {}
 
 param privateEndpointSubnetId string
-param privateZoneId string
+param datafactoryPrivateZoneId string
+param portalPrivateZoneId string
 
 param userAssignedIdentityId string
 
@@ -75,7 +76,7 @@ resource adf_datafactory_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
         {
           name: 'privatelink_datafactory_windows_net'
           properties: {
-            privateDnsZoneId: privateZoneId
+            privateDnsZoneId: datafactoryPrivateZoneId
           }
         }
       ]
@@ -108,9 +109,9 @@ resource adf_portal_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
     properties: {
       privateDnsZoneConfigs: [
         {
-          name: 'privatelink_servicebus_windows_net'
+          name: 'privatelink_adf_azure_com'
           properties: {
-            privateDnsZoneId: privateZoneId
+            privateDnsZoneId: portalPrivateZoneId
           }
         }
       ]

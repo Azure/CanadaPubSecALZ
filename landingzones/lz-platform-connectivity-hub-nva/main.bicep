@@ -41,6 +41,10 @@ param securityContactPhone string
 // Network Watcher
 param rgNetworkWatcherName string = 'NetworkWatcherRG'
 
+// Private Dns Zones
+param deployPrivateDnsZones bool
+param rgPrivateDnsZonesName string
+
 // DDOS Standard
 param deployDdosStandard bool
 param rgDdosName string
@@ -181,6 +185,12 @@ module subScaffold '../scaffold-subscription.bicep' = {
 
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgNetworkWatcherName
+  location: deployment().location
+  tags: tags
+}
+
+resource rgPrivateDnsZones 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployPrivateDnsZones) {
+  name: rgPrivateDnsZonesName
   location: deployment().location
   tags: tags
 }
@@ -406,6 +416,15 @@ module mrzVnet './mrz-vnet.bicep' = {
     mgmtSubnetUdrId: udrMrzSpoke.outputs.udrId
 
     ddosStandardPlanId: deployDdosStandard ? ddosPlan.outputs.ddosPlanId : ''
+  }
+}
+
+module privatelinkDnsZones '../../azresources/network/private-dns-zone-privatelinks.bicep' = if (deployPrivateDnsZones) {
+  name: 'deploy-privatelink-private-dns-zones'
+  scope: rgPrivateDnsZones
+  params: {
+    vnetId: hubVnet.outputs.hubVnetId
+    dnsCreateNewZone: true
   }
 }
 

@@ -84,7 +84,7 @@ stages:
     - template: templates/steps/define-policyset.yml
       parameters:
         description: 'Define Policy Sets'
-        deployTemplates: [AKS, EnableAzureDefender, EnableLogAnalytics, Network, Tags]
+        deployTemplates: [AKS, EnableAzureDefender, EnableLogAnalytics, Network, DNSPrivateEndpoints, Tags]
         deployOperation: ${{ variables['deployOperation'] }}
         workingDir: $(System.DefaultWorkingDirectory)/policy/custom/definitions/policyset
       

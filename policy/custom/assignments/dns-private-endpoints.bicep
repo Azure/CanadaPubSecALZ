@@ -9,24 +9,32 @@ targetScope = 'managementGroup'
 param policyDefinitionManagementGroupId string
 param policyAssignmentManagementGroupId string
 
-param ddosStandardPlanId string
+param privateDNSZoneSubscriptionId string
+param privateDNSZoneResourceGroupName string
 
-var policyId = 'Network-Deploy-DDoS-Standard'
-var assignmentName = 'Custom - Enable DDoS Standard on Virtual Networks'
+var policyId = 'custom-central-dns-private-endpoints'
+var assignmentName = 'Custom - Central DNS for Private Endpoints'
 
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
-var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policyDefinitions/${policyId}'
+var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${policyId}'
 
 resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
-  name: 'ddos-${uniqueString(policyAssignmentManagementGroupId)}'
+  name: 'dns-pe-${uniqueString(policyAssignmentManagementGroupId)}'
   properties: {
     displayName: assignmentName
     policyDefinitionId: policyScopedId
     scope: scope
-    notScopes: []
+    notScopes: [
+      // exclude the resource group where the private dns zones will be created.  This allows for Private DNS Zone creation in this resource group
+      // but blocked in all other scopes
+      subscriptionResourceId(privateDNSZoneSubscriptionId, 'Microsoft.Resources/resourceGroups', privateDNSZoneResourceGroupName)
+    ]
     parameters: {
-      planId: {
-        value: ddosStandardPlanId
+      privateDNSZoneSubscriptionId: {
+        value: privateDNSZoneSubscriptionId
+      }
+      privateDNSZoneResourceGroupName: {
+        value: privateDNSZoneResourceGroupName
       }
     }
     enforcementMode: 'Default'
@@ -39,7 +47,7 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
 
 // role assignment
 resource policySetRoleAssignmentNetworkContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(policyAssignmentManagementGroupId, 'ddos-standard', 'Network Contributor')
+  name: guid(policyAssignmentManagementGroupId, 'dns-private-endpoint', 'Network Contributor')
   scope: managementGroup()
   properties: {
     roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'

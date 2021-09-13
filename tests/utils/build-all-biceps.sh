@@ -1,3 +1,7 @@
 #!/bin/sh
 
-find $1 -type f -name '*.bicep' | xargs -tn1 -P 10 az bicep build -f 
+mkdir -p /tmp/bicepbuild
+
+find $1 -type f -name '*.bicep' | xargs -tn1 az bicep build --outdir /tmp/bicepbuild -f 
+
+rm -rf /tmp/bicepbuild

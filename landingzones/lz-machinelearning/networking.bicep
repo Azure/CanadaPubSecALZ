@@ -52,6 +52,13 @@ param subnetPrivateEndpointsPrefix string
 param subnetAKSName string
 param subnetAKSPrefix string
 
+// Private DNS Zones
+param privateDnsManagedByHub bool
+@description('Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubSubscriptionId string
+@description('Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubResourceGroupName string
+
 // Network Security Groups
 resource nsgFoundationalElements 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
   name: '${subnetFoundationalElementsName}Nsg'
@@ -417,85 +424,147 @@ module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = if
   }
 }
 
-// Private Zones
-module privatezone_sqldb '../../azresources/network/private-zone.bicep' = {
+// Private DNS Zones
+module privatezone_sqldb '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-sqldb'
   scope: resourceGroup()
   params: {
     zone: 'privatelink${environment().suffixes.sqlServerHostname}'
     vnetId: vnet.id
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
-module privatezone_adf '../../azresources/network/private-zone.bicep' = {
-  name: 'deploy-privatezone-adf'
+module privatezone_adf_datafactory '../../azresources/network/private-dns-zone.bicep' = {
+  name: 'deploy-privatezone-adf-datafactory'
   scope: resourceGroup()
   params: {
     zone: 'privatelink.datafactory.azure.net'
     vnetId: vnet.id
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
-module privatezone_keyvault '../../azresources/network/private-zone.bicep' = {
+module privatezone_adf_portal '../../azresources/network/private-dns-zone.bicep' = {
+  name: 'deploy-privatezone-adf-portal'
+  scope: resourceGroup()
+  params: {
+    zone: 'privatelink.adf.azure.com'
+    vnetId: vnet.id
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+  }
+}
+
+module privatezone_keyvault '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-keyvault'
   scope: resourceGroup()
   params: {
     zone: 'privatelink.vaultcore.azure.net'
     vnetId: vnet.id
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
-module privatezone_acr '../../azresources/network/private-zone.bicep' = {
+module privatezone_acr '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-acr'
   scope: resourceGroup()
   params: {
     zone: 'privatelink.azurecr.io'
     vnetId: vnet.id
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
-module privatezone_datalake_blob '../../azresources/network/private-zone.bicep' = {
+module privatezone_datalake_blob '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-blob'
   scope: resourceGroup()
   params: {
     zone: 'privatelink.blob.${environment().suffixes.storage}'
     vnetId: vnet.id
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
-module privatezone_datalake_dfs '../../azresources/network/private-zone.bicep' = {
+module privatezone_datalake_dfs '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-dfs'
   scope: resourceGroup()
   params: {
     zone: 'privatelink.dfs.${environment().suffixes.storage}'
     vnetId: vnet.id
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
-module privatezone_datalake_file '../../azresources/network/private-zone.bicep' = {
+module privatezone_datalake_file '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-file'
   scope: resourceGroup()
   params: {
     zone: 'privatelink.file.${environment().suffixes.storage}'
     vnetId: vnet.id
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
-module privatezone_azureml_api '../../azresources/network/private-zone.bicep' = {
+module privatezone_azureml_api '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-azureml-api'
   scope: resourceGroup()
   params: {
     zone: 'privatelink.api.azureml.ms'
     vnetId: vnet.id
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
-module privatezone_azureml_notebook '../../azresources/network/private-zone.bicep' = {
+module privatezone_azureml_notebook '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-azureml-notebook'
   scope: resourceGroup()
   params: {
     zone: 'privatelink.notebooks.azure.net'
     vnetId: vnet.id
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+  }
+}
+
+module privatezone_aks '../../azresources/network/private-dns-zone.bicep' = {
+  name: 'deploy-privatezone-aks'
+  scope: resourceGroup()
+  params: {
+    zone: toLower('privatelink.${resourceGroup().location}.azmk8s.io')
+    vnetId: vnet.id
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -512,12 +581,14 @@ output aksSubnetId string = '${vnet.id}/subnets/${subnetAKSName}'
 output databricksPublicSubnetName string = subnetDatabricksPublicName
 output databricksPrivateSubnetName string = subnetDatabricksPrivateName
 
-output dataLakeDfsPrivateZoneId string = privatezone_datalake_dfs.outputs.privateZoneId
-output dataLakeBlobPrivateZoneId string = privatezone_datalake_blob.outputs.privateZoneId
-output dataLakeFilePrivateZoneId string = privatezone_datalake_file.outputs.privateZoneId
-output adfPrivateZoneId string = privatezone_adf.outputs.privateZoneId
-output keyVaultPrivateZoneId string = privatezone_keyvault.outputs.privateZoneId
-output acrPrivateZoneId string = privatezone_acr.outputs.privateZoneId
-output sqlDBPrivateZoneId string = privatezone_sqldb.outputs.privateZoneId
-output amlApiPrivateZoneId string = privatezone_azureml_api.outputs.privateZoneId
-output amlNotebooksPrivateZoneId string = privatezone_azureml_notebook.outputs.privateZoneId
+output dataLakeDfsPrivateDnsZoneId string = privatezone_datalake_dfs.outputs.privateDnsZoneId
+output dataLakeBlobPrivateDnsZoneId string = privatezone_datalake_blob.outputs.privateDnsZoneId
+output dataLakeFilePrivateDnsZoneId string = privatezone_datalake_file.outputs.privateDnsZoneId
+output adfDataFactoryPrivateDnsZoneId string = privatezone_adf_datafactory.outputs.privateDnsZoneId
+output adfPortalPrivateDnsZoneId string = privatezone_adf_portal.outputs.privateDnsZoneId
+output keyVaultPrivateDnsZoneId string = privatezone_keyvault.outputs.privateDnsZoneId
+output acrPrivateDnsZoneId string = privatezone_acr.outputs.privateDnsZoneId
+output sqlDBPrivateDnsZoneId string = privatezone_sqldb.outputs.privateDnsZoneId
+output amlApiPrivateDnsZoneId string = privatezone_azureml_api.outputs.privateDnsZoneId
+output amlNotebooksPrivateDnsZoneId string = privatezone_azureml_notebook.outputs.privateDnsZoneId
+output aksPrivateDnsZoneId string = privatezone_aks.outputs.privateDnsZoneId

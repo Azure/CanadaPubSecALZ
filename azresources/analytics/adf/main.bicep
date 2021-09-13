@@ -8,7 +8,8 @@ param name string = 'adf${uniqueString(resourceGroup().id)}'
 param tags object = {}
 
 param privateEndpointSubnetId string
-param privateZoneId string
+param datafactoryPrivateZoneId string
+param portalPrivateZoneId string
 
 @description('When true, customer managed key will be enabled')
 param useCMK bool
@@ -31,7 +32,8 @@ module adfWithoutCMK 'adf-without-cmk.bicep' = if (!useCMK) {
     tags: tags
 
     privateEndpointSubnetId: privateEndpointSubnetId
-    privateZoneId: privateZoneId
+    datafactoryPrivateZoneId: datafactoryPrivateZoneId
+    portalPrivateZoneId: portalPrivateZoneId
 
     userAssignedIdentityId: identity.outputs.identityId
   }
@@ -44,8 +46,9 @@ module adfWithCMK 'adf-with-cmk.bicep' = if (useCMK) {
     tags: tags
 
     privateEndpointSubnetId: privateEndpointSubnetId
-    privateZoneId: privateZoneId
-
+    datafactoryPrivateZoneId: datafactoryPrivateZoneId
+    portalPrivateZoneId: portalPrivateZoneId
+    
     userAssignedIdentityId: identity.outputs.identityId
     userAssignedIdentityPrincipalId: identity.outputs.identityPrincipalId
 

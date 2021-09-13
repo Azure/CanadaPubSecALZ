@@ -32,6 +32,21 @@ steps:
     workingDir: ${{ parameters.workingDir }}/utils/mg-move
 
 - task: AzureCLI@2
+  displayName: Register Resource Providers
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      az account set -s $(var-hubnetwork-subscriptionId)
+      
+      az provider register -n Microsoft.ContainerService --subscription '$(var-hubnetwork-subscriptionId)'
+
+      $(var-bashPostInjectScript)
+
+- task: AzureCLI@2
   displayName: Configure Hub Networking
   inputs:
     azureSubscription: $(serviceConnection)
@@ -66,6 +81,8 @@ steps:
           tagProjectContact='$(var-hubnetwork-tagProjectContact)' \
           tagProjectName='$(var-hubnetwork-tagProjectName)' \
           tagTechnicalContact='$(var-hubnetwork-tagTechnicalContact)' \
+          deployPrivateDnsZones='$(var-hubnetwork-deployPrivateDnsZones)' \
+          rgPrivateDnsZonesName='$(var-hubnetwork-rgPrivateDnsZonesName)' \
           deployDdosStandard='$(var-hubnetwork-deployDdosStandard)' \
           rgDdosName='$(var-hubnetwork-rgDdosName)' \
           ddosPlanName='$(var-hubnetwork-ddosPlanName)' \
@@ -142,6 +159,40 @@ steps:
           
       $(var-bashPostInjectScript)
     workingDirectory: '${{ parameters.workingDir }}/lz-platform-connectivity-hub-nva'
+
+- task: AzureCLI@2
+  displayName: Azure Policy - Enable Private DNS Zone Policies (if var-hubnetwork-deployPrivateDnsZones=true)
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      case $(var-hubnetwork-deployPrivateDnsZones) in
+        (true)
+          echo "Hub Network will manage private dns zones, creating Azure Policy assignment to automatically create Private Endpoint DNS Zones"
+
+          # Apply the policy assignment
+          echo "Deploying policy assignment using policy/custom/assignments/dns-private-endpoints.bicep"
+
+          az deployment mg ${{ parameters.deployOperation }} \
+            --location $(deploymentRegion) \
+            --management-group-id $(var-topLevelManagementGroupName) \
+            --template-file dns-private-endpoints.bicep \
+            --parameters \
+                policyAssignmentManagementGroupId='$(var-topLevelManagementGroupName)' \
+                policyDefinitionManagementGroupId='$(var-topLevelManagementGroupName)' \
+                privateDNSZoneSubscriptionId='$(var-hubnetwork-subscriptionId)' \
+                privateDNSZoneResourceGroupName='$(var-hubnetwork-rgPrivateDnsZonesName)'
+          ;;
+        (*)
+          echo "Hub Network will not manage private dns zones.  Azure Policy assignment will be skipped."
+          ;;
+      esac
+
+      $(var-bashPostInjectScript)
+    workingDirectory: '$(System.DefaultWorkingDirectory)/policy/custom/assignments'
 
 - task: AzureCLI@2
   displayName: Azure Policy - Enable DDoS Standard (if var-hubnetwork-deployDdosStandard=true)

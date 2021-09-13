@@ -246,6 +246,10 @@ When a Log Analytics Workspace & Automation account already exists, enter Subscr
     var-hubnetwork-tagTechnicalContact: tbd
     var-hubnetwork-budgetStartDate: yyyy-MM-01
 
+    ## Hub Networking - Private Dns Zones
+    var-hubnetwork-deployPrivateDnsZones: true
+    var-hubnetwork-rgPrivateDnsZonesName: pubsec-dns-rg
+
     ## Hub Networking - DDOS
     var-hubnetwork-deployDdosStandard: true
     var-hubnetwork-rgDdosName: pubsec-ddos-rg
