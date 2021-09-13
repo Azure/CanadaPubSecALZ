@@ -435,13 +435,26 @@ module privatezone_sqldb '../../azresources/network/private-dns-zone.bicep' = {
   }
 }
 
-module privatezone_adf '../../azresources/network/private-dns-zone.bicep' = {
-  name: 'deploy-privatezone-adf'
+module privatezone_adf_datafactory '../../azresources/network/private-dns-zone.bicep' = {
+  name: 'deploy-privatezone-adf-datafactory'
   scope: resourceGroup()
   params: {
     zone: 'privatelink.datafactory.azure.net'
     vnetId: vnet.id
-    
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+  }
+}
+
+module privatezone_adf_portal '../../azresources/network/private-dns-zone.bicep' = {
+  name: 'deploy-privatezone-adf-portal'
+  scope: resourceGroup()
+  params: {
+    zone: 'privatelink.adf.azure.com'
+    vnetId: vnet.id
+
     dnsCreateNewZone: !privateDnsManagedByHub
     dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
     dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
@@ -619,7 +632,8 @@ output databricksPrivateSubnetName string = subnetDatabricksPrivateName
 output dataLakeDfsPrivateDnsZoneId string = privatezone_datalake_dfs.outputs.privateDnsZoneId
 output dataLakeBlobPrivateDnsZoneId string = privatezone_datalake_blob.outputs.privateDnsZoneId
 output dataLakeFilePrivateDnsZoneId string = privatezone_datalake_file.outputs.privateDnsZoneId
-output adfPrivateDnsZoneId string = privatezone_adf.outputs.privateDnsZoneId
+output adfDataFactoryPrivateDnsZoneId string = privatezone_adf_datafactory.outputs.privateDnsZoneId
+output adfPortalPrivateDnsZoneId string = privatezone_adf_portal.outputs.privateDnsZoneId
 output keyVaultPrivateDnsZoneId string = privatezone_keyvault.outputs.privateDnsZoneId
 output acrPrivateDnsZoneId string = privatezone_acr.outputs.privateDnsZoneId
 output sqlDBPrivateDnsZoneId string = privatezone_sqldb.outputs.privateDnsZoneId

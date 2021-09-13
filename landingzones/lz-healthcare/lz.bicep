@@ -402,8 +402,9 @@ module adf '../../azresources/analytics/adf/main.bicep' = {
     tags: tags
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
-    privateZoneId: networking.outputs.adfPrivateDnsZoneId
-
+    datafactoryPrivateZoneId: networking.outputs.adfDataFactoryPrivateDnsZoneId
+    portalPrivateZoneId: networking.outputs.adfPortalPrivateDnsZoneId
+    
     useCMK: useCMK
     akvResourceGroupName: useCMK ? rgSecurity.name : ''
     akvName: useCMK ? keyVault.outputs.akvName : ''
