@@ -201,26 +201,20 @@
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.RecoveryServices/vaults",
-                    "zone": "privatelink.canadacentral.backup.windowsazure.com",
+                    "zone": "privatelink.cnc.backup.windowsazure.com",
                     "filterLocationLike": "canadacentral",
                     "groupId": "AzureBackup"
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.RecoveryServices/vaults",
-                    "zone": "privatelink.canadaeast.backup.windowsazure.com",
+                    "zone": "privatelink.cne.backup.windowsazure.com",
                     "filterLocationLike": "canadaeast",
                     "groupId": "AzureBackup"
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.RecoveryServices/vaults",
-                    "zone": "canadacentral.privatelink.siterecovery.windowsazure.com",
-                    "filterLocationLike": "canadacentral",
-                    "groupId": "AzureSiteRecovery"
-                },
-                {
-                    "privateLinkServiceNamespace": "Microsoft.RecoveryServices/vaults",
-                    "zone": "canadaeast.privatelink.siterecovery.windowsazure.com",
-                    "filterLocationLike": "canadaeast",
+                    "zone": "privatelink.siterecovery.windowsazure.com",
+                    "filterLocationLike": "*",
                     "groupId": "AzureSiteRecovery"
                 },
                 {
