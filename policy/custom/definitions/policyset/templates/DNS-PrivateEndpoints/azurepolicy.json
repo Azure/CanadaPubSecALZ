@@ -23,6 +23,12 @@
         "metadata": {
           "displayName": "groupId"
         }
+      },
+      "filterLocationLike": {
+        "type": "String",
+        "metadata": {
+          "displayName": "filterLocationLike"
+        }
       }
     },
     "policyRule": {
@@ -33,15 +39,23 @@
             "equals": "Microsoft.Network/privateEndpoints"
           },
           {
-            "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId",
-            "contains": "[parameters('privateLinkServiceNamespace')]"
-          },
-          {
             "count": {
-              "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
+              "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*]",
               "where": {
-                "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
-                "equals": "[parameters('groupId')]"
+                "allOf": [
+                  {
+                    "field": "location",
+                    "like": "[parameters('filterLocationLike')]"
+                  },
+                  {
+                    "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId",
+                    "contains": "[parameters('privateLinkServiceNamespace')]"
+                  },
+                  {
+                    "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
+                    "equals": "[parameters('groupId')]"
+                  }
+                ]
               }
             },
             "greaterOrEquals": 1
@@ -58,8 +72,14 @@
           "existenceCondition": {
             "allOf": [
               {
-                "field": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups/privateDnsZoneConfigs[*].privateDnsZoneId",
-                "equals": "[parameters('privateDnsZoneId')]"
+                "count": {
+                  "field": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups/privateDnsZoneConfigs[*]",
+                  "where": {
+                    "field": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups/privateDnsZoneConfigs[*].privateDnsZoneId",
+                    "equals": "[parameters('privateDnsZoneId')]"
+                  }
+                },
+                "greaterOrEquals": 1
               }
             ]
           },
