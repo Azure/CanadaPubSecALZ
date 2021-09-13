@@ -40,9 +40,9 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      az account set -s $(var-logging-subscriptionId)
+      az account set -s $(var-hubnetwork-subscriptionId)
       
-      az provider register -n Microsoft.ContainerService --subscription '$(var-logging-subscriptionId)'
+      az provider register -n Microsoft.ContainerService --subscription '$(var-hubnetwork-subscriptionId)'
 
       $(var-bashPostInjectScript)
 
