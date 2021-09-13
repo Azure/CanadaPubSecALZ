@@ -441,7 +441,7 @@ module aks '../../azresources/containers/aks-kubenet/main.bicep' = {
     userNodePoolMaxNodeCount: 3
     userNodePoolNodeSize: 'Standard_DS2_v2'
     
-    subnetID: networking.outputs.aksSubnetId
+    subnetId: networking.outputs.aksSubnetId
     nodeResourceGroupName: '${rgCompute.name}-${aksName}-${uniqueString(rgCompute.id)}'
 
     privateDNSZoneId: networking.outputs.aksPrivateDnsZoneId

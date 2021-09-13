@@ -21,7 +21,7 @@ param userNodePoolMinNodeCount int
 param userNodePoolMaxNodeCount int
 param userNodePoolNodeSize string = 'Standard_DS2_v2'
 
-param subnetID string
+param subnetId string
 param dnsPrefix string = 'aksdns'
 param nodeResourceGroupName string
 
@@ -114,7 +114,7 @@ resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
         ]
         type: 'VirtualMachineScaleSets'
         osType: 'Linux'
-        vnetSubnetID: subnetID
+        vnetSubnetID: subnetId
         name: 'systempool'
         mode: 'System'
         enableEncryptionAtHost: enableEncryptionAtHost
@@ -132,7 +132,7 @@ resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
         ]
         type: 'VirtualMachineScaleSets'
         osType: 'Linux'
-        vnetSubnetID: subnetID
+        vnetSubnetID: subnetId
         name: 'agentpool'
         mode: 'User'
         enableEncryptionAtHost: enableEncryptionAtHost

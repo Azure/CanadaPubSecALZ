@@ -19,7 +19,7 @@ param userNodePoolMinNodeCount int
 param userNodePoolMaxNodeCount int
 param userNodePoolNodeSize string = 'Standard_DS2_v2'
 
-param subnetID string
+param subnetId string
 param dnsPrefix string = 'aksdns'
 param nodeResourceGroupName string
 
@@ -42,6 +42,12 @@ param akvName string
 @description('Enable encryption at host (double encryption)')
 param enableEncryptionAtHost bool = true
 
+// Example:  /subscriptions/<subscription-id>/resourceGroups/<resource-group-name>/providers/Microsoft.Network/virtualNetworks/<virtual-network-name>/subnets/aks
+var subnetIdSplit = split(subnetId, '/')
+var virtualNetworkResourceGroup = subnetIdSplit[4]
+var virtualNetworkName = subnetIdSplit[8]
+
+// Example: /subscriptions/<subscription-id>/resourceGroups/<resource-group-name>/providers/Microsoft.Network/privateDnsZones/privatelink.canadacentral.azmk8s.io
 var privateDnsZoneIdSplit = split(privateDNSZoneId, '/')
 var privateDnsZoneSubscriptionId = privateDnsZoneIdSplit[2]
 var privateZoneDnsResourceGroupName = privateDnsZoneIdSplit[4]
@@ -65,9 +71,20 @@ module rbacPrivateDnsZoneContributor '../../iam/resource/private-dns-zone-role-a
   }
 }
 
+module rbacNetworkContributor '../../iam/resource/virtual-network-role-assignment-to-sp.bicep' = {
+  name: 'rbac-network-contributor-${aksName}'
+  scope: resourceGroup(virtualNetworkResourceGroup)
+  params: {
+    vnetName: virtualNetworkName
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7') // Network Contributor
+    resourceSPObjectIds: array(identity.outputs.identityPrincipalId)
+  }
+}
+
 module aksWithoutCMK 'aks-kubenet-without-cmk.bicep' = if (!useCMK) {
   dependsOn: [
     rbacPrivateDnsZoneContributor
+    rbacNetworkContributor
   ]
 
   name: 'deploy-aks-without-cmk'
@@ -83,7 +100,7 @@ module aksWithoutCMK 'aks-kubenet-without-cmk.bicep' = if (!useCMK) {
 
     tags: tags
 
-    subnetID: subnetID
+    subnetId: subnetId
 
     systemNodePoolMinNodeCount: systemNodePoolMinNodeCount
     systemNodePoolMaxNodeCount: systemNodePoolMaxNodeCount
@@ -111,6 +128,7 @@ module aksWithoutCMK 'aks-kubenet-without-cmk.bicep' = if (!useCMK) {
 module aksWithCMK 'aks-kubenet-with-cmk.bicep' = if (useCMK) {
   dependsOn: [
     rbacPrivateDnsZoneContributor
+    rbacNetworkContributor
   ]
 
   name: 'deploy-aks-with-cmk'
@@ -126,7 +144,7 @@ module aksWithCMK 'aks-kubenet-with-cmk.bicep' = if (useCMK) {
 
     tags: tags
 
-    subnetID: subnetID
+    subnetId: subnetId
 
     systemNodePoolMinNodeCount: systemNodePoolMinNodeCount
     systemNodePoolMaxNodeCount: systemNodePoolMaxNodeCount
