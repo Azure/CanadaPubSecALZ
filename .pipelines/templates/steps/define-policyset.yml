@@ -30,10 +30,10 @@ steps:
       inlineScript: |
         $(var-bashPreInjectScript)
 
-        echo "Populating templated properties in ${{ policy }}.properties.json"
-        sed -i 's~{{var-topLevelManagementGroupName}}~$(var-topLevelManagementGroupName)~g' ${{ policy }}.properties.json
+        echo "Populating templated properties in ${{ policy }}.parameters.json"
+        sed -i 's~{{var-topLevelManagementGroupName}}~$(var-topLevelManagementGroupName)~g' ${{ policy }}.parameters.json
 
-        cat ${{ policy }}.properties.json ; echo
+        cat ${{ policy }}.parameters.json ; echo
 
         echo "Deploying ${{ policy }}.bicep using ${{ parameters.deployOperation}} operation..."
 
@@ -41,7 +41,7 @@ steps:
           --location $(deploymentRegion) \
           --management-group-id $(var-topLevelManagementGroupName) \
           --template-file ${{ policy }}.bicep \
-          --parameters ${{ policy }}.properties.json
+          --parameters ${{ policy }}.parameters.json
         
         $(var-bashPostInjectScript)
       workingDirectory: ${{ parameters.workingDir }}

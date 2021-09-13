@@ -83,14 +83,14 @@ stages:
     
     - template: templates/steps/define-policyset.yml
       parameters:
-        description: 'Define Policy Sets'
+        description: 'Define Policy Set'
         deployTemplates: [AKS, EnableAzureDefender, EnableLogAnalytics, Network, DNSPrivateEndpoints, Tags]
         deployOperation: ${{ variables['deployOperation'] }}
         workingDir: $(System.DefaultWorkingDirectory)/policy/custom/definitions/policyset
       
     - template: templates/steps/assign-policy.yml
       parameters:
-        description: 'Assign Policy'
+        description: 'Assign Policy Set'
         deployTemplates: [aks, asc, loganalytics, network, tags]
         deployOperation: ${{ variables['deployOperation'] }}
         workingDir: $(System.DefaultWorkingDirectory)/policy/custom/assignments
@@ -111,7 +111,7 @@ stages:
 
     - template: templates/steps/assign-policy.yml
       parameters:
-        description: 'Assign Policy'
+        description: 'Assign Policy Set'
         deployTemplates: [asb, cis-msft-130, location, nist80053r4, nist80053r5, pbmm, hitrust-hipaa]
         deployOperation: ${{ variables['deployOperation'] }}
         workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
