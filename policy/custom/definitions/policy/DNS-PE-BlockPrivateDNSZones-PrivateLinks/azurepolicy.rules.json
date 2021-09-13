@@ -7,14 +7,6 @@
       },
       {
         "field": "name",
-        "notLike": "*.privatelink.canadacentral.azmk8s.io"
-      },
-      {
-        "field": "name",
-        "notLike": "*.privatelink.canadaeast.azmk8s.io"
-      },
-      {
-        "field": "name",
         "contains": "privatelink."
       }
     ]

@@ -443,6 +443,8 @@ module aks '../../azresources/containers/aks-kubenet/main.bicep' = {
     
     subnetID: networking.outputs.aksSubnetId
     nodeResourceGroupName: '${rgCompute.name}-${aksName}-${uniqueString(rgCompute.id)}'
+
+    privateDNSZoneId: networking.outputs.aksPrivateDnsZoneId
     
     containerInsightsLogAnalyticsResourceId: logAnalyticsWorkspaceResourceId
 

@@ -7,6 +7,8 @@
 param aksName string = 'aks'
 param aksVersion string
 
+param userAssignedIdentityId string
+
 param tags object = {}
 
 param systemNodePoolEnableAutoScaling bool
@@ -28,12 +30,14 @@ param serviceCidr string = '20.0.0.0/16'
 param dnsServiceIP string = '20.0.0.10'
 param dockerBridgeCidr string = '30.0.0.1/16'
 
+param privateDNSZoneId string
+
 param containerInsightsLogAnalyticsResourceId string = ''
 
 @description('Enable encryption at host (double encryption)')
 param enableEncryptionAtHost bool = true
 
-resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-02-01' = {
+resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
   name: aksName
   location: resourceGroup().location
   tags: tags
@@ -89,6 +93,8 @@ resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-02-01' = {
     ]
     apiServerAccessProfile: {
       enablePrivateCluster: true
+      enablePrivateClusterPublicFQDN: false
+      privateDNSZone: privateDNSZoneId
     }
     servicePrincipalProfile: {
       clientId: 'msi'
@@ -105,6 +111,9 @@ resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-02-01' = {
     }
   }
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${userAssignedIdentityId}': {}
+    }
   }
 }

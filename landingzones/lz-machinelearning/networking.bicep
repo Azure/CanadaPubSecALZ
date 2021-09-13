@@ -542,6 +542,19 @@ module privatezone_azureml_notebook '../../azresources/network/private-dns-zone.
   }
 }
 
+module privatezone_aks '../../azresources/network/private-dns-zone.bicep' = {
+  name: 'deploy-privatezone-aks'
+  scope: resourceGroup()
+  params: {
+    zone: toLower('privatelink.${resourceGroup().location}.azmk8s.io')
+    vnetId: vnet.id
+
+    dnsCreateNewZone: !privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+  }
+}
+
 output vnetId string = vnet.id
 
 output foundationalElementSubnetId string = '${vnet.id}/subnets/${subnetFoundationalElementsName}'
@@ -564,3 +577,4 @@ output acrPrivateDnsZoneId string = privatezone_acr.outputs.privateDnsZoneId
 output sqlDBPrivateDnsZoneId string = privatezone_sqldb.outputs.privateDnsZoneId
 output amlApiPrivateDnsZoneId string = privatezone_azureml_api.outputs.privateDnsZoneId
 output amlNotebooksPrivateDnsZoneId string = privatezone_azureml_notebook.outputs.privateDnsZoneId
+output aksPrivateDnsZoneId string = privatezone_aks.outputs.privateDnsZoneId

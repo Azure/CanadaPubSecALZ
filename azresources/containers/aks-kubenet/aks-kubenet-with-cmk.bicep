@@ -7,6 +7,8 @@
 param aksName string = 'aks'
 param aksVersion string
 
+param userAssignedIdentityId string
+
 param tags object = {}
 
 param systemNodePoolEnableAutoScaling bool
@@ -27,6 +29,8 @@ param podCidr string = '11.0.0.0/16'
 param serviceCidr string = '20.0.0.0/16'
 param dnsServiceIP string = '20.0.0.10'
 param dockerBridgeCidr string = '30.0.0.1/16'
+
+param privateDNSZoneId string
 
 param containerInsightsLogAnalyticsResourceId string = ''
 
@@ -76,7 +80,7 @@ module diskEncryptionSetRoleAssignmentForCMK '../../iam/resource/key-vault-role-
   }
 }
 
-resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-02-01' = {
+resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
   dependsOn: [
     diskEncryptionSetRoleAssignmentForCMK
   ]
@@ -136,6 +140,8 @@ resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-02-01' = {
     ]
     apiServerAccessProfile: {
       enablePrivateCluster: true
+      enablePrivateClusterPublicFQDN: false
+      privateDNSZone: privateDNSZoneId
     }
     servicePrincipalProfile: {
       clientId: 'msi'
@@ -153,6 +159,9 @@ resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-02-01' = {
     diskEncryptionSetID: diskEncryptionSet.id
   }
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${userAssignedIdentityId}': {}
+    }
   }
 }
