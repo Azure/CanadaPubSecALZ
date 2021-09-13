@@ -112,6 +112,6 @@ stages:
     - template: templates/steps/assign-policy.yml
       parameters:
         description: 'Assign Policy Set'
-        deployTemplates: [asb, cis-msft-130, location, nist80053r4, nist80053r5, pbmm, hitrust-hipaa]
+        deployTemplates: [asb, cis-msft-130, location, nist80053r4, nist80053r5, pbmm, hitrust-hipaa, fedramp-moderate]
         deployOperation: ${{ variables['deployOperation'] }}
         workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
