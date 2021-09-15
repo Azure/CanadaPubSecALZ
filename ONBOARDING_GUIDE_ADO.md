@@ -251,7 +251,7 @@ When a Log Analytics Workspace & Automation account already exists, enter Subscr
     var-hubnetwork-rgPrivateDnsZonesName: pubsec-dns-rg
 
     ## Hub Networking - DDOS
-    var-hubnetwork-deployDdosStandard: true
+    var-hubnetwork-deployDdosStandard: false
     var-hubnetwork-rgDdosName: pubsec-ddos-rg
     var-hubnetwork-ddosPlanName: ddos-plan
 
