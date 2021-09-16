@@ -10,33 +10,59 @@
 targetScope = 'subscription'
 
 // RBAC assignments
+@description('An array of Security Group object ids that should be granted Owner built-in role.  Default: []')
 param subscriptionOwnerGroupObjectIds array = []
+
+@description('An array of Security Group object ids that should be granted Contributor built-in role.  Default: []')
 param subscriptionContributorGroupObjectIds array = []
+
+@description('An array of Security Group object ids that should be granted Reader built-in role.  Default: []')
 param subscriptionReaderGroupObjectIds array = []
-param lzAppOwnerRoleDefinitionId string = ''
+
+@description('An array of Security Group object ids that should be granted Application Owner custom role.  Default: []')
 param subscriptionAppOwnerGroupObjectIds array = []
 
-// parameters for Azure Security Center
+@description('Reference to Application Owner custom role definition id.  Default: empty string')
+param lzAppOwnerRoleDefinitionId string = ''
+
+// Azure Security Center
+@description('Log Analytics Resource Id to integrate Azure Security Center.')
 param logAnalyticsWorkspaceResourceId string
+
+@description('Contact email address for Azure Security Center alerts.')
 param securityContactEmail string
+
+@description('Contact phone number for Azure Security Center alerts.')
 param securityContactPhone string
 
-// parameters for Budget
+// Subscription Budget
+@description('Boolean flag to determine whether to create subscription budget.  Default: true')
 param createBudget bool
+
+@description('Subscription budget name.')
 param budgetName string
+
+@description('Subscription budget amount.')
 param budgetAmount int
+
+@description('Subscription budget email notification address.')
 param budgetNotificationEmailAddress string
+
+@description('Subscription budget start date.  New budget can not be created with the same name and different start date.  You must delete the old budget before recreating or disable budget creation through createBudget flag.  Default:  1st day of current month')
 param budgetStartDate string = utcNow('yyyy-MM-01')
 
-// parameters for Tags
-param tagISSO string
-
+@description('Budget Time Window.  Options are Monthly, Quarterly or Annually.  Default: Monthly')
 @allowed([
   'Monthly'
   'Quarterly'
   'Annually'  
 ])
 param budgetTimeGrain string = 'Monthly'
+
+// Tags
+@description('Subscription scoped tag - ISSO')
+param tagISSO string
+
 
 // Configure Tags
 resource setTagISSO 'Microsoft.Resources/tags@2020-10-01' = {
@@ -104,7 +130,7 @@ module group_roleAssignment_Reader '../azresources/iam/subscription/role-assignm
   }
 }
 
-module group_roleAssignment_LZAppowner '../azresources/iam/subscription/role-assignment-to-group.bicep' = if (!(empty(subscriptionAppOwnerGroupObjectIds)) && (!(empty(lzAppOwnerRoleDefinitionId)))) {
+module group_roleAssignment_LZAppOwner '../azresources/iam/subscription/role-assignment-to-group.bicep' = if (!(empty(subscriptionAppOwnerGroupObjectIds)) && (!(empty(lzAppOwnerRoleDefinitionId)))) {
   name: 'rbac-assign-lzappowner-to-sg'
   scope: subscription()
   params: {

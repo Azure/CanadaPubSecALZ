@@ -9,7 +9,10 @@
 
 targetScope = 'managementGroup'
 
+@description('Target management group id.')
 param managementGroupId string
+
+@description('Subscription that is being moved to a new management group.')
 param subscriptionId string
 
 resource move 'Microsoft.Management/managementGroups/subscriptions@2020-05-01' = {
