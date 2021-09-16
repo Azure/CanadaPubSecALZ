@@ -7,7 +7,10 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Azure Automation Account name')
 param automationAccountName string
+
+@description('Key/Value pair of tags that will be assigned to Automation Account.')
 param tags object = {}
 
 resource automationAccount 'Microsoft.Automation/automationAccounts@2015-10-31' = {

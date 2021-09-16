@@ -72,11 +72,12 @@ module rgTestHarnessManagedIdentityRBAC '../../../../azresources/iam/subscriptio
   }
 }
 
-
 module logAnalyticsWorkspace '../../../../azresources/monitor/log-analytics.bicep' = {
   scope: rgTestHarnessSupportingAssets
   name: 'deploy-test-harness-log-analytics-workspace'
   params: {
+    workspaceName: 'workspace-${uniqueString(rgTestHarnessSupportingAssets.name)}'
+    automationAccountName: 'automation-${uniqueString(rgTestHarnessSupportingAssets.name)}'
     tags: tags
   }
 }

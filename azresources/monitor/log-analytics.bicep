@@ -7,12 +7,33 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param workspaceName string = 'workspace-${uniqueString(resourceGroup().id)}'
-param automationAccountName string = 'automation-${uniqueString(resourceGroup().id)}'
+@description('Log Analytics Workspace Name.')
+param workspaceName string
+
+@description('Automation Account Name.')
+param automationAccountName string
+
+@description('Key/Value pair of tags that will be assigned to Automation Account.')
 param tags object = {}
 
-var workspaceRetentionInDays = 730
+@description('Log Analytics Workspace Data Retention in Days.  Default: 730 days')
+param workspaceRetentionInDays int = 730
 
+// Log Analytics Workspace Solutions
+var solutions = [
+  'AgentHealthAssessment'
+  'AntiMalware'
+  'AzureActivity'
+  'ChangeTracking'
+  'Security'
+  'SecurityInsights'
+  'ServiceMap'
+  'SQLAssessment'
+  'Updates'
+  'VMInsights'
+]
+
+// Create Automation Account
 module automationAccount '../automation/automation-account.bicep' = {
   name: 'automation-account'
   params: {
@@ -21,6 +42,7 @@ module automationAccount '../automation/automation-account.bicep' = {
   }
 }
 
+// Create Log Analytics Workspace
 resource workspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' = {
   name: workspaceName
   tags: tags
@@ -33,6 +55,7 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' = {
   }
 }
 
+// Link Log Analytics Workspace to Automation Account
 resource automationAccountLinkedToWorkspace 'Microsoft.OperationalInsights/workspaces/linkedServices@2020-08-01' = {
   name: '${workspace.name}/Automation'
   properties: {
@@ -40,20 +63,7 @@ resource automationAccountLinkedToWorkspace 'Microsoft.OperationalInsights/works
   }
 }
 
-// Add Workspace Solutions
-var solutions = [
- 'AgentHealthAssessment'
- 'AntiMalware'
- 'AzureActivity'
- 'ChangeTracking'
- 'Security'
- 'SecurityInsights'
- 'ServiceMap'
- 'SQLAssessment'
- 'Updates'
- 'VMInsights'
-]
-
+// Add Log Analytics Workspace Solutions
 resource workspaceSolutions 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = [for solution in solutions: {
   name: '${solution}(${workspace.name})'
   location: resourceGroup().location

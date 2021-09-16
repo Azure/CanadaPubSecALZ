@@ -9,16 +9,24 @@
 
 targetScope = 'subscription'
 
+@description('Subscription budget name.')
 param budgetName string
+
+@description('Subscription budget amount.')
 param budgetAmount int
 
+@description('Budget Time Window.  Options are Monthly, Quarterly or Annually.  Default: Monthly')
 @allowed([
   'Monthly'
   'Quarterly'
   'Annually'
 ])
 param timeGrain string = 'Monthly'
+
+@description('Subscription budget start date.  New budget can not be created with the same name and different start date.  You must delete the old budget before recreating or disable budget creation through createBudget flag.  Default:  1st day of current month')
 param startDate string = utcNow('yyyy-MM-01')
+
+@description('Subscription budget email notification address.')
 param notificationEmailAddress string
 
 resource budget 'Microsoft.Consumption/budgets@2019-10-01' = {
