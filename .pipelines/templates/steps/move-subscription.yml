@@ -1,13 +1,11 @@
 # ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
 # THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
 # EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
 # OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 # ----------------------------------------------------------------------------------
-
-# Transpiling Bicep into ARM template and injecting Subscription scope is
-# required until https://github.com/Azure/bicep/issues/1691 is fixed.
-# After that issue is resolved, this pipeline file can be refactored to
-# remove the transpiling and invoke the Bicep template file direcly.
 
 parameters:
   - name: templateDirectory

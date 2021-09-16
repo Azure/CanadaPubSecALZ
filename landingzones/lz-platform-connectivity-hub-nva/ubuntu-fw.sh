@@ -1,3 +1,12 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
 sudo apt install apache2 #in case we want an HTTP probe
 echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
 #the rp_filter below can be avoided if we add routes to the proper Spokes IP Ranges to the proper NIC (i.e. prod spokes to the INT device, mrz spoke to MRZ device)
