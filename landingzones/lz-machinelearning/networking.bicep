@@ -59,8 +59,40 @@ param privateDnsManagedByHubSubscriptionId string
 @description('Required when privateDnsManagedByHub=true')
 param privateDnsManagedByHubResourceGroupName string
 
+var integrateToHubVirtualNetwork = !empty(hubVnetId)
+var hubVnetIdSplit = split(hubVnetId, '/')
+
+var routesToHub = [
+  // Force Routes to Hub IPs (RFC1918 range) via FW despite knowing that route via peering
+  {
+    name: 'PrdSpokesUdrHubRFC1918FWRoute'
+    properties: {
+      addressPrefix: hubRFC1918IPRange
+      nextHopType: 'VirtualAppliance'
+      nextHopIpAddress: egressVirtualApplianceIp
+    }
+  }
+  // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
+  {
+    name: 'PrdSpokesUdrHubCGNATFWRoute'
+    properties: {
+      addressPrefix: hubCGNATIPRange
+      nextHopType: 'VirtualAppliance'
+      nextHopIpAddress: egressVirtualApplianceIp
+    }
+  }
+  {
+    name: 'RouteToEgressFirewall'
+    properties: {
+      addressPrefix: '0.0.0.0/0'
+      nextHopType: 'VirtualAppliance'
+      nextHopIpAddress: egressVirtualApplianceIp
+    }
+  }
+]
+
 // Network Security Groups
-resource nsgFoundationalElements 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
+resource nsgFoundationalElements 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${subnetFoundationalElementsName}Nsg'
   location: resourceGroup().location
   properties: {
@@ -68,7 +100,7 @@ resource nsgFoundationalElements 'Microsoft.Network/networkSecurityGroups@2020-0
   }
 }
 
-resource nsgPresentation 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
+resource nsgPresentation 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${subnetPresentationName}Nsg'
   location: resourceGroup().location
   properties: {
@@ -76,7 +108,7 @@ resource nsgPresentation 'Microsoft.Network/networkSecurityGroups@2020-06-01' = 
   }
 }
 
-resource nsgApplication 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
+resource nsgApplication 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${subnetApplicationName}Nsg'
   location: resourceGroup().location
   properties: {
@@ -84,7 +116,7 @@ resource nsgApplication 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
   }
 }
 
-resource nsgData 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
+resource nsgData 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${subnetDataName}Nsg'
   location: resourceGroup().location
   properties: {
@@ -108,143 +140,35 @@ module nsgSqlMi '../../azresources/network/nsg/nsg-sqlmi.bicep' = {
 }
 
 // Route Tables
-resource udrFoundationalElements 'Microsoft.Network/routeTables@2020-06-01' = {
+resource udrFoundationalElements 'Microsoft.Network/routeTables@2021-02-01' = {
   name: '${subnetFoundationalElementsName}Udr'
   location: resourceGroup().location
   properties: {
-    routes: [
-      // Force Routes to Hub IPs (RFC1918 range) via FW despite knowing that route via peering
-      {
-        name: 'PrdSpokesUdrHubRFC1918FWRoute'
-        properties: {
-          addressPrefix: hubRFC1918IPRange
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: egressVirtualApplianceIp
-        }
-      }
-      // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
-      {
-        name: 'PrdSpokesUdrHubCGNATFWRoute'
-        properties: {
-          addressPrefix: hubCGNATIPRange
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: egressVirtualApplianceIp
-        }
-      }
-      {
-        name: 'RouteToEgressFirewall'
-        properties: {
-          addressPrefix: '0.0.0.0/0'
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: egressVirtualApplianceIp
-        }
-      }
-    ]
+    routes: integrateToHubVirtualNetwork ? routesToHub : null
   }
 }
 
-resource udrPresentation 'Microsoft.Network/routeTables@2020-06-01' = {
+resource udrPresentation 'Microsoft.Network/routeTables@2021-02-01' = {
   name: '${subnetPresentationName}Udr'
   location: resourceGroup().location
   properties: {
-    routes: [
-      // Force Routes to Hub IPs (RFC1918 range) via FW despite knowing that route via peering
-      {
-        name: 'PrdSpokesUdrHubRFC1918FWRoute'
-        properties: {
-          addressPrefix: hubRFC1918IPRange
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: egressVirtualApplianceIp
-        }
-      }
-      // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
-      {
-        name: 'PrdSpokesUdrHubCGNATFWRoute'
-        properties: {
-          addressPrefix: hubCGNATIPRange
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: egressVirtualApplianceIp
-        }
-      }
-      {
-        name: 'RouteToEgressFirewall'
-        properties: {
-          addressPrefix: '0.0.0.0/0'
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: egressVirtualApplianceIp
-        }
-      }
-    ]
+    routes: integrateToHubVirtualNetwork ? routesToHub : null
   }
 }
 
-resource udrApplication 'Microsoft.Network/routeTables@2020-06-01' = {
+resource udrApplication 'Microsoft.Network/routeTables@2021-02-01' = {
   name: '${subnetApplicationName}Udr'
   location: resourceGroup().location
   properties: {
-    routes: [
-      // Force Routes to Hub IPs (RFC1918 range) via FW despite knowing that route via peering
-      {
-        name: 'PrdSpokesUdrHubRFC1918FWRoute'
-        properties: {
-          addressPrefix: hubRFC1918IPRange
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: egressVirtualApplianceIp
-        }
-      }
-      // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
-      {
-        name: 'PrdSpokesUdrHubCGNATFWRoute'
-        properties: {
-          addressPrefix: hubCGNATIPRange
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: egressVirtualApplianceIp
-        }
-      }
-      {
-        name: 'RouteToEgressFirewall'
-        properties: {
-          addressPrefix: '0.0.0.0/0'
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: egressVirtualApplianceIp
-        }
-      }
-    ]
+    routes: integrateToHubVirtualNetwork ? routesToHub : null
   }
 }
 
-resource udrData 'Microsoft.Network/routeTables@2020-06-01' = {
+resource udrData 'Microsoft.Network/routeTables@2021-02-01' = {
   name: '${subnetDataName}Udr'
   location: resourceGroup().location
   properties: {
-    routes: [
-      // Force Routes to Hub IPs (RFC1918 range) via FW despite knowing that route via peering
-      {
-        name: 'PrdSpokesUdrHubRFC1918FWRoute'
-        properties: {
-          addressPrefix: hubRFC1918IPRange
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: egressVirtualApplianceIp
-        }
-      }
-      // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
-      {
-        name: 'PrdSpokesUdrHubCGNATFWRoute'
-        properties: {
-          addressPrefix: hubCGNATIPRange
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: egressVirtualApplianceIp
-        }
-      }
-      {
-        name: 'RouteToEgressFirewall'
-        properties: {
-          addressPrefix: '0.0.0.0/0'
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: egressVirtualApplianceIp
-        }
-      }
-    ]
+    routes: integrateToHubVirtualNetwork ? routesToHub : null
   }
 }
 
@@ -270,7 +194,7 @@ module udrDatabricksPrivate '../../azresources/network/udr/udr-databricks-privat
 }
 
 // Virtual Network
-resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
+resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   name: vnetName
   location: resourceGroup().location
   properties: {
@@ -290,7 +214,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
           networkSecurityGroup: {
             id: nsgFoundationalElements.id
           }
-        }        
+        }
       }
       {
         name: subnetPresentationName
@@ -326,7 +250,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
           networkSecurityGroup: {
             id: nsgData.id
           }
-        } 
+        }
       }
       {
         name: subnetPrivateEndpointsName
@@ -340,7 +264,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
         properties: {
           addressPrefix: subnetAKSPrefix
           privateEndpointNetworkPolicies: 'Disabled'
-        }      
+        }
       }
       {
         name: subnetDatabricksPublicName
@@ -415,12 +339,27 @@ module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = if
   name: 'deploy-vnet-peering-spoke-to-hub'
   scope: resourceGroup()
   params: {
-    peeringName: 'SpokeToHub-${vnet.name}'
+    peeringName: 'Hub-${vnet.name}-to-${last(hubVnetIdSplit)}'
     allowForwardedTraffic: true
     allowVirtualNetworkAccess: true
     sourceVnetName: vnet.name
     targetVnetId: hubVnetId
     //useRemoteGateways: true
+  }
+}
+
+// For Hub to Spoke vnet peering, we must rescope the deployment to the subscription id & resource group of where the Hub VNET is located.
+module vnetPeeringHubToSpoke '../../azresources/network/vnet-peering.bicep' = if (integrateToHubVirtualNetwork) {
+  name: 'deploy-vnet-peering-${subscription().subscriptionId}'
+  // vnet id = /subscriptions/<<SUBSCRIPTION ID>>/resourceGroups/<<RESOURCE GROUP>>/providers/Microsoft.Network/virtualNetworks/<<VNET NAME>>
+  scope: resourceGroup(integrateToHubVirtualNetwork ? hubVnetIdSplit[2] : '', integrateToHubVirtualNetwork ? hubVnetIdSplit[4] : '')
+  params: {
+    peeringName: 'Spoke-${last(hubVnetIdSplit)}-to-${vnet.name}-${uniqueString(vnet.id)}'
+    allowForwardedTraffic: true
+    allowVirtualNetworkAccess: true
+    sourceVnetName: last(hubVnetIdSplit)
+    targetVnetId: vnet.id
+    useRemoteGateways: false
   }
 }
 

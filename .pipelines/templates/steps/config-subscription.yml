@@ -40,34 +40,5 @@ steps:
         --name ${deployName} \
         --parameters @${{ parameters.filename }} \
           logAnalyticsWorkspaceResourceId='$(var-logging-logAnalyticsWorkspaceResourceId)'
-
-      echo "Checking for presence of optional Hub VNet ID in configuration file..."
-      hubVnetId=`jq -r .parameters.hubVnetId.value "${{ parameters.filename }}"`
-
-      if [ -n "$hubVnetId" ]; then
-        echo "Found Hub VNet ID: $hubVnetId"
-        echo "Configuring VNet peering from Hub to Spoke..."
-
-        hubSubscriptionId=`echo $hubVnetId | cut -d '/' -f 3`
-        spokeRgName=`jq -r .parameters.rgVnetName.value "${{ parameters.filename }}"`
-        spokeVnetName=`jq -r .parameters.vnetName.value "${{ parameters.filename }}"`
-
-        deployName='peer-to-hub-${{ parameters.subscriptionGuid }}-${{ parameters.subscriptionLocation }}'
-        deployName=${deployName:0:63}
-          
-        az deployment sub create \
-            --location ${{ parameters.subscriptionLocation }} \
-            --subscription $hubSubscriptionId \
-            --template-file $(Build.SourcesDirectory)/landingzones/utils/network/peer-to-hub.bicep \
-            --name ${deployName} \
-            --parameters \
-                hubVnetId=$hubVnetId \
-                spokeSubId=${{ parameters.subscriptionGuid }} \
-                spokeRgName=$spokeRgName \
-                spokeVnetName=$spokeVnetName
-      else
-        echo "Hub VNet ID not specified"
-        echo "Skipping VNet peering from Hub to Spoke"
-      fi
           
       $(var-bashPostInjectScript)
