@@ -10,64 +10,96 @@
 // Management Restricted Zone Virtual Network
 
 // VNET
-param vnetName string 
-param vnetAddressPrefix string     
+@description('Virtual Network Name.')
+param vnetName string
+
+@description('Virtual Network Address Space.')
+param vnetAddressPrefix string
 
 // Management (Access Zone)
+@description('Management (Access Zone) Subnet Name.')
 param mazSubnetName string
-param mazSubnetAddressPrefix string      
-param mazSubnetUdrId string 
+
+@description('Management (Access Zone) Subnet Address Prefix.')
+param mazSubnetAddressPrefix string
+
+@description('Management (Access Zone) User Defined Route Resource Id.')
+param mazSubnetUdrId string
 
 // Infra Services (Restricted Zone)
-param infSubnetName string 
-param infSubnetAddressPrefix string   
-param infSubnetUdrId string 
+@description('Infrastructure Services (Restricted Zone) Subnet Name.')
+param infSubnetName string
+
+@description('Infrastructure Services (Restricted Zone) Subnet Address Prefix.')
+param infSubnetAddressPrefix string
+
+@description('Infrastructure Services (Restricted Zone) User Defined Route Resource Id.')
+param infSubnetUdrId string
 
 // Security Services (Restricted Zone)
-param secSubnetName string  
+@description('Security Services (Restricted Zone) Subnet Name.')
+param secSubnetName string
+@description('Security Services (Restricted Zone) Subnet Address Prefis.')
 param secSubnetAddressPrefix string
-param secSubnetUdrId string 
+
+@description('Security Services (Restricted Zone) User Defined Route Resource Id.')
+param secSubnetUdrId string
 
 // Logging Services (Restricted Zone)
-param logSubnetName string  
+@description('Logging Services (Restricted Zone) Subnet Name.')
+param logSubnetName string
+
+@description('Logging Services (Restricted Zone) Subnet Address Prefix.')
 param logSubnetAddressPrefix string
-param logSubnetUdrId string 
+
+@description('Logging Services (Restricted Zone) User Defined Route Resource Id.')
+param logSubnetUdrId string
 
 // Core Management Interfaces
-param mgmtSubnetName string 
-param mgmtSubnetAddressPrefix string      
-param mgmtSubnetUdrId string 
+@description('Core Management Interfaces (Restricted Zone) Subnet Name.')
+param mgmtSubnetName string
+
+@description('Core Management Interfaces (Restricted Zone) Subnet Address Prefix.')
+param mgmtSubnetAddressPrefix string
+
+@description('Core Management Interfaces (Restricted Zone) User Defined Route Table Resource Id.')
+param mgmtSubnetUdrId string
 
 // DDOS
+@description('DDOS Standard Plan Resource Id - optional (blank value = DDOS Standard Plan will not be linked to virtual network).')
 param ddosStandardPlanId string
 
 module nsgmaz '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${mazSubnetName}'
-  params:{
+  params: {
     name: '${mazSubnetName}Nsg'
   }
 }
+
 module nsginf '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${infSubnetName}'
-  params:{
+  params: {
     name: '${infSubnetName}Nsg'
   }
 }
+
 module nsgsec '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${secSubnetName}'
-  params:{
+  params: {
     name: '${secSubnetName}Nsg'
   }
 }
+
 module nsglog '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${logSubnetName}'
-  params:{
+  params: {
     name: '${logSubnetName}Nsg'
   }
 }
+
 module nsgmgmt '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${mgmtSubnetName}'
-  params:{
+  params: {
     name: '${mgmtSubnetName}Nsg'
   }
 }
@@ -150,10 +182,11 @@ resource mrzVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   }
 }
 
+// Outputs
 output mrzVnetId string = mrzVnet.id
 
-output MazSubnetId  string = '${mrzVnet.id}/subnets/${mazSubnetName}'
-output InfSubnetId  string = '${mrzVnet.id}/subnets/${infSubnetName}'
-output SecSubnetId  string = '${mrzVnet.id}/subnets/${secSubnetName}'
-output LogSubnetId  string = '${mrzVnet.id}/subnets/${logSubnetName}'
+output MazSubnetId string = '${mrzVnet.id}/subnets/${mazSubnetName}'
+output InfSubnetId string = '${mrzVnet.id}/subnets/${infSubnetName}'
+output SecSubnetId string = '${mrzVnet.id}/subnets/${secSubnetName}'
+output LogSubnetId string = '${mrzVnet.id}/subnets/${logSubnetName}'
 output MgmtSubnetId string = '${mrzVnet.id}/subnets/${mgmtSubnetName}'

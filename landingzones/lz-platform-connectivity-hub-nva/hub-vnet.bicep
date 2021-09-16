@@ -10,94 +10,127 @@
 // Hub Virtual Network
 
 // VNET
+@description('Virtual Network Name.')
 param vnetName string
-param vnetAddressPrefixRFC1918 string         
+
+@description('Virtual Network Address Space (RFC 1918).')
+param vnetAddressPrefixRFC1918 string
+
+@description('Virtual Network Address Space (RFC 6598).')
 param vnetAddressPrefixCGNAT string
-param vnetAddressPrefixBastion string   
+
+@description('Virtual Network Address Space for Azure Bastion (RFC 1918).')
+param vnetAddressPrefixBastion string
 
 // External Facing (Internet/Ground)
-param publicSubnetName string 
-param publicSubnetAddressPrefix string       
+@description('External Facing (Internet/Ground) Subnet Name.')
+param publicSubnetName string
+
+@description('External Facing (Internet/Ground) Subnet Address Prefix.')
+param publicSubnetAddressPrefix string
 
 // External Access Network
-param eanSubnetName string    
-param eanSubnetAddressPrefix string          
+@description('Enternal Access Network Subnet Name.')
+param eanSubnetName string
+
+@description('Enternal Access Network Subnet Address Prefix.')
+param eanSubnetAddressPrefix string
 
 // Management Restricted Zone (connect Mgmt VNET)
-param mrzIntSubnetName string  
-param mrzIntSubnetAddressPrefix string       
+@description('Management Restricted Zone Subnet Name.')
+param mrzIntSubnetName string
+
+@description('Management Restricted Zone Subnet Address Prefix.')
+param mrzIntSubnetAddressPrefix string
 
 // Internal Facing Prod  (Connect PROD VNET)
-param prodIntSubnetName string  
-param prodIntSubnetAddressPrefix string       
+@description('Internal Facing Production Traffic Subnet Name.')
+param prodIntSubnetName string
+
+@description('Internal Facing Production Traffic Subnet Address Prefix.')
+param prodIntSubnetAddressPrefix string
 
 // Internal Facing Dev (Connect Dev VNET)
-param devIntSubnetName string  
-param devIntSubnetAddressPrefix string       
+@description('Internal Facing Non-Production Traffic Subnet Name.')
+param devIntSubnetName string
+
+@description('Internal Facing Non-Production Traffic Subnet Address Prefix.')
+param devIntSubnetAddressPrefix string
 
 // High Availability (FW<=>FW heartbeat)
-param haSubnetName string      
-param haSubnetAddressPrefix string           
+@description('High Availability (Firewall to Firewall heartbeat) Subnet Name.')
+param haSubnetName string
+
+@description('High Availability (Firewall to Firewall heartbeat) Subnet Address Prefix.')
+param haSubnetAddressPrefix string
 
 // Public Access Zone (i.e. Application Gateways)
-param pazSubnetName string     
-param pazSubnetAddressPrefix string  
+@description('Public Access Zone (i.e. Application Gateway) Subnet Name.')
+param pazSubnetName string
+
+@description('Public Access Zone (i.e. Application Gateway) Subnet Address Prefix.')
+param pazSubnetAddressPrefix string
+
+@description('Public Access Zone (i.e. Application Gateway) User Defined Route Resource Id.')
 param pazUdrId string
 
 // Gateway Subnet
-param hubSubnetGatewaySubnetPrefix string
+@description('Gateway Subnet Address Prefix.')
+param hubSubnetGatewaySubnetAddressPrefix string
 
 // Azure Bastion
-param bastionSubnetAddressPrefix string      
+@description('Azure Bastion Subnet Address Prefix.')
+param bastionSubnetAddressPrefix string
 
 // DDOS
+@description('DDOS Standard Plan Resource Id - optional (blank value = DDOS Standard Plan will not be linked to virtual network).')
 param ddosStandardPlanId string
 
 module nsgpublic '../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'deploy-nsg-${publicSubnetName}'
-  params:{
+  params: {
     name: '${publicSubnetName}Nsg'
   }
 }
 module nsgean '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${eanSubnetName}'
-  params:{
+  params: {
     name: '${eanSubnetName}Nsg'
   }
 }
 module nsgprd '../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'deploy-nsg-${prodIntSubnetName}'
-  params:{
+  params: {
     name: '${prodIntSubnetName}Nsg'
   }
 }
 module nsgdev '../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'deploy-nsg-${devIntSubnetName}'
-  params:{
+  params: {
     name: '${devIntSubnetName}Nsg'
   }
 }
 module nsgha '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${haSubnetName}'
-  params:{
+  params: {
     name: '${haSubnetName}Nsg'
   }
 }
 module nsgmrz '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${mrzIntSubnetName}'
-  params:{
+  params: {
     name: '${mrzIntSubnetName}Nsg'
   }
 }
 module nsgpaz '../../azresources/network/nsg/nsg-appgwv2.bicep' = {
   name: 'deploy-nsg-${pazSubnetName}'
-  params:{
+  params: {
     name: '${pazSubnetName}Nsg'
   }
 }
 module nsgbastion '../../azresources/network/nsg/nsg-bastion.bicep' = {
   name: 'deploy-nsg-AzureBastionNsg'
-  params:{
+  params: {
     name: 'AzureBastionNsg'
   }
 }
@@ -187,29 +220,29 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
       {
         name: 'AzureBastionSubnet'
         properties: {
-         addressPrefix: bastionSubnetAddressPrefix
-         networkSecurityGroup: {
-          id: nsgbastion.outputs.nsgId
+          addressPrefix: bastionSubnetAddressPrefix
+          networkSecurityGroup: {
+            id: nsgbastion.outputs.nsgId
           }
         }
       }
       {
         name: 'GatewaySubnet'
         properties: {
-          addressPrefix: hubSubnetGatewaySubnetPrefix
+          addressPrefix: hubSubnetGatewaySubnetAddressPrefix
         }
       }
     ]
   }
 }
 
-output hubVnetId  string = hubVnet.id
+output hubVnetId string = hubVnet.id
 output PublicSubnetId string = '${hubVnet.id}/subnets/${publicSubnetName}'
-output EANSubnetId    string = '${hubVnet.id}/subnets/${eanSubnetName}'
+output EANSubnetId string = '${hubVnet.id}/subnets/${eanSubnetName}'
 output PrdIntSubnetId string = '${hubVnet.id}/subnets/${prodIntSubnetName}'
 output DevIntSubnetId string = '${hubVnet.id}/subnets/${devIntSubnetName}'
 output MrzIntSubnetId string = '${hubVnet.id}/subnets/${mrzIntSubnetName}'
-output HASubnetId     string = '${hubVnet.id}/subnets/${haSubnetName}'
-output PAZSubnetId    string = '${hubVnet.id}/subnets/${pazSubnetName}'
+output HASubnetId string = '${hubVnet.id}/subnets/${haSubnetName}'
+output PAZSubnetId string = '${hubVnet.id}/subnets/${pazSubnetName}'
 output GatewaySubnetId string = '${hubVnet.id}/subnets/GatewaySubnet'
 output AzureBastionSubnetId string = '${hubVnet.id}/subnets/AzureBastionSubnet'

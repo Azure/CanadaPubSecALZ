@@ -122,7 +122,7 @@ param hubRFC1918IPRange string
 @description('Virtual Network address space for RFC 6598 (CG NAT).')
 param hubCGNATIPRange string
 
-// parameters for Budget
+// Budget
 @description('Boolean flag to determine whether to create subscription budget.  Default: true')
 param createBudget bool = true
 
@@ -146,7 +146,7 @@ param budgetStartDate string = utcNow('yyyy-MM-01')
 ])
 param budgetTimeGrain string = 'Monthly'
 
-// parameters for Tags
+// Tags
 @description('Subscription scoped tag - ISSO')
 param tagISSO string
 

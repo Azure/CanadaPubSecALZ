@@ -7,33 +7,58 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Internal Load Balancer Name.')
 param name string 
 
 // vnet
+@description('Backend Virtaul Network Resource Id.')
 param backendVnetId string
 
 // backend pool
+@description('Boolean flag to determine whether to create an empty backend pool.')
 param configureEmptyBackendPool bool
 
 // external
+@description('External Facing - Frontend Subnet Resource Id.')
 param frontendSubnetIdExt string
+
+@description('External Facing - Frontend IP.')
 param frontendIPExt string
+
+@description('External Facing - Backend IP #1.')
 param backendIP1Ext string
+
+@description('External Facing - Backend IP #2.')
 param backendIP2Ext string
 
-// management
-param frontendSubnetIdMrz string
-param frontendIPMrz string
-param backendIP1Mrz string
-param backendIP2Mrz string
-
 // internal
+@description('Internal Facing - Frontend Subnet Resource Id.')
 param frontendSubnetIdInt string
+
+@description('Internal Facing - Frontend IP.')
 param frontendIPInt string
+
+@description('Internal Facing - Backend IP #1.')
 param backendIP1Int string
+
+@description('Internal Facing - Backend IP #2.')
 param backendIP2Int string
 
+// management
+@description('Management - Frontend Subnet Resource Id.')
+param frontendSubnetIdMrz string
+
+@description('Management - Frontend IP.')
+param frontendIPMrz string
+
+@description('Management - Backend IP #1.')
+param backendIP1Mrz string
+
+@description('Management - Backend IP #2.')
+param backendIP2Mrz string
+
 // probe
+@description('Load Balancer Probe Tcp Port.')
 param lbProbeTcpPort int 
 
 resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
@@ -186,8 +211,7 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
   }
 }
 
-
-//define the BackendAddressPool
+// BackendAddressPool
 resource ILBBackendExt 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
   name: '${ILB.name}/${name}-Backend-ext'
   properties: {
@@ -266,5 +290,5 @@ resource ILBBackendInt 'Microsoft.Network/loadBalancers/backendAddressPools@2020
   }
 }
 
-
+// Outputs
 output lbId string = ILB.id

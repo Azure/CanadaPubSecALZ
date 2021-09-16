@@ -7,23 +7,83 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+/*
+
+Hub Networking with Fortigate Virtual Network Appliance archetype infrastructure to support Hub & Spoke network topology.  This archetype will provide:
+
+* Azure Automation Account
+* Azure Virtual Network (Hub)
+* Azure Virtual Network (Management Restricted Zone) - used for management resources such as IaaS based Logging, Patch Management, etc.
+* Two pairs of pay-as-you-go Fortigate Firewalls (one pair for development workload and another for production workload) - customer must configure the fortigate firewalls.
+* Enables DDOS Standard (optional)
+* Enables Azure Private DNS Zones (optional)
+* Role-based access control for Owner, Contributor & Reader
+* Integration with Azure Cost Management for Subscription-scoped budget
+* Integration with Azure Security Center
+
+*/
+
 targetScope = 'subscription'
 
-// parameters for Tags
+// Groups
+@description('An array of Security Group object ids that should be granted Owner built-in role.  Default: []')
+param subscriptionOwnerGroupObjectIds array = []
+
+@description('An array of Security Group object ids that should be granted Contributor built-in role.  Default: []')
+param subscriptionContributorGroupObjectIds array = []
+
+@description('An array of Security Group object ids that should be granted Reader built-in role.  Default: []')
+param subscriptionReaderGroupObjectIds array = []
+
+// Azure Security Center
+@description('Log Analytics Resource Id to integrate Azure Security Center.')
+param logAnalyticsWorkspaceResourceId string
+
+@description('Contact email address for Azure Security Center alerts.')
+param securityContactEmail string
+
+@description('Contact phone number for Azure Security Center alerts.')
+param securityContactPhone string
+
+// Tags
+@description('Subscription scoped tag - ISSO')
 param tagISSO string
+
+@description('Resource Group scoped tag - Client Organization')
 param tagClientOrganization string
+
+@description('Resource Group scoped tag - Cost Center')
 param tagCostCenter string
+
+@description('Resource Group scoped tag - Data Sensitivity')
 param tagDataSensitivity string
+
+@description('Resource Group scoped tag - Project Contact')
 param tagProjectContact string
+
+@description('Resource Group scoped tag - Project Name')
 param tagProjectName string
+
+@description('Resource Group scoped tag - Technical Contact')
 param tagTechnicalContact string
 
-// parameters for Budget
+// Budget
+@description('Boolean flag to determine whether to create subscription budget.  Default: true')
 param createBudget bool
+
+@description('Subscription budget name.')
 param budgetName string
+
+@description('Subscription budget amount.')
 param budgetAmount int
+
+@description('Subscription budget email notification address.')
 param budgetNotificationEmailAddress string
+
+@description('Subscription budget start date.  New budget can not be created with the same name and different start date.  You must delete the old budget before recreating or disable budget creation through createBudget flag.  Default:  1st day of current month')
 param budgetStartDate string = utcNow('yyyy-MM-01')
+
+@description('Budget Time Window.  Options are Monthly, Quarterly or Annually.  Default: Monthly')
 @allowed([
   'Monthly'
   'Quarterly'
@@ -31,129 +91,255 @@ param budgetStartDate string = utcNow('yyyy-MM-01')
 ])
 param budgetTimeGrain string = 'Monthly'
 
-// Groups
-param subscriptionOwnerGroupObjectIds array = []
-param subscriptionContributorGroupObjectIds array = []
-param subscriptionReaderGroupObjectIds array = []
-
-// parameters for Azure Security Center
-param logAnalyticsWorkspaceResourceId string
-param securityContactEmail string
-param securityContactPhone string
-
 // Network Watcher
+@description('Azure Network Watcher Resoruce Group Name.  Default: NetworkWatcherRG')
 param rgNetworkWatcherName string = 'NetworkWatcherRG'
 
 // Private Dns Zones
+@description('Boolean flag to determine whether Private DNS Zones will be centrally managed in the Hub.')
 param deployPrivateDnsZones bool
+
+@description('Private DNS Zone Resource Group Name.')
 param rgPrivateDnsZonesName string
 
 // DDOS Standard
+@description('Boolean flag to determine whether to deploy Azure DDOS Standard.')
 param deployDdosStandard bool
+
+@description('Azure DDOS Standard Resource Group.')
 param rgDdosName string
+
+@description('Azure DDOS Standard Plan Name.')
 param ddosPlanName string
 
 // Hub Virtual Network
-param rgHubName string                          //= 'pubsecPrdHubPbRsg'
-param hubVnetName string                        //= 'pubsecHubVnet'
-param hubVnetAddressPrefixRFC1918 string        //= '10.18.0.0/22'
-param hubVnetAddressPrefixCGNAT string          //= '100.60.0.0/16'
-param hubVnetAddressPrefixBastion string        //= '192.168.0.0/16'
+@description('Hub Virtual Network Resource Group Name.')
+param rgHubName string //= 'pubsecPrdHubPbRsg'
 
-param hubEanSubnetName string                   //= 'EanSubnet'
-param hubEanSubnetAddressPrefix string          //= '10.18.0.0/27'
+@description('Hub Virtual Network Name.')
+param hubVnetName string //= 'pubsecHubVnet'
 
-param hubPublicSubnetName string                //= 'PublicSubnet'
-param hubPublicSubnetAddressPrefix string       //= '100.60.0.0/24'
+@description('Hub Virtual Network address space for RFC 1918.')
+param hubVnetAddressPrefixRFC1918 string //= '10.18.0.0/22'
 
-param hubPazSubnetName string                   //= 'PAZSubnet'
-param hubPazSubnetAddressPrefix string          //= '100.60.1.0/24'
+@description('Hub Virtual Network address space for RFC 6598 (CG NAT).')
+param hubVnetAddressPrefixCGNAT string //= '100.60.0.0/16'
 
-param hubDevIntSubnetName string                //= 'DevIntSubnet'
-param hubDevIntSubnetAddressPrefix string       //= '10.18.0.64/27'
+@description('Hub Virtual Network address space for Azure Bastion (must be RFC 1918).')
+param hubVnetAddressPrefixBastion string //= '192.168.0.0/16'
 
-param hubSubnetProdIntName string               //= 'PrdIntSubnet'
-param hubSubnetProdIntAddressPrefix string      //= '10.18.0.32/27'
+@description('Hub - Enternal Access Network Subnet Name.')
+param hubEanSubnetName string //= 'EanSubnet'
 
-param hubSubnetMrzIntName string                //= 'MrzSubnet'
-param hubSubnetMrzIntAddressPrefix string       //= '10.18.0.96/27'
+@description('Hub - Enternal Access Network Subnet Address Prefix (based on RFC 1918).')
+param hubEanSubnetAddressPrefix string //= '10.18.0.0/27'
 
-param hubSubnetHAName string                    //= 'HASubnet'
-param hubSubnetHAAddressPrefix string           //= '10.18.0.128/28'
+@description('Hub - Public Subnet Name.')
+param hubPublicSubnetName string //= 'PublicSubnet
 
-param hubSubnetGatewaySubnetPrefix string       //= '10.18.1.0/27'
+@description('Hub - Public Subnet Address Prefix (based on RFC 6598).')
+param hubPublicSubnetAddressPrefix string //= '100.60.0.0/24'
 
-param bastionName string                        //= 'pubsecHubBastion'
-param hubSubnetBastionAddressPrefix string      //= '192.168.0.0/24'
+@description('Hub - Public Access Zone Subnet Name.')
+param hubPazSubnetName string //= 'PAZSubnet'
+
+@description('Hub - Public Access Zone Subnet Name (based on RFC 6598).')
+param hubPazSubnetAddressPrefix string //= '100.60.1.0/24'
+
+@description('Hub - Non-Production Internal Subnet Name.')
+param hubDevIntSubnetName string //= 'DevIntSubnet'
+
+@description('Hub - Non-Production Internal Subnet Address Prefix (based on RFC 1918).')
+param hubDevIntSubnetAddressPrefix string //= '10.18.0.64/27'
+
+@description('Hub - Production Internal Subnet Name.')
+param hubSubnetProdIntName string //= 'PrdIntSubnet'
+
+@description('Hub - Production Internal Subnet Address Prefix (based on RFC 1918).')
+param hubSubnetProdIntAddressPrefix string //= '10.18.0.32/27'
+
+@description('Hub - Management Resctricted Zone Subnet Name.')
+param hubSubnetMrzIntName string //= 'MrzSubnet'
+
+@description('Hub - Management Resctricted Zone Subnet Address Prefix (based on RFC 1918).')
+param hubSubnetMrzIntAddressPrefix string //= '10.18.0.96/27'
+
+@description('Hub - Firewall High Availability Subnet Name.')
+param hubSubnetHAName string //= 'HASubnet'
+
+@description('Hub - Firewall High Availability Subnet Address Prefix (based on RFC 1918).')
+param hubSubnetHAAddressPrefix string //= '10.18.0.128/28'
+
+@description('Hub - Virtual Network Gateway Subnet Address Prefix (based on RFC 1918).')
+param hubSubnetGatewaySubnetPrefix string //= '10.18.1.0/27'
+
+@description('Hub - Azure Bastion Name.')
+param bastionName string //= 'pubsecHubBastion'
+
+@description('Hub - Azure Bastion Address Prefix (based on RFC 1918 and must be placed in the Azure Bastion Address Space).')
+param hubSubnetBastionAddressPrefix string //= '192.168.0.0/24'
 
 // Firewall Virtual Appliances
+@description('Boolean flag to determine whether virtual machines will be deployed, either Ubuntu (for internal testing) or Fortinet (for workloads).  Default: true')
 param deployFirewallVMs bool = true
-param useFortigateFW bool   = true
+
+@description('Boolean flag to dtermine whether Fortinet firewalls will eb deployed.  Default: true')
+param useFortigateFW bool = true
 
 // Firewall Virtual Appliances - For Non-production Traffic
-param fwDevILBName string                       //= 'pubsecDevFWs_ILB'
-param fwDevVMSku string                         //= 'Standard_D8s_v4' //ensure it can have 4 nics
-param fwDevVM1Name string                       //= 'pubsecDevFW1'
-param fwDevVM2Name string                       //= 'pubsecDevFW2'
-param fwDevILBExternalFacingIP string           //= '100.60.0.7'
-param fwDevVM1ExternalFacingIP string           //= '100.60.0.8'
-param fwDevVM2ExternalFacingIP string           //= '100.60.0.9'
-param fwDevILBMrzIntIP string                   //= '10.18.0.103'
-param fwDevVM1MrzIntIP string                   //= '10.18.0.104'
-param fwDevVM2MrzIntIP string                   //= '10.18.0.105'
-param fwDevILBDevIntIP string                   //= '10.18.0.68'
-param fwDevVM1DevIntIP string                   //= '10.18.0.69'
-param fwDevVM2DevIntIP string                   //= '10.18.0.70'
-param fwDevVM1HAIP string                       //= '10.18.0.134'
-param fwDevVM2HAIP string                       //= '10.18.0.135'
+@description('Non-production NVA - Internal Load Balancer Name.')
+param fwDevILBName string //= 'pubsecDevFWs_ILB'
+
+@description('Non-production NVA - VM SKU.')
+param fwDevVMSku string //= 'Standard_D8s_v4' //ensure it can have 4 nics
+
+@description('Non-production NVA - VM #1 Name.')
+param fwDevVM1Name string //= 'pubsecDevFW1'
+
+@description('Non-production NVA - VM #2 Name.')
+param fwDevVM2Name string //= 'pubsecDevFW2'
+
+@description('Non-production NVA - Internal Load Balancer External Facing IP (based on RFC 6598).')
+param fwDevILBExternalFacingIP string //= '100.60.0.7'
+
+@description('Non-production NVA - VM #1 External Facing IP (based on RFC 6598).')
+param fwDevVM1ExternalFacingIP string //= '100.60.0.8'
+
+@description('Non-production NVA - VM #2 External Facing IP (based on RFC 6598).')
+param fwDevVM2ExternalFacingIP string //= '100.60.0.9'
+
+@description('Non-production NVA - Internal Load Balancer Management Restricted Zone IP (based on RFC 1918).')
+param fwDevILBMrzIntIP string //= '10.18.0.103'
+
+@description('Non-production NVA - VM #1 Management Restricted Zone IP (based on RFC 1918).')
+param fwDevVM1MrzIntIP string //= '10.18.0.104'
+
+@description('Non-production NVA - VM #2 Management Restricted Zone IP (based on RFC 1918).')
+param fwDevVM2MrzIntIP string //= '10.18.0.105'
+
+@description('Non-production NVA - Internal Load Balancer IP (based on RFC 1918).')
+param fwDevILBDevIntIP string //= '10.18.0.68'
+
+@description('Non-production NVA - VM #1 IP (based on RFC 1918).')
+param fwDevVM1DevIntIP string //= '10.18.0.69'
+
+@description('Non-production NVA - VM #2 IP (based on RFC 1918).')
+param fwDevVM2DevIntIP string //= '10.18.0.70'
+
+@description('Non-production NVA - VM #1 High Availability IP (based on RFC 1918).')
+param fwDevVM1HAIP string //= '10.18.0.134'
+
+@description('Non-production NVA - VM #2 High Availability IP (based on RFC 1918).')
+param fwDevVM2HAIP string //= '10.18.0.135'
+
+@description('Non-production NVA - VM #1 Availability Zone. Default: 2')
 param fwDevVM1AvailabilityZone string = '2'
+
+@description('Non-production NVA - VM #2 Availability Zone. Default: 3')
 param fwDevVM2AvailabilityZone string = '3'
 
 // Firewall Virtual Appliances - For Production Traffic
-param fwProdILBName string                      //= 'pubsecProdFWs_ILB'
-param fwProdVMSku string                        //= 'Standard_F8s_v2' //ensure it can have 4 nics
-param fwProdVM1Name string                      //= 'pubsecProdFW1'
-param fwProdVM2Name string                      //= 'pubsecProdFW2'
-param fwProdILBExternalFacingIP string          //= '100.60.0.4'
-param fwProdVM1ExternalFacingIP string          //= '100.60.0.5'
-param fwProdVM2ExternalFacingIP string          //= '100.60.0.6'
-param fwProdILBMrzIntIP string                  //= '10.18.0.100'
-param fwProdVM1MrzIntIP string                  //= '10.18.0.101'
-param fwProdVM2MrzIntIP string                  //= '10.18.0.102'
-param fwProdILBPrdIntIP string                  //= '10.18.0.36'
-param fwProdVM1PrdIntIP string                  //= '10.18.0.37'
-param fwProdVM2PrdIntIP string                  //= '10.18.0.38'
-param fwProdVM1HAIP string                      //= '10.18.0.132'
-param fwProdVM2HAIP string                      //= '10.18.0.133'
+@description('Production NVA - Internal Load Balancer Name.')
+param fwProdILBName string //= 'pubsecProdFWs_ILB'
+
+@description('Production NVA - VM SKU.')
+param fwProdVMSku string //= 'Standard_F8s_v2' //ensure it can have 4 nics
+
+@description('Production NVA - VM #1 Name.')
+param fwProdVM1Name string //= 'pubsecProdFW1'
+
+@description('Production NVA - VM #2 Name.')
+param fwProdVM2Name string //= 'pubsecProdFW2'
+
+@description('Production NVA - Internal Load Balancer External Facing IP (based on RFC 6598).')
+param fwProdILBExternalFacingIP string //= '100.60.0.4'
+
+@description('Production NVA - VM #1 External Facing IP (based on RFC 6598).')
+param fwProdVM1ExternalFacingIP string //= '100.60.0.5'
+
+@description('Production NVA - VM #2 External Facing IP (based on RFC 6598).')
+param fwProdVM2ExternalFacingIP string //= '100.60.0.6'
+
+@description('Production NVA - Internal Load Balancer Management Restricted Zone IP (based on RFC 1918).')
+param fwProdILBMrzIntIP string //= '10.18.0.100'
+
+@description('Production NVA - VM #1 Management Restricted Zone IP (based on RFC 1918).')
+param fwProdVM1MrzIntIP string //= '10.18.0.101'
+
+@description('Production NVA - VM #2 Management Restricted Zone IP (based on RFC 1918).')
+param fwProdVM2MrzIntIP string //= '10.18.0.102'
+
+@description('Production NVA - Internal Load Balancer IP (based on RFC 1918).')
+param fwProdILBPrdIntIP string //= '10.18.0.36'
+
+@description('Production NVA - VM #1 IP (based on RFC 1918).')
+param fwProdVM1PrdIntIP string //= '10.18.0.37'
+
+@description('Production NVA - VM #2 IP (based on RFC 1918).')
+param fwProdVM2PrdIntIP string //= '10.18.0.38'
+
+@description('Production NVA - VM #1 High Availability IP (based on RFC 1918).')
+param fwProdVM1HAIP string //= '10.18.0.132'
+
+@description('Production NVA - VM #2 High Availability IP (based on RFC 1918).')
+param fwProdVM2HAIP string //= '10.18.0.133'
+
+@description('Production NVA - VM #1 Availability Zone.  Default: 1')
 param fwProdVM1AvailabilityZone string = '1'
+
+@description('Production NVA - VM #2 Availability Zone.  Default: 2')
 param fwProdVM2AvailabilityZone string = '2'
 
 // Management Restricted Zone Virtual Network
-param rgMrzName string                          //= 'pubsecPrdMrzPbRsg'
-param mrzVnetName string                        //= 'pubsecMrzVnet'
-param mrzVnetAddressPrefixRFC1918 string        //= '10.18.4.0/22'
+@description('Management Restricted Zone - Resource Group Name.')
+param rgMrzName string //= 'pubsecPrdMrzPbRsg'
 
-param mrzMazSubnetName string                   //= 'MazSubnet'
-param mrzMazSubnetAddressPrefix string          //= '10.18.4.0/25'
+@description('Management Restricted Zone - Virtual Network Name.')
+param mrzVnetName string //= 'pubsecMrzVnet'
 
-param mrzInfSubnetName string                   //= 'InfSubnet'
-param mrzInfSubnetAddressPrefix string          //= '10.18.4.128/25'
+@description('Management Restricted Zone - Virtual Network Address Space.')
+param mrzVnetAddressPrefixRFC1918 string //= '10.18.4.0/22'
 
-param mrzSecSubnetName string                   //= 'SecSubnet'
-param mrzSecSubnetAddressPrefix string          //= '10.18.5.0/26'
+@description('Management Restricted Zone - Management (Access Zone) Subnet Name.')
+param mrzMazSubnetName string //= 'MazSubnet'
 
-param mrzLogSubnetName string                   //= 'LogSubnet'
-param mrzLogSubnetAddressPrefix string          //= '10.18.5.64/26'
+@description('Management Restricted Zone - Management (Access Zone) Subnet Address Prefix.')
+param mrzMazSubnetAddressPrefix string //= '10.18.4.0/25'
 
-param mrzMgmtSubnetName string                  //= 'MgmtSubnet'
-param mrzMgmtSubnetAddressPrefix string         //= '10.18.5.128/26'
+@description('Management Restricted Zone - Infrastructure Services (Restricted Zone) Subnet Name.')
+param mrzInfSubnetName string //= 'InfSubnet'
+
+@description('Management Restricted Zone - Infrastructure Services (Restricted Zone) Subnet Address Prefix.')
+param mrzInfSubnetAddressPrefix string //= '10.18.4.128/25'
+
+@description('Management Restricted Zone - Security Services (Restricted Zone) Subnet Name.')
+param mrzSecSubnetName string //= 'SecSubnet'
+
+@description('Management Restricted Zone - Security Services (Restricted Zone) Subnet Address Prefix.')
+param mrzSecSubnetAddressPrefix string //= '10.18.5.0/26'
+
+@description('Management Restricted Zone - Logging Services (Restricted Zone) Subnet Name.')
+param mrzLogSubnetName string //= 'LogSubnet'
+
+@description('Management Restricted Zone - Loggin Services (Restricted Zone) Subnet Address Prefix.')
+param mrzLogSubnetAddressPrefix string //= '10.18.5.64/26'
+
+@description('Management Restricted Zone - Core Management Interfaces (Restricted Zone) Subnet Name.')
+param mrzMgmtSubnetName string //= 'MgmtSubnet'
+
+@description('Management Restricted Zone - Core Management Interfaces (Restricted Zone) Subnet Address Prefix.')
+param mrzMgmtSubnetAddressPrefix string //= '10.18.5.128/26'
 
 // Public Zone
-param rgPazName string                          //= 'pubsecPazPbRsg'
+@description('Public Access Zone Resource Group Name.')
+param rgPazName string //= 'pubsecPazPbRsg'
 
 // Temporary VM Credentials
+@description('Temporary username for firewall virtual machines.')
+@secure()
 param fwUsername string
 
+@description('Temporary password for firewall virtual machines.')
 @secure()
 param fwPassword string
 
@@ -166,6 +352,15 @@ var tags = {
   TechnicalContact: tagTechnicalContact
 }
 
+/*
+  Scaffold the subscription which includes:
+    * Azure Security Center - Enable Azure Defender (all available options)
+    * Azure Security Center - Configure Log Analytics Workspace
+    * Azure Security Center - Configure Security Alert Contact
+    * Role Assignments to Security Groups
+    * Subscription Budget
+    * Subscription Tag:  ISSO
+*/
 module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
   scope: subscription()
@@ -186,42 +381,49 @@ module subScaffold '../scaffold-subscription.bicep' = {
   }
 }
 
+// Create Network Watcher Resource Group
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgNetworkWatcherName
   location: deployment().location
   tags: tags
 }
 
+// Create Private DNS Zone Resource Group - optional
 resource rgPrivateDnsZones 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployPrivateDnsZones) {
   name: rgPrivateDnsZonesName
   location: deployment().location
   tags: tags
 }
 
+// Create Azure DDOS Standard Resource Group - optional
 resource rgDdos 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployDdosStandard) {
   name: rgDdosName
   location: deployment().location
   tags: tags
 }
 
+// Create Hub Virtual Network Resource Group
 resource rgHubVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgHubName
   location: deployment().location
   tags: tags
 }
 
+// Create Managemend Restricted Virtual Network Resource Group
 resource rgMrzVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgMrzName
   location: deployment().location
   tags: tags
 }
 
+// Create Public Access Zone Resource Group
 resource rgPaz 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgPazName
   location: deployment().location
   tags: tags
 }
 
+// Enable delete locks
 module rgDdosDeleteLock '../../azresources/util/delete-lock.bicep' = if (deployDdosStandard) {
   name: 'deploy-delete-lock-${rgDdosName}'
   scope: rgDdos
@@ -242,6 +444,8 @@ module rgPazDeleteLock '../../azresources/util/delete-lock.bicep' = {
   scope: rgPaz
 }
 
+
+// DDOS Standard - optional
 module ddosPlan '../../azresources/network/ddos-standard.bicep' = if (deployDdosStandard) {
   name: 'deploy-ddos-standard-plan'
   scope: rgDdos
@@ -250,10 +454,11 @@ module ddosPlan '../../azresources/network/ddos-standard.bicep' = if (deployDdos
   }
 }
 
+// Route Tables
 module udrPrdSpokes '../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-PrdSpokesUdr'
   scope: rgHubVnet
-  params:{
+  params: {
     name: 'PrdSpokesUdr'
     routes: [
       {
@@ -282,17 +487,6 @@ module udrPrdSpokes '../../azresources/network/udr/udr-custom.bicep' = {
           nextHopIpAddress: fwProdILBPrdIntIP
         }
       }
-      //no need to force MRZ routes, they are unknown to Spokes
-
-      // if Bastion has an IP outside of the CIDR blocks Hub_IPRante and Hb_CGNATrange, no need to Override Bastion Routes via VirtualNetwork regular routes
-      // even though this override below didn't work
-      // {
-      //   name: 'PrdSpokeUdrBastionVnetLocalRoute'
-      //   properties: {
-      //     addressPrefix: hubSubnetBastionAddressPrefix //shorter IP range, destination VnetLocal (avoid FW)    
-      //     nextHopType:  'VnetLocal'
-      //   }
-      // }
     ]
   }
 }
@@ -300,7 +494,7 @@ module udrPrdSpokes '../../azresources/network/udr/udr-custom.bicep' = {
 module udrMrzSpoke '../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-MrzSpokeUdr'
   scope: rgHubVnet
-  params:{
+  params: {
     name: 'MrzSpokeUdr'
     routes: [
       {
@@ -311,12 +505,11 @@ module udrMrzSpoke '../../azresources/network/udr/udr-custom.bicep' = {
           nextHopIpAddress: fwProdILBMrzIntIP
         }
       }
-      //warning, setting hubVnetAddressPrefixRFC1918 breaks AzureBastion, see MrzSpokeUdrBastionFWRoute
       // Force Routes to Hub IPs (RFC1918 range) via FW despite knowing that route via peering
       {
         name: 'MrzSpokeUdrHubRFC1918FWRoute'
         properties: {
-          addressPrefix: hubVnetAddressPrefixRFC1918       
+          addressPrefix: hubVnetAddressPrefixRFC1918
           nextHopType: 'VirtualAppliance'
           nextHopIpAddress: fwProdILBMrzIntIP
         }
@@ -334,10 +527,10 @@ module udrMrzSpoke '../../azresources/network/udr/udr-custom.bicep' = {
   }
 }
 
-module udrpaz '../../azresources/network/udr/udr-custom.bicep' = {
+module udrPaz '../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-PazSubnetUdr'
   scope: rgHubVnet
-  params:{
+  params: {
     name: 'PazSubnetUdr'
     routes: [
       {
@@ -352,7 +545,9 @@ module udrpaz '../../azresources/network/udr/udr-custom.bicep' = {
   }
 }
 
-module hubVnet './hub-vnet.bicep' = { 
+
+// Hub Virtual Network
+module hubVnet './hub-vnet.bicep' = {
   name: 'deploy-hub-vnet-${hubVnetName}'
   scope: rgHubVnet
   params: {
@@ -378,12 +573,12 @@ module hubVnet './hub-vnet.bicep' = {
 
     pazSubnetName: hubPazSubnetName
     pazSubnetAddressPrefix: hubPazSubnetAddressPrefix
-    pazUdrId: udrpaz.outputs.udrId 
+    pazUdrId: udrPaz.outputs.udrId
 
     eanSubnetName: hubEanSubnetName
     eanSubnetAddressPrefix: hubEanSubnetAddressPrefix
 
-    hubSubnetGatewaySubnetPrefix: hubSubnetGatewaySubnetPrefix
+    hubSubnetGatewaySubnetAddressPrefix: hubSubnetGatewaySubnetPrefix
 
     bastionSubnetAddressPrefix: hubSubnetBastionAddressPrefix
 
@@ -391,6 +586,7 @@ module hubVnet './hub-vnet.bicep' = {
   }
 }
 
+// Management Restricted Virtual Network
 module mrzVnet './mrz-vnet.bicep' = {
   name: 'deploy-management-vnet-${mrzVnetName}'
   scope: rgMrzVnet
@@ -400,21 +596,21 @@ module mrzVnet './mrz-vnet.bicep' = {
 
     mazSubnetName: mrzMazSubnetName
     mazSubnetAddressPrefix: mrzMazSubnetAddressPrefix
-    mazSubnetUdrId: udrMrzSpoke.outputs.udrId 
+    mazSubnetUdrId: udrMrzSpoke.outputs.udrId
 
     infSubnetName: mrzInfSubnetName
     infSubnetAddressPrefix: mrzInfSubnetAddressPrefix
-    infSubnetUdrId: udrMrzSpoke.outputs.udrId 
+    infSubnetUdrId: udrMrzSpoke.outputs.udrId
 
     secSubnetName: mrzSecSubnetName
     secSubnetAddressPrefix: mrzSecSubnetAddressPrefix
-    secSubnetUdrId: udrMrzSpoke.outputs.udrId 
+    secSubnetUdrId: udrMrzSpoke.outputs.udrId
 
     logSubnetName: mrzLogSubnetName
     logSubnetAddressPrefix: mrzLogSubnetAddressPrefix
-    logSubnetUdrId: udrMrzSpoke.outputs.udrId 
+    logSubnetUdrId: udrMrzSpoke.outputs.udrId
 
-    mgmtSubnetName: mrzMgmtSubnetName 
+    mgmtSubnetName: mrzMgmtSubnetName
     mgmtSubnetAddressPrefix: mrzMgmtSubnetAddressPrefix
     mgmtSubnetUdrId: udrMrzSpoke.outputs.udrId
 
@@ -422,6 +618,7 @@ module mrzVnet './mrz-vnet.bicep' = {
   }
 }
 
+// Private DNS Zones - optional
 module privatelinkDnsZones '../../azresources/network/private-dns-zone-privatelinks.bicep' = if (deployPrivateDnsZones) {
   name: 'deploy-privatelink-private-dns-zones'
   scope: rgPrivateDnsZones
@@ -431,6 +628,7 @@ module privatelinkDnsZones '../../azresources/network/private-dns-zone-privateli
   }
 }
 
+// Virtual Network Peering - Management Restricted Zone to Hub
 module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = {
   dependsOn: [
     hubVnet
@@ -448,6 +646,7 @@ module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = {
   }
 }
 
+// Virtual Network Peering - Hub to Management Restricted Zone
 module vnetPeeringHubToSpoke '../../azresources/network/vnet-peering.bicep' = {
   dependsOn: [
     hubVnet
@@ -465,6 +664,7 @@ module vnetPeeringHubToSpoke '../../azresources/network/vnet-peering.bicep' = {
   }
 }
 
+// Azure Bastion
 module bastion '../../azresources/network/bastion.bicep' = {
   name: 'deploy-bastion'
   scope: rgHubVnet
@@ -474,6 +674,7 @@ module bastion '../../azresources/network/bastion.bicep' = {
   }
 }
 
+// Production traffic - Fortinet Firewall VM
 module ProdFW1_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   name: 'deploy-nva-ProdFW1_fortigate'
   scope: rgHubVnet
@@ -482,9 +683,9 @@ module ProdFW1_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFor
     vmName: fwProdVM1Name
     vmSku: fwProdVMSku
     nic1PrivateIP: fwProdVM1ExternalFacingIP
-    nic1SubnetId: hubVnet.outputs.PublicSubnetId 
-    nic2PrivateIP: fwProdVM1MrzIntIP 
-    nic2SubnetId: hubVnet.outputs.MrzIntSubnetId 
+    nic1SubnetId: hubVnet.outputs.PublicSubnetId
+    nic2PrivateIP: fwProdVM1MrzIntIP
+    nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
     nic3PrivateIP: fwProdVM1PrdIntIP
     nic3SubnetId: hubVnet.outputs.PrdIntSubnetId
     nic4PrivateIP: fwProdVM1HAIP
@@ -494,6 +695,7 @@ module ProdFW1_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFor
   }
 }
 
+// Production traffic - Ubuntu Firewall VM
 module ProdFW1_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFortigateFW) {
   name: 'deploy-nva-ProdFW1_ubuntu'
   scope: rgHubVnet
@@ -502,9 +704,9 @@ module ProdFW1_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFort
     vmName: fwProdVM1Name
     vmSku: fwProdVMSku
     nic1PrivateIP: fwProdVM1ExternalFacingIP
-    nic1SubnetId: hubVnet.outputs.PublicSubnetId 
-    nic2PrivateIP: fwProdVM1MrzIntIP 
-    nic2SubnetId: hubVnet.outputs.MrzIntSubnetId 
+    nic1SubnetId: hubVnet.outputs.PublicSubnetId
+    nic2PrivateIP: fwProdVM1MrzIntIP
+    nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
     nic3PrivateIP: fwProdVM1PrdIntIP
     nic3SubnetId: hubVnet.outputs.PrdIntSubnetId
     nic4PrivateIP: fwProdVM1HAIP
@@ -514,6 +716,7 @@ module ProdFW1_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFort
   }
 }
 
+// Production traffic - Fortinet Firewall VM
 module ProdFW2_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   name: 'deploy-nva-ProdFW2_fortigate'
   scope: rgHubVnet
@@ -530,10 +733,11 @@ module ProdFW2_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFor
     nic4PrivateIP: fwProdVM2HAIP
     nic4SubnetId: hubVnet.outputs.HASubnetId
     username: fwUsername
-    password: fwPassword 
+    password: fwPassword
   }
 }
 
+// Production traffic - Ubuntu Firewall VM
 module ProdFW2_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFortigateFW) {
   name: 'deploy-nva-ProdFW2_ubuntu'
   scope: rgHubVnet
@@ -554,6 +758,7 @@ module ProdFW2_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFort
   }
 }
 
+// Non-Production traffic - Fortinet Firewall VM
 module DevFW1 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   name: 'deploy-nva-DevFW1_fortigate'
   scope: rgHubVnet
@@ -574,6 +779,7 @@ module DevFW1 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   }
 }
 
+// Non-Production traffic - Fortinet Firewall VM
 module DevFW2 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   name: 'deploy-nva-DevFW2_fortigate'
   scope: rgHubVnet
@@ -594,46 +800,48 @@ module DevFW2 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   }
 }
 
+// Production traffic - Internal Load Balancer
 module ProdFWs_ILB './lb-firewalls-hub.bicep' = {
   name: 'deploy-internal-loadblancer-ProdFWs_ILB'
   scope: rgHubVnet
   params: {
-    name:           fwProdILBName
+    name: fwProdILBName
     backendVnetId: hubVnet.outputs.hubVnetId
-    frontendIPExt:  fwProdILBExternalFacingIP
-    backendIP1Ext:  fwProdVM1ExternalFacingIP
-    backendIP2Ext:  fwProdVM2ExternalFacingIP 
+    frontendIPExt: fwProdILBExternalFacingIP
+    backendIP1Ext: fwProdVM1ExternalFacingIP
+    backendIP2Ext: fwProdVM2ExternalFacingIP
     frontendSubnetIdExt: hubVnet.outputs.PublicSubnetId
-    frontendIPMrz:  fwProdILBMrzIntIP
-    backendIP1Mrz:  fwProdVM1MrzIntIP
-    backendIP2Mrz:  fwProdVM2MrzIntIP 
+    frontendIPMrz: fwProdILBMrzIntIP
+    backendIP1Mrz: fwProdVM1MrzIntIP
+    backendIP2Mrz: fwProdVM2MrzIntIP
     frontendSubnetIdMrz: hubVnet.outputs.MrzIntSubnetId
-    frontendIPInt:  fwProdILBPrdIntIP
-    backendIP1Int:  fwProdVM1PrdIntIP
-    backendIP2Int:  fwProdVM2PrdIntIP
+    frontendIPInt: fwProdILBPrdIntIP
+    backendIP1Int: fwProdVM1PrdIntIP
+    backendIP2Int: fwProdVM2PrdIntIP
     frontendSubnetIdInt: hubVnet.outputs.PrdIntSubnetId
     lbProbeTcpPort: useFortigateFW ? 8008 : 22
     configureEmptyBackendPool: !deployFirewallVMs
   }
 }
 
+// Non-Production traffic - Internal Load Balancer
 module DevFWs_ILB './lb-firewalls-hub.bicep' = {
   name: 'deploy-internal-loadblancer-DevFWs_ILB'
   scope: rgHubVnet
   params: {
-    name:           fwDevILBName
+    name: fwDevILBName
     backendVnetId: hubVnet.outputs.hubVnetId
-    frontendIPExt:  fwDevILBExternalFacingIP
-    backendIP1Ext:  fwDevVM1ExternalFacingIP
-    backendIP2Ext:  fwDevVM2ExternalFacingIP
+    frontendIPExt: fwDevILBExternalFacingIP
+    backendIP1Ext: fwDevVM1ExternalFacingIP
+    backendIP2Ext: fwDevVM2ExternalFacingIP
     frontendSubnetIdExt: hubVnet.outputs.PublicSubnetId
-    frontendIPMrz:  fwDevILBMrzIntIP
-    backendIP1Mrz:  fwDevVM1MrzIntIP
-    backendIP2Mrz:  fwDevVM2MrzIntIP 
+    frontendIPMrz: fwDevILBMrzIntIP
+    backendIP1Mrz: fwDevVM1MrzIntIP
+    backendIP2Mrz: fwDevVM2MrzIntIP
     frontendSubnetIdMrz: hubVnet.outputs.MrzIntSubnetId
-    frontendIPInt:  fwDevILBDevIntIP
-    backendIP1Int:  fwDevVM1DevIntIP
-    backendIP2Int:  fwDevVM2DevIntIP 
+    frontendIPInt: fwDevILBDevIntIP
+    backendIP1Int: fwDevVM1DevIntIP
+    backendIP2Int: fwDevVM2DevIntIP
     frontendSubnetIdInt: hubVnet.outputs.DevIntSubnetId
     lbProbeTcpPort: useFortigateFW ? 8008 : 22
     configureEmptyBackendPool: !deployFirewallVMs

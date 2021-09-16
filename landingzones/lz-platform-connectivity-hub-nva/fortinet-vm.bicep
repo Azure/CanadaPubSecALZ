@@ -8,21 +8,36 @@
 // ----------------------------------------------------------------------------------
 
 // VM
-param vmName string = 'FW1'
-param vmSku string = 'Standard_F8s_v2'
+@description('Virtual Machine Name.')
+param vmName string
+
+@description('Virtual Machine SKU.')
+param vmSku string
+
+@description('Virtual Machine Availability Zone')
 param availabilityZone string
 
 // Network Interfaces
+@description('NIC #1 - Private IP')
 param nic1PrivateIP string
+
+@description('NIC #1 - Subnet Resource Id')
 param nic1SubnetId string
 
+@description('NIC #2 - Private IP')
 param nic2PrivateIP string
+
+@description('NIC #2 - Subnet Resource Id')
 param nic2SubnetId string
 
+@description('NIC #3 - Private IP')
 param nic3PrivateIP string
+@description('NIC #3 - Subnet Resource Id')
 param nic3SubnetId string
 
+@description('NIC #4 - Private IP')
 param nic4PrivateIP string
+@description('NIC #4 - Subnet Resource Id')
 param nic4SubnetId string
 
 
@@ -30,13 +45,26 @@ param nic4SubnetId string
 //fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm-payg_20190624:6.4.5 //PAYG - needs credit card
 
 // VM Image
+@description('Fortigate Firewall - Publisher.  Default: fortinet')
 param vmImagePublisher string = 'fortinet'
+
+@description('Fortigate Firewall - Image Offer.  Default: fortinet_fortigate')
 param vmImageOffer string = 'fortinet_fortigate-vm_v5'
+
+@description('Fortigate Firewall - Plan.  Default: fortinet_fg-vm')
 param vmImagePlanName string = 'fortinet_fg-vm'
+
+@description('Fortigate Firewall - SKU.  Default: fortinet_fg-vm')
 param vmImageSku string = 'fortinet_fg-vm'
+
+@description('Fortigate Firewall - Image Version.  Default: 6.4.5')
 param vmImageVersion string = '6.4.5' 
 
+@description('Temporary username for firewall virtual machine.')
+@secure()
 param username string
+
+@description('Temporary password for firewall virtual machine.')
 @secure()
 param password string
 
@@ -146,7 +174,7 @@ resource nic4 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   }
 }
 
-resource VM_resource 'Microsoft.Compute/virtualMachines@2020-12-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   name: vmName
   location: resourceGroup().location
   tags: {}
@@ -237,5 +265,5 @@ resource VM_resource 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   }
 }
 
-output vmName string = VM_resource.name
-output vmId string = VM_resource.id
+output vmName string = vm.name
+output vmId string = vm.id

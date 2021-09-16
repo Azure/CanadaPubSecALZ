@@ -8,30 +8,56 @@
 // ----------------------------------------------------------------------------------
 
 // VM
-param vmName string = 'FW1'
-param vmSku string = 'Standard_F8s_v2'
+@description('Virtual Machine Name.')
+param vmName string
+
+@description('Virtual Machine SKU.')
+param vmSku string
+
+@description('Virtual Machine Availability Zone')
 param availabilityZone string
 
 // Network Interfaces
+@description('NIC #1 - Private IP')
 param nic1PrivateIP string
+
+@description('NIC #1 - Subnet Resource Id')
 param nic1SubnetId string
 
+@description('NIC #2 - Private IP')
 param nic2PrivateIP string
+
+@description('NIC #2 - Subnet Resource Id')
 param nic2SubnetId string
 
+@description('NIC #3 - Private IP')
 param nic3PrivateIP string
+@description('NIC #3 - Subnet Resource Id')
 param nic3SubnetId string
 
+@description('NIC #4 - Private IP')
 param nic4PrivateIP string
+@description('NIC #4 - Subnet Resource Id')
 param nic4SubnetId string
 
 // VM Image
+@description('Ubuntu - Publisher.  Default: Canonical')
 param vmImagePublisher string = 'Canonical'
+
+@description('Ubuntu - Image Offer.  Default: UbuntuServer')
 param vmImageOffer string = 'UbuntuServer'
+
+@description('Ubuntu - SKU.  Default: 18.04-LTS')
 param vmImageSku string = '18.04-LTS'
+
+@description('Ubuntu - Image Version.  Default: latest')
 param vmImageVersion string = 'latest'  
 
+@description('Temporary username for firewall virtual machine.')
+@secure()
 param username string
+
+@description('Temporary password for firewall virtual machine.')
 @secure()
 param password string
 
