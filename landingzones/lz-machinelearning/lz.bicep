@@ -9,100 +9,178 @@
 
 targetScope = 'subscription'
 
-param azureRegion string = deployment().location
+// Log Analytics Workspace
+@description('Log Analytics Resource Id')
+param logAnalyticsWorkspaceResourceId string
 
-@description('Should SQL Database be deployed in environment')
-param deploySQLDB bool
-@description('Should SQL Managed Instance be deployed in environment')
-param deploySQLMI bool
-
+// Security Contact Email Address
+@description('Contact email address for security alerts.')
 param securityContactEmail string
 
-param tagClientOrganization string
-param tagCostCenter string
-param tagDataSensitivity string
-param tagProjectContact string
-param tagProjectName string
-param tagTechnicalContact string
+// Resource Groups
+@description('Azure Network Watcher Resource Group Name.  Default: NetworkWatcherRG')
+param rgNetworkWatcherName string = 'NetworkWatcherRG'
 
-param rgAutomationName string
-param rgNetworkWatcherName string
+@description('Virtual Network Resource Group Name.')
 param rgVnetName string
+
+@description('Automation Account Resource Group Name.')
+param rgAutomationName string
+
+@description('Storage Resource Group Name.')
 param rgStorageName string
+
+@description('Compute Resource Group Name.')
 param rgComputeName string
+
+@description('Security Resource Group Name.')
 param rgSecurityName string
+
+@description('Monitoring Resource Group Name.')
 param rgMonitorName string
 
+// Automation
+@description('Azure Automation Account name')
 param automationAccountName string
 
+// VNET
+@description('Virtual Network Name.')
 param vnetName string
+
+@description('Virtual Network Address Space.')
 param vnetAddressSpace string
 
+@description('Hub Virtual Network Resource Id.  It is required for configuring Virtual Network Peering & configuring route tables.')
 param hubVnetId string
 
-// Virtual Appliance IP
-param egressVirtualApplianceIp string
-
-// Hub IP Ranges
-param hubRFC1918IPRange string
-param hubCGNATIPRange string
-
 // Internal Foundational Elements (OZ) Subnet
+@description('Foundational Element (OZ) Subnet Name')
 param subnetFoundationalElementsName string
+
+@description('Foundational Element (OZ) Subnet Address Prefix.')
 param subnetFoundationalElementsPrefix string
 
 // Presentation Zone (PAZ) Subnet
+@description('Presentation Zone (PAZ) Subnet Name.')
 param subnetPresentationName string
+
+@description('Presentation Zone (PAZ) Subnet Address Prefix.')
 param subnetPresentationPrefix string
 
 // Application zone (RZ) Subnet
+@description('Application (RZ) Subnet Name.')
 param subnetApplicationName string
+
+@description('Application (RZ) Subnet Address Prefix.')
 param subnetApplicationPrefix string
 
 // Data Zone (HRZ) Subnet
+@description('Data Zone (HRZ) Subnet Name.')
 param subnetDataName string
+
+@description('Data Zone (HRZ) Subnet Address Prefix.')
 param subnetDataPrefix string
 
-param subnetDatabricksPublicName string
-param subnetDatabricksPublicPrefix string
-
-param subnetDatabricksPrivateName string
-param subnetDatabricksPrivatePrefix string
-
+// Delegated Subnets
+@description('Delegated SQL MI Subnet Name.')
 param subnetSQLMIName string
+
+@description('Delegated SQL MI Subnet Address Prefix.')
 param subnetSQLMIPrefix string
 
+@description('Delegated Databricks Public Subnet Name.')
+param subnetDatabricksPublicName string
+
+@description('Delegated Databricks Public Subnet Address Prefix.')
+param subnetDatabricksPublicPrefix string
+
+@description('Delegated Databricks Private Subnet Name.')
+param subnetDatabricksPrivateName string
+
+@description('Delegated Databricks Private Subnet Address Prefix.')
+param subnetDatabricksPrivatePrefix string
+
+// Priavte Endpoint Subnet
+@description('Private Endpoints Subnet Name.  All private endpoints will be deployed to this subnet.')
 param subnetPrivateEndpointsName string
+
+@description('Private Endpoint Subnet Address Prefix.')
 param subnetPrivateEndpointsPrefix string
 
+// AKS Subnet
+@description('AKS Subnet Name.')
 param subnetAKSName string
+
+@description('AKS Subnet Address Prefix.')
 param subnetAKSPrefix string
 
+// Virtual Appliance IP
+@description('Egress Virtual Appliance IP.  It should be the IP address of the network virtual appliance.')
+param egressVirtualApplianceIp string
+
+// Hub IP Ranges
+@description('Hub Virtual Network IP Address - RFC 1918')
+param hubRFC1918IPRange string
+
+@description('Hub Virtual Network IP Address - RFC 6598')
+param hubCGNATIPRange string
+
 // Private DNS Zones
-param privateDnsManagedByHub bool
-@description('Required when privateDnsManagedByHub=true')
-param privateDnsManagedByHubSubscriptionId string
-@description('Required when privateDnsManagedByHub=true')
-param privateDnsManagedByHubResourceGroupName string
+@description('Boolean flag to determine whether Private DNS Zones will be managed by Hub Network.')
+param privateDnsManagedByHub bool = false
 
-param secretExpiryInDays int
+@description('Private DNS Zone Subscription Id.  Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubSubscriptionId string = ''
 
+@description('Private DNS Zone Resource Group Name.  Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubResourceGroupName string = ''
+
+// AKS version
+@description('AKS Version.')
 param aksVersion string
 
-param logAnalyticsWorkspaceResourceId string = ''
+// Azure Key Vault
+@description('Azure Key Vault Secret Expiry in days.')
+param secretExpiryInDays int
 
-@description('If SQL Database is selected to be deployed, enter username. Otherwise, you can enter blank')
+// Tags
+@description('Resource Group scoped tag - Client Organization')
+param tagClientOrganization string
+
+@description('Resource Group scoped tag - Cost Center')
+param tagCostCenter string
+
+@description('Resource Group scoped tag - Data Sensitivity')
+param tagDataSensitivity string
+
+@description('Resource Group scoped tag - Project Contact')
+param tagProjectContact string
+
+@description('Resource Group scoped tag - Project Name')
+param tagProjectName string
+
+@description('Resource Group scoped tag - Technical Contact')
+param tagTechnicalContact string
+
+// ML landing zone parameters - start
+@description('Boolean flag to determine whether SQL Database is deployed or not.')
+param deploySQLDB bool
+@description('Boolean flag to determine whether SQL Managed Instance is deployed or not.')
+param deploySQLMI bool
+
+@description('SQL Database Username.  Required if deploySQLDB=true')
 @secure()
 param sqldbUsername string
-@description('If SQL Managed Instance is selected to be deployed, enter username. Otherwise, you can enter blank')
+
+@description('SQL MI Username.  Required if deploySQLMI=true')
 @secure()
 param sqlmiUsername string
 
-@description('When true, customer managed keys are used for Azure resources')
-param useCMK bool
+@description('Boolean flag to determine whether customer managed keys are used.  Default:  false')
+param useCMK bool = false
 
-@description('When true, Azure ML workspace has high business impact workspace enabled')
-param enableHbiWorkspace bool
+@description('Boolean flag to enable High Business Impact Azure Machine Learning Workspace.  Default: false')
+param enableHbiWorkspace bool = false
 
 var sqldbPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldbUsername))}'
 var sqlmiPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqlmiUsername))}'
@@ -135,43 +213,43 @@ var useDeploymentScripts = useCMK
 //resource group deployments
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgNetworkWatcherName
-  location: azureRegion
+  location: deployment().location
   tags: tags
 }
 
 resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgAutomationName
-  location: azureRegion
+  location: deployment().location
   tags: tags
 }
 
 resource rgVnet 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: rgVnetName
-  location: azureRegion
+  location: deployment().location
   tags: tags
 }
 
 resource rgStorage 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgStorageName
-  location: azureRegion
+  location: deployment().location
   tags: tags
 }
 
 resource rgCompute 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgComputeName
-  location: azureRegion
+  location: deployment().location
   tags: tags
 }
 
 resource rgSecurity 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgSecurityName
-  location: azureRegion
+  location: deployment().location
   tags: tags
 }
 
 resource rgMonitor 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgMonitorName
-  location: azureRegion
+  location: deployment().location
   tags: tags
 }
 
@@ -280,8 +358,8 @@ module networking 'networking.bicep' = {
     subnetDatabricksPrivateName: subnetDatabricksPrivateName
     subnetDatabricksPrivatePrefix: subnetDatabricksPrivatePrefix
     
-    subnetSqlMIName: subnetSQLMIName
-    subnetSqlMIPrefix: subnetSQLMIPrefix
+    subnetSQLMIName: subnetSQLMIName
+    subnetSQLMIPrefix: subnetSQLMIPrefix
    
     subnetPrivateEndpointsName: subnetPrivateEndpointsName
     subnetPrivateEndpointsPrefix: subnetPrivateEndpointsPrefix

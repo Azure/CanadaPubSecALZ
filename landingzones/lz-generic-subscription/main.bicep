@@ -63,7 +63,7 @@ param rgVnetName string
 @description('Azure Automation Account Resource Group Name.')
 param rgAutomationName string
 
-@description('Azure Network Watcher Resoruce Group Name.  Default: NetworkWatcherRG')
+@description('Azure Network Watcher Resource Group Name.  Default: NetworkWatcherRG')
 param rgNetworkWatcherName string = 'NetworkWatcherRG'
 
 // Automation

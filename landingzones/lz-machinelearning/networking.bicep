@@ -8,59 +8,96 @@
 // ----------------------------------------------------------------------------------
 
 // VNET
+@description('Virtual Network Name.')
 param vnetName string
+
+@description('Virtual Network Address Space.')
 param vnetAddressSpace string
 
+@description('Hub Virtual Network Resource Id.  It is required for configuring Virtual Network Peering & configuring route tables.')
 param hubVnetId string
 
-// Virtual Appliance IP
-param egressVirtualApplianceIp string
-
-// Hub IP Ranges
-param hubRFC1918IPRange string
-param hubCGNATIPRange string
-
 // Internal Foundational Elements (OZ) Subnet
+@description('Foundational Element (OZ) Subnet Name')
 param subnetFoundationalElementsName string
+
+@description('Foundational Element (OZ) Subnet Address Prefix.')
 param subnetFoundationalElementsPrefix string
 
 // Presentation Zone (PAZ) Subnet
+@description('Presentation Zone (PAZ) Subnet Name.')
 param subnetPresentationName string
+
+@description('Presentation Zone (PAZ) Subnet Address Prefix.')
 param subnetPresentationPrefix string
 
 // Application zone (RZ) Subnet
+@description('Application (RZ) Subnet Name.')
 param subnetApplicationName string
+
+@description('Application (RZ) Subnet Address Prefix.')
 param subnetApplicationPrefix string
 
 // Data Zone (HRZ) Subnet
+@description('Data Zone (HRZ) Subnet Name.')
 param subnetDataName string
+
+@description('Data Zone (HRZ) Subnet Address Prefix.')
 param subnetDataPrefix string
 
-// Databricks Subnets
+// Delegated Subnets
+@description('Delegated SQL MI Subnet Name.')
+param subnetSQLMIName string
+
+@description('Delegated SQL MI Subnet Address Prefix.')
+param subnetSQLMIPrefix string
+
+@description('Delegated Databricks Public Subnet Name.')
 param subnetDatabricksPublicName string
+
+@description('Delegated Databricks Public Subnet Address Prefix.')
 param subnetDatabricksPublicPrefix string
 
+@description('Delegated Databricks Private Subnet Name.')
 param subnetDatabricksPrivateName string
+
+@description('Delegated Databricks Private Subnet Address Prefix.')
 param subnetDatabricksPrivatePrefix string
 
-// SQL MI Subnet
-param subnetSqlMIName string
-param subnetSqlMIPrefix string
-
-// Azure PaaS private endpoint subnet
+// Priavte Endpoint Subnet
+@description('Private Endpoints Subnet Name.  All private endpoints will be deployed to this subnet.')
 param subnetPrivateEndpointsName string
+
+@description('Private Endpoint Subnet Address Prefix.')
 param subnetPrivateEndpointsPrefix string
 
 // AKS Subnet
+@description('AKS Subnet Name.')
 param subnetAKSName string
+
+@description('AKS Subnet Address Prefix.')
 param subnetAKSPrefix string
 
+// Virtual Appliance IP
+@description('Egress Virtual Appliance IP.  It should be the IP address of the network virtual appliance.')
+param egressVirtualApplianceIp string
+
+// Hub IP Ranges
+@description('Hub Virtual Network IP Address - RFC 1918')
+param hubRFC1918IPRange string
+
+@description('Hub Virtual Network IP Address - RFC 6598')
+param hubCGNATIPRange string
+
 // Private DNS Zones
-param privateDnsManagedByHub bool
-@description('Required when privateDnsManagedByHub=true')
-param privateDnsManagedByHubSubscriptionId string
-@description('Required when privateDnsManagedByHub=true')
-param privateDnsManagedByHubResourceGroupName string
+@description('Boolean flag to determine whether Private DNS Zones will be managed by Hub Network.')
+param privateDnsManagedByHub bool = false
+
+@description('Private DNS Zone Subscription Id.  Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubSubscriptionId string = ''
+
+@description('Private DNS Zone Resource Group Name.  Required when privateDnsManagedByHub=true')
+param privateDnsManagedByHubResourceGroupName string = ''
 
 var integrateToHubVirtualNetwork = !empty(hubVnetId)
 var hubVnetIdSplit = split(hubVnetId, '/')
@@ -138,7 +175,7 @@ module nsgDatabricks '../../azresources/network/nsg/nsg-databricks.bicep' = {
 module nsgSqlMi '../../azresources/network/nsg/nsg-sqlmi.bicep' = {
   name: 'deploy-nsg-sqlmi'
   params: {
-    name: '${subnetSqlMIName}Nsg'
+    name: '${subnetSQLMIName}Nsg'
   }
 }
 
@@ -178,7 +215,7 @@ resource udrData 'Microsoft.Network/routeTables@2021-02-01' = {
 module udrSqlMi '../../azresources/network/udr/udr-sqlmi.bicep' = {
   name: 'deploy-route-table-sqlmi'
   params: {
-    name: '${subnetSqlMIName}Udr'
+    name: '${subnetSQLMIName}Udr'
   }
 }
 
@@ -310,9 +347,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         }
       }
       {
-        name: subnetSqlMIName
+        name: subnetSQLMIName
         properties: {
-          addressPrefix: subnetSqlMIPrefix
+          addressPrefix: subnetSQLMIPrefix
           routeTable: {
             id: udrSqlMi.outputs.udrId
           }
@@ -517,7 +554,7 @@ output presentationSubnetId string = '${vnet.id}/subnets/${subnetPresentationNam
 output applicationSubnetId string = '${vnet.id}/subnets/${subnetApplicationName}'
 output dataSubnetId string = '${vnet.id}/subnets/${subnetDataName}'
 output privateEndpointSubnetId string = '${vnet.id}/subnets/${subnetPrivateEndpointsName}'
-output sqlMiSubnetId string = '${vnet.id}/subnets/${subnetSqlMIName}'
+output sqlMiSubnetId string = '${vnet.id}/subnets/${subnetSQLMIName}'
 output aksSubnetId string = '${vnet.id}/subnets/${subnetAKSName}'
 
 output databricksPublicSubnetName string = subnetDatabricksPublicName

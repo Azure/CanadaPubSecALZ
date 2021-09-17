@@ -92,7 +92,7 @@ param budgetStartDate string = utcNow('yyyy-MM-01')
 param budgetTimeGrain string = 'Monthly'
 
 // Network Watcher
-@description('Azure Network Watcher Resoruce Group Name.  Default: NetworkWatcherRG')
+@description('Azure Network Watcher Resource Group Name.  Default: NetworkWatcherRG')
 param rgNetworkWatcherName string = 'NetworkWatcherRG'
 
 // Private Dns Zones
