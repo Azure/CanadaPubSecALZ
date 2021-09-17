@@ -9,9 +9,16 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy definition.')
 param policyDefinitionManagementGroupId string
+
+@description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
+
+@description('Log Analytics Workspace Resource Id')
 param logAnalyticsResourceId string
+
+@description('Log Analytics Workspace Id')
 param logAnalyticsWorkspaceId string
 
 var policyId = 'custom-enable-logging-to-loganalytics'
@@ -45,7 +52,6 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
 }
 
 // These role assignments are required to allow Policy Assignment to remediate.
-
 resource policySetRoleAssignmentLogAnalyticsContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(policyAssignmentManagementGroupId, 'loganalytics', 'Log Analytics Contributor')
   scope: managementGroup()

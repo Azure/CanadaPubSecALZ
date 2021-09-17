@@ -9,7 +9,10 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
+
+@description('Log Analytics Workspace Data Retention in days.')
 param requiredRetentionDays string
 
 var policyId = '179d1daa-458f-4e47-8086-2a68d0d6c38f' // NIST SP 800-53 R5 
@@ -40,7 +43,6 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
 }
 
 // These role assignments are required to allow Policy Assignment to remediate.
-
 resource policySetRoleAssignmentContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(policyAssignmentManagementGroupId, 'nist-sp-800-53-r5-contributor')
   scope: managementGroup()

@@ -9,9 +9,13 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy definition.')
 param policyDefinitionManagementGroupId string
+
+@description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
+@description('Azure DDOS Standard Plan Resource Id.')
 param ddosStandardPlanId string
 
 var policyId = 'Network-Deploy-DDoS-Standard'
@@ -40,7 +44,7 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
   location: deployment().location
 }
 
-// role assignment
+// These role assignments are required to allow Policy Assignment to remediate.
 resource policySetRoleAssignmentNetworkContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(policyAssignmentManagementGroupId, 'ddos-standard', 'Network Contributor')
   scope: managementGroup()

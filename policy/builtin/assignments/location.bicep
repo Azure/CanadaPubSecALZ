@@ -9,7 +9,10 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
+
+@description('An array of allowed Azure Regions.')
 param allowedLocations array
 
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)

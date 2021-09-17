@@ -9,10 +9,16 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
+
+@description('Log Analytics Resource Id to integrate Azure Security Center.')
 param logAnalyticsWorkspaceId string
 
+@description('List of members that should be excluded from Windows VM Administrator Group.')
 param listOfMembersToExcludeFromWindowsVMAdministratorsGroup string
+
+@description('List of members that should be included in Windows VM Administrator Group.')
 param listOfMembersToIncludeInWindowsVMAdministratorsGroup string
 
 var policyId = 'cf25b9c1-bd23-4eb6-bd2c-f4f3ac644a5f' // NIST SP 800-53 R4 
@@ -49,7 +55,6 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
 }
 
 // These role assignments are required to allow Policy Assignment to remediate.
-
 resource policySetRoleAssignmentContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(policyAssignmentManagementGroupId, 'nist-sp-800-53-r4-contributor')
   scope: managementGroup()

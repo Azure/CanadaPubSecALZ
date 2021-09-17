@@ -9,11 +9,19 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
+@description('Log Analytics Workspace Data Retention in days.')
 param requiredRetentionDays string
+
+@description('An array of approved VM extensions.')
 param approvedVMExtensions array
+
+@description('Network Watcher Resource Group Name.  Default:  NetworkWatcherRG')
 param networkWatcherRgName string = 'NetworkWatcherRG'
+
+@description('Linux Python Version.')
 param linuxPythonLatestVersion string
 
 var policyId = '612b5213-9160-4969-8578-1518bd2a000c' // CIS Microsoft Azure Foundations Benchmark 1.3.0

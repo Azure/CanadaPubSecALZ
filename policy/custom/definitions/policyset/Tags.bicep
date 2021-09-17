@@ -9,6 +9,7 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy definition.')
 param policyDefinitionManagementGroupId string
 
 var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)

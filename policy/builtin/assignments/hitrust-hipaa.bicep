@@ -9,6 +9,7 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
 @description('A semicolon-separated list of the names of the applications that should be installed. e.g. \'Microsoft SQL Server 2014 (64-bit); Microsoft Visual Studio Code\' or \'Microsoft SQL Server 2014*\' (to match any application starting with \'Microsoft SQL Server 2014\')')

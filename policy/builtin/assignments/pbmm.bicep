@@ -9,10 +9,16 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
+
+@description('Log Analytics Resource Id to integrate Azure Security Center.')
 param logAnalyticsWorkspaceId string
 
+@description('List of members that should be excluded from Windows VM Administrator Group.')
 param listOfMembersToExcludeFromWindowsVMAdministratorsGroup string
+
+@description('List of members that should be included in Windows VM Administrator Group.')
 param listOfMembersToIncludeInWindowsVMAdministratorsGroup string
 
 var policyId = '4c4a5f27-de81-430b-b4e5-9cbd50595a87' // Canada Federal PBMM
@@ -49,7 +55,6 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
 }
 
 // These role assignments are required to allow Policy Assignment to remediate.
-
 resource policySetRoleAssignmentContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(policyAssignmentManagementGroupId, 'pbmm-Contributor')
   scope: managementGroup()

@@ -9,7 +9,10 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy definition.')
 param policyDefinitionManagementGroupId string
+
+@description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
 var policyId = 'custom-enable-azure-defender'
@@ -37,7 +40,6 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
 }
 
 // These role assignments are required to allow Policy Assignment to remediate.
-
 resource policySetRoleAssignmentSecurityAdmin 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(policyAssignmentManagementGroupId, 'asc', 'Security Admin')
   scope: managementGroup()

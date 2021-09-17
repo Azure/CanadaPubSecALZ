@@ -9,6 +9,7 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
 var policyId = '1f3afdf9-d0c9-4c3d-847f-89da613e70a8' // Azure Security Benchmark

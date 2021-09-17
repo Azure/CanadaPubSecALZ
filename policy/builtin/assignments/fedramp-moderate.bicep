@@ -9,7 +9,10 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
+
+@description('Log Analytics Workspace Data Retention in days.')
 param requiredRetentionDays string
 
 var policyId = 'e95f5a9f-57ad-4d03-bb0b-b1d16db93693' // FedRAMP Moderate

@@ -9,7 +9,10 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy definition.')
 param policyDefinitionManagementGroupId string
+
+@description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
 var policyId = 'custom-aks'
@@ -67,7 +70,6 @@ resource podSecurityBaselineStandardsPolicySetAssignment 'Microsoft.Authorizatio
 }
 
 // These role assignments are required to allow Policy Assignment to remediate.
-
 // Contributor role is required to support customer-managed keys for AKS.  Permission: Microsoft.Compute/diskEncryptionSets/read
 // A custom role can be created to support this scenario as well.
 resource policySetRoleAssignmentContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
@@ -79,25 +81,3 @@ resource policySetRoleAssignmentContributor 'Microsoft.Authorization/roleAssignm
     principalType: 'ServicePrincipal'
   }
 }
-
-/*
-resource policySetRoleAssignmentAKSContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(policyAssignmentManagementGroupId, 'aks', 'Azure Kubernetes Service Contributor Role')
-  scope: managementGroup()
-  properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/ed7f3fbd-7b88-4dd4-9017-9adb7ce333f8'
-    principalId: policySetAssignment.identity.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource policySetRoleAssignmentVMContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(policyAssignmentManagementGroupId, 'aks', 'Virtual Machine Contributor')
-  scope: managementGroup()
-  properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
-    principalId: policySetAssignment.identity.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
-*/

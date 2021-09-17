@@ -9,10 +9,16 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy definition.')
 param policyDefinitionManagementGroupId string
+
+@description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
+@description('Private DNS Zone Subscription Id')
 param privateDNSZoneSubscriptionId string
+
+@description('Private DNS Zone Resource Group Name')
 param privateDNSZoneResourceGroupName string
 
 var policyId = 'custom-central-dns-private-endpoints'
@@ -48,7 +54,7 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
   location: deployment().location
 }
 
-// role assignment
+// These role assignments are required to allow Policy Assignment to remediate.
 resource policySetRoleAssignmentNetworkContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(policyAssignmentManagementGroupId, 'dns-private-endpoint', 'Network Contributor')
   scope: managementGroup()
