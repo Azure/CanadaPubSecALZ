@@ -9,7 +9,7 @@
             "value": "{{var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix}}"
         },
         "deployDiagnosticSettingsforNetworkSecurityGroupsRgName": {
-            "value": "{{var-logging-logAnalyticsResourceGroupName}}"
+            "value": "NetworkWatcherRG"
         },
         "installedApplicationsOnWindowsVM": {
             "value": "__tbd__implementation_specific__"
