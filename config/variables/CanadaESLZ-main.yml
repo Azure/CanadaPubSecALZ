@@ -100,18 +100,18 @@ variables:
   var-hubnetwork-hubDevIntSubnetName: DevIntSubnet
   var-hubnetwork-hubDevIntSubnetAddressPrefix: 10.18.0.64/27
 
-  var-hubnetwork-hubSubnetProdIntName: PrdIntSubnet
-  var-hubnetwork-hubSubnetProdIntAddressPrefix: 10.18.0.32/27
+  var-hubnetwork-hubProdIntSubnetName: PrdIntSubnet
+  var-hubnetwork-hubProdIntSubnetAddressPrefix: 10.18.0.32/27
 
-  var-hubnetwork-hubSubnetMrzIntName: MrzSubnet
-  var-hubnetwork-hubSubnetMrzIntAddressPrefix: 10.18.0.96/27
+  var-hubnetwork-hubMrzIntSubnetName: MrzSubnet
+  var-hubnetwork-hubMrzIntSubnetAddressPrefix: 10.18.0.96/27
 
-  var-hubnetwork-hubSubnetHAName: HASubnet
-  var-hubnetwork-hubSubnetHAAddressPrefix: 10.18.0.128/28
+  var-hubnetwork-hubHASubnetName: HASubnet
+  var-hubnetwork-hubHASubnetAddressPrefix: 10.18.0.128/28
 
-  var-hubnetwork-hubSubnetGatewaySubnetPrefix: 10.18.1.0/27
+  var-hubnetwork-hubGatewaySubnetPrefix: 10.18.1.0/27
 
-  var-hubnetwork-hubSubnetBastionAddressPrefix: 192.168.0.0/24
+  var-hubnetwork-hubBastionSubnetAddressPrefix: 192.168.0.0/24
   var-hubnetwork-bastionName: bastion
 
   ## Hub Networking - Firewall Virtual Appliances

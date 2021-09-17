@@ -153,31 +153,31 @@ param hubDevIntSubnetName string //= 'DevIntSubnet'
 param hubDevIntSubnetAddressPrefix string //= '10.18.0.64/27'
 
 @description('Hub - Production Internal Subnet Name.')
-param hubSubnetProdIntName string //= 'PrdIntSubnet'
+param hubProdIntSubnetName string //= 'PrdIntSubnet'
 
 @description('Hub - Production Internal Subnet Address Prefix (based on RFC 1918).')
-param hubSubnetProdIntAddressPrefix string //= '10.18.0.32/27'
+param hubProdIntSubnetAddressPrefix string //= '10.18.0.32/27'
 
 @description('Hub - Management Resctricted Zone Subnet Name.')
-param hubSubnetMrzIntName string //= 'MrzSubnet'
+param hubMrzIntSubnetName string //= 'MrzSubnet'
 
 @description('Hub - Management Resctricted Zone Subnet Address Prefix (based on RFC 1918).')
-param hubSubnetMrzIntAddressPrefix string //= '10.18.0.96/27'
+param hubMrzIntSubnetAddressPrefix string //= '10.18.0.96/27'
 
 @description('Hub - Firewall High Availability Subnet Name.')
-param hubSubnetHAName string //= 'HASubnet'
+param hubHASubnetName string //= 'HASubnet'
 
 @description('Hub - Firewall High Availability Subnet Address Prefix (based on RFC 1918).')
-param hubSubnetHAAddressPrefix string //= '10.18.0.128/28'
+param hubHASubnetAddressPrefix string //= '10.18.0.128/28'
 
 @description('Hub - Virtual Network Gateway Subnet Address Prefix (based on RFC 1918).')
-param hubSubnetGatewaySubnetPrefix string //= '10.18.1.0/27'
+param hubGatewaySubnetPrefix string //= '10.18.1.0/27'
 
 @description('Hub - Azure Bastion Name.')
 param bastionName string //= 'pubsecHubBastion'
 
 @description('Hub - Azure Bastion Address Prefix (based on RFC 1918 and must be placed in the Azure Bastion Address Space).')
-param hubSubnetBastionAddressPrefix string //= '192.168.0.0/24'
+param hubBastionSubnetAddressPrefix string //= '192.168.0.0/24'
 
 // Firewall Virtual Appliances
 @description('Boolean flag to determine whether virtual machines will be deployed, either Ubuntu (for internal testing) or Fortinet (for workloads).  Default: true')
@@ -559,17 +559,17 @@ module hubVnet './hub-vnet.bicep' = {
     publicSubnetName: hubPublicSubnetName
     publicSubnetAddressPrefix: hubPublicSubnetAddressPrefix
 
-    mrzIntSubnetName: hubSubnetMrzIntName
-    mrzIntSubnetAddressPrefix: hubSubnetMrzIntAddressPrefix
+    mrzIntSubnetName: hubMrzIntSubnetName
+    mrzIntSubnetAddressPrefix: hubMrzIntSubnetAddressPrefix
 
-    prodIntSubnetName: hubSubnetProdIntName
-    prodIntSubnetAddressPrefix: hubSubnetProdIntAddressPrefix
+    prodIntSubnetName: hubProdIntSubnetName
+    prodIntSubnetAddressPrefix: hubProdIntSubnetAddressPrefix
 
     devIntSubnetName: hubDevIntSubnetName
     devIntSubnetAddressPrefix: hubDevIntSubnetAddressPrefix
 
-    haSubnetName: hubSubnetHAName
-    haSubnetAddressPrefix: hubSubnetHAAddressPrefix
+    haSubnetName: hubHASubnetName
+    haSubnetAddressPrefix: hubHASubnetAddressPrefix
 
     pazSubnetName: hubPazSubnetName
     pazSubnetAddressPrefix: hubPazSubnetAddressPrefix
@@ -578,9 +578,9 @@ module hubVnet './hub-vnet.bicep' = {
     eanSubnetName: hubEanSubnetName
     eanSubnetAddressPrefix: hubEanSubnetAddressPrefix
 
-    hubSubnetGatewaySubnetAddressPrefix: hubSubnetGatewaySubnetPrefix
+    gatewaySubnetAddressPrefix: hubGatewaySubnetPrefix
 
-    bastionSubnetAddressPrefix: hubSubnetBastionAddressPrefix
+    bastionSubnetAddressPrefix: hubBastionSubnetAddressPrefix
 
     ddosStandardPlanId: deployDdosStandard ? ddosPlan.outputs.ddosPlanId : ''
   }

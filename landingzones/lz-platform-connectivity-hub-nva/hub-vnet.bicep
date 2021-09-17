@@ -76,7 +76,7 @@ param pazUdrId string
 
 // Gateway Subnet
 @description('Gateway Subnet Address Prefix.')
-param hubSubnetGatewaySubnetAddressPrefix string
+param gatewaySubnetAddressPrefix string
 
 // Azure Bastion
 @description('Azure Bastion Subnet Address Prefix.')
@@ -229,7 +229,7 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
       {
         name: 'GatewaySubnet'
         properties: {
-          addressPrefix: hubSubnetGatewaySubnetAddressPrefix
+          addressPrefix: gatewaySubnetAddressPrefix
         }
       }
     ]
