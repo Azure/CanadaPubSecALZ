@@ -9,9 +9,10 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group Id for assignable scope.')
 param assignableMgId string
-var scope = tenantResourceId('Microsoft.Management/managementGroups', assignableMgId)
 
+var scope = tenantResourceId('Microsoft.Management/managementGroups', assignableMgId)
 var roleName = 'Custom - Log Analytics - Read Only for VM Insights'
 
 resource roleDefn 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' = {

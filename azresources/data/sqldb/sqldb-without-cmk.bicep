@@ -7,7 +7,7 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('SQL Database Logic Server Name.')
+@description('SQL Database Logical Server Name.')
 param sqlServerName string
 
 @description('Key/Value pair of tags.')

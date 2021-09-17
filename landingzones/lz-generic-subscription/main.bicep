@@ -67,7 +67,7 @@ param rgAutomationName string
 param rgNetworkWatcherName string = 'NetworkWatcherRG'
 
 // Automation
-@description('Azure Automation Account name')
+@description('Azure Automation Account name.')
 param automationAccountName string
 
 // VNET

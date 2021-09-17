@@ -40,7 +40,7 @@ param rgSecurityName string
 param rgMonitorName string
 
 // Automation
-@description('Azure Automation Account name')
+@description('Azure Automation Account name.')
 param automationAccountName string
 
 // VNET

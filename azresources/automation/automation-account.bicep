@@ -7,7 +7,7 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Azure Automation Account name')
+@description('Azure Automation Account name.')
 param automationAccountName string
 
 @description('Key/Value pair of tags.')
