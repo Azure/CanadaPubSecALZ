@@ -7,19 +7,38 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param name string = 'adf${uniqueString(resourceGroup().id)}'
+@description('Azure Data Factory Name.')
+param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
 
+// Private Endpoints
+@description('Private Endpoint Subnet Resource Id.')
 param privateEndpointSubnetId string
+
+@description('Private DNS Zone Resource Id for Data Factory.')
 param datafactoryPrivateZoneId string
+
+@description('Private DNS Zone Resource Id for Data Factory Portal.')
 param portalPrivateZoneId string
 
+// User Assigned Identity
+@description('User Assigned Managed Identity Resource Id.')
 param userAssignedIdentityId string
+
+@description('User Assigned Managed Identity Principal Id.')
 param userAssignedIdentityPrincipalId string
 
+// Azure Key Vault
+@description('Azure Key Vault Resource Group Name.')
 param akvResourceGroupName string
+
+@description('Azure Key Vault Name.')
 param akvName string
 
+// Reference existing Azure Key Vault & Assign user assigned identity
+// 'Key Vault Crypto Service Encryption User' permission.
 resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   scope: resourceGroup(akvResourceGroupName)
   name: akvName
@@ -35,6 +54,7 @@ module akvRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-
   }
 }
 
+// Define a RSA 2048 Key for CMK.
 module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
   name: 'add-cmk-${name}'
   scope: resourceGroup(akvResourceGroupName)
@@ -44,6 +64,7 @@ module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
   }
 }
 
+// Deploy Azure Data Factory with Managed Virtual Network & Managed Integration Runtime
 resource adf 'Microsoft.DataFactory/factories@2018-06-01' = {
   dependsOn: [
     akvRoleAssignmentForCMK
@@ -92,6 +113,7 @@ resource adf 'Microsoft.DataFactory/factories@2018-06-01' = {
   }
 }
 
+// Create Private Endpoints and register their IPs with Private DNS Zone
 resource adf_datafactory_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   location: resourceGroup().location
   name: '${adf.name}-df-endpoint'

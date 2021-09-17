@@ -214,7 +214,7 @@ var azCliCommandDeploymentScriptPermissionCleanup = '''
   az role assignment delete --assignee {0} --scope {1}
 '''
 
-module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploymentScript.bicep' = {
+module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deployment-script.bicep' = {
   dependsOn: [
     acr
     dataLake
@@ -231,7 +231,7 @@ module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploy
   }  
 }
 
-module rgComputeDeploymentScriptPermissionCleanup '../../azresources/util/deploymentScript.bicep' = {
+module rgComputeDeploymentScriptPermissionCleanup '../../azresources/util/deployment-script.bicep' = {
   dependsOn: [
     dataLakeMetaData
   ]
@@ -298,7 +298,6 @@ module keyVault '../../azresources/security/key-vault.bicep' = {
 
     enabledForDiskEncryption: true
 
-    deployPrivateEndpoint: true
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.keyVaultPrivateDnsZoneId
   }
@@ -314,16 +313,14 @@ module storageLogging '../../azresources/storage/storage-generalpurpose.bicep' =
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
     filePrivateZoneId: networking.outputs.dataLakeFilePrivateDnsZoneId
-    deployBlobPrivateZone: true
-    deployFilePrivateZone: true
     
     defaultNetworkAcls: 'Deny'
-    subnetIdForVnetRestriction: []
+    subnetIdForVnetAccess: []
 
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
-    keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
-    keyVaultName: useCMK ? keyVault.outputs.akvName : ''
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
@@ -337,9 +334,9 @@ module sqlDb '../../azresources/data/sqldb/main.bicep' = if (deploySQLDB == true
     privateZoneId: networking.outputs.sqlDBPrivateDnsZoneId
     sqldbUsername: sqldbUsername
     sqldbPassword: sqldbPassword
-    saLoggingName: storageLogging.outputs.storageName
-    storagePath: storageLogging.outputs.storagePath
-    securityContactEmail: securityContactEmail
+    sqlVulnerabilityLoggingStorageAccountName: storageLogging.outputs.storageName
+    sqlVulnerabilityLoggingStoragePath: storageLogging.outputs.storagePath
+    sqlVulnerabilitySecurityContactEmail: securityContactEmail
 
     useCMK: useCMK
     akvResourceGroupName: useCMK ? rgSecurity.name : ''
@@ -356,19 +353,16 @@ module dataLake '../../azresources/storage/storage-adlsgen2.bicep' = {
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
 
-    deployBlobPrivateZone: true
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
-
-    deployDfsPrivateZone: true
     dfsPrivateZoneId: networking.outputs.dataLakeDfsPrivateDnsZoneId
 
     defaultNetworkAcls: 'Deny'
-    subnetIdForVnetRestriction: []
+    subnetIdForVnetAccess: []
 
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
-    keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
-    keyVaultName: useCMK ? keyVault.outputs.akvName : ''
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
@@ -421,7 +415,6 @@ module acr '../../azresources/containers/acr/main.bicep' = {
     name: acrName
     tags: tags
 
-    deployPrivateZone: true
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.acrPrivateDnsZoneId
 
@@ -453,13 +446,11 @@ module dataLakeMetaData '../../azresources/storage/storage-generalpurpose.bicep'
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
     filePrivateZoneId: networking.outputs.dataLakeFilePrivateDnsZoneId
-    deployBlobPrivateZone: true
-    deployFilePrivateZone: true
 
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
-    keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
-    keyVaultName: useCMK ? keyVault.outputs.akvName : ''
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
@@ -487,7 +478,7 @@ module synapse '../../azresources/analytics/synapse/main.bicep' = {
   name: 'deploy-synapse'
   scope: rgCompute
   params: {
-    synapseName: synapseName
+    name: synapseName
     tags: tags
 
     managedResourceGroupName: '${rgCompute.name}-${synapseName}-${uniqueString(rgCompute.id)}'
@@ -504,10 +495,10 @@ module synapse '../../azresources/analytics/synapse/main.bicep' = {
     synapseUsername: synapseUsername 
     synapsePassword: synapsePassword
 
-    loggingStorageAccountResourceGroupName: rgStorage.name
-    loggingStorageAccountName: storageLogging.outputs.storageName
-    loggingStoragePath: storageLogging.outputs.storagePath
-    securityContactEmail: securityContactEmail
+    sqlVulnerabilityLoggingStorageAccounResourceGroupName: rgStorage.name
+    sqlVulnerabilityLoggingStorageAccountName: storageLogging.outputs.storageName
+    sqlVulnerabilityLoggingStoragePath: storageLogging.outputs.storagePath
+    sqlVulnerabilitySecurityContactEmail: securityContactEmail
 
     deploymentScriptIdentityId: deploymentScriptIdentity.outputs.identityId
 
@@ -623,13 +614,11 @@ module functionStorage '../../azresources/storage/storage-generalpurpose.bicep' 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
     filePrivateZoneId: networking.outputs.dataLakeFilePrivateDnsZoneId
-    deployBlobPrivateZone: true
-    deployFilePrivateZone: true
 
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
-    keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
-    keyVaultName: useCMK ? keyVault.outputs.akvName : ''
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 

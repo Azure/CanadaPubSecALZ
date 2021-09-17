@@ -7,26 +7,49 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param name string = 'sqlmi${uniqueString(resourceGroup().id)}'
+@description('SQL Managed Instance Name.')
+param name string
 
-param skuName string = 'GP_Gen5'
-param vCores int = 4
-param storageSizeInGB int = 32
-param subnetId string
-
-param storagePath string
-param securityContactEmail string
-param saLoggingName string
-
+@description('Key/Value pair of tags.')
 param tags object = {}
 
+@description('SQL Managed Instance SKU.  Default: GP_Gen5')
+param skuName string = 'GP_Gen5'
+
+@description('Number of vCores.  Defalut: 4')
+param vCores int = 4
+
+@description('Data Storage Size in GB.  Default: 32')
+param storageSizeInGB int = 32
+
+// Networking
+@description('Subnet Resource Id.')
+param subnetId string
+
+// SQL Vulnerability Scanning
+@description('SQL Vulnerability Scanning - Security Contact email address for alerts.')
+param sqlVulnerabilitySecurityContactEmail string
+
+@description('SQL Vulnerability Scanning - Storage Account Name.')
+param sqlVulnerabilityLoggingStorageAccountName string
+
+@description('SQL Vulnerability Scanning - Storage Account Path to store the vulnerability scan results.')
+param sqlVulnerabilityLoggingStoragePath string
+
+// Credentials
+@description('SQL MI Username')
 @secure()
 param sqlmiUsername string
 
+@description('SQL MI Password')
 @secure()
 param sqlmiPassword string
 
+// Azure Key Vault
+@description('Azure Key Vault Resource Group Name.  Required when useCMK=true.')
 param akvResourceGroupName string
+
+@description('Azure Key Vault Name.  Required when useCMK=true.')
 param akvName string
 
 resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
@@ -78,12 +101,12 @@ resource sqlmi_va 'Microsoft.Sql/managedInstances/vulnerabilityAssessments@2020-
     roleAssignSQLMIToSALogging
   ]
   properties: {
-    storageContainerPath: '${storagePath}vulnerability-assessment'
+    storageContainerPath: '${sqlVulnerabilityLoggingStoragePath}vulnerability-assessment'
     recurringScans: {
       isEnabled: true
       emailSubscriptionAdmins: true
       emails: [
-        securityContactEmail
+        sqlVulnerabilitySecurityContactEmail
       ]
     }
   }
@@ -102,7 +125,7 @@ module akvRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-
 module roleAssignSQLMIToSALogging '../../iam/resource/storage-role-assignment-to-sp.bicep' = {
   name: 'rbac-${name}-logging-storage-account'
   params: {
-    storageAccountName: saLoggingName
+    storageAccountName: sqlVulnerabilityLoggingStorageAccountName
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
     resourceSPObjectIds: array(sqlmi.identity.principalId)
   }
@@ -115,7 +138,7 @@ module enableTDE 'sqlmi-with-cmk-enable-tde.bicep' = {
 
   name: 'deploy-tde-with-cmk'
   params: {
-    sqlmiName: sqlmi.name
+    sqlServerName: sqlmi.name
 
     akvName: akvName
     akvKeyName: akvKey.outputs.keyName
@@ -124,4 +147,5 @@ module enableTDE 'sqlmi-with-cmk-enable-tde.bicep' = {
   }
 }
 
+// Outputs
 output sqlMiFqdn string = sqlmi.properties.fullyQualifiedDomainName

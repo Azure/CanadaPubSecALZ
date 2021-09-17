@@ -7,8 +7,13 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Azure App Service Name.')
 param name string
 
+@description('Key/Value pair of tags.')
+param tags object = {}
+
+@description('Technology Stack.')
 @allowed([
   'DOTNETCORE|3.1'
   'DOTNETCORE|2.1'
@@ -19,16 +24,23 @@ param name string
   'PYTHON|3.6'
 ])
 param stack string
+
+@description('App Service Plan Resource Id.')
 param appServicePlanId string
 
+@description('Storage Account Name.')
 param storageName string
+
+@description('Storage Account Resource Id.')
 param storageId string
 
+@description('Application Insights Instrumentation Key.')
 param aiIKey string
+
+@description('Virtual Network Integration Subnet Resource Id.')
 param vnetIntegrationSubnetId string
 
-param tags object = {}
-
+// Linux Web App with Virtual Network Integration
 resource app 'Microsoft.Web/sites@2020-06-01' = {
   name: name
   tags: tags

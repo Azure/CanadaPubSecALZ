@@ -7,21 +7,35 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param sqlServerName string = 'sqlserver${uniqueString(resourceGroup().id)}'
+@description('SQL Database Logic Server Name.')
+param sqlServerName string
 
-param privateEndpointSubnetId string
-param privateZoneId string
-
-param securityContactEmail string
-
-param saLoggingName string
-param storagePath string
-
+@description('Key/Value pair of tags.')
 param tags object = {}
 
+// Networking
+@description('Private Endpoint Subnet Resource Id.')
+param privateEndpointSubnetId string
+
+@description('Private DNS Zone Resource Id.')
+param privateZoneId string
+
+// SQL Vulnerability Scanning
+@description('SQL Vulnerability Scanning - Security Contact email address for alerts.')
+param sqlVulnerabilitySecurityContactEmail string
+
+@description('SQL Vulnerability Scanning - Storage Account Name.')
+param sqlVulnerabilityLoggingStorageAccountName string
+
+@description('SQL Vulnerability Scanning - Storage Account Path to store the vulnerability scan results.')
+param sqlVulnerabilityLoggingStoragePath string
+
+// Credentials
+@description('SQL Database Username.')
 @secure()
 param sqldbUsername string
 
+@description('SQL Database Password.')
 @secure()
 param sqldbPassword string
 
@@ -71,12 +85,12 @@ resource sqlserver_va 'Microsoft.Sql/servers/vulnerabilityAssessments@2020-11-01
     roleAssignSQLToSALogging
   ]
   properties: {
-    storageContainerPath: '${storagePath}vulnerability-assessment'
+    storageContainerPath: '${sqlVulnerabilityLoggingStoragePath}vulnerability-assessment'
     recurringScans: {
       isEnabled: true
       emailSubscriptionAdmins: true
       emails: [
-        securityContactEmail
+        sqlVulnerabilitySecurityContactEmail
       ]
     }
   }
@@ -85,7 +99,7 @@ resource sqlserver_va 'Microsoft.Sql/servers/vulnerabilityAssessments@2020-11-01
 module roleAssignSQLToSALogging '../../iam/resource/storage-role-assignment-to-sp.bicep' = {
   name: 'rbac-${sqlServerName}-logging-storage-account'
   params: {
-    storageAccountName: saLoggingName
+    storageAccountName: sqlVulnerabilityLoggingStorageAccountName
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
     resourceSPObjectIds: array(sqlserver.identity.principalId)
   }
@@ -126,4 +140,5 @@ resource sqlserver_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   }
 }
 
+// Outputs
 output sqlDbFqdn string = sqlserver.properties.fullyQualifiedDomainName

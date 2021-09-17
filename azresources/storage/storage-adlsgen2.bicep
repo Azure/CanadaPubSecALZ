@@ -7,33 +7,43 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param name string = 'datalake${uniqueString(resourceGroup().id)}'
+@description('ADLS Gen2 Storage Account Name')
+param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
 
-@description('Required if private zones are used')
+@description('Private Endpoint Subnet Id')
 param privateEndpointSubnetId string
 
-@description('When true, blob private zone is created')
-param deployBlobPrivateZone bool
-@description('Required when deployBlobPrivateZone=true')
+@description('Private DNS Zone Resource Id for blob.')
 param blobPrivateZoneId string
 
-@description('When true, blob private zone is created')
-param deployDfsPrivateZone bool
-@description('Required when deployFilePrivateZone=true')
+@description('Private DNS Zone Resource Id for dfs.')
 param dfsPrivateZoneId string
 
+@description('Default Network Acls.  Default: deny')
 param defaultNetworkAcls string = 'deny'
-param bypassNetworkAcls string = 'AzureServices,Logging,Metrics'
-param subnetIdForVnetRestriction array = []
 
-@description('When true, customer managed key is used for encryption')
+@description('Bypass Network Acls.  Default: AzureServices,Logging,Metrics')
+param bypassNetworkAcls string = 'AzureServices,Logging,Metrics'
+
+@description('Array of Subnet Resource Ids for Virtual Network Access')
+param subnetIdForVnetAccess array = []
+
+// Customer Managed Key
+@description('Boolean flag that determines whether to enable Customer Managed Key.')
 param useCMK bool
-@description('Required when useCMK=true')
-param keyVaultName string
-@description('Required when useCMK=true')
-param keyVaultResourceGroupName string
-@description('Required when useCMK=true')
+
+// Azure Key Vault
+@description('Azure Key Vault Resource Group Name.  Required when useCMK=true.')
+param akvResourceGroupName string
+
+@description('Azure Key Vault Name.  Required when useCMK=true.')
+param akvName string
+
+// Deployment Script Identity
+@description('Deployment Script Identity Resource Id.  This identity is used to execute Azure CLI as part of the deployment.')
 param deploymentScriptIdentityId string
 
 /* Storage Account */
@@ -79,7 +89,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2019-06-01' = {
     networkAcls: {
       defaultAction: defaultNetworkAcls
       bypass: bypassNetworkAcls
-      virtualNetworkRules: [for subnetId in subnetIdForVnetRestriction: {
+      virtualNetworkRules: [for subnetId in subnetIdForVnetAccess: {
         id: subnetId
         action: 'Allow'
       }]
@@ -102,15 +112,15 @@ module enableCMK 'storage-enable-cmk.bicep' = if (useCMK) {
     storageAccountName: storage.name
     storageResourceGroupName: resourceGroup().name
 
-    keyVaultName: keyVaultName
-    keyVaultResourceGroupName: keyVaultResourceGroupName
-
+    keyVaultResourceGroupName: akvResourceGroupName
+    keyVaultName: akvName
+    
     deploymentScriptIdentityId: deploymentScriptIdentityId
   }
 }
 
 /* Private Endpoints */
-resource datalake_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployBlobPrivateZone) {
+resource datalake_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (!empty(blobPrivateZoneId)) {
   location: resourceGroup().location
   name: '${storage.name}-blob-endpoint'
   properties: {
@@ -145,7 +155,7 @@ resource datalake_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (
   }
 }
 
-resource datalake_dfs_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployDfsPrivateZone) {
+resource datalake_dfs_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (!empty(dfsPrivateZoneId)) {
   location: resourceGroup().location
   name: '${storage.name}-dfs-endpoint'
   properties: {
@@ -180,6 +190,7 @@ resource datalake_dfs_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (d
   }
 }
 
+// Outputs
 output storageName string = storage.name
 output storageId string = storage.id
 output primaryDfsEndpoint string = storage.properties.primaryEndpoints.dfs

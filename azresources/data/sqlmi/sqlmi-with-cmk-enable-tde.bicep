@@ -7,17 +7,25 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param sqlmiName string
+@description('SQL Managed Instance Name.')
+param sqlServerName string
 
+@description('Azure Key Vault Name.')
 param akvName string
+
+@description('Azure Key Vault Key Name.')
 param akvKeyName string
+
+@description('Azure Key Vault Key Version.')
 param akvKeyVersion string
+
+@description('Azure Key Vault Key Uri with Version.')
 param keyUriWithVersion string
 
 var tdeKeyName = '${akvName}_${akvKeyName}_${akvKeyVersion}'
 
 resource sqlmiKey 'Microsoft.Sql/managedInstances/keys@2021-02-01-preview' = {
-  name: '${sqlmiName}/${tdeKeyName}'
+  name: '${sqlServerName}/${tdeKeyName}'
   properties: {
     serverKeyType: 'AzureKeyVault'
     uri: keyUriWithVersion
@@ -29,7 +37,7 @@ resource sqlmiTDE 'Microsoft.Sql/managedInstances/encryptionProtector@2021-02-01
     sqlmiKey
   ]
 
-  name: '${sqlmiName}/current'
+  name: '${sqlServerName}/current'
   properties: {
     serverKeyType: 'AzureKeyVault'
     serverKeyName: tdeKeyName

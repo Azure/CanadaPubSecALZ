@@ -7,6 +7,7 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Network Security Group Name.')
 param name string
 
 resource nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
@@ -31,4 +32,5 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
   }
 }
 
+// Outputs
 output nsgId string = nsg.id

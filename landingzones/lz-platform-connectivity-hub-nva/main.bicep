@@ -450,7 +450,7 @@ module ddosPlan '../../azresources/network/ddos-standard.bicep' = if (deployDdos
   name: 'deploy-ddos-standard-plan'
   scope: rgDdos
   params: {
-    ddosPlanName: ddosPlanName
+    name: ddosPlanName
   }
 }
 
@@ -669,8 +669,8 @@ module bastion '../../azresources/network/bastion.bicep' = {
   name: 'deploy-bastion'
   scope: rgHubVnet
   params: {
-    bastionName: bastionName
-    bastionSubnetId: hubVnet.outputs.AzureBastionSubnetId
+    name: bastionName
+    subnetId: hubVnet.outputs.AzureBastionSubnetId
   }
 }
 

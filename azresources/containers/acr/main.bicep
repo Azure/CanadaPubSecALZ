@@ -7,20 +7,31 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param name string = 'acr${uniqueString(resourceGroup().id)}'
+@description('Azure Container Registry Name.')
+param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
 
-param deployPrivateZone bool
+// Networking
+@description('Private Endpoint Subnet Resource Id.')
 param privateEndpointSubnetId string
+
+@description('Private DNS Zone Resource Id.')
 param privateZoneId string
 
-@description('When true, customer managed key will be enabled')
+// Customer Managed Key
+@description('Boolean flag that determines whether to enable Customer Managed Key.')
 param useCMK bool
-@description('Required when useCMK=true')
+
+// Azure Key Vault
+@description('Azure Key Vault Resource Group Name.  Required when useCMK=true.')
 param akvResourceGroupName string
-@description('Required when useCMK=true')
+
+@description('Azure Key Vault Name.  Required when useCMK=true.')
 param akvName string
-@description('Required when useCMK=true')
+
+@description('Deployment Script Identity Id.  Required when useCMK=true.')
 param deploymentScriptIdentityId string
 
 module acrIdentity '../../iam/user-assigned-identity.bicep' = {
@@ -40,7 +51,6 @@ module acrWithCMK 'acr-with-cmk.bicep' = if (useCMK) {
     userAssignedIdentityPrincipalId: acrIdentity.outputs.identityPrincipalId
     userAssignedIdentityClientId: acrIdentity.outputs.identityClientId
 
-    deployPrivateZone: deployPrivateZone
     privateEndpointSubnetId: privateEndpointSubnetId
     privateZoneId: privateZoneId    
 
@@ -58,10 +68,10 @@ module acrWithoutCMK 'acr-without-cmk.bicep' = if (!useCMK) {
 
     userAssignedIdentityId: acrIdentity.outputs.identityId
 
-    deployPrivateZone: deployPrivateZone
     privateEndpointSubnetId: privateEndpointSubnetId
     privateZoneId: privateZoneId    
   }
 }
 
+// Outputs
 output acrId string = useCMK ? acrWithCMK.outputs.acrId : acrWithoutCMK.outputs.acrId

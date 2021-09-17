@@ -7,6 +7,7 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('User Assigned Managed Identity Name.')
 param name string
 
 resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
@@ -14,6 +15,7 @@ resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' 
   location: resourceGroup().location
 }
 
+// Outputs
 output identityId string = identity.id
 output identityPrincipalId string = identity.properties.principalId
 output identityClientId string = identity.properties.clientId

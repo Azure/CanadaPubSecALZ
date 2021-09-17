@@ -7,18 +7,33 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param subnetId string
+@description('Virtual Machine Name.')
 param vmName string
+
+@description('Virtual Machine SKU.')
 param vmSize string
 
+@description('Azure Availability Zone for VM.')
+param availabilityZone string
+
+// Credentials
+@description('Virtual Machine Username.')
+@secure()
 param username string
+
+@description('Virtual Machine Password')
 @secure()
 param password string
 
-param availabilityZone string
+// Networking
+@description('Subnet Resource Id.')
+param subnetId string
+
+@description('Boolean flag that enables Accelerated Networking.')
 param enableAcceleratedNetworking bool
 
-@description('Enable encryption at host (double encryption)')
+// Host Encryption
+@description('Boolean flag to enable encryption at host (double encryption).  This feature can not be used with Azure Disk Encryption.')
 param encryptionAtHost bool = true
 
 resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
@@ -98,6 +113,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
     }
 }
 
+// Outputs
 output vmName string = vm.name
 output vmId string = vm.id
 output nicId string = nic.id

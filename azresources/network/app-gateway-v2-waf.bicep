@@ -7,15 +7,20 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Azure Application Gateway v2 Name.')
 param name string
+
+@description('Subnet Resource Id.')
 param subnetId string
 
+@description('Firewall Mode.  Default:  Prevention')
 @allowed([
   'Detection'
   'Prevention'
 ])
 param firewallMode string = 'Prevention'
 
+@description('OWASP Rule Set Version.  Default: 3.0')
 @allowed([
   '3.2'
   '3.1'
@@ -24,6 +29,7 @@ param firewallMode string = 'Prevention'
 ])
 param owaspRuleSetVersion string = '3.0'
 
+@description('SSL Predefined Policy.  Default: AppGwSslPolicy20170401')
 @allowed([
   'AppGwSslPolicy20150501'
   'AppGwSslPolicy20170401'
@@ -31,9 +37,13 @@ param owaspRuleSetVersion string = '3.0'
 ])
 param sslPredefinedPolicyName string = 'AppGwSslPolicy20170401'
 
+@description('Autoscale Minimum Capacity.  Default: 1')
 param autoScaleMinCapacity int = 1
+
+@description('Autoscale Maximum Capacity.  Default: 2')
 param autoScaleMaxCapacity int = 2
 
+@description('Enable HTTP 2.  Default: true')
 param enableHttp2 bool = true
 
 resource appgwPublicIp 'Microsoft.Network/publicIPAddresses@2020-06-01' = {

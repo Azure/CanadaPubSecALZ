@@ -7,30 +7,62 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param synapseName string
+@description('Synapse Analytics name.')
+param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
 
-param adlsResourceGroupName string
-param adlsName string
-param adlsFSName string
-
+@description('Synapse Analytics Managed Resource Group Name.')
 param managedResourceGroupName string
 
+// ADLS Gen 2
+@description('Azure Data Lake Store Gen2 Resource Group Name.')
+param adlsResourceGroupName string
+
+@description('Azure Data Lake Store Gen2 Name.')
+param adlsName string
+
+@description('Azure Data Lake Store File System Name.')
+param adlsFSName string
+
+// Credentials
+@description('Synapse Analytics Username.')
+@secure()
 param synapseUsername string
+
+@description('Synapse Analytics Password.')
 @secure()
 param synapsePassword string
 
+// Networking
+@description('Private Endpoint Subnet Resource Id.')
 param privateEndpointSubnetId string
+
+@description('Private DNS Zone Resource Id.')
 param synapsePrivateZoneId string
+
+@description('Private DNS Zone Resource Id for Dev.')
 param synapseDevPrivateZoneId string
+
+@description('Private DNS Zone Resource Id for Sql.')
 param synapseSqlPrivateZoneId string
 
-param securityContactEmail string
+// SQL Vulnerability Scanning
+@description('SQL Vulnerability Scanning - Security Contact email address for alerts.')
+param sqlVulnerabilitySecurityContactEmail string
 
-param loggingStorageAccountResourceGroupName string
-param loggingStorageAccountName string
-param loggingStoragePath string
+@description('SQL Vulnerability Scanning - Storage Account Resource Group.')
+param sqlVulnerabilityLoggingStorageAccounResourceGroupName string
 
+@description('SQL Vulnerability Scanning - Storage Account Name.')
+param sqlVulnerabilityLoggingStorageAccountName string
+
+@description('SQL Vulnerability Scanning - Storage Account Path to store the vulnerability scan results.')
+param sqlVulnerabilityLoggingStoragePath string
+
+// Deployment Script Identity
+@description('Deployment Script Identity Resource Id.  This identity is used to execute Azure CLI as part of the deployment.')
 param deploymentScriptIdentityId string
 
 resource adls 'Microsoft.Storage/storageAccounts@2019-06-01' existing = {
@@ -48,7 +80,7 @@ module dataLakeSynapseFS '../../storage/storage-adlsgen2-fs.bicep' = {
 }
 
 resource synapsePrivateLinkHub 'Microsoft.Synapse/privateLinkHubs@2021-03-01' = {
-  name: '${toLower(synapseName)}plhub'
+  name: '${toLower(name)}plhub'
   tags: tags
   location: resourceGroup().location
 }
@@ -58,7 +90,7 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
     dataLakeSynapseFS
   ]
 
-  name: synapseName
+  name: name
   tags: tags
   location: resourceGroup().location
   properties: {
@@ -115,12 +147,12 @@ resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-
     roleAssignSynapseToSALogging
   ]
   properties: {
-    storageContainerPath: '${loggingStoragePath}vulnerability-assessment'
+    storageContainerPath: '${sqlVulnerabilityLoggingStoragePath}vulnerability-assessment'
     recurringScans: {
       isEnabled: true
       emailSubscriptionAdmins: true
       emails: [
-        securityContactEmail
+        sqlVulnerabilitySecurityContactEmail
       ]
     }
   }
@@ -128,9 +160,9 @@ resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-
 
 module roleAssignSynapseToSALogging '../../iam/resource/storage-role-assignment-to-sp.bicep' = {
   name: 'rbac-${synapse.name}-logging-storage-account'
-  scope: resourceGroup(loggingStorageAccountResourceGroupName)
+  scope: resourceGroup(sqlVulnerabilityLoggingStorageAccounResourceGroupName)
   params: {
-    storageAccountName: loggingStorageAccountName
+    storageAccountName: sqlVulnerabilityLoggingStorageAccountName
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
     resourceSPObjectIds: array(synapse.identity.principalId)
   }
@@ -298,7 +330,7 @@ var azCliCommand = '''
   --account-name {3}
 '''
 
-module addResourceAccess '../../util/deploymentScript.bicep' = {
+module addResourceAccess '../../util/deployment-script.bicep' = {
   name: 'grant-resource-instance-access-${adlsName}'
   params: {
     deploymentScript: format(azCliCommand, synapse.id, subscription().tenantId, adlsResourceGroupName, adlsName)

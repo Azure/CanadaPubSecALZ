@@ -7,46 +7,85 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param aksName string = 'aks'
-param aksVersion string
+@description('Azure Kubernetes Service Name.')
+param name string
 
-param userAssignedIdentityId string
+@description('Azure Kubernetes Service Version.')
+param version string
 
+@description('Key/Value pair of tags.')
 param tags object = {}
 
-param systemNodePoolEnableAutoScaling bool
-param systemNodePoolMinNodeCount int
-param systemNodePoolMaxNodeCount int
-param systemNodePoolNodeSize string = 'Standard_DS2_v2'
-
-param userNodePoolEnableAutoScaling bool
-param userNodePoolMinNodeCount int
-param userNodePoolMaxNodeCount int
-param userNodePoolNodeSize string = 'Standard_DS2_v2'
-
-param subnetId string
-param dnsPrefix string = 'aksdns'
+@description('AKS Managed Resource Group Name.')
 param nodeResourceGroupName string
 
-param podCidr string = '11.0.0.0/16'
-param serviceCidr string = '20.0.0.0/16'
-param dnsServiceIP string = '20.0.0.10'
-param dockerBridgeCidr string = '30.0.0.1/16'
+@description('User Assigned Managed Identity Resource Id.')
+param userAssignedIdentityId string
 
+// System Node Pool
+@description('System Node Pool - Boolean to enable auto scaling.')
+param systemNodePoolEnableAutoScaling bool
+
+@description('System Node Pool - Minimum Node Count.')
+param systemNodePoolMinNodeCount int
+
+@description('System Node Pool - Maximum Node Count.')
+param systemNodePoolMaxNodeCount int
+
+@description('System Node Pool - Node SKU.')
+param systemNodePoolNodeSize string
+
+// User Node Pool
+@description('User Node Pool - Boolean to enable auto scaling.')
+param userNodePoolEnableAutoScaling bool
+
+@description('User Node Pool - Minimum Node Count.')
+param userNodePoolMinNodeCount int
+
+@description('User Node Pool - Maximum Node Count.')
+param userNodePoolMaxNodeCount int
+
+@description('User Node Pool - Node SKU.')
+param userNodePoolNodeSize string
+
+// Networking
+@description('Subnet Resource Id.')
+param subnetId string
+
+@description('DNS Prefix.')
+param dnsPrefix string
+
+@description('Private DNS Zone Resource Id.')
 param privateDNSZoneId string
 
+// Kubernetes Networking
+@description('Pod CIDR.  Default: 11.0.0.0/16')
+param podCidr string = '11.0.0.0/16'
+
+@description('Service CIDR.  Default: 20.0.0.0/16')
+param serviceCidr string = '20.0.0.0/16'
+
+@description('DNS Service IP. Default: 20.0.0.10')
+param dnsServiceIP string = '20.0.0.10'
+
+@description('Docker Bridge CIDR.  Default: 30.0.0.1/16')
+param dockerBridgeCidr string = '30.0.0.1/16'
+
+// Container Insights
+@description('Log Analytics Workspace Resource Id.  Default: blank')
 param containerInsightsLogAnalyticsResourceId string = ''
 
-@description('Enable encryption at host (double encryption)')
+// Host Encryption
+@description('Enable encryption at host (double encryption).  Default: true')
 param enableEncryptionAtHost bool = true
 
 resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
-  name: aksName
+  name: name
   location: resourceGroup().location
   tags: tags
   properties: {
     nodeResourceGroup: nodeResourceGroupName
-    kubernetesVersion: aksVersion
+    kubernetesVersion: version
     dnsPrefix: dnsPrefix
     enableRBAC: true
     networkProfile: {

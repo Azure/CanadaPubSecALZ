@@ -7,7 +7,10 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param name string = 'aiweb-${uniqueString(resourceGroup().id)}'
+@description('Azure Application Insights Name.')
+param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
 
 resource ai 'Microsoft.Insights/components@2020-02-02-preview' = {
@@ -20,5 +23,6 @@ resource ai 'Microsoft.Insights/components@2020-02-02-preview' = {
   }
 }
 
+// Outputs
 output aiId string = ai.id
 output aiIKey string = ai.properties.InstrumentationKey

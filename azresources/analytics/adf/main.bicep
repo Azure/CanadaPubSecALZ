@@ -7,20 +7,34 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param name string = 'adf${uniqueString(resourceGroup().id)}'
+@description('Azure Data Factory Name.')
+param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
 
+// Private Endpoints
+@description('Private Endpoint Subnet Resource Id.')
 param privateEndpointSubnetId string
+
+@description('Private DNS Zone Resource Id for Data Factory.')
 param datafactoryPrivateZoneId string
+
+@description('Private DNS Zone Resource Id for Data Factory Portal.')
 param portalPrivateZoneId string
 
-@description('When true, customer managed key will be enabled')
+// Customer Managed Key
+@description('Boolean flag that determines whether to enable Customer Managed Key.')
 param useCMK bool
-@description('Required when useCMK=true')
+
+// Azure Key Vault
+@description('Azure Key Vault Resource Group Name.  Required when useCMK=true.')
 param akvResourceGroupName string
-@description('Required when useCMK=true')
+
+@description('Azure Key Vault Name.  Required when useCMK=true.')
 param akvName string
 
+// User Assigned Managed Identity
 module identity '../../iam/user-assigned-identity.bicep' = {
   name: 'deploy-create-user-assigned-identity'
   params: {
@@ -28,6 +42,7 @@ module identity '../../iam/user-assigned-identity.bicep' = {
   }
 }
 
+// Azure Data Factory without Customer Managed Key
 module adfWithoutCMK 'adf-without-cmk.bicep' = if (!useCMK) {
   name: 'deploy-adf-without-cmk'
   params: {
@@ -42,6 +57,7 @@ module adfWithoutCMK 'adf-without-cmk.bicep' = if (!useCMK) {
   }
 }
 
+// Azure Data Factory with Customer Managed Key
 module adfWithCMK 'adf-with-cmk.bicep' = if (useCMK) {
   name: 'deploy-adf-with-cmk'
   params: {

@@ -7,8 +7,13 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Private DNS Zone Name.')
 param zoneName string
+
+@description('Role Definition Id.')
 param roleDefinitionId string
+
+@description('Array of Service Principal Object Ids.')
 param resourceSPObjectIds array = []
 
 resource scopeOfRoleAssignment 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {

@@ -7,12 +7,19 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param storageAccountName string
+@description('Storage Account Resource Group Name.')
 param storageResourceGroupName string
 
-param keyVaultName string
+@description('Storage Account Name.')
+param storageAccountName string
+
+@description('Azure Key Vault Resource Group Name.')
 param keyVaultResourceGroupName string
 
+@description('Azure Key Vault Name.')
+param keyVaultName string
+
+@description('Deployment Script Identity Resource Id.  This identity is used to execute Azure CLI as part of the deployment.')
 param deploymentScriptIdentityId string
 
 resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
@@ -53,7 +60,7 @@ var cliCommand = '''
   --encryption-key-source Microsoft.Keyvault
 '''
 
-module enableCmk '../util/deploymentScript.bicep' = {
+module enableCmk '../util/deployment-script.bicep' = {
   dependsOn: [
     roleAssignForAKV
   ]

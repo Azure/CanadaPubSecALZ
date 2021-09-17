@@ -7,8 +7,13 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Storage Account Name.')
 param storageAccountName string
+
+@description('Role Definition Id.')
 param roleDefinitionId string
+
+@description('Array of Service Principal Object Ids.')
 param resourceSPObjectIds array = []
 
 resource scopeOfRoleAssignment 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {

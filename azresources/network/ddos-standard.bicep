@@ -7,12 +7,14 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param ddosPlanName string
+@description('Azure DDOS Standard Plan Name.')
+param name string
 
 resource ddosPlan 'Microsoft.Network/ddosProtectionPlans@2020-07-01' = {
-  name: ddosPlanName
+  name: name
   location: resourceGroup().location
   properties: {}
 }
 
+// Outputs
 output ddosPlanId string = ddosPlan.id

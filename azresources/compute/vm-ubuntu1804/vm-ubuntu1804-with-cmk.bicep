@@ -7,28 +7,57 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param subnetId string
+@description('Virtual Machine Name.')
 param vmName string
-param vmSize string = 'Standard_DS1_v2'
 
+@description('Virtual Machine SKU.')
+param vmSize string
+
+@description('Azure Availability Zone for VM.')
+param availabilityZone string
+
+// Credentials
+@description('Virtual Machine Username.')
+@secure()
 param username string
+
+@description('Virtual Machine Password')
 @secure()
 param password string
 
-param availabilityZone string = '1'
-param enableAcceleratedNetworking bool = false
+// Networking
+@description('Subnet Resource Id.')
+param subnetId string
 
-param publisher string = 'Canonical'
-param offer string = 'UbuntuServer'
-param sku string = '18.04-LTS'
-param version string = 'latest' 
-param storageAccountType string = 'StandardSSD_LRS'
+@description('Boolean flag that enables Accelerated Networking.')
+param enableAcceleratedNetworking bool
 
+// Azure Key Vault
+@description('Azure Key Vault Resource Group Name.  Required when useCMK=true.')
 param akvResourceGroupName string
+
+@description('Azure Key Vault Name.  Required when useCMK=true.')
 param akvName string
 
-@description('Enable encryption at host (double encryption)')
+// Host Encryption
+@description('Boolean flag to enable encryption at host (double encryption).  This feature can not be used with Azure Disk Encryption.')
 param encryptionAtHost bool = true
+
+// VM Image
+@description('VM Publisher.  Default: Canonical')
+param publisher string = 'Canonical'
+
+@description('VM Offer.  Default: UbuntuServer')
+param offer string = 'UbuntuServer'
+
+@description('VM SKU.  Default: 18.04-LTS')
+param sku string = '18.04-LTS'
+
+@description('VM Version.  Default: latest')
+param version string = 'latest'
+
+@description('VM Managed Disk Storage Account Type.  Default: StandardSSD_LRS')
+param storageAccountType string = 'StandardSSD_LRS'
 
 resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
     scope: resourceGroup(akvResourceGroupName)
@@ -157,6 +186,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
     }
 }
 
+// Outputs
 output vmName string = vm.name
 output vmId string = vm.id
 output nicId string = nic.id

@@ -7,6 +7,7 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('User Defined Route Name.')
 param name string
 
 /*
@@ -29,6 +30,7 @@ Example for routes array:
     }
   }
 */
+@description('Array of routes')
 param routes array = []
 
 resource udr 'Microsoft.Network/routeTables@2020-11-01' = {
@@ -39,4 +41,6 @@ resource udr 'Microsoft.Network/routeTables@2020-11-01' = {
     routes: routes
   }
 }
+
+// Outputs
 output udrId string = udr.id

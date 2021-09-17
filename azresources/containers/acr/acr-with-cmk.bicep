@@ -7,28 +7,55 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param name string = 'acr${uniqueString(resourceGroup().id)}'
+@description('Azure Container Registry Name.')
+param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
 
-param userAssignedIdentityId string
-param userAssignedIdentityPrincipalId string
-param userAssignedIdentityClientId string
-
+@description('Quarantine Policy.  Default:  disabled')
 param quarantinePolicy string = 'disabled'
+
+@description('Trust Policy Type.  Default:  Notary')
 param trustPolicyType string = 'Notary'
+
+@description('Trust Policy Status.  This must be disabled when using Customer Managed Key.  Default:  disabled')
 @allowed([
   'disabled'
 ])
 param trustPolicyStatus string = 'disabled'
+
+@description('Retention Policy in days.  Default:  30')
 param retentionPolicyDays int = 30
+
+@description('Retention Policy status.  Default:  enabled')
 param retentionPolicyStatus string = 'enabled'
 
-param deployPrivateZone bool
+// User Assigned Managed Identity
+@description('User Assigned Managed Identity Resource Id.')
+param userAssignedIdentityId string
+
+@description('User Assigned Managed Identity Principal Id.')
+param userAssignedIdentityPrincipalId string
+
+@description('User Assigned Managed Identity Client Id.')
+param userAssignedIdentityClientId string
+
+// Networking
+@description('Private Endpoint Subnet Resource Id.')
 param privateEndpointSubnetId string
+
+@description('Private DNS Zone Resource Id.')
 param privateZoneId string
 
+// Azure Key Vault
+@description('Azure Key Vault Resource Group Name.  Required when useCMK=true.')
 param akvResourceGroupName string
+
+@description('Azure Key Vault Name.  Required when useCMK=true.')
 param akvName string
+
+@description('Deployment Script Identity Id.  Required when useCMK=true.')
 param deploymentScriptIdentityId string
 
 @description('Key Vault will be created with this name during the deployment, then deleted once ACR key is rotated.')
@@ -115,7 +142,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2020-11-01-preview' = {
   }
 }
 
-resource acr_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployPrivateZone) {
+resource acr_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (!empty(privateZoneId)) {
   location: resourceGroup().location
   name: '${acr.name}-endpoint'
   properties: {
@@ -185,7 +212,7 @@ var cliCmkRotateCmkAndCleanUpCommand = '''
   az keyvault delete -g {0} -n {3}
 '''
 
-module rotateCmkAndCleanUp '../../util/deploymentScript.bicep' = {
+module rotateCmkAndCleanUp '../../util/deployment-script.bicep' = {
   dependsOn: [
     akvRoleAssignmentForCMK
   ]

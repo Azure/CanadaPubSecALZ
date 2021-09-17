@@ -145,7 +145,7 @@ var cleanUpScript = '''
 
 '''
 
-module testCleanup '../../../../azresources/util/deploymentScript.bicep' = if (testRunnerCleanupAfterDeployment) {
+module testCleanup '../../../../azresources/util/deployment-script.bicep' = if (testRunnerCleanupAfterDeployment) {
   dependsOn: [
     test
   ]

@@ -7,9 +7,11 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Stream Analytics name.')
 param name string
-param tags object = {}
 
+@description('Key/Value pair of tags.')
+param tags object = {}
 
 resource streamanalytics 'Microsoft.StreamAnalytics/streamingjobs@2017-04-01-preview' = {
   name: name

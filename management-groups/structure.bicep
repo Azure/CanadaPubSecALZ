@@ -9,10 +9,12 @@
 
 targetScope = 'managementGroup'
 
+@description('Top Level Management Group Name')
 @minLength(2)
 @maxLength(10)
 param topLevelManagementGroupName string
 
+@description('Parent Management Group used to create all management groups, including Top Level Management Group.')
 param parentManagementGroupId string
 
 // Level 1

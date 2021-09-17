@@ -7,11 +7,21 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param privateEndpointSubnetId string
-param privateZoneId string
-param name string = 'fhir${uniqueString(resourceGroup().id)}'
+@description('FHIR Name.')
+param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
+
+@description('FHIR API Version.  Default:  fhir-R4')
 param version string = 'fhir-R4' // fhir version
+
+// Networking
+@description('Private Endpoint Subnet Resource Id.')
+param privateEndpointSubnetId string
+
+@description('Private Zone Resource Id.')
+param privateZoneId string
 
 resource fhir 'Microsoft.HealthcareApis/services@2021-01-11' = {
   location: resourceGroup().location

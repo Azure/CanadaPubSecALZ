@@ -10,7 +10,7 @@
 @description('Azure Automation Account name')
 param automationAccountName string
 
-@description('Key/Value pair of tags that will be assigned to Automation Account.')
+@description('Key/Value pair of tags.')
 param tags object = {}
 
 resource automationAccount 'Microsoft.Automation/automationAccounts@2015-10-31' = {

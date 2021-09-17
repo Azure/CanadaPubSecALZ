@@ -219,7 +219,7 @@ var azCliCommandDeploymentScriptPermissionCleanup = '''
   az role assignment delete --assignee {0} --scope {1}
 '''
 
-module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploymentScript.bicep' = if (useDeploymentScripts) {
+module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deployment-script.bicep' = if (useDeploymentScripts) {
   dependsOn: [
     acr
     dataLake
@@ -235,7 +235,7 @@ module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploy
   }  
 }
 
-module rgComputeDeploymentScriptPermissionCleanup '../../azresources/util/deploymentScript.bicep' = if (useDeploymentScripts) {
+module rgComputeDeploymentScriptPermissionCleanup '../../azresources/util/deployment-script.bicep' = if (useDeploymentScripts) {
   dependsOn: [
     dataLakeMetaData
   ]
@@ -305,7 +305,6 @@ module keyVault '../../azresources/security/key-vault.bicep' = {
 
     enabledForDiskEncryption: true
 
-    deployPrivateEndpoint: true
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.keyVaultPrivateDnsZoneId
   }
@@ -317,17 +316,16 @@ module sqlMi '../../azresources/data/sqlmi/main.bicep' = if (deploySQLMI == true
   params: {
     tags: tags
     
-    name: sqlMiName
+    sqlServerName: sqlMiName
     
     subnetId: networking.outputs.sqlMiSubnetId
     
     sqlmiUsername: sqlmiUsername
     sqlmiPassword: sqlmiPassword
 
-    saLoggingName: storageLogging.outputs.storageName
-    storagePath: storageLogging.outputs.storagePath
-    
-    securityContactEmail: securityContactEmail
+    sqlVulnerabilityLoggingStorageAccountName: storageLogging.outputs.storageName
+    sqlVulnerabilityLoggingStoragePath: storageLogging.outputs.storagePath
+    sqlVulnerabilitySecurityContactEmail: securityContactEmail
 
     useCMK: useCMK
     akvResourceGroupName: useCMK ? rgSecurity.name : ''
@@ -345,16 +343,14 @@ module storageLogging '../../azresources/storage/storage-generalpurpose.bicep' =
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
     filePrivateZoneId: networking.outputs.dataLakeFilePrivateDnsZoneId
-    deployBlobPrivateZone: true
-    deployFilePrivateZone: true
     
     defaultNetworkAcls: 'Deny'
-    subnetIdForVnetRestriction: array(networking.outputs.sqlMiSubnetId)
+    subnetIdForVnetAccess: array(networking.outputs.sqlMiSubnetId)
 
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
-    keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
-    keyVaultName: useCMK ? keyVault.outputs.akvName : ''
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
@@ -368,9 +364,9 @@ module sqlDb '../../azresources/data/sqldb/main.bicep' = if (deploySQLDB == true
     privateZoneId: networking.outputs.sqlDBPrivateDnsZoneId
     sqldbUsername: sqldbUsername
     sqldbPassword: sqldbPassword
-    saLoggingName: storageLogging.outputs.storageName
-    storagePath: storageLogging.outputs.storagePath
-    securityContactEmail: securityContactEmail
+    sqlVulnerabilityLoggingStorageAccountName: storageLogging.outputs.storageName
+    sqlVulnerabilityLoggingStoragePath: storageLogging.outputs.storagePath
+    sqlVulnerabilitySecurityContactEmail: securityContactEmail
 
     useCMK: useCMK
     akvResourceGroupName: useCMK ? rgSecurity.name : ''
@@ -387,16 +383,13 @@ module dataLake '../../azresources/storage/storage-adlsgen2.bicep' = {
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
 
-    deployBlobPrivateZone: true
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
-    
-    deployDfsPrivateZone: true
     dfsPrivateZoneId: networking.outputs.dataLakeDfsPrivateDnsZoneId
 
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
-    keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
-    keyVaultName: useCMK ? keyVault.outputs.akvName : ''
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 
@@ -431,8 +424,8 @@ module aks '../../azresources/containers/aks-kubenet/main.bicep' = {
   params: {
     tags: tags
 
-    aksName: aksName
-    aksVersion: aksVersion
+    name: aksName
+    version: aksVersion
 
     systemNodePoolEnableAutoScaling: true
     systemNodePoolMinNodeCount: 1
@@ -444,6 +437,7 @@ module aks '../../azresources/containers/aks-kubenet/main.bicep' = {
     userNodePoolMaxNodeCount: 3
     userNodePoolNodeSize: 'Standard_DS2_v2'
     
+    dnsPrefix: toLower(aksName)
     subnetId: networking.outputs.aksSubnetId
     nodeResourceGroupName: '${rgCompute.name}-${aksName}-${uniqueString(rgCompute.id)}'
 
@@ -481,7 +475,6 @@ module acr '../../azresources/containers/acr/main.bicep' = {
     name: acrName
     tags: tags
 
-    deployPrivateZone: true
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.acrPrivateDnsZoneId
 
@@ -513,13 +506,11 @@ module dataLakeMetaData '../../azresources/storage/storage-generalpurpose.bicep'
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
     filePrivateZoneId: networking.outputs.dataLakeFilePrivateDnsZoneId
-    deployBlobPrivateZone: true
-    deployFilePrivateZone: true
 
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
-    keyVaultResourceGroupName: useCMK ? rgSecurity.name : ''
-    keyVaultName: useCMK ? keyVault.outputs.akvName : ''
+    akvResourceGroupName: useCMK ? rgSecurity.name : ''
+    akvName: useCMK ? keyVault.outputs.akvName : ''
   }
 }
 

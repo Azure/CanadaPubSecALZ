@@ -7,8 +7,13 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Virtual Network Name.')
 param vnetName string
+
+@description('Role Definition Id.')
 param roleDefinitionId string
+
+@description('Array of Service Principal Object Ids.')
 param resourceSPObjectIds array = []
 
 resource scopeOfRoleAssignment 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {

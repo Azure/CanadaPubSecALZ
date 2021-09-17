@@ -13,7 +13,7 @@ param workspaceName string
 @description('Automation Account Name.')
 param automationAccountName string
 
-@description('Key/Value pair of tags that will be assigned to Automation Account.')
+@description('Key/Value pair of tags.')
 param tags object = {}
 
 @description('Log Analytics Workspace Data Retention in Days.  Default: 730 days')

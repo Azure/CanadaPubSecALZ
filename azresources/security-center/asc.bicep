@@ -9,8 +9,13 @@
 
 targetScope = 'subscription'
 
+@description('Log Analytics Workspace Resource Id.')
 param logAnalyticsWorkspaceResourceId string
+
+@description('Security Contact Email Address.')
 param securityContactEmail string
+
+@description('Security Contact Phone.')
 param securityContactPhone string
 
 // Enable Security Contacts
@@ -54,7 +59,6 @@ var azureDefenderServices = [
   'StorageAccounts'
   'VirtualMachines'
 ]
-
 
 resource ascDefender 'Microsoft.Security/pricings@2018-06-01' = [for service in azureDefenderServices: {
   name: service

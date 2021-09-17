@@ -7,11 +7,17 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Azure App Service Plan Name.')
 param name string
-param skuName string
-param skuTier string
 
+@description('Key/Value pair of tags.')
 param tags object = {}
+
+@description('App Service Plan SKU Name')
+param skuName string
+
+@description('App Service Plan SKU Tier')
+param skuTier string
 
 resource plan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: name

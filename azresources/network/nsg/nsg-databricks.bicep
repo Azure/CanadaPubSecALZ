@@ -7,7 +7,10 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Network Security Group Name for Public Subnet.')
 param namePublic string
+
+@description('Network Security Group Name for Private Subnet.')
 param namePrivate string
 
 resource nsgPublic 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
@@ -196,5 +199,6 @@ resource nsgPrivate 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
   }
 }
 
+// Outputs
 output publicNsgId string = nsgPublic.id
 output privateNsgId string = nsgPrivate.id

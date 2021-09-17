@@ -7,7 +7,10 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Egress Azure Load Balancer Name')
 param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
 
 var loadBalancerBackendPoolName = 'lbBackendPool'
@@ -15,7 +18,6 @@ var loadBalancerBackendPoolId = resourceId('Microsoft.Network/loadBalancers/back
 
 var loadBalancerFrontendConfigName = 'frontendConfig'
 var loadBalancerFrontendConfigId = resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', name, loadBalancerFrontendConfigName)
-
 
 resource lbPublicIp 'Microsoft.Network/publicIPAddresses@2020-06-01' = {
   name: '${name}PublicIp'
@@ -74,6 +76,7 @@ resource lb 'Microsoft.Network/loadBalancers@2020-06-01' = {
   }
 }
 
+// Outputs
 output lbId string = lb.id
 output lbBackendPoolName string = loadBalancerBackendPoolName
 output lbBackendPoolFullName string = '${lb.name}/${loadBalancerBackendPoolName}'

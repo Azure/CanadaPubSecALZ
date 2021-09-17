@@ -7,9 +7,13 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Function App Name.')
 param name string
-param appServicePlanId string
 
+@description('Key/Value pair of tags.')
+param tags object = {}
+
+@description('Technology Stack.  Default: PYTHON|3.9')
 @allowed([
   'PYTHON|3.9'
   'PYTHON|3.8'
@@ -18,14 +22,22 @@ param appServicePlanId string
 ])
 param stack string = 'PYTHON|3.9'
 
+@description('App Service Plan Resource Id.')
+param appServicePlanId string
+
+@description('Storage Account Name.')
 param storageName string
+
+@description('Storage Account Resource Id.')
 param storageId string
 
+@description('Application Insights Instrumentation Key.')
 param aiIKey string
+
+@description('Virtual Network Integration Subnet Resource Id.')
 param vnetIntegrationSubnetId string
 
-param tags object = {}
-
+// Function App with Virtual Network Integration
 resource function_app 'Microsoft.Web/sites@2020-06-01' = {
   name: name
   tags: tags

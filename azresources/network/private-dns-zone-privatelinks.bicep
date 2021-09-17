@@ -7,16 +7,19 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Virtual Network Resource Id')
 param vnetId string
 
+@description('Boolean flag to determine whether to create new Private DNS Zones or to reference existing ones.  Default: true')
 param dnsCreateNewZone bool = true
 
-@description('Required when dnsCreateNewZone=false')
+@description('Private DNS Zones Subscription Id.  Required when dnsCreateNewZone=false')
 param dnsExistingZoneSubscriptionId string = ''
 
-@description('Required when dnsCreateNewZone=false')
+@description('Private DNS Zones Resource Group.  Required when dnsCreateNewZone=false')
 param dnsExistingZoneResourceGroupName string = ''
 
+@description('Array of Private DNS Zones to provision.')
 param privateDnsZones array = [
   'privatelink.azure-automation.net'
   'privatelink${environment().suffixes.sqlServerHostname}'

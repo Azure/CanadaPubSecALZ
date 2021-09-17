@@ -7,15 +7,27 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param name string = 'adf${uniqueString(resourceGroup().id)}'
+@description('Azure Data Factory Name.')
+param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
 
+// Private Endpoints
+@description('Private Endpoint Subnet Resource Id.')
 param privateEndpointSubnetId string
+
+@description('Private DNS Zone Resource Id for Data Factory.')
 param datafactoryPrivateZoneId string
+
+@description('Private DNS Zone Resource Id for Data Factory Portal.')
 param portalPrivateZoneId string
 
+// User Assigned Identity
+@description('User Assigned Managed Identity Resource Id.')
 param userAssignedIdentityId string
 
+// Deploy Azure Data Factory with Managed Virtual Network & Managed Integration Runtime
 resource adf 'Microsoft.DataFactory/factories@2018-06-01' = {
   location: resourceGroup().location
   name: name
@@ -52,6 +64,7 @@ resource adf 'Microsoft.DataFactory/factories@2018-06-01' = {
   }
 }
 
+// Create Private Endpoints and register their IPs with Private DNS Zone
 resource adf_datafactory_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   location: resourceGroup().location
   name: '${adf.name}-df-endpoint'

@@ -7,8 +7,13 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Azure Key Vault Name.')
 param keyVaultName string
+
+@description('Role Definition Id.')
 param roleDefinitionId string
+
+@description('Array of Service Principal Object Ids.')
 param resourceSPObjectIds array = []
 
 resource scopeOfRoleAssignment 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {

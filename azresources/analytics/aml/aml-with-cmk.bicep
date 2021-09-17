@@ -7,21 +7,43 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param name string = 'aml-${uniqueString(resourceGroup().id)}'
-param keyVaultId string
-param storageAccountId string
-param containerRegistryId string
-param appInsightsId string
-param privateEndpointSubnetId string
-param privateZoneAzureMLApiId string
-param privateZoneAzureMLNotebooksId string
+@description('Azure Machine Learning name.')
+param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
 
-param akvResourceGroupName string
-param akvName string
-
-@description('Enabling high business impact workspace')
+@description('Boolean flag to enable High Business Impact workspace.  Default: false')
 param enableHbiWorkspace bool = false
+
+@description('Azure Key Vault Resource Id')
+param keyVaultId string
+
+@description('Azure Storage Account Resource Id.')
+param storageAccountId string
+
+@description('Azure Container Registry Resource Id.')
+param containerRegistryId string
+
+@description('Azure Application Insights Resource Id.')
+param appInsightsId string
+
+// Private Endpoitns
+@description('Private Endpoint Subnet Resource Id.')
+param privateEndpointSubnetId string
+
+@description('Private DNS Zone Resource Id for AML API.')
+param privateZoneAzureMLApiId string
+
+@description('Private DNS Zone Resource Id for AML Notebooks.')
+param privateZoneAzureMLNotebooksId string
+
+// Azure Key Vault
+@description('Azure Key Vault Resource Group Name.  Required when useCMK=true.')
+param akvResourceGroupName string
+
+@description('Azure Key Vault Name.  Required when useCMK=true.')
+param akvName string
 
 resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   scope: resourceGroup(akvResourceGroupName)
@@ -66,6 +88,7 @@ resource aml 'Microsoft.MachineLearningServices/workspaces@2020-08-01' = {
   }
 }
 
+// Create Private Endpoints and register their IPs with Private DNS Zone
 resource aml_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   location: resourceGroup().location
   name: '${aml.name}-endpoint'

@@ -136,7 +136,7 @@ var cleanUpScript = '''
   az role assignment delete --assignee {2} --scope {3}
 '''
 
-module harnessCleanup '../../../../azresources/util/deploymentScript.bicep' = {
+module harnessCleanup '../../../../azresources/util/deployment-script.bicep' = {
   dependsOn: [
     rgTestHarnessManagedIdentityRBAC
     runner

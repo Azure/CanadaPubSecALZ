@@ -7,7 +7,7 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-targetScope = 'subscription'
-
+@description('Dummy input to simulate waiting.')
 param input string
+
 output output string = input

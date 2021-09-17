@@ -7,23 +7,29 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param name string = 'akv${uniqueString(resourceGroup().id)}'
+@description('Azure Key Vault Name.')
+param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
 
+@description('Boolean flag to enable Azure Key Vault for Deployment.  Default: false')
 param enabledForDeployment bool = false
+
+@description('Boolean flag to enable Azure Key Vault for Disk Encryption.  Default: false')
 param enabledForDiskEncryption bool = false
+
+@description('Boolean flag to enable Azure Key Vault for Template Deployment.  Default: false')
 param enabledForTemplateDeployment bool = false
 
+@description('Soft Delete Retention in Days.  Default: 90')
 @minValue(7)
 param softDeleteRetentionInDays int = 90
 
-@description('When true, blob private zone is created')
-param deployPrivateEndpoint bool = false
-
-@description('Required when deployPrivateEndpoint=true')
+@description('Private Endpoint Subnet Resource Id.')
 param privateEndpointSubnetId string = ''
 
-@description('Required when deployPrivateEndpoint=true')
+@description('Private DNS Zone Resource Id.')
 param privateZoneId string = ''
 
 resource akv 'Microsoft.KeyVault/vaults@2019-09-01' = {
@@ -47,13 +53,13 @@ resource akv 'Microsoft.KeyVault/vaults@2019-09-01' = {
 
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: deployPrivateEndpoint ? 'Deny' : 'Allow'
+      defaultAction: !(empty(privateZoneId)) ? 'Deny' : 'Allow'
     }
     enableRbacAuthorization: true
   }
 }
 
-resource akv_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployPrivateEndpoint) {
+resource akv_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (!(empty(privateZoneId))) {
   location: resourceGroup().location
   name: '${akv.name}-endpoint'
   properties: {
@@ -88,5 +94,6 @@ resource akv_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (deployPriv
   }
 }
 
+// Outputs
 output akvName string = akv.name
 output akvId string = akv.id

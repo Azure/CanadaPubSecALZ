@@ -7,42 +7,84 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param aksName string = 'aks'
-param aksVersion string
+@description('Azure Kubernetes Service Name.')
+param name string
 
+@description('Azure Kubernetes Service Version.')
+param version string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
 
-param systemNodePoolEnableAutoScaling bool
-param systemNodePoolMinNodeCount int
-param systemNodePoolMaxNodeCount int
-param systemNodePoolNodeSize string = 'Standard_DS2_v2'
-
-param userNodePoolEnableAutoScaling bool
-param userNodePoolMinNodeCount int
-param userNodePoolMaxNodeCount int
-param userNodePoolNodeSize string = 'Standard_DS2_v2'
-
-param subnetId string
-param dnsPrefix string = 'aksdns'
+@description('AKS Managed Resource Group Name.')
 param nodeResourceGroupName string
 
-param podCidr string = '11.0.0.0/16'
-param serviceCidr string = '20.0.0.0/16'
-param dnsServiceIP string = '20.0.0.10'
-param dockerBridgeCidr string = '30.0.0.1/16'
+// System Node Pool
+@description('System Node Pool - Boolean to enable auto scaling.')
+param systemNodePoolEnableAutoScaling bool
 
+@description('System Node Pool - Minimum Node Count.')
+param systemNodePoolMinNodeCount int
+
+@description('System Node Pool - Maximum Node Count.')
+param systemNodePoolMaxNodeCount int
+
+@description('System Node Pool - Node SKU.')
+param systemNodePoolNodeSize string
+
+// User Node Pool
+@description('User Node Pool - Boolean to enable auto scaling.')
+param userNodePoolEnableAutoScaling bool
+
+@description('User Node Pool - Minimum Node Count.')
+param userNodePoolMinNodeCount int
+
+@description('User Node Pool - Maximum Node Count.')
+param userNodePoolMaxNodeCount int
+
+@description('User Node Pool - Node SKU.')
+param userNodePoolNodeSize string
+
+// Networking
+@description('Subnet Resource Id.')
+param subnetId string
+
+@description('DNS Prefix.')
+param dnsPrefix string
+
+@description('Private DNS Zone Resource Id.')
 param privateDNSZoneId string
 
+// Kubernetes Networking
+@description('Pod CIDR.  Default: 11.0.0.0/16')
+param podCidr string = '11.0.0.0/16'
+
+@description('Service CIDR.  Default: 20.0.0.0/16')
+param serviceCidr string = '20.0.0.0/16'
+
+@description('DNS Service IP. Default: 20.0.0.10')
+param dnsServiceIP string = '20.0.0.10'
+
+@description('Docker Bridge CIDR.  Default: 30.0.0.1/16')
+param dockerBridgeCidr string = '30.0.0.1/16'
+
+// Container Insights
+@description('Log Analytics Workspace Resource Id.  Default: blank')
 param containerInsightsLogAnalyticsResourceId string = ''
 
-@description('When true, customer managed key will be enabled')
+// Customer Managed Key
+@description('Boolean flag that determines whether to enable Customer Managed Key.')
 param useCMK bool
-@description('Required when useCMK=true')
+
+// Azure Key Vault
+@description('Azure Key Vault Resource Group Name.  Required when useCMK=true.')
 param akvResourceGroupName string
-@description('Required when useCMK=true')
+
+@description('Azure Key Vault Name.  Required when useCMK=true.')
 param akvName string
 
-@description('Enable encryption at host (double encryption)')
+// Host Encryption
+@description('Enable encryption at host (double encryption).  Default: true')
 param enableEncryptionAtHost bool = true
 
 // Example:  /subscriptions/<subscription-id>/resourceGroups/<resource-group-name>/providers/Microsoft.Network/virtualNetworks/<virtual-network-name>/subnets/aks
@@ -59,13 +101,13 @@ var privateZoneResourceName = last(privateDnsZoneIdSplit)
 module identity '../../iam/user-assigned-identity.bicep' = {
   name: 'deploy-aks-identity'
   params: {
-    name: '${aksName}-managed-identity'
+    name: '${name}-managed-identity'
   }
 }
 
 // assign permissions to identity per https://docs.microsoft.com/en-us/azure/aks/private-clusters#configure-private-dns-zone
 module rbacPrivateDnsZoneContributor '../../iam/resource/private-dns-zone-role-assignment-to-sp.bicep' = {
-  name: 'rbac-private-dns-zone-contributor-${aksName}'
+  name: 'rbac-private-dns-zone-contributor-${name}'
   scope: resourceGroup(privateDnsZoneSubscriptionId, privateZoneDnsResourceGroupName)
   params: {
     zoneName: privateZoneResourceName
@@ -75,7 +117,7 @@ module rbacPrivateDnsZoneContributor '../../iam/resource/private-dns-zone-role-a
 }
 
 module rbacNetworkContributor '../../iam/resource/virtual-network-role-assignment-to-sp.bicep' = {
-  name: 'rbac-network-contributor-${aksName}'
+  name: 'rbac-network-contributor-${name}'
   scope: resourceGroup(virtualNetworkResourceGroup)
   params: {
     vnetName: virtualNetworkName
@@ -92,8 +134,8 @@ module aksWithoutCMK 'aks-kubenet-without-cmk.bicep' = if (!useCMK) {
 
   name: 'deploy-aks-without-cmk'
   params: {
-    aksName: aksName
-    aksVersion: aksVersion
+    name: name
+    version: version
 
     userAssignedIdentityId: identity.outputs.identityId
 
@@ -136,8 +178,8 @@ module aksWithCMK 'aks-kubenet-with-cmk.bicep' = if (useCMK) {
 
   name: 'deploy-aks-with-cmk'
   params: {
-    aksName: aksName
-    aksVersion: aksVersion
+    name: name
+    version: version
 
     userAssignedIdentityId: identity.outputs.identityId
 

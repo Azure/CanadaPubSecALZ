@@ -7,7 +7,10 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Role Definition Id.')
 param roleDefinitionId string
+
+@description('Array of Service Principal Object Ids.')
 param resourceSPObjectIds array = []
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for spId in resourceSPObjectIds: {

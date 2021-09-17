@@ -7,16 +7,22 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Private DNS Zone Name.')
 param zone string
+
+@description('Virtual Network Resource Id.')
 param vnetId string
+
+@description('Boolean flag to enable automatic DNS registration for VMs.  Default: false')
 param registrationEnabled bool = false
 
+@description('Boolean flag to determine whether to create new Private DNS Zones or to reference existing ones.  Default: true')
 param dnsCreateNewZone bool = true
 
-@description('Required when dnsCreateNewZone=false')
+@description('Private DNS Zones Subscription Id.  Required when dnsCreateNewZone=false')
 param dnsExistingZoneSubscriptionId string = ''
 
-@description('Required when dnsCreateNewZone=false')
+@description('Private DNS Zones Resource Group.  Required when dnsCreateNewZone=false')
 param dnsExistingZoneResourceGroupName string = ''
 
 // When DNS Zone is managed in the Spoke
@@ -52,4 +58,5 @@ module privateDnsZoneVirtualNetworkLinkExisting 'private-dns-zone-virtual-networ
   }
 }
 
+// Outputs
 output privateDnsZoneId string = dnsCreateNewZone ? privateDnsZoneNew.id : privateDnsZoneExisting.id

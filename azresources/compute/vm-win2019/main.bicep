@@ -7,27 +7,47 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param subnetId string
+@description('Virtual Machine Name.')
 param vmName string
+
+@description('Virtual Machine SKU.')
 param vmSize string
 
+@description('Azure Availability Zone for VM.')
+param availabilityZone string
+
+// Credentials
+@description('Virtual Machine Username.')
+@secure()
 param username string
+
+@description('Virtual Machine Password')
 @secure()
 param password string
 
-param availabilityZone string
+// Networking
+@description('Subnet Resource Id.')
+param subnetId string
+
+@description('Boolean flag that enables Accelerated Networking.')
 param enableAcceleratedNetworking bool
 
-@description('When true, customer managed key will be enabled')
+// Customer Managed Key
+@description('Boolean flag that determines whether to enable Customer Managed Key.')
 param useCMK bool
-@description('Required when useCMK=true')
+
+// Azure Key Vault
+@description('Azure Key Vault Resource Group Name.  Required when useCMK=true.')
 param akvResourceGroupName string
-@description('Required when useCMK=true')
+
+@description('Azure Key Vault Name.  Required when useCMK=true.')
 param akvName string
 
-@description('Enable encryption at host (double encryption)')
+// Host Encryption
+@description('Boolean flag to enable encryption at host (double encryption).  This feature can not be used with Azure Disk Encryption.')
 param encryptionAtHost bool = true
 
+// Deploy VM without Customer Managed Key for Managed Disks.
 module vmWithoutCMK 'vm-win2019-without-cmk.bicep' = if (!useCMK) {
     name: 'deploy-vm-without-cmk'
     params: {
@@ -46,6 +66,7 @@ module vmWithoutCMK 'vm-win2019-without-cmk.bicep' = if (!useCMK) {
     }
 }
 
+// Deploy VM with Customer Managed Key for Managed Disks.
 module vmWithCMK 'vm-win2019-with-cmk.bicep' = if (useCMK) {
     name: 'deploy-vm-with-cmk'
     params: {
@@ -67,6 +88,7 @@ module vmWithCMK 'vm-win2019-with-cmk.bicep' = if (useCMK) {
     }
 }
 
+// Outputs
 output vmName string = (useCMK) ? vmWithCMK.outputs.vmName : vmWithoutCMK.outputs.vmName
 output vmId string = (useCMK) ? vmWithCMK.outputs.vmId : vmWithoutCMK.outputs.vmId
 output nicId string = (useCMK) ? vmWithCMK.outputs.nicId : vmWithoutCMK.outputs.nicId

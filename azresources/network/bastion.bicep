@@ -7,13 +7,19 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param bastionName string = 'bastion'
-param bastionSubnetId string
+@description('Azure Bastion Name')
+param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
+
+// Networking
+@description('Subnet Resource Id.')
+param subnetId string
 
 resource bastionPublicIP 'Microsoft.Network/publicIPAddresses@2020-06-01' = {
   location: resourceGroup().location
-  name: '${bastionName}PublicIp'
+  name: '${name}PublicIp'
   tags: tags
   sku: {
       name: 'Standard'
@@ -26,7 +32,7 @@ resource bastionPublicIP 'Microsoft.Network/publicIPAddresses@2020-06-01' = {
 
 resource bastion 'Microsoft.Network/bastionHosts@2020-06-01' = {
   location: resourceGroup().location
-  name: bastionName
+  name: name
   tags: tags
   properties: {
       dnsName: uniqueString(resourceGroup().id)
@@ -35,7 +41,7 @@ resource bastion 'Microsoft.Network/bastionHosts@2020-06-01' = {
               name: 'IpConf'
               properties: {
                   subnet: {
-                      id: bastionSubnetId
+                      id: subnetId
                   }
                   publicIPAddress: {
                       id: bastionPublicIP.id

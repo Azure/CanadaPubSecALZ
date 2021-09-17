@@ -7,6 +7,7 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('User Defined Route Name.')
 param name string
 
 resource udr 'Microsoft.Network/routeTables@2020-06-01' = {
@@ -17,4 +18,5 @@ resource udr 'Microsoft.Network/routeTables@2020-06-01' = {
   }
 }
 
+// Outputs
 output udrId string = udr.id

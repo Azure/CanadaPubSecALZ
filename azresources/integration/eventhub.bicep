@@ -7,10 +7,20 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Event Hub Name.')
 param name string
+
+@description('Key/Value pair of tags.')
 param tags object = {}
-param capacityvalue int = 1
+
+@description('Capacity Unit.  Default: 1')
+param capacity int = 1
+
+// Networking
+@description('Private Endpoint Subnet Resource Id.')
 param privateEndpointSubnetId string
+
+@description('Private DNS Zone Resource Id.')
 param privateZoneEventHubId string
 
 resource eventhub 'Microsoft.EventHub/namespaces@2021-01-01-preview' = {
@@ -20,7 +30,7 @@ resource eventhub 'Microsoft.EventHub/namespaces@2021-01-01-preview' = {
   sku: {
     name: 'Standard'
     tier: 'Standard'
-    capacity: capacityvalue
+    capacity: capacity
   }
   identity: {
     type: 'SystemAssigned'

@@ -7,25 +7,40 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Azure Databricks Name.')
 param name string
 
+@description('Key/Value pair of tags.')
+param tags object = {}
+
+@description('Azure Databricks Managed Resource Group Id')
+param managedResourceGroupId string
+
+@description('Azure Databricks Pricing Tier.')
 @allowed([
   'trial'
   'standard'
   'premium'
 ])
 param pricingTier string
+
+// Networking
+@description('Virtual Network Resource Id')
 param vnetId string
+
+@description('Public Subnet Name.')
 param publicSubnetName string
+
+@description('Private Subnet Name.')
 param privateSubnetName string
 
+@description('Egress Azure Load Balancer Resource Id.')
 param loadbalancerId string
+
+@description('Egress Azure Load Balancer Backend Pool Name.')
 param loadBalancerBackendPoolName string
 
-param managedResourceGroupId string
-
-param tags object = {}
-
+// Create Azure Databricks without Public IPs and use Egress Load Balancer for integrating with Azure.
 resource databricks 'Microsoft.Databricks/workspaces@2018-04-01' = {
   name: name
   tags: tags
