@@ -120,7 +120,7 @@ param egressVirtualApplianceIp string
 param hubRFC1918IPRange string
 
 @description('Virtual Network address space for RFC 6598 (CG NAT).')
-param hubCGNATIPRange string
+param hubRFC6598IPRange string
 
 // Budget
 @description('Boolean flag to determine whether to create subscription budget.  Default: true')
@@ -236,7 +236,7 @@ module vnet 'networking.bicep' = if (deployVnet) {
   params: {
     egressVirtualApplianceIp: egressVirtualApplianceIp
     hubRFC1918IPRange: hubRFC1918IPRange
-    hubCGNATIPRange: hubCGNATIPRange
+    hubRFC6598IPRange: hubRFC6598IPRange
     hubVnetId: hubVnetId
 
     vnetName: vnetName

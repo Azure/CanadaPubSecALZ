@@ -259,7 +259,7 @@ When a Log Analytics Workspace & Automation account already exists, enter Subscr
     var-hubnetwork-rgHubName: pubsec-hub-networking-rg
     var-hubnetwork-hubVnetName: hub-vnet
     var-hubnetwork-hubVnetAddressPrefixRFC1918: 10.18.0.0/22
-    var-hubnetwork-hubVnetAddressPrefixCGNAT: 100.60.0.0/16
+    var-hubnetwork-hubVnetAddressPrefixRFC6598: 100.60.0.0/16
     var-hubnetwork-hubVnetAddressPrefixBastion: 192.168.0.0/16
 
     var-hubnetwork-hubEanSubnetName: EanSubnet

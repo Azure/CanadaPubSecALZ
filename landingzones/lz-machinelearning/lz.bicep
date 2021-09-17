@@ -122,8 +122,8 @@ param egressVirtualApplianceIp string
 @description('Hub Virtual Network IP Address - RFC 1918')
 param hubRFC1918IPRange string
 
-@description('Hub Virtual Network IP Address - RFC 6598')
-param hubCGNATIPRange string
+@description('Hub Virtual Network IP Address - RFC 6598 (CGNAT)')
+param hubRFC6598IPRange string
 
 // Private DNS Zones
 @description('Boolean flag to determine whether Private DNS Zones will be managed by Hub Network.')
@@ -338,7 +338,7 @@ module networking 'networking.bicep' = {
     hubVnetId: hubVnetId
     egressVirtualApplianceIp: egressVirtualApplianceIp
     hubRFC1918IPRange: hubRFC1918IPRange
-    hubCGNATIPRange: hubCGNATIPRange
+    hubRFC6598IPRange: hubRFC6598IPRange
 
     subnetFoundationalElementsName: subnetFoundationalElementsName
     subnetFoundationalElementsPrefix: subnetFoundationalElementsPrefix

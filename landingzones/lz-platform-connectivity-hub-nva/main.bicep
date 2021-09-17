@@ -122,8 +122,8 @@ param hubVnetName string //= 'pubsecHubVnet'
 @description('Hub Virtual Network address space for RFC 1918.')
 param hubVnetAddressPrefixRFC1918 string //= '10.18.0.0/22'
 
-@description('Hub Virtual Network address space for RFC 6598 (CG NAT).')
-param hubVnetAddressPrefixCGNAT string //= '100.60.0.0/16'
+@description('Hub Virtual Network address space for RFC 6598 (CGNAT).')
+param hubVnetAddressPrefixRFC6598 string //= '100.60.0.0/16'
 
 @description('Hub Virtual Network address space for Azure Bastion (must be RFC 1918).')
 param hubVnetAddressPrefixBastion string //= '192.168.0.0/16'
@@ -480,9 +480,9 @@ module udrPrdSpokes '../../azresources/network/udr/udr-custom.bicep' = {
       }
       // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
       {
-        name: 'PrdSpokesUdrHubCGNATFWRoute'
+        name: 'PrdSpokesUdrHubRFC6598FWRoute'
         properties: {
-          addressPrefix: hubVnetAddressPrefixCGNAT
+          addressPrefix: hubVnetAddressPrefixRFC6598
           nextHopType: 'VirtualAppliance'
           nextHopIpAddress: fwProdILBPrdIntIP
         }
@@ -516,9 +516,9 @@ module udrMrzSpoke '../../azresources/network/udr/udr-custom.bicep' = {
       }
       // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
       {
-        name: 'MrzSpokeUdrHubCGNATFWRoute'
+        name: 'MrzSpokeUdrHubRFC6598FWRoute'
         properties: {
-          addressPrefix: hubVnetAddressPrefixCGNAT
+          addressPrefix: hubVnetAddressPrefixRFC6598
           nextHopType: 'VirtualAppliance'
           nextHopIpAddress: fwProdILBMrzIntIP
         }
@@ -553,7 +553,7 @@ module hubVnet './hub-vnet.bicep' = {
   params: {
     vnetName: hubVnetName
     vnetAddressPrefixRFC1918: hubVnetAddressPrefixRFC1918
-    vnetAddressPrefixCGNAT: hubVnetAddressPrefixCGNAT
+    vnetAddressPrefixRFC6598: hubVnetAddressPrefixRFC6598
     vnetAddressPrefixBastion: hubVnetAddressPrefixBastion
 
     publicSubnetName: hubPublicSubnetName

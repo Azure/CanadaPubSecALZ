@@ -70,7 +70,7 @@
       "hubRFC1918IPRange": {
           "value": "10.18.0.0/22"
       },
-      "hubCGNATIPRange": {
+      "hubRFC6598IPRange": {
           "value": "100.60.0.0/16"
       },
       "egressVirtualApplianceIp": {

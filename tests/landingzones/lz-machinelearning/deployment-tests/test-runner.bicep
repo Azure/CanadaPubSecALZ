@@ -15,7 +15,7 @@ param deploymentScriptResourceGroupName string
 param hubVnetId string
 param egressVirtualApplianceIp string
 param hubRFC1918IPRange string
-param hubCGNATIPRange string
+param hubRFC6598IPRange string
 
 param logAnalyticsWorkspaceResourceId string
 
@@ -99,7 +99,7 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
     
     // Hub IP Ranges
     hubRFC1918IPRange: hubRFC1918IPRange
-    hubCGNATIPRange: hubCGNATIPRange
+    hubRFC6598IPRange: hubRFC6598IPRange
     
     // AKS version
     aksVersion: '1.21.2'

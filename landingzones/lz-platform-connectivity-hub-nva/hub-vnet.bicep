@@ -16,8 +16,8 @@ param vnetName string
 @description('Virtual Network Address Space (RFC 1918).')
 param vnetAddressPrefixRFC1918 string
 
-@description('Virtual Network Address Space (RFC 6598).')
-param vnetAddressPrefixCGNAT string
+@description('Virtual Network Address Space (RFC 6598) - CGNAT.')
+param vnetAddressPrefixRFC6598 string
 
 @description('Virtual Network Address Space for Azure Bastion (RFC 1918).')
 param vnetAddressPrefixBastion string
@@ -146,7 +146,7 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
     addressSpace: {
       addressPrefixes: [
         vnetAddressPrefixRFC1918
-        vnetAddressPrefixCGNAT
+        vnetAddressPrefixRFC6598
         vnetAddressPrefixBastion
       ]
     }

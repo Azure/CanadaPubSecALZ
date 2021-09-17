@@ -92,7 +92,7 @@ steps:
           rgHubName='$(var-hubnetwork-rgHubName)' \
           hubVnetName='$(var-hubnetwork-hubVnetName)' \
           hubVnetAddressPrefixRFC1918='$(var-hubnetwork-hubVnetAddressPrefixRFC1918)' \
-          hubVnetAddressPrefixCGNAT='$(var-hubnetwork-hubVnetAddressPrefixCGNAT)' \
+          hubVnetAddressPrefixRFC6598='$(var-hubnetwork-hubVnetAddressPrefixRFC6598)' \
           hubVnetAddressPrefixBastion='$(var-hubnetwork-hubVnetAddressPrefixBastion)' \
           hubEanSubnetName='$(var-hubnetwork-hubEanSubnetName)' \
           hubEanSubnetAddressPrefix='$(var-hubnetwork-hubEanSubnetAddressPrefix)' \

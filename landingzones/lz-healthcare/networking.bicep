@@ -81,7 +81,7 @@ param egressVirtualApplianceIp string
 param hubRFC1918IPRange string
 
 @description('Hub Virtual Network IP Address - RFC 6598')
-param hubCGNATIPRange string
+param hubRFC6598IPRange string
 
 // Private DNS Zones
 @description('Boolean flag to determine whether Private DNS Zones will be managed by Hub Network.')
@@ -108,9 +108,9 @@ var routesToHub = [
   }
   // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
   {
-    name: 'PrdSpokesUdrHubCGNATFWRoute'
+    name: 'PrdSpokesUdrHubRFC6598FWRoute'
     properties: {
-      addressPrefix: hubCGNATIPRange
+      addressPrefix: hubRFC6598IPRange
       nextHopType: 'VirtualAppliance'
       nextHopIpAddress: egressVirtualApplianceIp
     }

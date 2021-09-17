@@ -68,7 +68,7 @@
     "hubRFC1918IPRange": {
       "value": "20.0.0.0/16"
     },
-    "hubCGNATIPRange": {
+    "hubRFC6598IPRange": {
       "value": "100.90.0.0/16"
     },
     "logAnalyticsWorkspaceResourceId": {

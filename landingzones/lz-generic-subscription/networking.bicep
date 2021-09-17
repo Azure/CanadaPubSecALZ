@@ -57,7 +57,7 @@ param egressVirtualApplianceIp string
 param hubRFC1918IPRange string
 
 @description('Virtual Network address space for RFC 6598 (CG NAT).')
-param hubCGNATIPRange string
+param hubRFC6598IPRange string
 
 var integrateToHubVirtualNetwork = !empty(hubVnetId)
 var hubVnetIdSplit = split(hubVnetId, '/')
@@ -74,9 +74,9 @@ var routesToHub = [
   }
   // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
   {
-    name: 'PrdSpokesUdrHubCGNATFWRoute'
+    name: 'PrdSpokesUdrHubRFC6598FWRoute'
     properties: {
-      addressPrefix: hubCGNATIPRange
+      addressPrefix: hubRFC6598IPRange
       nextHopType: 'VirtualAppliance'
       nextHopIpAddress: egressVirtualApplianceIp
     }
