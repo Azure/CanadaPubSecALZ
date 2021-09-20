@@ -4,7 +4,7 @@
     "parameters": {
         "serviceHealthAlerts": {
             "value": {
-                "resourceGroupName": "rgServiceHealth",
+                "resourceGroupName": "pubsec-service-health",
                 "incidentTypes": [ "Incident", "Security" ],
                 "regions": [ "Global", "Canada East", "Canada Central" ],
                 "receivers": {

@@ -202,6 +202,7 @@ var tags = {
     * Azure Security Center - Enable Azure Defender (all available options)
     * Azure Security Center - Configure Log Analytics Workspace
     * Azure Security Center - Configure Security Alert Contact
+    * Service Health Alerts
     * Role Assignments to Security Groups
     * Subscription Budget
     * Subscription Tag:  ISSO
@@ -215,16 +216,28 @@ module subScaffold '../scaffold-subscription.bicep' = {
     subscriptionOwnerGroupObjectIds: subscriptionOwnerGroupObjectIds
     subscriptionContributorGroupObjectIds: subscriptionContributorGroupObjectIds
     subscriptionReaderGroupObjectIds: subscriptionReaderGroupObjectIds
+
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
+    
     securityContactEmail: securityContactEmail
     securityContactPhone: securityContactPhone
+    
     createBudget: createBudget
     budgetName: budgetName
     budgetAmount: budgetAmount
     budgetTimeGrain: budgetTimeGrain
     budgetStartDate: budgetStartDate
     budgetNotificationEmailAddress: budgetNotificationEmailAddress
+    
+    serviceHealthAlerts: serviceHealthAlerts
+
     tagISSO: tagISSO
+    tagClientOrganization: tagClientOrganization
+    tagCostCenter: tagCostCenter
+    tagDataSensitivity: tagDataSensitivity
+    tagProjectContact: tagProjectContact
+    tagProjectName: tagProjectName
+    tagTechnicalContact: tagTechnicalContact
   }
 }
 
@@ -247,24 +260,6 @@ resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgAutomationName
   location: deployment().location
   tags: tags
-}
-
-// Create Service Health resource group for managing alerts and action groups
-resource rgServiceHealth 'Microsoft.Resources/resourceGroups@2021-04-01' = if (!empty(serviceHealthAlerts)) {
-  name: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.resourceGroupName : 'rgServiceHealth'
-  location: deployment().location
-  tags: tags
-}
-
-// Create Service Health alerts
-module serviceHealth '../../azresources/service-health/service-health.bicep' = if (!empty(serviceHealthAlerts)) {
-  name: 'deploy-service-health'
-  scope: rgServiceHealth
-  params: {
-    incidentTypes: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.incidentTypes : []
-    regions: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.regions : []
-    receivers: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.receivers : {}
-  }
 }
 
 // Create & configure virtaual network - only if Virtual Network is being deployed

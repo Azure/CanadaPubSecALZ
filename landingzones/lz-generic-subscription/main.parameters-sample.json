@@ -1,119 +1,136 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-      "securityContactEmail": {
-          "value": "alzcanadapubsec@microsoft.com"
-      },
-      "securityContactPhone": {
-          "value": "5555555555"
-      },
-      "createBudget": {
-          "value": false
-      },
-      "budgetName": {
-          "value": "SubscriptionBudget"
-      },
-      "budgetAmount": {
-          "value": 100
-      },
-      "budgetTimeGrain": {
-          "value": "Monthly"
-      },
-      "budgetNotificationEmailAddress": {
-          "value": "alzcanadapubsec@microsoft.com"
-      },
-      "automationAccountName": {
-          "value": "automation"
-      },
-      "tagISSO": {
-          "value": "tbd"
-      },
-      "tagClientOrganization": {
-          "value": "tbd"
-      },
-      "tagCostCenter": {
-          "value": "tbd"
-      },
-      "tagDataSensitivity": {
-          "value": "tbd"
-      },
-      "tagProjectContact": {
-          "value": "tbd"
-      },
-      "tagProjectName": {
-          "value": "tbd"
-      },
-      "tagTechnicalContact": {
-          "value": "tbd"
-      },
-      "lzAppOwnerRoleDefinitionId": {
-        "value": ""
-      },
-      "subscriptionAppOwnerGroupObjectIds": {
-        "value": []
-      },
-      "subscriptionOwnerGroupObjectIds": {
-          "value": []
-      },
-      "subscriptionContributorGroupObjectIds": {
-          "value": [
-              "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-          ]
-      },
-      "subscriptionReaderGroupObjectIds": {
-          "value": []
-      },
-      "hubVnetId": {
-          "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsecPrdHubPbRsg/providers/Microsoft.Network/virtualNetworks/pubsecHubVnet"
-      },
-      "hubRFC1918IPRange": {
-          "value": "10.18.0.0/22"
-      },
-      "hubRFC6598IPRange": {
-          "value": "100.60.0.0/16"
-      },
-      "egressVirtualApplianceIp": {
-          "value": "10.18.0.36"
-      },        
-      "rgVnetName": {
-          "value": "rgVnet"
-      },
-      "rgAutomationName": {
-          "value": "rgAutomation"
-      },
-      "deployVnet": {
-          "value": true
-      },
-      "vnetName": {
-          "value": "vnet"
-      },
-      "vnetAddressSpace": {
-          "value": "10.2.0.0/16"
-      },
-      "subnetFoundationalElementsName": {
-          "value": "foundationalElements"
-      },
-      "subnetFoundationalElementsPrefix": {
-          "value": "10.2.1.0/25"
-      },
-      "subnetPresentationName": {
-          "value": "presentation"
-      },
-      "subnetPresentationPrefix": {
-          "value": "10.2.2.0/25"
-      },
-      "subnetApplicationName": {
-          "value": "application"
-      },
-      "subnetApplicationPrefix": {
-          "value": "10.2.3.0/25"
-      },
-      "subnetDataName": {
-          "value": "data"
-      },
-      "subnetDataPrefix": {
-          "value": "10.2.4.0/25"
-      }
-  }
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serviceHealthAlerts": {
+            "value": {
+                "resourceGroupName": "pubsec-service-health",
+                "incidentTypes": [ "Incident", "Security" ],
+                "regions": [ "Global", "Canada East", "Canada Central" ],
+                "receivers": {
+                    "app": [ "alzcanadapubsec@microsoft.com" ],
+                    "email": [ "alzcanadapubsec@microsoft.com" ],
+                    "sms": [
+                        { "countryCode": "1", "phoneNumber": "5555555555" }
+                    ],
+                    "voice": [
+                        { "countryCode": "1", "phoneNumber": "5555555555" }
+                    ]
+                }
+            }
+        },
+        "securityContactEmail": {
+            "value": "alzcanadapubsec@microsoft.com"
+        },
+        "securityContactPhone": {
+            "value": "5555555555"
+        },
+        "createBudget": {
+            "value": false
+        },
+        "budgetName": {
+            "value": "SubscriptionBudget"
+        },
+        "budgetAmount": {
+            "value": 100
+        },
+        "budgetTimeGrain": {
+            "value": "Monthly"
+        },
+        "budgetNotificationEmailAddress": {
+            "value": "alzcanadapubsec@microsoft.com"
+        },
+        "automationAccountName": {
+            "value": "automation"
+        },
+        "tagISSO": {
+            "value": "tbd"
+        },
+        "tagClientOrganization": {
+            "value": "tbd"
+        },
+        "tagCostCenter": {
+            "value": "tbd"
+        },
+        "tagDataSensitivity": {
+            "value": "tbd"
+        },
+        "tagProjectContact": {
+            "value": "tbd"
+        },
+        "tagProjectName": {
+            "value": "tbd"
+        },
+        "tagTechnicalContact": {
+            "value": "tbd"
+        },
+        "lzAppOwnerRoleDefinitionId": {
+            "value": ""
+        },
+        "subscriptionAppOwnerGroupObjectIds": {
+            "value": []
+        },
+        "subscriptionOwnerGroupObjectIds": {
+            "value": []
+        },
+        "subscriptionContributorGroupObjectIds": {
+            "value": [
+                "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+            ]
+        },
+        "subscriptionReaderGroupObjectIds": {
+            "value": []
+        },
+        "hubVnetId": {
+            "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsecPrdHubPbRsg/providers/Microsoft.Network/virtualNetworks/pubsecHubVnet"
+        },
+        "hubRFC1918IPRange": {
+            "value": "10.18.0.0/22"
+        },
+        "hubRFC6598IPRange": {
+            "value": "100.60.0.0/16"
+        },
+        "egressVirtualApplianceIp": {
+            "value": "10.18.0.36"
+        },
+        "rgVnetName": {
+            "value": "rgVnet"
+        },
+        "rgAutomationName": {
+            "value": "rgAutomation"
+        },
+        "deployVnet": {
+            "value": true
+        },
+        "vnetName": {
+            "value": "vnet"
+        },
+        "vnetAddressSpace": {
+            "value": "10.2.0.0/16"
+        },
+        "subnetFoundationalElementsName": {
+            "value": "foundationalElements"
+        },
+        "subnetFoundationalElementsPrefix": {
+            "value": "10.2.1.0/25"
+        },
+        "subnetPresentationName": {
+            "value": "presentation"
+        },
+        "subnetPresentationPrefix": {
+            "value": "10.2.2.0/25"
+        },
+        "subnetApplicationName": {
+            "value": "application"
+        },
+        "subnetApplicationPrefix": {
+            "value": "10.2.3.0/25"
+        },
+        "subnetDataName": {
+            "value": "data"
+        },
+        "subnetDataPrefix": {
+            "value": "10.2.4.0/25"
+        }
+    }
 }

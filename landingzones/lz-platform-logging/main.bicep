@@ -139,6 +139,7 @@ module logAnalytics '../../azresources/monitor/log-analytics.bicep' = {
     * Azure Security Center - Configure Log Analytics Workspace (using the Log Analytics Workspace created in this deployment)
     * Azure Security Center - Configure Security Alert Contact
     * Role Assignments to Security Groups
+    * Service Health Alerts
     * Subscription Budget
     * Subscription Tag:  ISSO
 */
@@ -159,5 +160,11 @@ module subScaffold '../scaffold-subscription.bicep' = {
     budgetStartDate: budgetStartDate
     budgetNotificationEmailAddress: budgetNotificationEmailAddress
     tagISSO: tagISSO
+    tagClientOrganization: tagClientOrganization
+    tagCostCenter: tagCostCenter
+    tagDataSensitivity: tagDataSensitivity
+    tagProjectContact: tagProjectContact
+    tagProjectName: tagProjectName
+    tagTechnicalContact: tagTechnicalContact
   }
 }

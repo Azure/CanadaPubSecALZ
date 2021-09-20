@@ -9,6 +9,25 @@
 
 targetScope = 'subscription'
 
+// Service Health
+@description('Service Health alerts')
+param serviceHealthAlerts object = {}
+
+// Service Health example (JSON)
+// -----------------------------
+// "serviceHealthAlerts": {
+//   "value": {
+//     "incidentTypes": [ "Incident", "Security", "Maintenance", "Information", "ActionRequired" ],
+//     "regions": [ "Global", "Canada East", "Canada Central" ],
+//     "receivers": {
+//       "app": [ "email-1@company.com", "email-2@company.com" ],
+//       "email": [ "email-1@company.com", "email-3@company.com", "email-4@company.com" ],
+//       "sms": [ { "countryCode": "1", "phoneNumber": "1234567890" }, { "countryCode": "1",  "phoneNumber": "0987654321" } ],
+//       "voice": [ { "countryCode": "1", "phoneNumber": "1234567890" } ]
+//     }
+//   }
+// }
+
 // Groups
 @description('An array of Security Group object ids that should be granted Owner built-in role.  Default: []')
 param subscriptionOwnerGroupObjectIds array = []
@@ -217,6 +236,7 @@ param useCMK bool = false
     * Azure Security Center - Enable Azure Defender (all available options)
     * Azure Security Center - Configure Log Analytics Workspace
     * Azure Security Center - Configure Security Alert Contact
+    * Service Health Alerts
     * Role Assignments to Security Groups
     * Subscription Budget
     * Subscription Tag:  ISSO
@@ -242,8 +262,16 @@ module subScaffold '../scaffold-subscription.bicep' = {
     budgetTimeGrain: budgetTimeGrain
     budgetStartDate: budgetStartDate
     budgetNotificationEmailAddress: budgetNotificationEmailAddress
+
+    serviceHealthAlerts: serviceHealthAlerts
     
     tagISSO: tagISSO
+    tagClientOrganization: tagClientOrganization
+    tagCostCenter: tagCostCenter
+    tagDataSensitivity: tagDataSensitivity
+    tagProjectContact: tagProjectContact
+    tagProjectName: tagProjectName
+    tagTechnicalContact: tagTechnicalContact
   }
 }
 

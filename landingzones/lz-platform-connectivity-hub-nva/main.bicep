@@ -358,6 +358,7 @@ var tags = {
     * Azure Security Center - Configure Log Analytics Workspace
     * Azure Security Center - Configure Security Alert Contact
     * Role Assignments to Security Groups
+    * Service Health Alerts
     * Subscription Budget
     * Subscription Tag:  ISSO
 */
@@ -378,6 +379,12 @@ module subScaffold '../scaffold-subscription.bicep' = {
     budgetStartDate: budgetStartDate
     budgetNotificationEmailAddress: budgetNotificationEmailAddress
     tagISSO: tagISSO
+    tagClientOrganization: tagClientOrganization
+    tagCostCenter: tagCostCenter
+    tagDataSensitivity: tagDataSensitivity
+    tagProjectContact: tagProjectContact
+    tagProjectName: tagProjectName
+    tagTechnicalContact: tagTechnicalContact
   }
 }
 

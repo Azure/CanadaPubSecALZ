@@ -9,6 +9,25 @@
 
 targetScope = 'subscription'
 
+// Service Health
+@description('Service Health alerts')
+param serviceHealthAlerts object = {}
+
+// Service Health example (JSON)
+// -----------------------------
+// "serviceHealthAlerts": {
+//   "value": {
+//     "incidentTypes": [ "Incident", "Security", "Maintenance", "Information", "ActionRequired" ],
+//     "regions": [ "Global", "Canada East", "Canada Central" ],
+//     "receivers": {
+//       "app": [ "email-1@company.com", "email-2@company.com" ],
+//       "email": [ "email-1@company.com", "email-3@company.com", "email-4@company.com" ],
+//       "sms": [ { "countryCode": "1", "phoneNumber": "1234567890" }, { "countryCode": "1",  "phoneNumber": "0987654321" } ],
+//       "voice": [ { "countryCode": "1", "phoneNumber": "1234567890" } ]
+//     }
+//   }
+// }
+
 // RBAC assignments
 @description('An array of Security Group object ids that should be granted Owner built-in role.  Default: []')
 param subscriptionOwnerGroupObjectIds array = []
@@ -63,6 +82,32 @@ param budgetTimeGrain string = 'Monthly'
 @description('Subscription scoped tag - ISSO')
 param tagISSO string
 
+@description('Resource Group scoped tag - Client Organization')
+param tagClientOrganization string
+
+@description('Resource Group scoped tag - Cost Center')
+param tagCostCenter string
+
+@description('Resource Group scoped tag - Data Sensitivity')
+param tagDataSensitivity string
+
+@description('Resource Group scoped tag - Project Contact')
+param tagProjectContact string
+
+@description('Resource Group scoped tag - Project Name')
+param tagProjectName string
+
+@description('Resource Group scoped tag - Technical Contact')
+param tagTechnicalContact string
+
+var tags = {
+  ClientOrganization: tagClientOrganization
+  CostCenter: tagCostCenter
+  DataSensitivity: tagDataSensitivity
+  ProjectContact: tagProjectContact
+  ProjectName: tagProjectName
+  TechnicalContact: tagTechnicalContact
+}
 
 // Configure Tags
 resource setTagISSO 'Microsoft.Resources/tags@2020-10-01' = {
@@ -96,6 +141,24 @@ module budget '../azresources/cost/budget-subscription.bicep' = if (createBudget
     startDate: budgetStartDate
     timeGrain: budgetTimeGrain
     notificationEmailAddress: budgetNotificationEmailAddress
+  }
+}
+
+// Create Service Health resource group for managing alerts and action groups
+resource rgServiceHealth 'Microsoft.Resources/resourceGroups@2021-04-01' = if (!empty(serviceHealthAlerts)) {
+  name: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.resourceGroupName : 'rgServiceHealth'
+  location: deployment().location
+  tags: tags
+}
+
+// Create Service Health alerts
+module serviceHealth '../azresources/service-health/service-health.bicep' = if (!empty(serviceHealthAlerts)) {
+  name: 'deploy-service-health'
+  scope: rgServiceHealth
+  params: {
+    incidentTypes: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.incidentTypes : []
+    regions: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.regions : []
+    receivers: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.receivers : {}
   }
 }
 
