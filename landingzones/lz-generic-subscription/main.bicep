@@ -11,6 +11,7 @@
 
 Generic Subscription Landing Zone archetype provides the basic Azure subscription configuration that includes:
 
+* Service Health alerts (optional)
 * Azure Automation Account
 * Azure Virtual Network
 * Role-based access control for Owner, Contributor, Reader & Application Owner (custom role) 
@@ -29,6 +30,25 @@ This landing is typically used for:
 */
 
 targetScope = 'subscription'
+
+// Service Health
+@description('Service Health alerts')
+param serviceHealthAlerts object = {}
+
+// Service Health example (JSON)
+// -----------------------------
+// "serviceHealthAlerts": {
+//   "value": {
+//     "incidentTypes": [ "Incident", "Security", "Maintenance", "Information", "ActionRequired" ],
+//     "regions": [ "Global", "Canada East", "Canada Central" ],
+//     "receivers": {
+//       "app": [ "email-1@company.com", "email-2@company.com" ],
+//       "email": [ "email-1@company.com", "email-3@company.com", "email-4@company.com" ],
+//       "sms": [ { "countryCode": "1", "phoneNumber": "1234567890" }, { "countryCode": "1",  "phoneNumber": "0987654321" } ],
+//       "voice": [ { "countryCode": "1", "phoneNumber": "1234567890" } ]
+//     }
+//   }
+// }
 
 // Groups
 @description('An array of Security Group object ids that should be granted Owner built-in role.  Default: []')
@@ -227,6 +247,24 @@ resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgAutomationName
   location: deployment().location
   tags: tags
+}
+
+// Create Service Health resource group for managing alerts and action groups
+resource rgServiceHealth 'Microsoft.Resources/resourceGroups@2021-04-01' = if (!empty(serviceHealthAlerts)) {
+  name: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.resourceGroupName : 'rgServiceHealth'
+  location: deployment().location
+  tags: tags
+}
+
+// Create Service Health alerts
+module serviceHealth '../../azresources/service-health/service-health.bicep' = if (!empty(serviceHealthAlerts)) {
+  name: 'deploy-service-health'
+  scope: rgServiceHealth
+  params: {
+    incidentTypes: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.incidentTypes : []
+    regions: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.regions : []
+    receivers: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.receivers : {}
+  }
 }
 
 // Create & configure virtaual network - only if Virtual Network is being deployed
