@@ -113,13 +113,17 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
     synapseUsername: 'azadmin'
    
     // parameters for Tags
-    tagISSO: '${testRunnerId}ISSO'
-    tagClientOrganization: '${testRunnerId}Org'
-    tagCostCenter: '${testRunnerId}CostCenter'
-    tagDataSensitivity: '${testRunnerId}DataSensitivity'
-    tagProjectContact: '${testRunnerId}ProjectContact'
-    tagProjectName: tagProjectName
-    tagTechnicalContact: '${testRunnerId}TechContact'
+    subscriptionTags: {
+      'ISSO': '${testRunnerId}ISSO'
+    }
+    resourceTags: {
+      'ClientOrganization': '${testRunnerId}Org'
+      'CostCenter': '${testRunnerId}CostCenter'
+      'DataSensitivity': '${testRunnerId}DataSensitivity'
+      'ProjectContact': '${testRunnerId}ProjectContact'
+      'ProjectName': tagProjectName
+      'TechnicalContact': '${testRunnerId}TechContact'      
+    }
   }
 }
 

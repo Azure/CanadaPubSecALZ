@@ -10,10 +10,7 @@
 targetScope = 'subscription'
 
 // Service Health
-@description('Service Health alerts')
-param serviceHealthAlerts object = {}
-
-// Service Health example (JSON)
+// Example (JSON)
 // -----------------------------
 // "serviceHealthAlerts": {
 //   "value": {
@@ -27,6 +24,51 @@ param serviceHealthAlerts object = {}
 //     }
 //   }
 // }
+@description('Service Health alerts')
+param serviceHealthAlerts object = {}
+
+// Tags
+// Example (JSON)
+// -----------------------------
+// "subscriptionTags": {
+//   "value": {
+//       "ISSO": "isso-tag"
+//   }
+// }
+
+// Example (Bicep)
+// ---------------------------
+// {
+//   'ISSO': 'isso-tag'
+// }
+@description('A set of key/value pairs of tags assigned to the subscription.')
+param subscriptionTags object
+
+// Example (JSON)
+// -----------------------------
+// "resourceTags": {
+//   "value": {
+//       "ClientOrganization": "client-organization-tag",
+//       "CostCenter": "cost-center-tag",
+//       "DataSensitivity": "data-sensitivity-tag",
+//       "ProjectContact": "project-contact-tag",
+//       "ProjectName": "project-name-tag",
+//       "TechnicalContact": "technical-contact-tag"
+//   }
+// }
+
+// Example (Bicep)
+// ---------------------------
+// {
+//   'ClientOrganization': 'client-organization-tag'
+//   'CostCenter': 'cost-center-tag'
+//   'DataSensitivity': 'data-sensitivity-tag'
+//   'ProjectContact': 'project-contact-tag'
+//   'ProjectName': 'project-name-tag'
+//   'TechnicalContact': 'technical-contact-tag'
+// }
+@description('A set of key/value pairs of tags assigned to the resource group and resources.')
+param resourceTags object
 
 // Groups
 @description('An array of Security Group object ids that should be granted Owner built-in role.  Default: []')
@@ -204,28 +246,6 @@ param budgetTimeGrain string = 'Monthly'
 @description('Azure Key Vault Secret Expiry in days.')
 param secretExpiryInDays int
 
-// Tags
-@description('Subscription scoped tag - ISSO')
-param tagISSO string
-
-@description('Resource Group scoped tag - Client Organization')
-param tagClientOrganization string
-
-@description('Resource Group scoped tag - Cost Center')
-param tagCostCenter string
-
-@description('Resource Group scoped tag - Data Sensitivity')
-param tagDataSensitivity string
-
-@description('Resource Group scoped tag - Project Contact')
-param tagProjectContact string
-
-@description('Resource Group scoped tag - Project Name')
-param tagProjectName string
-
-@description('Resource Group scoped tag - Technical Contact')
-param tagTechnicalContact string
-
 // ML landing zone parameters - start
 @description('Boolean flag to determine whether SQL Database is deployed or not.')
 param deploySQLDB bool
@@ -254,7 +274,7 @@ param enableHbiWorkspace bool = false
     * Role Assignments to Security Groups
     * Service Health Alerts
     * Subscription Budget
-    * Subscription Tag:  ISSO
+    * Subscription Tags
 */
 module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
@@ -280,13 +300,8 @@ module subScaffold '../scaffold-subscription.bicep' = {
     
     serviceHealthAlerts: serviceHealthAlerts
     
-    tagISSO: tagISSO
-    tagClientOrganization: tagClientOrganization
-    tagCostCenter: tagCostCenter
-    tagDataSensitivity: tagDataSensitivity
-    tagProjectContact: tagProjectContact
-    tagProjectName: tagProjectName
-    tagTechnicalContact: tagTechnicalContact
+    subscriptionTags: subscriptionTags
+    resourceTags: resourceTags
   }
 }
 
@@ -295,12 +310,7 @@ module landingZone 'lz.bicep' = {
   name: 'deploy-machinelearning-archetype'
   scope: subscription()
   params: {
-    tagClientOrganization: tagClientOrganization
-    tagCostCenter: tagCostCenter
-    tagDataSensitivity: tagDataSensitivity
-    tagProjectContact: tagProjectContact
-    tagProjectName: tagProjectName
-    tagTechnicalContact: tagTechnicalContact
+    resourceTags: resourceTags
   
     securityContactEmail: securityContactEmail
 

@@ -4,6 +4,16 @@
     "parameters": {
         "policyDefinitionManagementGroupId": {
             "value": "{{var-topLevelManagementGroupName}}"
+        },
+        "requiredResourceTags": {
+            "value": [
+                "ClientOrganization",
+                "CostCenter",
+                "DataSensitivity",
+                "ProjectContact",
+                "ProjectName",
+                "TechnicalContact"
+            ]
         }
     }
 }

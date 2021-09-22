@@ -1,9 +1,0 @@
-{
-  "if": {
-    "field": "[concat('tags[ProjectContact]')]",
-    "exists": "false"
-  },
-  "then": {
-    "effect": "audit"
-  }
-}

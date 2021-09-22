@@ -24,6 +24,7 @@ Generic Subscription Landing Zone archetype provides the basic Azure subscriptio
 This landing is typically used for:
 
 * Lift & Shift Azure Migrations
+* COTS (Commercial off-the-shelf) products
 * General deployment where Application teams own and operate the application stack
 * Evaluating/prototying new application designs
 
@@ -32,10 +33,7 @@ This landing is typically used for:
 targetScope = 'subscription'
 
 // Service Health
-@description('Service Health alerts')
-param serviceHealthAlerts object = {}
-
-// Service Health example (JSON)
+// Example (JSON)
 // -----------------------------
 // "serviceHealthAlerts": {
 //   "value": {
@@ -49,6 +47,51 @@ param serviceHealthAlerts object = {}
 //     }
 //   }
 // }
+@description('Service Health alerts')
+param serviceHealthAlerts object = {}
+
+// Tags
+// Example (JSON)
+// -----------------------------
+// "subscriptionTags": {
+//   "value": {
+//       "ISSO": "isso-tag"
+//   }
+// }
+
+// Example (Bicep)
+// ---------------------------
+// {
+//   'ISSO': 'isso-tag'
+// }
+@description('A set of key/value pairs of tags assigned to the subscription.')
+param subscriptionTags object
+
+// Example (JSON)
+// -----------------------------
+// "resourceTags": {
+//   "value": {
+//       "ClientOrganization": "client-organization-tag",
+//       "CostCenter": "cost-center-tag",
+//       "DataSensitivity": "data-sensitivity-tag",
+//       "ProjectContact": "project-contact-tag",
+//       "ProjectName": "project-name-tag",
+//       "TechnicalContact": "technical-contact-tag"
+//   }
+// }
+
+// Example (Bicep)
+// ---------------------------
+// {
+//   'ClientOrganization': 'client-organization-tag'
+//   'CostCenter': 'cost-center-tag'
+//   'DataSensitivity': 'data-sensitivity-tag'
+//   'ProjectContact': 'project-contact-tag'
+//   'ProjectName': 'project-name-tag'
+//   'TechnicalContact': 'technical-contact-tag'
+// }
+@description('A set of key/value pairs of tags assigned to the resource group and resources.')
+param resourceTags object
 
 // Groups
 @description('An array of Security Group object ids that should be granted Owner built-in role.  Default: []')
@@ -166,37 +209,6 @@ param budgetStartDate string = utcNow('yyyy-MM-01')
 ])
 param budgetTimeGrain string = 'Monthly'
 
-// Tags
-@description('Subscription scoped tag - ISSO')
-param tagISSO string
-
-@description('Resource Group scoped tag - Client Organization')
-param tagClientOrganization string
-
-@description('Resource Group scoped tag - Cost Center')
-param tagCostCenter string
-
-@description('Resource Group scoped tag - Data Sensitivity')
-param tagDataSensitivity string
-
-@description('Resource Group scoped tag - Project Contact')
-param tagProjectContact string
-
-@description('Resource Group scoped tag - Project Name')
-param tagProjectName string
-
-@description('Resource Group scoped tag - Technical Contact')
-param tagTechnicalContact string
-
-var tags = {
-  ClientOrganization: tagClientOrganization
-  CostCenter: tagCostCenter
-  DataSensitivity: tagDataSensitivity
-  ProjectContact: tagProjectContact
-  ProjectName: tagProjectName
-  TechnicalContact: tagTechnicalContact
-}
-
 /*
   Scaffold the subscription which includes:
     * Azure Security Center - Enable Azure Defender (all available options)
@@ -205,7 +217,7 @@ var tags = {
     * Service Health Alerts
     * Role Assignments to Security Groups
     * Subscription Budget
-    * Subscription Tag:  ISSO
+    * Subscription Tags
 */
 module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
@@ -231,13 +243,8 @@ module subScaffold '../scaffold-subscription.bicep' = {
     
     serviceHealthAlerts: serviceHealthAlerts
 
-    tagISSO: tagISSO
-    tagClientOrganization: tagClientOrganization
-    tagCostCenter: tagCostCenter
-    tagDataSensitivity: tagDataSensitivity
-    tagProjectContact: tagProjectContact
-    tagProjectName: tagProjectName
-    tagTechnicalContact: tagTechnicalContact
+    subscriptionTags: subscriptionTags
+    resourceTags: resourceTags
   }
 }
 
@@ -245,21 +252,21 @@ module subScaffold '../scaffold-subscription.bicep' = {
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgNetworkWatcherName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 // Create Virtual Network Resource Group - only if Virtual Network is being deployed
 resource rgVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployVnet) {
   name: deployVnet ? rgVnetName : 'placeholder'
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 // Create Azure Automation Resource Group
 resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgAutomationName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 // Create & configure virtaual network - only if Virtual Network is being deployed
@@ -295,7 +302,7 @@ module automationAccount '../../azresources/automation/automation-account.bicep'
   scope: rgAutomation
   params: {
     automationAccountName: automationAccountName
-    tags: tags
+    tags: resourceTags
   }
 }
 

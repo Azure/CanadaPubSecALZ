@@ -130,23 +130,7 @@ param privateDnsManagedByHubResourceGroupName string = ''
 param secretExpiryInDays int
 
 // Tags
-@description('Resource Group scoped tag - Client Organization')
-param tagClientOrganization string
-
-@description('Resource Group scoped tag - Cost Center')
-param tagCostCenter string
-
-@description('Resource Group scoped tag - Data Sensitivity')
-param tagDataSensitivity string
-
-@description('Resource Group scoped tag - Project Contact')
-param tagProjectContact string
-
-@description('Resource Group scoped tag - Project Name')
-param tagProjectName string
-
-@description('Resource Group scoped tag - Technical Contact')
-param tagTechnicalContact string
+param resourceTags object
 
 // ML landing zone parameters - start
 @description('Boolean flag to determine whether SQL Database is deployed or not.')
@@ -186,56 +170,47 @@ var stranalyticsName = 'strana${uniqueString(rgCompute.id)}'
 var eventhubName = 'eventhub${uniqueString(rgCompute.id)}'
 
 
-var tags = {
-  ClientOrganization: tagClientOrganization
-  CostCenter: tagCostCenter
-  DataSensitivity: tagDataSensitivity
-  ProjectContact: tagProjectContact
-  ProjectName: tagProjectName
-  TechnicalContact: tagTechnicalContact
-}
-
 //resource group deployments
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgNetworkWatcherName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgAutomationName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 resource rgVnet 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: rgVnetName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 resource rgStorage 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgStorageName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 resource rgCompute 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgComputeName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 resource rgSecurity 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgSecurityName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 resource rgMonitor 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgMonitorName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 // Automation
@@ -244,7 +219,7 @@ module automationAccount '../../azresources/automation/automation-account.bicep'
   scope: rgAutomation
   params: {
     automationAccountName: automationAccountName
-    tags: tags
+    tags: resourceTags
   }
 }
 
@@ -362,7 +337,7 @@ module keyVault '../../azresources/security/key-vault.bicep' = {
   scope: rgSecurity
   params: {
     name: akvName
-    tags: tags
+    tags: resourceTags
 
     enabledForDiskEncryption: true
 
@@ -375,7 +350,7 @@ module storageLogging '../../azresources/storage/storage-generalpurpose.bicep' =
   name: 'deploy-storage-for-logging'
   scope: rgStorage
   params: {
-    tags: tags
+    tags: resourceTags
     name: storageLoggingName
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
@@ -396,7 +371,7 @@ module sqlDb '../../azresources/data/sqldb/main.bicep' = if (deploySQLDB == true
   name: 'deploy-sqldb'
   scope: rgStorage
   params: {
-    tags: tags
+    tags: resourceTags
     sqlServerName: sqlServerName
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.sqlDBPrivateDnsZoneId
@@ -416,7 +391,7 @@ module dataLake '../../azresources/storage/storage-adlsgen2.bicep' = {
   name: 'deploy-datalake'
   scope: rgStorage
   params: {
-    tags: tags
+    tags: resourceTags
     name: datalakeStorageName
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
@@ -439,7 +414,7 @@ module egressLb '../../azresources/network/lb-egress.bicep' = {
   scope: rgCompute
   params: {
     name: databricksEgressLbName
-    tags: tags
+    tags: resourceTags
   }
 }
 
@@ -448,7 +423,7 @@ module databricks '../../azresources/analytics/databricks/main.bicep' = {
   scope: rgCompute
   params: {
     name: databricksName
-    tags: tags
+    tags: resourceTags
     vnetId: networking.outputs.vnetId
     pricingTier: 'premium'
     managedResourceGroupId: '${subscription().id}/resourceGroups/${rgCompute.name}-${databricksName}-${uniqueString(rgCompute.id)}'
@@ -464,7 +439,7 @@ module adf '../../azresources/analytics/adf/main.bicep' = {
   scope: rgCompute
   params: {
     name: adfName
-    tags: tags
+    tags: resourceTags
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     datafactoryPrivateZoneId: networking.outputs.adfDataFactoryPrivateDnsZoneId
@@ -481,7 +456,7 @@ module acr '../../azresources/containers/acr/main.bicep' = {
   scope: rgStorage
   params: {
     name: acrName
-    tags: tags
+    tags: resourceTags
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.acrPrivateDnsZoneId
@@ -497,7 +472,7 @@ module appInsights '../../azresources/monitor/ai-web.bicep' = {
   name: 'deploy-appinsights-web'
   scope: rgMonitor
   params: {
-    tags: tags
+    tags: resourceTags
     name: aiName
   }
 }
@@ -508,7 +483,7 @@ module dataLakeMetaData '../../azresources/storage/storage-generalpurpose.bicep'
   name: 'deploy-aml-metadata-storage'
   scope: rgCompute
   params: {
-    tags: tags
+    tags: resourceTags
     name: amlMetaStorageName
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
@@ -527,7 +502,7 @@ module aml '../../azresources/analytics/aml/main.bicep' = {
   scope: rgCompute
   params: {
     name: amlName
-    tags: tags
+    tags: resourceTags
     containerRegistryId: acr.outputs.acrId
     storageAccountId: dataLakeMetaData.outputs.storageId
     appInsightsId: appInsights.outputs.aiId
@@ -547,7 +522,7 @@ module synapse '../../azresources/analytics/synapse/main.bicep' = {
   scope: rgCompute
   params: {
     name: synapseName
-    tags: tags
+    tags: resourceTags
 
     managedResourceGroupName: '${rgCompute.name}-${synapseName}-${uniqueString(rgCompute.id)}'
 
@@ -664,7 +639,7 @@ module fhir '../../azresources/compute/fhir.bicep' = {
   scope: rgCompute
   params: {
     name: fhirName
-    tags: tags
+    tags: resourceTags
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.fhirPrivateDnsZoneId
   }
@@ -676,7 +651,7 @@ module functionStorage '../../azresources/storage/storage-generalpurpose.bicep' 
   name: 'deploy-function-storage'
   scope: rgCompute
   params: {
-    tags: tags
+    tags: resourceTags
     name: azfuncStorageName
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
@@ -698,7 +673,7 @@ module functionAppServicePlan '../../azresources/compute/web/app-service-plan-li
     skuName: 'S1'
     skuTier: 'Standard'
 
-    tags: tags
+    tags: resourceTags
   }
 }
 
@@ -716,7 +691,7 @@ module functionApp '../../azresources/compute/web/functions-python-linux.bicep' 
     
     vnetIntegrationSubnetId: networking.outputs.webAppSubnetId
     
-    tags: tags
+    tags: resourceTags
   }
 }
 
@@ -726,7 +701,7 @@ module streamanalytics '../../azresources/analytics/stream-analytics/main.bicep'
   scope: rgCompute
   params: {
     name: stranalyticsName
-    tags: tags
+    tags: resourceTags
   }
 }
 
@@ -736,7 +711,7 @@ module eventhub '../../azresources/integration/eventhub.bicep' = {
   scope: rgCompute
   params: {
     name: eventhubName
-    tags: tags
+    tags: resourceTags
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneEventHubId : networking.outputs.eventhubPrivateDnsZoneId
   }

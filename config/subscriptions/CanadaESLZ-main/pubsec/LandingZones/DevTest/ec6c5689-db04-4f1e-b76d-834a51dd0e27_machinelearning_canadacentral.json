@@ -15,6 +15,21 @@
           }
       }
     },
+    "subscriptionTags": {
+      "value": {
+          "ISSO": "isso-tag"
+      }
+    },
+    "resourceTags": {
+        "value": {
+            "ClientOrganization": "client-organization-tag",
+            "CostCenter": "cost-center-tag",
+            "DataSensitivity": "data-sensitivity-tag",
+            "ProjectContact": "project-contact-tag",
+            "ProjectName": "project-name-tag",
+            "TechnicalContact": "technical-contact-tag"
+        }
+    },
     "securityContactEmail": {
       "value": "alzcanadapubsec@microsoft.com"
     },
@@ -35,27 +50,6 @@
     },
     "budgetNotificationEmailAddress": {
       "value": "alzcanadapubsec@microsoft.com"
-    },
-    "tagISSO": {
-      "value": "tbd"
-    },
-    "tagClientOrganization": {
-      "value": "tbd"
-    },
-    "tagCostCenter": {
-      "value": "tbd"
-    },
-    "tagDataSensitivity": {
-      "value": "tbd"
-    },
-    "tagProjectContact": {
-      "value": "tbd"
-    },
-    "tagProjectName": {
-      "value": "tbd"
-    },
-    "tagTechnicalContact": {
-      "value": "tbd"
     },
     "lzAppOwnerRoleDefinitionId": {
       "value": ""

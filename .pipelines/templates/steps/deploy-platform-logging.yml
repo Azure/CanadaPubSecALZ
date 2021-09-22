@@ -80,13 +80,8 @@ steps:
             logAnalyticsResourceGroupName='$(var-logging-logAnalyticsResourceGroupName)' \
             logAnalyticsWorkspaceName='$(var-logging-logAnalyticsWorkspaceName)' \
             logAnalyticsAutomationAccountName='$(var-logging-logAnalyticsAutomationAccountName)' \
-            tagISSO='$(var-logging-tagISSO)' \
-            tagClientOrganization='$(var-logging-tagClientOrganization)' \
-            tagCostCenter='$(var-logging-tagCostCenter)' \
-            tagDataSensitivity='$(var-logging-tagDataSensitivity)' \
-            tagProjectContact='$(var-logging-tagProjectContact)' \
-            tagProjectName='$(var-logging-tagProjectName)' \
-            tagTechnicalContact='$(var-logging-tagTechnicalContact)'
+            subscriptionTags='$(var-logging-subscriptionTags)' \
+            resourceTags='$(var-logging-resourceTags)'
 
       $(var-bashPostInjectScript)
     workingDirectory: '${{ parameters.workingDir }}/lz-platform-logging'

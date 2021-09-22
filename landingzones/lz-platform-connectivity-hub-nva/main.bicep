@@ -25,6 +25,49 @@ Hub Networking with Fortigate Virtual Network Appliance archetype infrastructure
 
 targetScope = 'subscription'
 
+// Tags
+// Example (JSON)
+// -----------------------------
+// "subscriptionTags": {
+//   "value": {
+//       "ISSO": "isso-tag"
+//   }
+// }
+
+// Example (Bicep)
+// ---------------------------
+// {
+//   'ISSO': 'isso-tag'
+// }
+@description('A set of key/value pairs of tags assigned to the subscription.')
+param subscriptionTags object
+
+// Example (JSON)
+// -----------------------------
+// "resourceTags": {
+//   "value": {
+//       "ClientOrganization": "client-organization-tag",
+//       "CostCenter": "cost-center-tag",
+//       "DataSensitivity": "data-sensitivity-tag",
+//       "ProjectContact": "project-contact-tag",
+//       "ProjectName": "project-name-tag",
+//       "TechnicalContact": "technical-contact-tag"
+//   }
+// }
+
+// Example (Bicep)
+// ---------------------------
+// {
+//   'ClientOrganization': 'client-organization-tag'
+//   'CostCenter': 'cost-center-tag'
+//   'DataSensitivity': 'data-sensitivity-tag'
+//   'ProjectContact': 'project-contact-tag'
+//   'ProjectName': 'project-name-tag'
+//   'TechnicalContact': 'technical-contact-tag'
+// }
+@description('A set of key/value pairs of tags assigned to the resource group and resources.')
+param resourceTags object
+
 // Groups
 @description('An array of Security Group object ids that should be granted Owner built-in role.  Default: []')
 param subscriptionOwnerGroupObjectIds array = []
@@ -44,28 +87,6 @@ param securityContactEmail string
 
 @description('Contact phone number for Azure Security Center alerts.')
 param securityContactPhone string
-
-// Tags
-@description('Subscription scoped tag - ISSO')
-param tagISSO string
-
-@description('Resource Group scoped tag - Client Organization')
-param tagClientOrganization string
-
-@description('Resource Group scoped tag - Cost Center')
-param tagCostCenter string
-
-@description('Resource Group scoped tag - Data Sensitivity')
-param tagDataSensitivity string
-
-@description('Resource Group scoped tag - Project Contact')
-param tagProjectContact string
-
-@description('Resource Group scoped tag - Project Name')
-param tagProjectName string
-
-@description('Resource Group scoped tag - Technical Contact')
-param tagTechnicalContact string
 
 // Budget
 @description('Boolean flag to determine whether to create subscription budget.  Default: true')
@@ -343,15 +364,6 @@ param fwUsername string
 @secure()
 param fwPassword string
 
-var tags = {
-  ClientOrganization: tagClientOrganization
-  CostCenter: tagCostCenter
-  DataSensitivity: tagDataSensitivity
-  ProjectContact: tagProjectContact
-  ProjectName: tagProjectName
-  TechnicalContact: tagTechnicalContact
-}
-
 /*
   Scaffold the subscription which includes:
     * Azure Security Center - Enable Azure Defender (all available options)
@@ -360,7 +372,7 @@ var tags = {
     * Role Assignments to Security Groups
     * Service Health Alerts
     * Subscription Budget
-    * Subscription Tag:  ISSO
+    * Subscription Tags
 */
 module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
@@ -378,13 +390,9 @@ module subScaffold '../scaffold-subscription.bicep' = {
     budgetTimeGrain: budgetTimeGrain
     budgetStartDate: budgetStartDate
     budgetNotificationEmailAddress: budgetNotificationEmailAddress
-    tagISSO: tagISSO
-    tagClientOrganization: tagClientOrganization
-    tagCostCenter: tagCostCenter
-    tagDataSensitivity: tagDataSensitivity
-    tagProjectContact: tagProjectContact
-    tagProjectName: tagProjectName
-    tagTechnicalContact: tagTechnicalContact
+
+    subscriptionTags: subscriptionTags
+    resourceTags: resourceTags
   }
 }
 
@@ -392,42 +400,42 @@ module subScaffold '../scaffold-subscription.bicep' = {
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgNetworkWatcherName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 // Create Private DNS Zone Resource Group - optional
 resource rgPrivateDnsZones 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployPrivateDnsZones) {
   name: rgPrivateDnsZonesName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 // Create Azure DDOS Standard Resource Group - optional
 resource rgDdos 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployDdosStandard) {
   name: rgDdosName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 // Create Hub Virtual Network Resource Group
 resource rgHubVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgHubName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 // Create Managemend Restricted Virtual Network Resource Group
 resource rgMrzVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgMrzName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 // Create Public Access Zone Resource Group
 resource rgPaz 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgPazName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 // Enable delete locks

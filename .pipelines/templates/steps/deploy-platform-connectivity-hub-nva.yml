@@ -77,13 +77,8 @@ steps:
           budgetTimeGrain='$(var-hubnetwork-budgetTimeGrain)' \
           budgetStartDate='$(var-hubnetwork-budgetStartDate)' \
           budgetNotificationEmailAddress='$(var-hubnetwork-budgetNotificationEmailAddress)' \
-          tagISSO='$(var-hubnetwork-tagISSO)' \
-          tagClientOrganization='$(var-hubnetwork-tagClientOrganization)' \
-          tagCostCenter='$(var-hubnetwork-tagCostCenter)' \
-          tagDataSensitivity='$(var-hubnetwork-tagDataSensitivity)' \
-          tagProjectContact='$(var-hubnetwork-tagProjectContact)' \
-          tagProjectName='$(var-hubnetwork-tagProjectName)' \
-          tagTechnicalContact='$(var-hubnetwork-tagTechnicalContact)' \
+          subscriptionTags='$(var-hubnetwork-subscriptionTags)' \
+          resourceTags='$(var-hubnetwork-resourceTags)' \
           deployPrivateDnsZones='$(var-hubnetwork-deployPrivateDnsZones)' \
           rgPrivateDnsZonesName='$(var-hubnetwork-rgPrivateDnsZonesName)' \
           deployDdosStandard='$(var-hubnetwork-deployDdosStandard)' \

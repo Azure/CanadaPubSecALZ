@@ -33,6 +33,40 @@ Platform Logging archetype provides infrastructure for centrally managed Log Ana
 
 targetScope = 'subscription'
 
+// Example (Bicep)
+// ---------------------------
+// {
+//   'ISSO': 'isso-tag'
+// }
+@description('A set of key/value pairs of tags assigned to the subscription.')
+param subscriptionTags object
+
+// Example (JSON)
+// -----------------------------
+// "resourceTags": {
+//   "value": {
+//       "ClientOrganization": "client-organization-tag",
+//       "CostCenter": "cost-center-tag",
+//       "DataSensitivity": "data-sensitivity-tag",
+//       "ProjectContact": "project-contact-tag",
+//       "ProjectName": "project-name-tag",
+//       "TechnicalContact": "technical-contact-tag"
+//   }
+// }
+
+// Example (Bicep)
+// ---------------------------
+// {
+//   'ClientOrganization': 'client-organization-tag'
+//   'CostCenter': 'cost-center-tag'
+//   'DataSensitivity': 'data-sensitivity-tag'
+//   'ProjectContact': 'project-contact-tag'
+//   'ProjectName': 'project-name-tag'
+//   'TechnicalContact': 'technical-contact-tag'
+// }
+@description('A set of key/value pairs of tags assigned to the resource group and resources.')
+param resourceTags object
+
 // Groups
 @description('An array of Security Group object ids that should be granted Owner built-in role.  Default: []')
 param subscriptionOwnerGroupObjectIds array = []
@@ -84,42 +118,11 @@ param budgetStartDate string = utcNow('yyyy-MM-01')
 ])
 param budgetTimeGrain string = 'Monthly'
 
-// Tags
-@description('Subscription scoped tag - ISSO')
-param tagISSO string
-
-@description('Resource Group scoped tag - Client Organization')
-param tagClientOrganization string
-
-@description('Resource Group scoped tag - Cost Center')
-param tagCostCenter string
-
-@description('Resource Group scoped tag - Data Sensitivity')
-param tagDataSensitivity string
-
-@description('Resource Group scoped tag - Project Contact')
-param tagProjectContact string
-
-@description('Resource Group scoped tag - Project Name')
-param tagProjectName string
-
-@description('Resource Group scoped tag - Technical Contact')
-param tagTechnicalContact string
-
-var tags = {
-  ClientOrganization: tagClientOrganization
-  CostCenter: tagCostCenter
-  DataSensitivity: tagDataSensitivity
-  ProjectContact: tagProjectContact
-  ProjectName: tagProjectName
-  TechnicalContact: tagTechnicalContact
-}
-
 // Create Log Analytics Workspace Resource Group
 resource rgLogging 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: logAnalyticsResourceGroupName
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 // Create Log Analytics Workspace
@@ -129,7 +132,7 @@ module logAnalytics '../../azresources/monitor/log-analytics.bicep' = {
   params: {
     workspaceName: logAnalyticsWorkspaceName
     automationAccountName: logAnalyticsAutomationAccountName
-    tags: tags
+    tags: resourceTags
   }
 }
 
@@ -141,7 +144,7 @@ module logAnalytics '../../azresources/monitor/log-analytics.bicep' = {
     * Role Assignments to Security Groups
     * Service Health Alerts
     * Subscription Budget
-    * Subscription Tag:  ISSO
+    * Subscription Tags
 */
 module subScaffold '../scaffold-subscription.bicep' = {
   name: 'subscription-scaffold'
@@ -159,12 +162,8 @@ module subScaffold '../scaffold-subscription.bicep' = {
     budgetTimeGrain: budgetTimeGrain
     budgetStartDate: budgetStartDate
     budgetNotificationEmailAddress: budgetNotificationEmailAddress
-    tagISSO: tagISSO
-    tagClientOrganization: tagClientOrganization
-    tagCostCenter: tagCostCenter
-    tagDataSensitivity: tagDataSensitivity
-    tagProjectContact: tagProjectContact
-    tagProjectName: tagProjectName
-    tagTechnicalContact: tagTechnicalContact
+    
+    subscriptionTags: subscriptionTags
+    resourceTags: resourceTags
   }
 }

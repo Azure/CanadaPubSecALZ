@@ -10,10 +10,7 @@
 targetScope = 'subscription'
 
 // Service Health
-@description('Service Health alerts')
-param serviceHealthAlerts object = {}
-
-// Service Health example (JSON)
+// Example (JSON)
 // -----------------------------
 // "serviceHealthAlerts": {
 //   "value": {
@@ -27,6 +24,51 @@ param serviceHealthAlerts object = {}
 //     }
 //   }
 // }
+@description('Service Health alerts')
+param serviceHealthAlerts object = {}
+
+// Tags
+// Example (JSON)
+// -----------------------------
+// "subscriptionTags": {
+//   "value": {
+//       "ISSO": "isso-tag"
+//   }
+// }
+
+// Example (Bicep)
+// ---------------------------
+// {
+//   'ISSO': 'isso-tag'
+// }
+@description('A set of key/value pairs of tags assigned to the subscription.')
+param subscriptionTags object
+
+// Example (JSON)
+// -----------------------------
+// "resourceTags": {
+//   "value": {
+//       "ClientOrganization": "client-organization-tag",
+//       "CostCenter": "cost-center-tag",
+//       "DataSensitivity": "data-sensitivity-tag",
+//       "ProjectContact": "project-contact-tag",
+//       "ProjectName": "project-name-tag",
+//       "TechnicalContact": "technical-contact-tag"
+//   }
+// }
+
+// Example (Bicep)
+// ---------------------------
+// {
+//   'ClientOrganization': 'client-organization-tag'
+//   'CostCenter': 'cost-center-tag'
+//   'DataSensitivity': 'data-sensitivity-tag'
+//   'ProjectContact': 'project-contact-tag'
+//   'ProjectName': 'project-name-tag'
+//   'TechnicalContact': 'technical-contact-tag'
+// }
+@description('A set of key/value pairs of tags assigned to the resource group and resources.')
+param resourceTags object
 
 // RBAC assignments
 @description('An array of Security Group object ids that should be granted Owner built-in role.  Default: []')
@@ -74,49 +116,16 @@ param budgetStartDate string = utcNow('yyyy-MM-01')
 @allowed([
   'Monthly'
   'Quarterly'
-  'Annually'  
+  'Annually'
 ])
 param budgetTimeGrain string = 'Monthly'
-
-// Tags
-@description('Subscription scoped tag - ISSO')
-param tagISSO string
-
-@description('Resource Group scoped tag - Client Organization')
-param tagClientOrganization string
-
-@description('Resource Group scoped tag - Cost Center')
-param tagCostCenter string
-
-@description('Resource Group scoped tag - Data Sensitivity')
-param tagDataSensitivity string
-
-@description('Resource Group scoped tag - Project Contact')
-param tagProjectContact string
-
-@description('Resource Group scoped tag - Project Name')
-param tagProjectName string
-
-@description('Resource Group scoped tag - Technical Contact')
-param tagTechnicalContact string
-
-var tags = {
-  ClientOrganization: tagClientOrganization
-  CostCenter: tagCostCenter
-  DataSensitivity: tagDataSensitivity
-  ProjectContact: tagProjectContact
-  ProjectName: tagProjectName
-  TechnicalContact: tagTechnicalContact
-}
 
 // Configure Tags
 resource setTagISSO 'Microsoft.Resources/tags@2020-10-01' = {
   name: 'default'
   scope: subscription()
   properties: {
-    tags: {
-      ISSO: tagISSO
-    }
+    tags: subscriptionTags
   }
 }
 
@@ -148,7 +157,7 @@ module budget '../azresources/cost/budget-subscription.bicep' = if (createBudget
 resource rgServiceHealth 'Microsoft.Resources/resourceGroups@2021-04-01' = if (!empty(serviceHealthAlerts)) {
   name: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.resourceGroupName : 'rgServiceHealth'
   location: deployment().location
-  tags: tags
+  tags: resourceTags
 }
 
 // Create Service Health alerts

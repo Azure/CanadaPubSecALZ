@@ -1,9 +1,0 @@
-{
-  "if": {
-    "field": "[concat('tags[DataSensitivity]')]",
-    "exists": "false"
-  },
-  "then": {
-    "effect": "audit"
-  }
-}

@@ -42,13 +42,19 @@ variables:
   var-logging-budgetAmount: 100
   var-logging-budgetTimeGrain: Monthly
   var-logging-budgetNotificationEmailAddress: alzcanadapubsec@microsoft.com
-  var-logging-tagISSO: tbd
-  var-logging-tagClientOrganization: tbd
-  var-logging-tagCostCenter: tbd
-  var-logging-tagDataSensitivity: tbd
-  var-logging-tagProjectContact: tbd
-  var-logging-tagProjectName: tbd
-  var-logging-tagTechnicalContact: tbd
+  var-logging-subscriptionTags: >
+    {
+      "ISSO": "isso-tbd"
+    }
+  var-logging-resourceTags: >
+    {
+      "ClientOrganization": "client-organization-tag",
+      "CostCenter": "cost-center-tag",
+      "DataSensitivity": "data-sensitivity-tag",
+      "ProjectContact": "project-contact-tag",
+      "ProjectName": "project-name-tag",
+      "TechnicalContact": "technical-contact-tag"
+    }
 
   # Hub Networking
   var-hubnetwork-managementGroupId: pubsecPlatform
@@ -63,14 +69,20 @@ variables:
   var-hubnetwork-budgetAmount: 100
   var-hubnetwork-budgetTimeGrain: Monthly
   var-hubnetwork-budgetNotificationEmailAddress: alzcanadapubsec@microsoft.com
-  var-hubnetwork-tagISSO: tbd
-  var-hubnetwork-tagClientOrganization: tbd
-  var-hubnetwork-tagCostCenter: tbd
-  var-hubnetwork-tagDataSensitivity: tbd
-  var-hubnetwork-tagProjectContact: tbd
-  var-hubnetwork-tagProjectName: tbd
-  var-hubnetwork-tagTechnicalContact: tbd
   var-hubnetwork-budgetStartDate: yyyy-MM-01
+  var-hubnetwork-subscriptionTags: >
+    {
+      "ISSO": "isso-tbd"
+    }
+  var-hubnetwork-resourceTags: >
+    {
+      "ClientOrganization": "client-organization-tag",
+      "CostCenter": "cost-center-tag",
+      "DataSensitivity": "data-sensitivity-tag",
+      "ProjectContact": "project-contact-tag",
+      "ProjectName": "project-name-tag",
+      "TechnicalContact": "technical-contact-tag"
+    }
 
   ## Hub Networking - Private Dns Zones
   var-hubnetwork-deployPrivateDnsZones: true
