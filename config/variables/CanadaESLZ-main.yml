@@ -55,6 +55,22 @@ variables:
       "ProjectName": "project-name-tag",
       "TechnicalContact": "technical-contact-tag"
     }
+  var-logging-serviceHealthAlerts: >
+    {
+      "resourceGroupName": "pubsec-service-health",
+      "incidentTypes": [ "Incident", "Security" ],
+      "regions": [ "Global", "Canada East", "Canada Central" ],
+      "receivers": {
+          "app": [ "alzcanadapubsec@microsoft.com" ],
+          "email": [ "alzcanadapubsec@microsoft.com" ],
+          "sms": [
+              { "countryCode": "1", "phoneNumber": "5555555555" }
+          ],
+          "voice": [
+              { "countryCode": "1", "phoneNumber": "5555555555" }
+          ]
+      }
+    }
 
   # Hub Networking
   var-hubnetwork-managementGroupId: pubsecPlatform
@@ -82,6 +98,22 @@ variables:
       "ProjectContact": "project-contact-tag",
       "ProjectName": "project-name-tag",
       "TechnicalContact": "technical-contact-tag"
+    }
+  var-hubnetwork-serviceHealthAlerts: >
+    {
+      "resourceGroupName": "pubsec-service-health",
+      "incidentTypes": [ "Incident", "Security" ],
+      "regions": [ "Global", "Canada East", "Canada Central" ],
+      "receivers": {
+          "app": [ "alzcanadapubsec@microsoft.com" ],
+          "email": [ "alzcanadapubsec@microsoft.com" ],
+          "sms": [
+              { "countryCode": "1", "phoneNumber": "5555555555" }
+          ],
+          "voice": [
+              { "countryCode": "1", "phoneNumber": "5555555555" }
+          ]
+      }
     }
 
   ## Hub Networking - Private Dns Zones
