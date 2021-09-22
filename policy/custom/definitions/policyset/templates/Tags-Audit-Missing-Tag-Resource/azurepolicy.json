@@ -2,9 +2,9 @@
   "type": "Microsoft.Authorization/policyDefinitions",
   "name": "Tags-Audit-Missing-Tag-Resource",
   "properties": {
-    "displayName": "Require a tag on resources",
+    "displayName": "Audit a tag on resources",
     "mode": "Indexed",
-    "description": "Enforces existence of a tag. Does not apply to resource groups.",
+    "description": "Audit existence of a tag. Does not apply to resource groups.",
     "parameters": {
       "tagName": {
         "type": "String",
@@ -20,7 +20,7 @@
         "exists": "false"
       },
       "then": {
-        "effect": "deny"
+        "effect": "audit"
       }
     }
   }
