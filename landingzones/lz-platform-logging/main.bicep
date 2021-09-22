@@ -33,6 +33,24 @@ Platform Logging archetype provides infrastructure for centrally managed Log Ana
 
 targetScope = 'subscription'
 
+// Service Health
+// Example (JSON)
+// -----------------------------
+// "serviceHealthAlerts": {
+//   "value": {
+//     "incidentTypes": [ "Incident", "Security", "Maintenance", "Information", "ActionRequired" ],
+//     "regions": [ "Global", "Canada East", "Canada Central" ],
+//     "receivers": {
+//       "app": [ "email-1@company.com", "email-2@company.com" ],
+//       "email": [ "email-1@company.com", "email-3@company.com", "email-4@company.com" ],
+//       "sms": [ { "countryCode": "1", "phoneNumber": "1234567890" }, { "countryCode": "1",  "phoneNumber": "0987654321" } ],
+//       "voice": [ { "countryCode": "1", "phoneNumber": "1234567890" } ]
+//     }
+//   }
+// }
+@description('Service Health alerts')
+param serviceHealthAlerts object = {}
+
 // Example (Bicep)
 // ---------------------------
 // {
@@ -162,6 +180,8 @@ module subScaffold '../scaffold-subscription.bicep' = {
     budgetTimeGrain: budgetTimeGrain
     budgetStartDate: budgetStartDate
     budgetNotificationEmailAddress: budgetNotificationEmailAddress
+
+    serviceHealthAlerts: serviceHealthAlerts
     
     subscriptionTags: subscriptionTags
     resourceTags: resourceTags

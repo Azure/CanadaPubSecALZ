@@ -67,6 +67,9 @@ steps:
         --subscription $(var-logging-subscriptionId) \
         --template-file ${{ parameters.configTemplate }} \
         --parameters \
+            serviceHealthAlerts='$(var-logging-serviceHealthAlerts)' \
+            subscriptionTags='$(var-logging-subscriptionTags)' \
+            resourceTags='$(var-logging-resourceTags)' \
             subscriptionOwnerGroupObjectIds='$(var-logging-subscriptionOwnerGroupObjectIds)' \
             subscriptionContributorGroupObjectIds='$(var-logging-subscriptionContributorGroupObjectIds)' \
             subscriptionReaderGroupObjectIds='$(var-logging-subscriptionReaderGroupObjectIds)' \
@@ -79,9 +82,7 @@ steps:
             budgetNotificationEmailAddress='$(var-logging-budgetNotificationEmailAddress)' \
             logAnalyticsResourceGroupName='$(var-logging-logAnalyticsResourceGroupName)' \
             logAnalyticsWorkspaceName='$(var-logging-logAnalyticsWorkspaceName)' \
-            logAnalyticsAutomationAccountName='$(var-logging-logAnalyticsAutomationAccountName)' \
-            subscriptionTags='$(var-logging-subscriptionTags)' \
-            resourceTags='$(var-logging-resourceTags)'
+            logAnalyticsAutomationAccountName='$(var-logging-logAnalyticsAutomationAccountName)'
 
       $(var-bashPostInjectScript)
     workingDirectory: '${{ parameters.workingDir }}/lz-platform-logging'
