@@ -105,10 +105,9 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
     aksVersion: '1.21.2'
     
     // parameters for Budget
-    createBudget: false
-    budgetName: ''
-    budgetAmount: 0
-    budgetNotificationEmailAddress: 'alzcanadapubsec@microsoft.com'
+    subscriptionBudget: {
+      createBudget: false
+    }
         
     // parameter for expiry of key vault secrets in days
     secretExpiryInDays: 365

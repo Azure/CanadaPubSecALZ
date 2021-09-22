@@ -68,6 +68,7 @@ steps:
         --template-file ${{ parameters.configTemplate }} \
         --parameters \
             serviceHealthAlerts='$(var-logging-serviceHealthAlerts)' \
+            subscriptionBudget='$(var-logging-subscriptionBudget)'\
             subscriptionTags='$(var-logging-subscriptionTags)' \
             resourceTags='$(var-logging-resourceTags)' \
             subscriptionOwnerGroupObjectIds='$(var-logging-subscriptionOwnerGroupObjectIds)' \
@@ -75,11 +76,6 @@ steps:
             subscriptionReaderGroupObjectIds='$(var-logging-subscriptionReaderGroupObjectIds)' \
             securityContactEmail='$(var-logging-securityContactEmail)' \
             securityContactPhone='$(var-logging-securityContactPhone)' \
-            createBudget='$(var-logging-createBudget)' \
-            budgetName='$(var-logging-budgetName)' \
-            budgetAmount='$(var-logging-budgetAmount)' \
-            budgetTimeGrain='$(var-logging-budgetTimeGrain)' \
-            budgetNotificationEmailAddress='$(var-logging-budgetNotificationEmailAddress)' \
             logAnalyticsResourceGroupName='$(var-logging-logAnalyticsResourceGroupName)' \
             logAnalyticsWorkspaceName='$(var-logging-logAnalyticsWorkspaceName)' \
             logAnalyticsAutomationAccountName='$(var-logging-logAnalyticsAutomationAccountName)'

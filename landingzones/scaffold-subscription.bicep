@@ -27,6 +27,31 @@ targetScope = 'subscription'
 @description('Service Health alerts')
 param serviceHealthAlerts object = {}
 
+// Subscription Budget
+// Example (JSON)
+// "subscriptionBudget": {
+//   "value": {
+//       "createBudget": false,
+//       "name": "MonthlySubscriptionBudget",
+//       "amount": 1000,
+//       "timeGrain": "Monthly",
+//       "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
+//   }
+// }
+
+// Example (Bicep)
+// {
+//   createBudget: true
+//   name: 'MonthlySubscriptionBudget'
+//   amount: 1000
+//   timeGrain: 'Monthly'
+//   contactEmails: [
+//     'alzcanadapubsec@microsoft.com'
+//   ]
+// }
+@description('Subscription budget configuration containing createBudget flag, name, amount, timeGrain and array of contactEmails')
+param subscriptionBudget object
+
 // Tags
 // Example (JSON)
 // -----------------------------
@@ -96,30 +121,6 @@ param securityContactEmail string
 @description('Contact phone number for Azure Security Center alerts.')
 param securityContactPhone string
 
-// Subscription Budget
-@description('Boolean flag to determine whether to create subscription budget.  Default: true')
-param createBudget bool
-
-@description('Subscription budget name.')
-param budgetName string
-
-@description('Subscription budget amount.')
-param budgetAmount int
-
-@description('Subscription budget email notification address.')
-param budgetNotificationEmailAddress string
-
-@description('Subscription budget start date.  New budget can not be created with the same name and different start date.  You must delete the old budget before recreating or disable budget creation through createBudget flag.  Default:  1st day of current month')
-param budgetStartDate string = utcNow('yyyy-MM-01')
-
-@description('Budget Time Window.  Options are Monthly, Quarterly or Annually.  Default: Monthly')
-@allowed([
-  'Monthly'
-  'Quarterly'
-  'Annually'
-])
-param budgetTimeGrain string = 'Monthly'
-
 // Configure Tags
 resource setTagISSO 'Microsoft.Resources/tags@2020-10-01' = {
   name: 'default'
@@ -141,15 +142,14 @@ module securityCenter '../azresources/security-center/asc.bicep' = {
 }
 
 // Configure Budget
-module budget '../azresources/cost/budget-subscription.bicep' = if (createBudget) {
+module budget '../azresources/cost/budget-subscription.bicep' = if (!empty(subscriptionBudget) && subscriptionBudget.createBudget) {
   name: 'configure-budget'
   scope: subscription()
   params: {
-    budgetAmount: budgetAmount
-    budgetName: budgetName
-    startDate: budgetStartDate
-    timeGrain: budgetTimeGrain
-    notificationEmailAddress: budgetNotificationEmailAddress
+    budgetName: subscriptionBudget.name
+    budgetAmount: subscriptionBudget.amount
+    timeGrain: subscriptionBudget.timeGrain
+    contactEmails: subscriptionBudget.contactEmails
   }
 }
 

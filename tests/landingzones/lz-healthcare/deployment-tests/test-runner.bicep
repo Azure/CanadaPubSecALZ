@@ -98,10 +98,9 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
     hubRFC6598IPRange: hubRFC6598IPRange
     
     // parameters for Budget
-    createBudget: false
-    budgetName: ''
-    budgetAmount: 0
-    budgetNotificationEmailAddress: 'alzcanadapubsec@microsoft.com'
+    subscriptionBudget: {
+      createBudget: false
+    }
         
     // parameter for expiry of key vault secrets in days
     secretExpiryInDays: 365

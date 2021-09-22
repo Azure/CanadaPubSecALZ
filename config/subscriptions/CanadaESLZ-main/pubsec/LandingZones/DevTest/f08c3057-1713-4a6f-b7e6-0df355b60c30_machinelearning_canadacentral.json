@@ -15,6 +15,15 @@
           }
       }
     },
+    "subscriptionBudget": {
+      "value": {
+          "createBudget": false,
+          "name": "MonthlySubscriptionBudget",
+          "amount": 1000,
+          "timeGrain": "Monthly",
+          "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
+      }
+    },
     "subscriptionTags": {
       "value": {
           "ISSO": "isso-tag"
@@ -35,21 +44,6 @@
     },
     "securityContactPhone": {
       "value": "5555555555"
-    },
-    "createBudget": {
-      "value": false
-    },
-    "budgetName": {
-      "value": "SubscriptionBudget"
-    },
-    "budgetAmount": {
-      "value": 100
-    },
-    "budgetTimeGrain": {
-      "value": "Monthly"
-    },
-    "budgetNotificationEmailAddress": {
-      "value": "alzcanadapubsec@microsoft.com"
     },
     "lzAppOwnerRoleDefinitionId": {
       "value": ""
