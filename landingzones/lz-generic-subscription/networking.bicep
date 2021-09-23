@@ -7,50 +7,184 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param hubNetwork object = {
-  virtualNetworkId: ''
-  egressVirtualApplianceIp: ''
-  rfc1918IPRange: ''
-  rfc6598IPRange: ''
-}
+// Networking
+// Example (JSON)
+// -----------------------------
+// "hubNetwork": {
+//   "value": {
+//       "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+//       "rfc1918IPRange": "10.18.0.0/22",
+//       "rfc6598IPRange": "100.60.0.0/16",
+//       "egressVirtualApplianceIp": "10.18.0.36"
+//   }
+// }
 
-param network object = {
-  name: ''
-  addressPrefixes: [
-    ''
-  ]
-  subnets: {
-    oz: {
-      comment: 'Foundational Element (OZ)'
-      name: ''
-      addressPrefix: ''
-    }
-    paz: {
-      comment: 'Presentation Zone (PAZ)'
-      name: ''
-      addressPrefix: ''
-    }
-    rz: {
-      comment: 'Application Zone (RZ)'
-      name: ''
-      addresssPrefix: ''
-    }
-    hrz: {
-      comment: 'Data Zone (HRZ)'
-      name: ''
-      addressPrefix: ''
-    }
-    optional: [
-      {
-        comment: 'Optional Subnet 1'
-        name: ''
-        addressPrefix: ''
-      }
-    ]
-  }
-  useRemoteGateway: false
-  peerToHubVirtualNetwork: true
-}
+// Example (Bicep)
+// -----------------------------
+// {
+//   'virtualNetworkId': '/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet'
+//   'rfc1918IPRange': '10.18.0.0/22'
+//   'rfc6598IPRange': '100.60.0.0/16'
+//   'egressVirtualApplianceIp': '10.18.0.36'
+// }
+@description('Hub Network configuration that includes virtualNetworkId, rfc1918IPRange, rfc6598IPRange and egressVirtualApplianceIp.')
+param hubNetwork object
+
+// Example (JSON)
+// -----------------------------
+// "network": {
+//   "value": {
+//       "deployVnet": true,
+//
+//       "peerToHubVirtualNetwork": true,
+//       "useRemoteGateway": false,
+//
+//       "name": "vnet",
+//       "addressPrefixes": [
+//           "10.2.0.0/16"
+//       ],
+//       "subnets": {
+//           "oz": {
+//               "comments": "Foundational Elements Zone (OZ)",
+//               "name": "oz",
+//               "addressPrefix": "10.2.1.0/25",
+//               "nsg": {
+//                   "enabled": true
+//               },
+//               "udr": {
+//                   "enabled": true
+//               }
+//           },
+//           "paz": {
+//               "comments": "Presentation Zone (PAZ)",
+//               "name": "paz",
+//               "addressPrefix": "10.2.2.0/25",
+//               "nsg": {
+//                   "enabled": true
+//               },
+//               "udr": {
+//                   "enabled": true
+//               }
+//           },
+//           "rz": {
+//               "comments": "Application Zone (RZ)",
+//               "name": "rz",
+//               "addressPrefix": "10.2.3.0/25",
+//               "nsg": {
+//                   "enabled": true
+//               },
+//               "udr": {
+//                   "enabled": true
+//               }
+//           },
+//           "hrz": {
+//               "comments": "Data Zone (HRZ)",
+//               "name": "hrz",
+//               "addressPrefix": "10.2.4.0/25",
+//               "nsg": {
+//                   "enabled": true
+//               },
+//               "udr": {
+//                   "enabled": true
+//               }
+//           },
+//           "optional": [
+//               {
+//                   "comments": "App Service",
+//                   "name": "appservice",
+//                   "addressPrefix": "10.2.5.0/25",
+//                   "nsg": {
+//                       "enabled": false
+//                   },
+//                   "udr": {
+//                       "enabled": false
+//                   },
+//                   "delegations": {
+//                       "serviceName": "Microsoft.Web/serverFarms"
+//                   }
+//               }
+//           ]
+//       }
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   'deployVnet': true
+//
+//   'peerToHubVirtualNetwork': true
+//   'useRemoteGateway': false
+//
+//   'name': 'vnet'
+//   'addressPrefixes': [
+//     '10.2.0.0/16'
+//   ]
+//   'subnets': {
+//     'oz': {
+//       'comments': 'Foundational Elements Zone (OZ)'
+//       'name': 'oz'
+//       'addressPrefix': '10.2.1.0/25'
+//       'nsg': {
+//         'enabled': true
+//       }
+//       'udr': {
+//         'enabled': true
+//       }
+//     }
+//     'paz': {
+//       'comments': 'Presentation Zone (PAZ)'
+//       'name': 'paz'
+//       'addressPrefix': '10.2.2.0/25'
+//       'nsg': {
+//         'enabled': true
+//       }
+//       'udr': {
+//         'enabled': true
+//       }
+//     }
+//     'rz': {
+//       'comments': 'Application Zone (RZ)'
+//       'name': 'rz'
+//       'addressPrefix': '10.2.3.0/25'
+//       'nsg': {
+//         'enabled': true
+//       }
+//       'udr': {
+//         'enabled': true
+//       }
+//     }
+//     'hrz': {
+//       'comments': 'Data Zone (HRZ)'
+//       'name': 'hrz'
+//       'addressPrefix': '10.2.4.0/25'
+//       'nsg': {
+//         'enabled': true
+//       }
+//       'udr': {
+//         'enabled': true
+//       }
+//     }
+//     'optional': [
+//       {
+//         'comments': 'App Service'
+//         'name': 'appservice'
+//         'addressPrefix': '10.2.5.0/25'
+//         'nsg': {
+//           'enabled': false
+//         }
+//         'udr': {
+//           'enabled': false
+//         }
+//         'delegations': {
+//           'serviceName': 'Microsoft.Web/serverFarms'
+//         }
+//       }
+//     ]
+//   }
+// }
+@description('Network configuration for the spoke virtual network.  It includes name, address spaces, vnet peering and subnets.')
+param network object
 
 var hubVnetIdSplit = split(hubNetwork.virtualNetworkId, '/')
 
