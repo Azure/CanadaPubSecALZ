@@ -43,6 +43,29 @@ targetScope = 'subscription'
 @description('Service Health alerts')
 param serviceHealthAlerts object = {}
 
+// Log Analytics
+@description('Log Analytics Resource Id to integrate Azure Security Center.')
+param logAnalyticsWorkspaceResourceId string
+
+// Azure Security Center
+// Example (JSON)
+// -----------------------------
+// "securityCenter": {
+//   "value": {
+//       "email": "alzcanadapubsec@microsoft.com",
+//       "phone": "5555555555"
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   'email': 'alzcanadapubsec@microsoft.com'
+//   'phone': '5555555555'
+// }
+@description('Security Center configuration.  It includes email and phone.')
+param securityCenter object
+
 // Subscription Role Assignments
 // Example (JSON)
 // -----------------------------
@@ -139,16 +162,6 @@ param subscriptionTags object
 // }
 @description('A set of key/value pairs of tags assigned to the resource group and resources.')
 param resourceTags object
-
-// Azure Security Center
-@description('Log Analytics Resource Id to integrate Azure Security Center.')
-param logAnalyticsWorkspaceResourceId string
-
-@description('Contact email address for Azure Security Center alerts.')
-param securityContactEmail string
-
-@description('Contact phone number for Azure Security Center alerts.')
-param securityContactPhone string
 
 // Network Watcher
 @description('Azure Network Watcher Resource Group Name.  Default: NetworkWatcherRG')
@@ -423,8 +436,7 @@ module subScaffold '../scaffold-subscription.bicep' = {
     resourceTags: resourceTags
 
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    securityContactEmail: securityContactEmail
-    securityContactPhone: securityContactPhone
+    securityCenter: securityCenter
   }
 }
 

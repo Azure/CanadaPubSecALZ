@@ -15,10 +15,16 @@
           }
       }
     },
+    "securityCenter": {
+      "value": {
+          "email": "alzcanadapubsec@microsoft.com",
+          "phone": "5555555555"
+      }
+    },
     "subscriptionRoleAssignments":{
       "value": [
         {
-          "comments": "Built-in: Role Contributor",
+          "comments": "Built-in Role: Contributor",
           "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
           "securityGroupObjectIds": [
               "38f33f7e-a471-4630-8ce9-c6653495a2ee"
@@ -56,12 +62,6 @@
             "ProjectName": "project-name-tag",
             "TechnicalContact": "technical-contact-tag"
         }
-    },
-    "securityContactEmail": {
-      "value": "alzcanadapubsec@microsoft.com"
-    },
-    "securityContactPhone": {
-      "value": "5555555555"
     },
     "lzAppOwnerRoleDefinitionId": {
       "value": ""

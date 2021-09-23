@@ -39,8 +39,11 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
   scope: subscription()
   params: {
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    securityContactEmail: 'alzcanadapubsec@microsoft.com'
-    securityContactPhone: '555-555-5555'
+
+    securityCenter: {
+      email: 'alzcanadapubsec@microsoft.com'
+      phone: '555-555-5555'  
+    }
 
     rgVnetName: rgVnetName
     rgAutomationName: rgAutomationName

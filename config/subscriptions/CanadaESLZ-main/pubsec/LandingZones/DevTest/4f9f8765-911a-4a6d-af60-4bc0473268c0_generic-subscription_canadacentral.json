@@ -15,6 +15,12 @@
                 }
             }
         },
+        "securityCenter": {
+            "value": {
+                "email": "alzcanadapubsec@microsoft.com",
+                "phone": "5555555555"
+            }
+        },
         "subscriptionRoleAssignments": {
             "value": [
                 {
@@ -56,12 +62,6 @@
                 "ProjectName": "project-name-tag",
                 "TechnicalContact": "technical-contact-tag"
             }
-        },
-        "securityContactEmail": {
-            "value": "alzcanadapubsec@microsoft.com"
-        },
-        "securityContactPhone": {
-            "value": "5555555555"
         },
         "resourceGroups": {
             "value": {

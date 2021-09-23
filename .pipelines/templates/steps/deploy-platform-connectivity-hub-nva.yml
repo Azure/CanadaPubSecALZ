@@ -66,13 +66,12 @@ steps:
       --template-file ${{ parameters.templateFile }} \
       --parameters \
           serviceHealthAlerts='$(var-hubnetwork-serviceHealthAlerts)' \
+          securityCenter='$(var-hubnetwork-securityCenter)' \
           subscriptionRoleAssignments='$(var-hubnetwork-subscriptionRoleAssignments)' \
           subscriptionBudget='$(var-hubnetwork-subscriptionBudget)' \
           subscriptionTags='$(var-hubnetwork-subscriptionTags)' \
           resourceTags='$(var-hubnetwork-resourceTags)' \
           logAnalyticsWorkspaceResourceId='$(var-logging-logAnalyticsWorkspaceResourceId)' \
-          securityContactEmail='$(var-hubnetwork-securityContactEmail)' \
-          securityContactPhone='$(var-hubnetwork-securityContactPhone)' \
           deployPrivateDnsZones='$(var-hubnetwork-deployPrivateDnsZones)' \
           rgPrivateDnsZonesName='$(var-hubnetwork-rgPrivateDnsZonesName)' \
           deployDdosStandard='$(var-hubnetwork-deployDdosStandard)' \

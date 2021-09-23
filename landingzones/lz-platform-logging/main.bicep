@@ -51,6 +51,25 @@ targetScope = 'subscription'
 @description('Service Health alerts')
 param serviceHealthAlerts object = {}
 
+// Azure Security Center
+// Example (JSON)
+// -----------------------------
+// "securityCenter": {
+//   "value": {
+//       "email": "alzcanadapubsec@microsoft.com",
+//       "phone": "5555555555"
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   'email': 'alzcanadapubsec@microsoft.com'
+//   'phone': '5555555555'
+// }
+@description('Security Center configuration.  It includes email and phone.')
+param securityCenter object
+
 // Subscription Role Assignments
 // Example (JSON)
 // -----------------------------
@@ -158,13 +177,6 @@ param logAnalyticsWorkspaceName string
 @description('Automation account name.')
 param logAnalyticsAutomationAccountName string
 
-// Azure Security Center
-@description('Contact email address for Azure Security Center alerts.')
-param securityContactEmail string
-
-@description('Contact phone number for Azure Security Center alerts.')
-param securityContactPhone string
-
 // Create Log Analytics Workspace Resource Group
 resource rgLogging 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: logAnalyticsResourceGroupName
@@ -204,7 +216,6 @@ module subScaffold '../scaffold-subscription.bicep' = {
     resourceTags: resourceTags
 
     logAnalyticsWorkspaceResourceId: logAnalytics.outputs.workspaceResourceId
-    securityContactEmail: securityContactEmail
-    securityContactPhone: securityContactPhone
+    securityCenter: securityCenter
   }
 }
