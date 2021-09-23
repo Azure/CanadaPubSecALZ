@@ -27,8 +27,36 @@ targetScope = 'subscription'
 @description('Service Health alerts')
 param serviceHealthAlerts object = {}
 
+// Subscription Role Assignments
+// Example (JSON)
+// -----------------------------
+// [
+//   {
+//       "comments": "Built-in Contributor Role",
+//       "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+//       "securityGroupObjectIds": [
+//           "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+//       ]
+//   }
+// ]
+
+// Example (Bicep)
+// -----------------------------
+// [
+//   {
+//     'comments': 'Built-In Contributor Role'
+//     'roleDefinitionId': 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+//     'securityGroupObjectIds': [
+//       '38f33f7e-a471-4630-8ce9-c6653495a2ee'
+//     ]
+//   }
+// ]
+@description('Array of role assignments at subscription scope.  The array will contain an object with comments, roleDefinitionId and array of securityGroupObjectIds.')
+param subscriptionRoleAssignments array = []
+
 // Subscription Budget
 // Example (JSON)
+// ---------------------------
 // "subscriptionBudget": {
 //   "value": {
 //       "createBudget": false,
@@ -40,6 +68,7 @@ param serviceHealthAlerts object = {}
 // }
 
 // Example (Bicep)
+// ---------------------------
 // {
 //   createBudget: true
 //   name: 'MonthlySubscriptionBudget'
@@ -83,7 +112,7 @@ param subscriptionTags object
 // }
 
 // Example (Bicep)
-// ---------------------------
+// -----------------------------
 // {
 //   'ClientOrganization': 'client-organization-tag'
 //   'CostCenter': 'cost-center-tag'
@@ -94,22 +123,6 @@ param subscriptionTags object
 // }
 @description('A set of key/value pairs of tags assigned to the resource group and resources.')
 param resourceTags object
-
-// RBAC assignments
-@description('An array of Security Group object ids that should be granted Owner built-in role.  Default: []')
-param subscriptionOwnerGroupObjectIds array = []
-
-@description('An array of Security Group object ids that should be granted Contributor built-in role.  Default: []')
-param subscriptionContributorGroupObjectIds array = []
-
-@description('An array of Security Group object ids that should be granted Reader built-in role.  Default: []')
-param subscriptionReaderGroupObjectIds array = []
-
-@description('An array of Security Group object ids that should be granted Application Owner custom role.  Default: []')
-param subscriptionAppOwnerGroupObjectIds array = []
-
-@description('Reference to Application Owner custom role definition id.  Default: empty string')
-param lzAppOwnerRoleDefinitionId string = ''
 
 // Azure Security Center
 @description('Log Analytics Resource Id to integrate Azure Security Center.')
@@ -172,41 +185,11 @@ module serviceHealth '../azresources/service-health/service-health.bicep' = if (
 }
 
 // Role Assignments based on Security Groups
-var ownerRoleDefinitionId = '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-module group_roleAssignment_Owner '../azresources/iam/subscription/role-assignment-to-group.bicep' = if (!(empty(subscriptionOwnerGroupObjectIds))) {
-  name: 'rbac-assign-owner-to-sg'
+module assignSubscriptionRBAC '../azresources/iam/subscription/role-assignment-to-group.bicep' = [for roleAssignment in subscriptionRoleAssignments: {
+  name: 'rbac-${roleAssignment.roleDefinitionId}'
   scope: subscription()
   params: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', ownerRoleDefinitionId)
-    groupObjectIds: subscriptionOwnerGroupObjectIds
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionId)
+    groupObjectIds: roleAssignment.securityGroupObjectIds
   }
-}
-
-var contributorRoleDefinitionId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-module group_roleAssignment_Contributor '../azresources/iam/subscription/role-assignment-to-group.bicep' = if (!(empty(subscriptionContributorGroupObjectIds))) {
-  name: 'rbac-assign-contributor-to-sg'
-  scope: subscription()
-  params: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', contributorRoleDefinitionId)
-    groupObjectIds: subscriptionContributorGroupObjectIds
-  }
-}
-
-var readerRoleDefinitionId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-module group_roleAssignment_Reader '../azresources/iam/subscription/role-assignment-to-group.bicep' = if (!(empty(subscriptionReaderGroupObjectIds))) {
-  name: 'rbac-assign-reader-to-sg'
-  scope: subscription()
-  params: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', readerRoleDefinitionId)
-    groupObjectIds: subscriptionReaderGroupObjectIds
-  }
-}
-
-module group_roleAssignment_LZAppOwner '../azresources/iam/subscription/role-assignment-to-group.bicep' = if (!(empty(subscriptionAppOwnerGroupObjectIds)) && (!(empty(lzAppOwnerRoleDefinitionId)))) {
-  name: 'rbac-assign-lzappowner-to-sg'
-  scope: subscription()
-  params: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', lzAppOwnerRoleDefinitionId)
-    groupObjectIds: subscriptionAppOwnerGroupObjectIds
-  }
-}
+}]

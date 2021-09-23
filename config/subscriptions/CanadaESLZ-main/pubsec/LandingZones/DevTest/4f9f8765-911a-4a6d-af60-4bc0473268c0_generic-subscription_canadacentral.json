@@ -15,6 +15,24 @@
                 }
             }
         },
+        "subscriptionRoleAssignments":{
+            "value": [
+                {
+                    "comments": "Built-in: Role Contributor",
+                    "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                    "securityGroupObjectIds": [
+                        "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+                    ]
+                },
+                {
+                    "comments": "Custom Role: Landing Zone Application Owner",
+                    "roleDefinitionId": "b4c87314-c1a1-5320-9c43-779585186bcc",
+                    "securityGroupObjectIds": [
+                        "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+                    ]
+                }
+            ]
+        },
         "subscriptionBudget": {
             "value": {
                 "createBudget": false,
@@ -47,23 +65,6 @@
         },
         "automationAccountName": {
             "value": "automation"
-        },
-        "lzAppOwnerRoleDefinitionId": {
-            "value": ""
-          },
-        "subscriptionAppOwnerGroupObjectIds": {
-           "value": []
-          },
-        "subscriptionOwnerGroupObjectIds": {
-            "value": []
-        },
-        "subscriptionContributorGroupObjectIds": {
-            "value": [
-                "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-            ]
-        },
-        "subscriptionReaderGroupObjectIds": {
-            "value": []
         },
         "hubVnetId": {
             "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet"

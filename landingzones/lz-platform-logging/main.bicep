@@ -51,8 +51,36 @@ targetScope = 'subscription'
 @description('Service Health alerts')
 param serviceHealthAlerts object = {}
 
+// Subscription Role Assignments
+// Example (JSON)
+// -----------------------------
+// [
+//   {
+//       "comments": "Built-in Contributor Role",
+//       "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+//       "securityGroupObjectIds": [
+//           "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+//       ]
+//   }
+// ]
+
+// Example (Bicep)
+// -----------------------------
+// [
+//   {
+//     'comments': 'Built-In Contributor Role'
+//     'roleDefinitionId': 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+//     'securityGroupObjectIds': [
+//       '38f33f7e-a471-4630-8ce9-c6653495a2ee'
+//     ]
+//   }
+// ]
+@description('Array of role assignments at subscription scope.  The array will contain an object with comments, roleDefinitionId and array of securityGroupObjectIds.')
+param subscriptionRoleAssignments array = []
+
 // Subscription Budget
 // Example (JSON)
+// ---------------------------
 // "subscriptionBudget": {
 //   "value": {
 //       "createBudget": false,
@@ -64,6 +92,7 @@ param serviceHealthAlerts object = {}
 // }
 
 // Example (Bicep)
+// ---------------------------
 // {
 //   createBudget: true
 //   name: 'MonthlySubscriptionBudget'
@@ -75,6 +104,15 @@ param serviceHealthAlerts object = {}
 // }
 @description('Subscription budget configuration containing createBudget flag, name, amount, timeGrain and array of contactEmails')
 param subscriptionBudget object
+
+// Tags
+// Example (JSON)
+// -----------------------------
+// "subscriptionTags": {
+//   "value": {
+//       "ISSO": "isso-tag"
+//   }
+// }
 
 // Example (Bicep)
 // ---------------------------
@@ -98,7 +136,7 @@ param subscriptionTags object
 // }
 
 // Example (Bicep)
-// ---------------------------
+// -----------------------------
 // {
 //   'ClientOrganization': 'client-organization-tag'
 //   'CostCenter': 'cost-center-tag'
@@ -109,16 +147,6 @@ param subscriptionTags object
 // }
 @description('A set of key/value pairs of tags assigned to the resource group and resources.')
 param resourceTags object
-
-// Groups
-@description('An array of Security Group object ids that should be granted Owner built-in role.  Default: []')
-param subscriptionOwnerGroupObjectIds array = []
-
-@description('An array of Security Group object ids that should be granted Contributor built-in role.  Default: []')
-param subscriptionContributorGroupObjectIds array = []
-
-@description('An array of Security Group object ids that should be granted Reader built-in role.  Default: []')
-param subscriptionReaderGroupObjectIds array = []
 
 // Logging
 @description('Log Analytics Resource Group name.')
@@ -169,16 +197,14 @@ module subScaffold '../scaffold-subscription.bicep' = {
   name: 'subscription-scaffold'
   scope: subscription()
   params: {
-    subscriptionOwnerGroupObjectIds: subscriptionOwnerGroupObjectIds
-    subscriptionContributorGroupObjectIds: subscriptionContributorGroupObjectIds
-    subscriptionReaderGroupObjectIds: subscriptionReaderGroupObjectIds
-    logAnalyticsWorkspaceResourceId: logAnalytics.outputs.workspaceResourceId
-    securityContactEmail: securityContactEmail
-    securityContactPhone: securityContactPhone
-
     serviceHealthAlerts: serviceHealthAlerts
+    subscriptionRoleAssignments: subscriptionRoleAssignments
     subscriptionBudget: subscriptionBudget    
     subscriptionTags: subscriptionTags
     resourceTags: resourceTags
+
+    logAnalyticsWorkspaceResourceId: logAnalytics.outputs.workspaceResourceId
+    securityContactEmail: securityContactEmail
+    securityContactPhone: securityContactPhone
   }
 }

@@ -19,6 +19,9 @@
           }
       }
     },
+    "subscriptionRoleAssignments":{
+      "value": []
+    },
     "subscriptionBudget": {
       "value": {
           "createBudget": false,
@@ -48,21 +51,6 @@
     },
     "securityContactPhone": {
       "value": "5555555555"
-    },
-    "lzAppOwnerRoleDefinitionId": {
-      "value": ""
-    },
-    "subscriptionAppOwnerGroupObjectIds": {
-      "value": []
-    },
-    "subscriptionOwnerGroupObjectIds": {
-      "value": []
-    },
-    "subscriptionContributorGroupObjectIds": {
-      "value": []
-    },
-    "subscriptionReaderGroupObjectIds": {
-      "value": []
     },
     "egressVirtualApplianceIp": {
       "value": "20.0.0.4"

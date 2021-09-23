@@ -68,12 +68,10 @@ steps:
         --template-file ${{ parameters.configTemplate }} \
         --parameters \
             serviceHealthAlerts='$(var-logging-serviceHealthAlerts)' \
+            subscriptionRoleAssignments='$(var-logging-subscriptionRoleAssignments)' \
             subscriptionBudget='$(var-logging-subscriptionBudget)'\
             subscriptionTags='$(var-logging-subscriptionTags)' \
             resourceTags='$(var-logging-resourceTags)' \
-            subscriptionOwnerGroupObjectIds='$(var-logging-subscriptionOwnerGroupObjectIds)' \
-            subscriptionContributorGroupObjectIds='$(var-logging-subscriptionContributorGroupObjectIds)' \
-            subscriptionReaderGroupObjectIds='$(var-logging-subscriptionReaderGroupObjectIds)' \
             securityContactEmail='$(var-logging-securityContactEmail)' \
             securityContactPhone='$(var-logging-securityContactPhone)' \
             logAnalyticsResourceGroupName='$(var-logging-logAnalyticsResourceGroupName)' \

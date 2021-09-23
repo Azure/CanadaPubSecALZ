@@ -28,9 +28,6 @@ variables:
   # Logging
   var-logging-managementGroupId: pubsecPlatform
   var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
-  var-logging-subscriptionOwnerGroupObjectIds: '[]'
-  var-logging-subscriptionContributorGroupObjectIds: '["38f33f7e-a471-4630-8ce9-c6653495a2ee"]'
-  var-logging-subscriptionReaderGroupObjectIds: '[]'
   var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
   var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
   var-logging-logAnalyticsAutomationAccountName: automation-account
@@ -53,6 +50,16 @@ variables:
           ]
       }
     }
+  var-logging-subscriptionRoleAssignments: >
+    [
+      {
+          "comments": "Built-in Contributor Role",
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+          "securityGroupObjectIds": [
+              "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+          ]
+      }
+    ]
   var-logging-subscriptionBudget: >
     {
       "createBudget": false,
@@ -78,9 +85,6 @@ variables:
   # Hub Networking
   var-hubnetwork-managementGroupId: pubsecPlatform
   var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
-  var-hubnetwork-subscriptionOwnerGroupObjectIds: '[]'
-  var-hubnetwork-subscriptionContributorGroupObjectIds: '["38f33f7e-a471-4630-8ce9-c6653495a2ee"]'
-  var-hubnetwork-subscriptionReaderGroupObjectIds: '[]'
   var-hubnetwork-securityContactEmail: alzcanadapubsec@microsoft.com
   var-hubnetwork-securityContactPhone: 5555555555
   var-hubnetwork-serviceHealthAlerts: >
@@ -99,6 +103,16 @@ variables:
           ]
       }
     }
+  var-hubnetwork-subscriptionRoleAssignments: >
+    [
+      {
+          "comments": "Built-in Contributor Role",
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+          "securityGroupObjectIds": [
+              "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+          ]
+      }
+    ]
   var-hubnetwork-subscriptionBudget: >
     {
       "createBudget": false,
