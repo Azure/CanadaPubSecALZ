@@ -21,7 +21,7 @@
                 "phone": "5555555555"
             }
         },
-        "subscriptionRoleAssignments":{
+        "subscriptionRoleAssignments": {
             "value": [
                 {
                     "comments": "Built-in Role: Contributor",
@@ -45,7 +45,9 @@
                 "name": "MonthlySubscriptionBudget",
                 "amount": 1000,
                 "timeGrain": "Monthly",
-                "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
+                "contactEmails": [
+                    "alzcanadapubsec@microsoft.com"
+                ]
             }
         },
         "subscriptionTags": {

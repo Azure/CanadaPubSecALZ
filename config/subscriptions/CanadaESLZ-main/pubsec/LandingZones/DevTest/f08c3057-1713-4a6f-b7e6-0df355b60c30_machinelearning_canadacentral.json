@@ -17,174 +17,167 @@
     },
     "securityCenter": {
       "value": {
-          "email": "alzcanadapubsec@microsoft.com",
-          "phone": "5555555555"
+        "email": "alzcanadapubsec@microsoft.com",
+        "phone": "5555555555"
       }
     },
-    "subscriptionRoleAssignments":{
+    "subscriptionRoleAssignments": {
       "value": [
         {
           "comments": "Built-in Role: Contributor",
           "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
           "securityGroupObjectIds": [
-              "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-            ]
+            "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+          ]
         },
         {
-            "comments": "Custom Role: Landing Zone Application Owner",
-            "roleDefinitionId": "b4c87314-c1a1-5320-9c43-779585186bcc",
-            "securityGroupObjectIds": [
-                "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-            ]
+          "comments": "Custom Role: Landing Zone Application Owner",
+          "roleDefinitionId": "b4c87314-c1a1-5320-9c43-779585186bcc",
+          "securityGroupObjectIds": [
+            "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+          ]
         }
       ]
     },
     "subscriptionBudget": {
       "value": {
-          "createBudget": false,
-          "name": "MonthlySubscriptionBudget",
-          "amount": 1000,
-          "timeGrain": "Monthly",
-          "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
+        "createBudget": false,
+        "name": "MonthlySubscriptionBudget",
+        "amount": 1000,
+        "timeGrain": "Monthly",
+        "contactEmails": [
+          "alzcanadapubsec@microsoft.com"
+        ]
       }
     },
     "subscriptionTags": {
       "value": {
-          "ISSO": "isso-tag"
+        "ISSO": "isso-tag"
       }
     },
     "resourceTags": {
-        "value": {
-            "ClientOrganization": "client-organization-tag",
-            "CostCenter": "cost-center-tag",
-            "DataSensitivity": "data-sensitivity-tag",
-            "ProjectContact": "project-contact-tag",
-            "ProjectName": "project-name-tag",
-            "TechnicalContact": "technical-contact-tag"
-        }
+      "value": {
+        "ClientOrganization": "client-organization-tag",
+        "CostCenter": "cost-center-tag",
+        "DataSensitivity": "data-sensitivity-tag",
+        "ProjectContact": "project-contact-tag",
+        "ProjectName": "project-name-tag",
+        "TechnicalContact": "technical-contact-tag"
+      }
     },
-    "hubVnetId": {
-      "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet"
-    },
-    "hubRFC1918IPRange": {
-      "value": "10.18.0.0/22"
-    },
-    "hubRFC6598IPRange": {
-      "value": "100.60.0.0/16"
-    },
-    "egressVirtualApplianceIp": {
-      "value": "10.18.0.36"
-    },
-    "rgVnetName": {
-      "value": "azmlnocmk092021W3Network"
-    },
-    "rgAutomationName": {
-      "value": "azmlnocmk092021W3Automation"
-    },
-    "rgStorageName": {
-      "value": "azmlnocmk092021W3Storage"
-    },
-    "rgComputeName": {
-      "value": "azmlnocmk092021W3Compute"
-    },
-    "rgSecurityName": {
-      "value": "azmlnocmk092021W3Security"
-    },
-    "rgMonitorName": {
-      "value": "azmlnocmk092021W3Monitor"
-    },
-    "automationAccountName": {
-      "value": "azmlnocmk092021W3automation"
-    },
-    "vnetName": {
-      "value": "azmlnocmk092021W3vnet"
-    },
-    "vnetAddressSpace": {
-      "value": "10.3.0.0/16"
-    },
-    "subnetFoundationalElementsName": {
-      "value": "foundationalElements"
-    },
-    "subnetFoundationalElementsPrefix": {
-      "value": "10.3.1.0/25"
-    },
-    "subnetPresentationName": {
-      "value": "presentation"
-    },
-    "subnetPresentationPrefix": {
-      "value": "10.3.2.0/25"
-    },
-    "subnetApplicationName": {
-      "value": "application"
-    },
-    "subnetApplicationPrefix": {
-      "value": "10.3.3.0/25"
-    },
-    "subnetDataName": {
-      "value": "data"
-    },
-    "subnetDataPrefix": {
-      "value": "10.3.4.0/25"
-    },
-    "subnetSQLMIName": {
-      "value": "sqlmi"
-    },
-    "subnetSQLMIPrefix": {
-      "value": "10.3.5.0/25"
-    },
-    "subnetDatabricksPublicName": {
-      "value": "databrickspublic"
-    },
-    "subnetDatabricksPublicPrefix": {
-      "value": "10.3.6.0/25"
-    },
-    "subnetDatabricksPrivateName": {
-      "value": "databricksprivate"
-    },
-    "subnetDatabricksPrivatePrefix": {
-      "value": "10.3.7.0/25"
-    },
-    "subnetPrivateEndpointsName": {
-      "value": "privateendpoints"
-    },
-    "subnetPrivateEndpointsPrefix": {
-      "value": "10.3.8.0/25"
-    },
-    "subnetAKSName": {
-      "value": "aks"
-    },
-    "subnetAKSPrefix": {
-      "value": "10.3.9.0/25"
-    },
-    "privateDnsManagedByHub": {
-      "value": true
-    },
-    "privateDnsManagedByHubSubscriptionId": {
-      "value": "ed7f4eed-9010-4227-b115-2a5e37728f27"
-    },
-    "privateDnsManagedByHubResourceGroupName": {
-      "value": "pubsec-dns-rg"
-    },
-    "aksVersion": {
-      "value": "1.21.2"
-    },
-    "deploySQLDB": {
-      "value": true
-    },
-    "deploySQLMI": {
-      "value": false
-    },
-    "sqldbUsername": {
-      "value": "azadmin"
-    },
-    "sqlmiUsername": {
-      "value": "azadmin"
-    },
-    "secretExpiryInDays": {
-      "value": 3650
+    "resourceGroups": {
+      "value": {
+        "automation": "azmlnocmk092021W3Automation",
+        "compute": "azmlnocmk092021W3Compute",
+        "monitor": "azmlnocmk092021W3Monitor",
+        "networking": "azmlnocmk092021W3Network",
+        "networkWatcher": "NetworkWatcherRG",
+        "security": "azmlnocmk092021W3Security",
+        "storage": "azmlnocmk092021W3Storage"
+      }
     },
     "useCMK": {
       "value": false
+    },
+    "automation": {
+      "value": {
+        "name": "azmlnocmk092021W3automation"
+      }
+    },
+    "keyVault": {
+      "value": {
+        "secretExpiryInDays": 3650
+      }
+    },
+    "aks": {
+      "value": {
+        "version": "1.21.2"
+      }
+    },
+    "sqldb": {
+      "value": {
+        "enabled": true,
+        "username": "azadmin"
+      }
+    },
+    "sqlmi": {
+      "value": {
+        "enabled": false,
+        "username": "azadmin"
+      }
+    },
+    "aml": {
+      "value": {
+        "enableHbiWorkspace": false
+      }
+    },
+    "hubNetwork": {
+      "value": {
+        "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+        "rfc1918IPRange": "10.18.0.0/22",
+        "rfc6598IPRange": "100.60.0.0/16",
+        "egressVirtualApplianceIp": "10.18.0.36",
+        "privateDnsManagedByHub": true,
+        "privateDnsManagedByHubSubscriptionId": "ed7f4eed-9010-4227-b115-2a5e37728f27",
+        "privateDnsManagedByHubResourceGroupName": "pubsec-dns-rg"
+      }
+    },
+    "network": {
+      "value": {
+        "peerToHubVirtualNetwork": true,
+        "useRemoteGateway": false,
+        "name": "azmlnocmk092021W3vnet",
+        "addressPrefixes": [
+          "10.3.0.0/16"
+        ],
+        "subnets": {
+          "oz": {
+            "comments": "Foundational Elements Zone (OZ)",
+            "name": "oz",
+            "addressPrefix": "10.3.1.0/25"
+          },
+          "paz": {
+            "comments": "Presentation Zone (PAZ)",
+            "name": "paz",
+            "addressPrefix": "10.3.2.0/25"
+          },
+          "rz": {
+            "comments": "Application Zone (RZ)",
+            "name": "rz",
+            "addressPrefix": "10.3.3.0/25"
+          },
+          "hrz": {
+            "comments": "Data Zone (HRZ)",
+            "name": "hrz",
+            "addressPrefix": "10.3.4.0/25"
+          },
+          "sqlmi": {
+            "comments": "SQL Managed Instances Delegated Subnet",
+            "name": "sqlmi",
+            "addressPrefix": "10.3.5.0/25"
+          },
+          "databricksPublic": {
+            "comments": "Databricks Public Delegated Subnet",
+            "name": "databrickspublic",
+            "addressPrefix": "10.3.6.0/25"
+          },
+          "databricksPrivate": {
+            "comments": "Databricks Private Delegated Subnet",
+            "name": "databricksprivate",
+            "addressPrefix": "10.3.7.0/25"
+          },
+          "privateEndpoints": {
+            "comments": "Private Endpoints Subnet",
+            "name": "privateendpoints",
+            "addressPrefix": "10.3.8.0/25"
+          },
+          "aks": {
+            "comments": "AKS Subnet",
+            "name": "aks",
+            "addressPrefix": "10.3.9.0/25"
+          }
+        }
+      }
     }
   }
 }

@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "serviceHealthAlerts": {
+    "serviceHealthAlerts": {
             "value": {
                 "resourceGroupName": "pubsec-service-health",
                 "incidentTypes": [ "Incident", "Security" ],
@@ -45,7 +45,9 @@
                 "name": "MonthlySubscriptionBudget",
                 "amount": 1000,
                 "timeGrain": "Monthly",
-                "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
+                "contactEmails": [
+                    "alzcanadapubsec@microsoft.com"
+                ]
             }
         },
         "subscriptionTags": {
@@ -84,10 +86,8 @@
         "network": {
             "value": {
                 "deployVnet": true,
-                
                 "peerToHubVirtualNetwork": true,
                 "useRemoteGateway": false,
-                
                 "name": "vnet",
                 "addressPrefixes": [
                     "10.2.0.0/16"

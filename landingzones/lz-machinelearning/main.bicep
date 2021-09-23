@@ -44,8 +44,8 @@ param logAnalyticsWorkspaceResourceId string
 // Example (Bicep)
 // -----------------------------
 // {
-//   'email': 'alzcanadapubsec@microsoft.com'
-//   'phone': '5555555555'
+//   email: 'alzcanadapubsec@microsoft.com'
+//   phone: '5555555555'
 // }
 @description('Security Center configuration.  It includes email and phone.')
 param securityCenter object
@@ -67,9 +67,9 @@ param securityCenter object
 // -----------------------------
 // [
 //   {
-//     'comments': 'Built-In Contributor Role'
-//     'roleDefinitionId': 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-//     'securityGroupObjectIds': [
+//     comments: 'Built-In Contributor Role'
+//     roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+//     securityGroupObjectIds: [
 //       '38f33f7e-a471-4630-8ce9-c6653495a2ee'
 //     ]
 //   }
@@ -116,7 +116,7 @@ param subscriptionBudget object
 // Example (Bicep)
 // ---------------------------
 // {
-//   'ISSO': 'isso-tag'
+//   ISSO: 'isso-tag'
 // }
 @description('A set of key/value pairs of tags assigned to the subscription.')
 param subscriptionTags object
@@ -137,161 +137,300 @@ param subscriptionTags object
 // Example (Bicep)
 // -----------------------------
 // {
-//   'ClientOrganization': 'client-organization-tag'
-//   'CostCenter': 'cost-center-tag'
-//   'DataSensitivity': 'data-sensitivity-tag'
-//   'ProjectContact': 'project-contact-tag'
-//   'ProjectName': 'project-name-tag'
-//   'TechnicalContact': 'technical-contact-tag'
+//   ClientOrganization: 'client-organization-tag'
+//   CostCenter: 'cost-center-tag'
+//   DataSensitivity: 'data-sensitivity-tag'
+//   ProjectContact: 'project-contact-tag'
+//   ProjectName: 'project-name-tag'
+//   TechnicalContact: 'technical-contact-tag'
 // }
 @description('A set of key/value pairs of tags assigned to the resource group and resources.')
 param resourceTags object
 
 // Resource Groups
-@description('Azure Network Watcher Resource Group Name.  Default: NetworkWatcherRG')
-param rgNetworkWatcherName string = 'NetworkWatcherRG'
+// Example (JSON)
+// -----------------------------
+// "resourceGroups": {
+//   "value": {
+//     "automation": "azmlAutomation",
+//     "compute": "azmlCompute",
+//     "monitor": "azmlMonitor",
+//     "networking": "azmlNetworking",
+//     "networkWatcher": "NetworkWatcherRG",
+//     "security": "azmlSecurity",
+//     "storage": "azmlStorage"
+//   }
+// }
 
-@description('Virtual Network Resource Group Name.')
-param rgVnetName string
-
-@description('Automation Account Resource Group Name.')
-param rgAutomationName string
-
-@description('Storage Resource Group Name.')
-param rgStorageName string
-
-@description('Compute Resource Group Name.')
-param rgComputeName string
-
-@description('Security Resource Group Name.')
-param rgSecurityName string
-
-@description('Monitoring Resource Group Name.')
-param rgMonitorName string
-
-// Automation
-@description('Azure Automation Account name.')
-param automationAccountName string
-
-// VNET
-@description('Virtual Network Name.')
-param vnetName string
-
-@description('Virtual Network Address Space.')
-param vnetAddressSpace string
-
-@description('Hub Virtual Network Resource Id.  It is required for configuring Virtual Network Peering & configuring route tables.')
-param hubVnetId string
-
-// Internal Foundational Elements (OZ) Subnet
-@description('Foundational Element (OZ) Subnet Name')
-param subnetFoundationalElementsName string
-
-@description('Foundational Element (OZ) Subnet Address Prefix.')
-param subnetFoundationalElementsPrefix string
-
-// Presentation Zone (PAZ) Subnet
-@description('Presentation Zone (PAZ) Subnet Name.')
-param subnetPresentationName string
-
-@description('Presentation Zone (PAZ) Subnet Address Prefix.')
-param subnetPresentationPrefix string
-
-// Application zone (RZ) Subnet
-@description('Application (RZ) Subnet Name.')
-param subnetApplicationName string
-
-@description('Application (RZ) Subnet Address Prefix.')
-param subnetApplicationPrefix string
-
-// Data Zone (HRZ) Subnet
-@description('Data Zone (HRZ) Subnet Name.')
-param subnetDataName string
-
-@description('Data Zone (HRZ) Subnet Address Prefix.')
-param subnetDataPrefix string
-
-// Delegated Subnets
-@description('Delegated SQL MI Subnet Name.')
-param subnetSQLMIName string
-
-@description('Delegated SQL MI Subnet Address Prefix.')
-param subnetSQLMIPrefix string
-
-@description('Delegated Databricks Public Subnet Name.')
-param subnetDatabricksPublicName string
-
-@description('Delegated Databricks Public Subnet Address Prefix.')
-param subnetDatabricksPublicPrefix string
-
-@description('Delegated Databricks Private Subnet Name.')
-param subnetDatabricksPrivateName string
-
-@description('Delegated Databricks Private Subnet Address Prefix.')
-param subnetDatabricksPrivatePrefix string
-
-// Priavte Endpoint Subnet
-@description('Private Endpoints Subnet Name.  All private endpoints will be deployed to this subnet.')
-param subnetPrivateEndpointsName string
-
-@description('Private Endpoint Subnet Address Prefix.')
-param subnetPrivateEndpointsPrefix string
-
-// AKS Subnet
-@description('AKS Subnet Name.')
-param subnetAKSName string
-
-@description('AKS Subnet Address Prefix.')
-param subnetAKSPrefix string
-
-// Virtual Appliance IP
-@description('Egress Virtual Appliance IP.  It should be the IP address of the network virtual appliance.')
-param egressVirtualApplianceIp string
-
-// Hub IP Ranges
-@description('Hub Virtual Network IP Address - RFC 1918')
-param hubRFC1918IPRange string
-
-@description('Hub Virtual Network IP Address - RFC 6598 (CGNAT)')
-param hubRFC6598IPRange string
-
-// Private DNS Zones
-@description('Boolean flag to determine whether Private DNS Zones will be managed by Hub Network.')
-param privateDnsManagedByHub bool = false
-
-@description('Private DNS Zone Subscription Id.  Required when privateDnsManagedByHub=true')
-param privateDnsManagedByHubSubscriptionId string = ''
-
-@description('Private DNS Zone Resource Group Name.  Required when privateDnsManagedByHub=true')
-param privateDnsManagedByHubResourceGroupName string = ''
-
-// AKS version
-@description('AKS Version.')
-param aksVersion string
-
-// Azure Key Vault
-@description('Azure Key Vault Secret Expiry in days.')
-param secretExpiryInDays int
-
-// ML landing zone parameters - start
-@description('Boolean flag to determine whether SQL Database is deployed or not.')
-param deploySQLDB bool
-@description('Boolean flag to determine whether SQL Managed Instance is deployed or not.')
-param deploySQLMI bool
-
-@description('SQL Database Username.  Required if deploySQLDB=true')
-@secure()
-param sqldbUsername string
-
-@description('SQL MI Username.  Required if deploySQLMI=true')
-@secure()
-param sqlmiUsername string
+// Example (Bicep)
+// -----------------------------
+// {
+//   automation: 'azmlAutomation'
+//   compute: 'azmlCompute'
+//   monitor: 'azmlMonitor'
+//   networking: 'azmlNetworking'
+//   networkWatcher: 'NetworkWatcherRG'
+//   security: 'azmlSecurity'
+//   storage: 'azmlStorage'
+// }
+@description('Resource groups required for the achetype.  It includes automation, compute, monitor, networking, networkWatcher, security and storage.')
+param resourceGroups object
 
 @description('Boolean flag to determine whether customer managed keys are used.  Default:  false')
 param useCMK bool = false
 
-@description('Boolean flag to enable High Business Impact Azure Machine Learning Workspace.  Default: false')
-param enableHbiWorkspace bool = false
+// Azure Automation Account
+// Example (JSON)
+// -----------------------------
+// "automation": {
+//   "value": {
+//     "name": "azmlautomation"
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   name: 'azmlautomation'
+// }
+@description('Azure Automation Account configuration.  Includes name.')
+param automation object
+
+// Azure Key Vault
+// Example (JSON)
+//-----------------------------
+// "keyVault": {
+//   "value": {
+//     "secretExpiryInDays": 3650
+//   }
+// }
+
+// Example (Bicep)
+//-----------------------------
+// {
+//   secretExpiryInDays: 3650
+// }
+@description('Azure Key Vault configuraiton.  Includes secretExpiryInDays.')
+param keyVault object
+
+// Azure Kubernetes Service
+// Example (JSON)
+//-----------------------------
+// "aks": {
+//   "value": {
+//     "version": "1.21.2"
+//   }
+// }
+
+// Example (Bicep)
+//-----------------------------
+// {
+//   version: '1.21.2'
+// }
+@description('Azure Kubernetes Service configuration.  Includes version.')
+param aks object
+
+// SQL Database
+// -----------------------------
+// Example (JSON)
+// "sqldb": {
+//   "value": {
+//     "enabled": true,
+//     "username": "azadmin"
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   enabled: true
+//   username: 'azadmin'
+// }
+@description('SQL Database configuration.  Includes enabled flag and username.')
+param sqldb object
+
+// SQL Managed Instance
+// -----------------------------
+// Example (JSON)
+// "sqlmi": {
+//   "value": {
+//     "enabled": true,
+//     "username": "azadmin"
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   enabled: true
+//   username: 'azadmin'
+// }
+@description('SQL Managed Instance configuration.  Includes enabled flag and username.')
+param sqlmi object
+
+// Example (JSON)
+// -----------------------------
+// "aml": {
+//   "value": {
+//     "enableHbiWorkspace": false
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   enableHbiWorkspace: false
+// }
+@description('Azure Machine Learning configuration.  Includes enableHbiWorkspace.')
+param aml object
+
+// Networking
+// Example (JSON)
+// -----------------------------
+// "hubNetwork": {
+//   "value": {
+//       "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+//       "rfc1918IPRange": "10.18.0.0/22",
+//       "rfc6598IPRange": "100.60.0.0/16",
+//       "egressVirtualApplianceIp": "10.18.0.36",
+//       "privateDnsManagedByHub": true,
+//       "privateDnsManagedByHubSubscriptionId": "ed7f4eed-9010-4227-b115-2a5e37728f27",
+//       "privateDnsManagedByHubResourceGroupName": "pubsec-dns-rg"
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   virtualNetworkId: '/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet'
+//   rfc1918IPRange: '10.18.0.0/22'
+//   rfc6598IPRange: '100.60.0.0/16'
+//   egressVirtualApplianceIp: '10.18.0.36'
+//   privateDnsManagedByHub: true,
+//   privateDnsManagedByHubSubscriptionId: 'ed7f4eed-9010-4227-b115-2a5e37728f27',
+//   privateDnsManagedByHubResourceGroupName: 'pubsec-dns-rg'
+// }
+@description('Hub Network configuration that includes virtualNetworkId, rfc1918IPRange, rfc6598IPRange, egressVirtualApplianceIp, privateDnsManagedByHub flag, privateDnsManagedByHubSubscriptionId and privateDnsManagedByHubResourceGroupName.')
+param hubNetwork object
+
+// Example (JSON)
+// -----------------------------
+// "network": {
+//   "value": {
+//     "peerToHubVirtualNetwork": true,
+//     "useRemoteGateway": false,
+//     "name": "vnet",
+//     "addressPrefixes": [
+//       "10.2.0.0/16"
+//     ],
+//     "subnets": {
+//       "oz": {
+//         "comments": "Foundational Elements Zone (OZ)",
+//         "name": "oz",
+//         "addressPrefix": "10.2.1.0/25"
+//       },
+//       "paz": {
+//         "comments": "Presentation Zone (PAZ)",
+//         "name": "paz",
+//         "addressPrefix": "10.2.2.0/25"
+//       },
+//       "rz": {
+//         "comments": "Application Zone (RZ)",
+//         "name": "rz",
+//         "addressPrefix": "10.2.3.0/25"
+//       },
+//       "hrz": {
+//         "comments": "Data Zone (HRZ)",
+//         "name": "hrz",
+//         "addressPrefix": "10.2.4.0/25"
+//       },
+//       "privateEndpoints": {
+//         "comments": "Private Endpoints Subnet",
+//         "name": "privateendpoints",
+//         "addressPrefix": "10.2.5.0/25"
+//       },
+//       "sqlmi": {
+//         "comments": "SQL Managed Instances Delegated Subnet",
+//         "name": "sqlmi",
+//         "addressPrefix": "10.2.6.0/25"
+//       },
+//       "databricksPublic": {
+//         "comments": "Databricks Public Delegated Subnet",
+//         "name": "databrickspublic",
+//         "addressPrefix": "10.2.7.0/25"
+//       },
+//       "databricksPrivate": {
+//         "comments": "Databricks Private Delegated Subnet",
+//         "name": "databricksprivate",
+//         "addressPrefix": "10.2.8.0/25"
+//       },
+//       "aks": {
+//         "comments": "AKS Subnet",
+//         "name": "aks",
+//         "addressPrefix": "10.2.9.0/25"
+//       }
+//     }
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   peerToHubVirtualNetwork: true
+//   useRemoteGateway: false
+//   name: 'vnet'
+//   addressPrefixes: [
+//     '10.2.0.0/16'
+//   ]
+//   subnets: {
+//     oz: {
+//       comments: 'Foundational Elements Zone (OZ)'
+//       name: 'oz'
+//       addressPrefix: '10.2.1.0/25'
+//     }
+//     paz: {
+//       comments: 'Presentation Zone (PAZ)'
+//       name: 'paz'
+//       addressPrefix: '10.2.2.0/25'
+//     }
+//     rz: {
+//       comments: 'Application Zone (RZ)'
+//       name: 'rz'
+//       addressPrefix: '10.2.3.0/25'
+//     }
+//     hrz: {
+//       comments: 'Data Zone (HRZ)'
+//       name: 'hrz'
+//       addressPrefix: '10.2.4.0/25'
+//     }
+//     privateEndpoints: {
+//       comments: 'Private Endpoints Subnet'
+//       name: 'privateendpoints'
+//       addressPrefix: '10.2.5.0/25'
+//     }
+//     sqlmi: {
+//       comments: 'SQL Managed Instances Delegated Subnet'
+//       name: 'sqlmi'
+//       addressPrefix: '10.2.6.0/25'
+//     }
+//     databricksPublic: {
+//       comments: 'Databricks Public Delegated Subnet'
+//       name: 'databrickspublic'
+//       addressPrefix: '10.2.7.0/25'
+//     }
+//     databricksPrivate: {
+//       comments: 'Databricks Private Delegated Subnet'
+//       name: 'databricksprivate'
+//       addressPrefix: '10.2.8.0/25'
+//     }
+//     aks: {
+//       comments: 'AKS Subnet'
+//       name: 'aks'
+//       addressPrefix: '10.2.9.0/25'
+//     }
+//   }
+// }
+param network object
 
 /*
   Scaffold the subscription which includes:
@@ -306,14 +445,14 @@ param enableHbiWorkspace bool = false
 module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
   scope: subscription()
-  params: {      
+  params: {
     serviceHealthAlerts: serviceHealthAlerts
     subscriptionRoleAssignments: subscriptionRoleAssignments
     subscriptionBudget: subscriptionBudget
     subscriptionTags: subscriptionTags
     resourceTags: resourceTags
 
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId   
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
     securityCenter: securityCenter
   }
@@ -324,73 +463,23 @@ module landingZone 'lz.bicep' = {
   name: 'deploy-machinelearning-archetype'
   scope: subscription()
   params: {
-    resourceTags: resourceTags
-  
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
+
     securityContactEmail: securityCenter.email
 
-    rgAutomationName: rgAutomationName
-    rgNetworkWatcherName: rgNetworkWatcherName
-    rgVnetName: rgVnetName
-    rgComputeName: rgComputeName
-    rgMonitorName: rgMonitorName
-    rgSecurityName: rgSecurityName
-    rgStorageName: rgStorageName
-
-    automationAccountName: automationAccountName
-
-    deploySQLDB: deploySQLDB
-    deploySQLMI: deploySQLMI
-
-    sqldbUsername: sqldbUsername
-    sqlmiUsername: sqlmiUsername
-
-    hubVnetId: hubVnetId
-    egressVirtualApplianceIp: egressVirtualApplianceIp
-    hubRFC6598IPRange: hubRFC6598IPRange
-    hubRFC1918IPRange: hubRFC1918IPRange
-
-    vnetName: vnetName
-    vnetAddressSpace: vnetAddressSpace
-
-    subnetFoundationalElementsName: subnetFoundationalElementsName
-    subnetFoundationalElementsPrefix: subnetFoundationalElementsPrefix
-
-    subnetPresentationName: subnetPresentationName
-    subnetPresentationPrefix: subnetPresentationPrefix
-
-    subnetApplicationName: subnetApplicationName
-    subnetApplicationPrefix: subnetApplicationPrefix
-
-    subnetDataName: subnetDataName
-    subnetDataPrefix: subnetDataPrefix
-
-    subnetDatabricksPrivateName: subnetDatabricksPrivateName
-    subnetDatabricksPrivatePrefix: subnetDatabricksPrivatePrefix
-
-    subnetDatabricksPublicName: subnetDatabricksPublicName
-    subnetDatabricksPublicPrefix: subnetDatabricksPublicPrefix
-
-    subnetSQLMIName: subnetSQLMIName
-    subnetSQLMIPrefix: subnetSQLMIPrefix
-
-    subnetPrivateEndpointsName: subnetPrivateEndpointsName
-    subnetPrivateEndpointsPrefix: subnetPrivateEndpointsPrefix
-
-    subnetAKSName: subnetAKSName
-    subnetAKSPrefix: subnetAKSPrefix
-
-    privateDnsManagedByHub: privateDnsManagedByHub
-    privateDnsManagedByHubSubscriptionId: privateDnsManagedByHub ? privateDnsManagedByHubSubscriptionId : ''
-    privateDnsManagedByHubResourceGroupName: privateDnsManagedByHub ? privateDnsManagedByHubResourceGroupName : ''
-
-    aksVersion: aksVersion
-    
-    secretExpiryInDays: secretExpiryInDays
-
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
+    resourceTags: resourceTags
+    resourceGroups: resourceGroups
 
     useCMK: useCMK
 
-    enableHbiWorkspace: enableHbiWorkspace
+    automation: automation
+    keyVault: keyVault
+    aks: aks
+    sqldb: sqldb
+    sqlmi: sqlmi
+    aml: aml
+
+    hubNetwork: hubNetwork
+    network: network
   }
 }
