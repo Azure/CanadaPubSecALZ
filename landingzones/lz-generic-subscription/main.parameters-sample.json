@@ -52,59 +52,98 @@
         "securityContactPhone": {
             "value": "5555555555"
         },
+        "resourceGroups": {
+            "value": {
+                "automation": "rgAutomation092021W3",
+                "networking": "rgVnet092021W3",
+                "networkWatcher": "NetworkWatcherRG"
+            }
+        },
         "automationAccountName": {
             "value": "automation"
         },
-        "hubVnetId": {
-            "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsecPrdHubPbRsg/providers/Microsoft.Network/virtualNetworks/pubsecHubVnet"
+        "hubNetwork": {
+            "value": {
+                "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+                "rfc1918IPRange": "10.18.0.0/22",
+                "rfc6598IPRange": "100.60.0.0/16",
+                "egressVirtualApplianceIp": "10.18.0.36"
+            }
         },
-        "hubRFC1918IPRange": {
-            "value": "10.18.0.0/22"
-        },
-        "hubRFC6598IPRange": {
-            "value": "100.60.0.0/16"
-        },
-        "egressVirtualApplianceIp": {
-            "value": "10.18.0.36"
-        },
-        "rgVnetName": {
-            "value": "rgVnet"
-        },
-        "rgAutomationName": {
-            "value": "rgAutomation"
-        },
-        "deployVnet": {
-            "value": true
-        },
-        "vnetName": {
-            "value": "vnet"
-        },
-        "vnetAddressSpace": {
-            "value": "10.2.0.0/16"
-        },
-        "subnetFoundationalElementsName": {
-            "value": "foundationalElements"
-        },
-        "subnetFoundationalElementsPrefix": {
-            "value": "10.2.1.0/25"
-        },
-        "subnetPresentationName": {
-            "value": "presentation"
-        },
-        "subnetPresentationPrefix": {
-            "value": "10.2.2.0/25"
-        },
-        "subnetApplicationName": {
-            "value": "application"
-        },
-        "subnetApplicationPrefix": {
-            "value": "10.2.3.0/25"
-        },
-        "subnetDataName": {
-            "value": "data"
-        },
-        "subnetDataPrefix": {
-            "value": "10.2.4.0/25"
+        "network": {
+            "value": {
+                "deployVnet": true,
+                
+                "peerToHubVirtualNetwork": true,
+                "useRemoteGateway": false,
+                
+                "name": "vnet",
+                "addressPrefixes": [
+                    "10.2.0.0/16"
+                ],
+                "subnets": {
+                    "oz": {
+                        "comments": "Foundational Elements Zone (OZ)",
+                        "name": "oz",
+                        "addressPrefix": "10.2.1.0/25",
+                        "nsg": {
+                            "enabled": true
+                        },
+                        "udr": {
+                            "enabled": true
+                        }
+                    },
+                    "paz": {
+                        "comments": "Presentation Zone (PAZ)",
+                        "name": "paz",
+                        "addressPrefix": "10.2.2.0/25",
+                        "nsg": {
+                            "enabled": true
+                        },
+                        "udr": {
+                            "enabled": true
+                        }
+                    },
+                    "rz": {
+                        "comments": "Application Zone (RZ)",
+                        "name": "rz",
+                        "addressPrefix": "10.2.3.0/25",
+                        "nsg": {
+                            "enabled": true
+                        },
+                        "udr": {
+                            "enabled": true
+                        }
+                    },
+                    "hrz": {
+                        "comments": "Data Zone (HRZ)",
+                        "name": "hrz",
+                        "addressPrefix": "10.2.4.0/25",
+                        "nsg": {
+                            "enabled": true
+                        },
+                        "udr": {
+                            "enabled": true
+                        }
+                    },
+                    "optional": [
+                        {
+                            "comments": "App Service",
+                            "name": "appservice",
+                            "addressPrefix": "10.2.5.0/25",
+                            "nsg": {
+                                "enabled": false
+                            },
+                            "udr": {
+                                "enabled": false
+                            },
+                            "delegations": {
+                                "serviceName": "Microsoft.Web/serverFarms"
+                            }
+                        }
+                    ]
+                }
+            }
         }
     }
 }

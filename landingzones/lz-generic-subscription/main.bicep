@@ -158,70 +158,208 @@ param securityContactEmail string
 param securityContactPhone string
 
 // Resource Groups
-@description('Virtual Network Resource Group Name.')
-param rgVnetName string
+// Example (JSON)
+// -----------------------------
+// "resourceGroups": {
+//   "value": {
+//       "automation": "rgAutomation",
+//       "networking": "rgVnet",
+//       "networkWatcher": "NetworkWatcherRG"
+//   }
+// }
 
-@description('Azure Automation Account Resource Group Name.')
-param rgAutomationName string
+// Example (Bicep)
+// -----------------------------
+// {
+//   'automation': 'rgAutomation092021W3'
+//   'networking': 'rgVnet092021W3'
+//   'networkWatcher': 'NetworkWatcherRG'
+// }
+@description('Resource groups required for the achetype.  It includes automation, networking and networkWatcher.')
+param resourceGroups object
 
-@description('Azure Network Watcher Resource Group Name.  Default: NetworkWatcherRG')
-param rgNetworkWatcherName string = 'NetworkWatcherRG'
+// Networking
+// Example (JSON)
+// -----------------------------
+// "hubNetwork": {
+//   "value": {
+//       "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+//       "rfc1918IPRange": "10.18.0.0/22",
+//       "rfc6598IPRange": "100.60.0.0/16",
+//       "egressVirtualApplianceIp": "10.18.0.36"
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   'virtualNetworkId': '/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet'
+//   'rfc1918IPRange': '10.18.0.0/22'
+//   'rfc6598IPRange': '100.60.0.0/16'
+//   'egressVirtualApplianceIp': '10.18.0.36'
+// }
+@description('Hub Network configuration that includes virtualNetworkId, rfc1918IPRange, rfc6598IPRange and egressVirtualApplianceIp.')
+param hubNetwork object
+
+// Example (JSON)
+// -----------------------------
+// "network": {
+//   "value": {
+//       "deployVnet": true,
+//
+//       "peerToHubVirtualNetwork": true,
+//       "useRemoteGateway": false,
+//
+//       "name": "vnet",
+//       "addressPrefixes": [
+//           "10.2.0.0/16"
+//       ],
+//       "subnets": {
+//           "oz": {
+//               "comments": "Foundational Elements Zone (OZ)",
+//               "name": "oz",
+//               "addressPrefix": "10.2.1.0/25",
+//               "nsg": {
+//                   "enabled": true
+//               },
+//               "udr": {
+//                   "enabled": true
+//               }
+//           },
+//           "paz": {
+//               "comments": "Presentation Zone (PAZ)",
+//               "name": "paz",
+//               "addressPrefix": "10.2.2.0/25",
+//               "nsg": {
+//                   "enabled": true
+//               },
+//               "udr": {
+//                   "enabled": true
+//               }
+//           },
+//           "rz": {
+//               "comments": "Application Zone (RZ)",
+//               "name": "rz",
+//               "addressPrefix": "10.2.3.0/25",
+//               "nsg": {
+//                   "enabled": true
+//               },
+//               "udr": {
+//                   "enabled": true
+//               }
+//           },
+//           "hrz": {
+//               "comments": "Data Zone (HRZ)",
+//               "name": "hrz",
+//               "addressPrefix": "10.2.4.0/25",
+//               "nsg": {
+//                   "enabled": true
+//               },
+//               "udr": {
+//                   "enabled": true
+//               }
+//           },
+//           "optional": [
+//               {
+//                   "comments": "App Service",
+//                   "name": "appservice",
+//                   "addressPrefix": "10.2.5.0/25",
+//                   "nsg": {
+//                       "enabled": false
+//                   },
+//                   "udr": {
+//                       "enabled": false
+//                   },
+//                   "delegations": {
+//                       "serviceName": "Microsoft.Web/serverFarms"
+//                   }
+//               }
+//           ]
+//       }
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   'deployVnet': true
+//
+//   'peerToHubVirtualNetwork': true
+//   'useRemoteGateway': false
+//
+//   'name': 'vnet'
+//   'addressPrefixes': [
+//     '10.2.0.0/16'
+//   ]
+//   'subnets': {
+//     'oz': {
+//       'comments': 'Foundational Elements Zone (OZ)'
+//       'name': 'oz'
+//       'addressPrefix': '10.2.1.0/25'
+//       'nsg': {
+//         'enabled': true
+//       }
+//       'udr': {
+//         'enabled': true
+//       }
+//     }
+//     'paz': {
+//       'comments': 'Presentation Zone (PAZ)'
+//       'name': 'paz'
+//       'addressPrefix': '10.2.2.0/25'
+//       'nsg': {
+//         'enabled': true
+//       }
+//       'udr': {
+//         'enabled': true
+//       }
+//     }
+//     'rz': {
+//       'comments': 'Application Zone (RZ)'
+//       'name': 'rz'
+//       'addressPrefix': '10.2.3.0/25'
+//       'nsg': {
+//         'enabled': true
+//       }
+//       'udr': {
+//         'enabled': true
+//       }
+//     }
+//     'hrz': {
+//       'comments': 'Data Zone (HRZ)'
+//       'name': 'hrz'
+//       'addressPrefix': '10.2.4.0/25'
+//       'nsg': {
+//         'enabled': true
+//       }
+//       'udr': {
+//         'enabled': true
+//       }
+//     }
+//     'optional': [
+//       {
+//         'comments': 'App Service'
+//         'name': 'appservice'
+//         'addressPrefix': '10.2.5.0/25'
+//         'nsg': {
+//           'enabled': false
+//         }
+//         'udr': {
+//           'enabled': false
+//         }
+//         'delegations': {
+//           'serviceName': 'Microsoft.Web/serverFarms'
+//         }
+//       }
+//     ]
+//   }
+// }
+@description('Network configuration for the spoke virtual network.  It includes name, address spaces, vnet peering and subnets.')
+param network object
 
 // Automation
 @description('Azure Automation Account name.')
 param automationAccountName string
-
-// VNET
-@description('Defines whether to deploy a virtual network in the subscription or not.  Default:  true')
-param deployVnet bool = true
-
-@description('Virtual Network Name.')
-param vnetName string
-
-@description('Virtual Network Address Space.')
-param vnetAddressSpace string
-
-@description('Hub Virtual Network Resource Id.  It is required for configuring Virtual Network Peering & configuring route tables.')
-param hubVnetId string
-
-// Internal Foundational Elements (OZ) Subnet
-@description('Foundational Element (OZ) Subnet Name')
-param subnetFoundationalElementsName string
-
-@description('Foundational Element (OZ) Subnet Address Prefix.')
-param subnetFoundationalElementsPrefix string
-
-// Presentation Zone (PAZ) Subnet
-@description('Presentation Zone (PAZ) Subnet Name.')
-param subnetPresentationName string
-
-@description('Presentation Zone (PAZ) Subnet Address Prefix.')
-param subnetPresentationPrefix string
-
-// Application zone (RZ) Subnet
-@description('Application (RZ) Subnet Name.')
-param subnetApplicationName string
-
-@description('Application (RZ) Subnet Address Prefix.')
-param subnetApplicationPrefix string
-
-// Data Zone (HRZ) Subnet
-@description('Data Zone (HRZ) Subnet Name.')
-param subnetDataName string
-
-@description('Data Zone (HRZ) Subnet Address Prefix.')
-param subnetDataPrefix string
-
-// Virtual Appliance IP
-@description('Virtual Appliance IP address to force tunnel traffic.  This IP address is used when hubVnetId is provided.')
-param egressVirtualApplianceIp string
-
-// Hub IP Ranges
-@description('Virtual Network address space for RFC 1918.')
-param hubRFC1918IPRange string
-
-@description('Virtual Network address space for RFC 6598 (CG NAT).')
-param hubRFC6598IPRange string
 
 /*
   Scaffold the subscription which includes:
@@ -243,7 +381,7 @@ module subScaffold '../scaffold-subscription.bicep' = {
     subscriptionTags: subscriptionTags
     resourceTags: resourceTags
 
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId   
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
     securityContactEmail: securityContactEmail
     securityContactPhone: securityContactPhone
   }
@@ -251,50 +389,23 @@ module subScaffold '../scaffold-subscription.bicep' = {
 
 // Create Network Watcher Resource Group
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgNetworkWatcherName
+  name: resourceGroups.networkWatcher
   location: deployment().location
   tags: resourceTags
 }
 
 // Create Virtual Network Resource Group - only if Virtual Network is being deployed
-resource rgVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployVnet) {
-  name: deployVnet ? rgVnetName : 'placeholder'
+resource rgVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = if (network.deployVnet) {
+  name: network.deployVnet ? resourceGroups.networking : 'placeholder'
   location: deployment().location
   tags: resourceTags
 }
 
 // Create Azure Automation Resource Group
 resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgAutomationName
+  name: resourceGroups.automation
   location: deployment().location
   tags: resourceTags
-}
-
-// Create & configure virtaual network - only if Virtual Network is being deployed
-module vnet 'networking.bicep' = if (deployVnet) {
-  name: 'deploy-networking'
-  scope: resourceGroup(rgVnet.name)
-  params: {
-    egressVirtualApplianceIp: egressVirtualApplianceIp
-    hubRFC1918IPRange: hubRFC1918IPRange
-    hubRFC6598IPRange: hubRFC6598IPRange
-    hubVnetId: hubVnetId
-
-    vnetName: vnetName
-    vnetAddressSpace: vnetAddressSpace
-
-    subnetFoundationalElementsName: subnetFoundationalElementsName
-    subnetFoundationalElementsPrefix: subnetFoundationalElementsPrefix
-    
-    subnetPresentationName: subnetPresentationName
-    subnetPresentationPrefix: subnetPresentationPrefix
-    
-    subnetApplicationName: subnetApplicationName
-    subnetApplicationPrefix: subnetApplicationPrefix
-    
-    subnetDataName: subnetDataName
-    subnetDataPrefix: subnetDataPrefix
-  }
 }
 
 // Create automation account
@@ -307,9 +418,12 @@ module automationAccount '../../azresources/automation/automation-account.bicep'
   }
 }
 
-// Outputs
-output vnetId string = deployVnet ? vnet.outputs.vnetId : ''
-output foundationalElementSubnetId string = deployVnet ? vnet.outputs.foundationalElementSubnetId : ''
-output presentationSubnetId string = deployVnet ? vnet.outputs.presentationSubnetId : ''
-output applicationSubnetId string = deployVnet ? vnet.outputs.applicationSubnetId : ''
-output dataSubnetId string = deployVnet ? vnet.outputs.dataSubnetId : ''
+// Create & configure virtaual network - only if Virtual Network is being deployed
+module vnet 'networking.bicep' = if (network.deployVnet) {
+  name: 'deploy-networking'
+  scope: resourceGroup(rgVnet.name)
+  params: {
+    hubNetwork: hubNetwork
+    network: network
+  }
+}
