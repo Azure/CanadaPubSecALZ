@@ -7,112 +7,163 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-// VNET
-@description('Virtual Network Name.')
-param vnetName string
+// Networking
+// Example (JSON)
+// -----------------------------
+// "hubNetwork": {
+//   "value": {
+//       "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+//       "rfc1918IPRange": "10.18.0.0/22",
+//       "rfc6598IPRange": "100.60.0.0/16",
+//       "egressVirtualApplianceIp": "10.18.0.36",
+//       "privateDnsManagedByHub": true,
+//       "privateDnsManagedByHubSubscriptionId": "ed7f4eed-9010-4227-b115-2a5e37728f27",
+//       "privateDnsManagedByHubResourceGroupName": "pubsec-dns-rg"
+//   }
+// }
 
-@description('Virtual Network Address Space.')
-param vnetAddressSpace string
+// Example (Bicep)
+// -----------------------------
+// {
+//   virtualNetworkId: '/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet'
+//   rfc1918IPRange: '10.18.0.0/22'
+//   rfc6598IPRange: '100.60.0.0/16'
+//   egressVirtualApplianceIp: '10.18.0.36'
+//   privateDnsManagedByHub: true,
+//   privateDnsManagedByHubSubscriptionId: 'ed7f4eed-9010-4227-b115-2a5e37728f27',
+//   privateDnsManagedByHubResourceGroupName: 'pubsec-dns-rg'
+// }
+@description('Hub Network configuration that includes virtualNetworkId, rfc1918IPRange, rfc6598IPRange, egressVirtualApplianceIp, privateDnsManagedByHub flag, privateDnsManagedByHubSubscriptionId and privateDnsManagedByHubResourceGroupName.')
+param hubNetwork object
 
-@description('Hub Virtual Network Resource Id.  It is required for configuring Virtual Network Peering & configuring route tables.')
-param hubVnetId string
+// Example (JSON)
+// -----------------------------
+// "network": {
+//   "value": {
+//     "peerToHubVirtualNetwork": true,
+//     "useRemoteGateway": false,
+//     "name": "vnet",
+//     "addressPrefixes": [
+//       "10.2.0.0/16"
+//     ],
+//     "subnets": {
+//       "oz": {
+//         "comments": "Foundational Elements Zone (OZ)",
+//         "name": "oz",
+//         "addressPrefix": "10.2.1.0/25"
+//       },
+//       "paz": {
+//         "comments": "Presentation Zone (PAZ)",
+//         "name": "paz",
+//         "addressPrefix": "10.2.2.0/25"
+//       },
+//       "rz": {
+//         "comments": "Application Zone (RZ)",
+//         "name": "rz",
+//         "addressPrefix": "10.2.3.0/25"
+//       },
+//       "hrz": {
+//         "comments": "Data Zone (HRZ)",
+//         "name": "hrz",
+//         "addressPrefix": "10.2.4.0/25"
+//       },
+//       "privateEndpoints": {
+//         "comments": "Private Endpoints Subnet",
+//         "name": "privateendpoints",
+//         "addressPrefix": "10.2.5.0/25"
+//       },
+//       "databricksPublic": {
+//         "comments": "Databricks Public Delegated Subnet",
+//         "name": "databrickspublic",
+//         "addressPrefix": "10.2.6.0/25"
+//       },
+//       "databricksPrivate": {
+//         "comments": "Databricks Private Delegated Subnet",
+//         "name": "databricksprivate",
+//         "addressPrefix": "10.2.7.0/25"
+//       },
+//       "web": {
+//         "comments": "Azure Web App Delegated Subnet",
+//         "name": "webapp",
+//         "addressPrefix": "10.2.8.0/25"
+//       }
+//     }
+//   }
 
-// Internal Foundational Elements (OZ) Subnet
-@description('Foundational Element (OZ) Subnet Name')
-param subnetFoundationalElementsName string
+// Example (Bicep)
+// -----------------------------
+// {
+//   peerToHubVirtualNetwork: true
+//   useRemoteGateway: false
+//   name: 'vnet'
+//   addressPrefixes: [
+//     '10.5.0.0/16'
+//   ]
+//   subnets: {
+//     oz: {
+//       comments: 'Foundational Elements Zone (OZ)'
+//       name: 'oz'
+//       addressPrefix: '10.5.1.0/25'
+//     }
+//     paz: {
+//       comments: 'Presentation Zone (PAZ)'
+//       name: 'paz'
+//       addressPrefix: '10.5.2.0/25'
+//     }
+//     rz: {
+//       comments: 'Application Zone (RZ)'
+//       name: 'rz'
+//       addressPrefix: '10.5.3.0/25'
+//     }
+//     hrz: {
+//       comments: 'Data Zone (HRZ)'
+//       name: 'hrz'
+//       addressPrefix: '10.5.4.0/25'
+//     }
+//     databricksPublic: {
+//       comments: 'Databricks Public Delegated Subnet'
+//       name: 'databrickspublic'
+//       addressPrefix: '10.5.5.0/25'
+//     }
+//     databricksPrivate: {
+//       comments: 'Databricks Private Delegated Subnet'
+//       name: 'databricksprivate'
+//       addressPrefix: '10.5.6.0/25'
+//     }
+//     privateEndpoints: {
+//       comments: 'Private Endpoints Subnet'
+//       name: 'privateendpoints'
+//       addressPrefix: '10.5.7.0/25'
+//     }
+//     web: {
+//       comments: 'Azure Web App Delegated Subnet'
+//       name: 'webapp'
+//       addressPrefix: '10.5.8.0/25'
+//     }
+//   }
+// }
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, databricksPublic, databricksPrivate, web) ')
+param network object
 
-@description('Foundational Element (OZ) Subnet Address Prefix.')
-param subnetFoundationalElementsPrefix string
-
-// Presentation Zone (PAZ) Subnet
-@description('Presentation Zone (PAZ) Subnet Name.')
-param subnetPresentationName string
-
-@description('Presentation Zone (PAZ) Subnet Address Prefix.')
-param subnetPresentationPrefix string
-
-// Application zone (RZ) Subnet
-@description('Application (RZ) Subnet Name.')
-param subnetApplicationName string
-
-@description('Application (RZ) Subnet Address Prefix.')
-param subnetApplicationPrefix string
-
-// Data Zone (HRZ) Subnet
-@description('Data Zone (HRZ) Subnet Name.')
-param subnetDataName string
-
-@description('Data Zone (HRZ) Subnet Address Prefix.')
-param subnetDataPrefix string
-
-// Delegated Subnets
-@description('Delegated Databricks Public Subnet Name.')
-param subnetDatabricksPublicName string
-
-@description('Delegated Databricks Public Subnet Address Prefix.')
-param subnetDatabricksPublicPrefix string
-
-@description('Delegated Databricks Private Subnet Name.')
-param subnetDatabricksPrivateName string
-
-@description('Delegated Databricks Private Subnet Address Prefix.')
-param subnetDatabricksPrivatePrefix string
-
-// Priavte Endpoint Subnet
-@description('Private Endpoints Subnet Name.  All private endpoints will be deployed to this subnet.')
-param subnetPrivateEndpointsName string
-
-@description('Private Endpoint Subnet Address Prefix.')
-param subnetPrivateEndpointsPrefix string
-
-// Web App Subnet
-@description('Web App Subnet Name.')
-param subnetWebAppName string
-
-@description('Web App Subnet Address Prefix.')
-param subnetWebAppPrefix string
-
-// Virtual Appliance IP
-@description('Egress Virtual Appliance IP.  It should be the IP address of the network virtual appliance.')
-param egressVirtualApplianceIp string
-
-// Hub IP Ranges
-@description('Hub Virtual Network IP Address - RFC 1918')
-param hubRFC1918IPRange string
-
-@description('Hub Virtual Network IP Address - RFC 6598')
-param hubRFC6598IPRange string
-
-// Private DNS Zones
-@description('Boolean flag to determine whether Private DNS Zones will be managed by Hub Network.')
-param privateDnsManagedByHub bool = false
-
-@description('Private DNS Zone Subscription Id.  Required when privateDnsManagedByHub=true')
-param privateDnsManagedByHubSubscriptionId string = ''
-
-@description('Private DNS Zone Resource Group Name.  Required when privateDnsManagedByHub=true')
-param privateDnsManagedByHubResourceGroupName string = ''
-
-var integrateToHubVirtualNetwork = !empty(hubVnetId)
-var hubVnetIdSplit = split(hubVnetId, '/')
+var hubVnetIdSplit = split(hubNetwork.virtualNetworkId, '/')
 
 var routesToHub = [
   // Force Routes to Hub IPs (RFC1918 range) via FW despite knowing that route via peering
   {
     name: 'PrdSpokesUdrHubRFC1918FWRoute'
     properties: {
-      addressPrefix: hubRFC1918IPRange
+      addressPrefix: hubNetwork.rfc1918IPRange
       nextHopType: 'VirtualAppliance'
-      nextHopIpAddress: egressVirtualApplianceIp
+      nextHopIpAddress: hubNetwork.egressVirtualApplianceIp
     }
   }
   // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
   {
     name: 'PrdSpokesUdrHubRFC6598FWRoute'
     properties: {
-      addressPrefix: hubRFC6598IPRange
+      addressPrefix: hubNetwork.rfc6598IPRange
       nextHopType: 'VirtualAppliance'
-      nextHopIpAddress: egressVirtualApplianceIp
+      nextHopIpAddress: hubNetwork.egressVirtualApplianceIp
     }
   }
   {
@@ -120,38 +171,38 @@ var routesToHub = [
     properties: {
       addressPrefix: '0.0.0.0/0'
       nextHopType: 'VirtualAppliance'
-      nextHopIpAddress: egressVirtualApplianceIp
+      nextHopIpAddress: hubNetwork.egressVirtualApplianceIp
     }
   }
 ]
 
 // Network Security Groups
-resource nsgFoundationalElements 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
-  name: '${subnetFoundationalElementsName}Nsg'
+resource nsgOZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
+  name: '${network.subnets.oz.name}Nsg'
   location: resourceGroup().location
   properties: {
     securityRules: []
   }
 }
 
-resource nsgPresentation 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
-  name: '${subnetPresentationName}Nsg'
+resource nsgPAZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
+  name: '${network.subnets.paz.name}Nsg'
   location: resourceGroup().location
   properties: {
     securityRules: []
   }
 }
 
-resource nsgApplication 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
-  name: '${subnetApplicationName}Nsg'
+resource nsgRZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
+  name: '${network.subnets.rz.name}Nsg'
   location: resourceGroup().location
   properties: {
     securityRules: []
   }
 }
 
-resource nsgData 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
-  name: '${subnetDataName}Nsg'
+resource nsgHRZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
+  name: '${network.subnets.hrz.name}Nsg'
   location: resourceGroup().location
   properties: {
     securityRules: []
@@ -161,8 +212,8 @@ resource nsgData 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
 module nsgDatabricks '../../azresources/network/nsg/nsg-databricks.bicep' = {
   name: 'deploy-nsg-databricks'
   params: {
-    namePublic: '${subnetDatabricksPublicName}Nsg'
-    namePrivate: '${subnetDatabricksPrivateName}Nsg'
+    namePublic: '${network.subnets.databricksPublic.name}Nsg'
+    namePrivate: '${network.subnets.databricksPrivate.name}Nsg'
   }
 }
 
@@ -173,54 +224,54 @@ module nsgDatabricks '../../azresources/network/nsg/nsg-databricks.bicep' = {
 module nsgWebApp '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-webapp'
   params: {
-    name: '${subnetWebAppName}Nsg'
+    name: '${network.subnets.web.name}Nsg'
   }
 }
 
 // Route Tables
-resource udrFoundationalElements 'Microsoft.Network/routeTables@2021-02-01' = {
-  name: '${subnetFoundationalElementsName}Udr'
+resource udrOZ 'Microsoft.Network/routeTables@2021-02-01' = {
+  name: '${network.subnets.oz.name}Udr'
   location: resourceGroup().location
   properties: {
-    routes: integrateToHubVirtualNetwork ? routesToHub : null
+    routes: network.peerToHubVirtualNetwork ? routesToHub : null
   }
 }
 
-resource udrPresentation 'Microsoft.Network/routeTables@2021-02-01' = {
-  name: '${subnetPresentationName}Udr'
+resource udrPAZ 'Microsoft.Network/routeTables@2021-02-01' = {
+  name: '${network.subnets.paz.name}Udr'
   location: resourceGroup().location
   properties: {
-    routes: integrateToHubVirtualNetwork ? routesToHub : null
+    routes: network.peerToHubVirtualNetwork ? routesToHub : null
   }
 }
 
-resource udrApplication 'Microsoft.Network/routeTables@2021-02-01' = {
-  name: '${subnetApplicationName}Udr'
+resource udrRZ 'Microsoft.Network/routeTables@2021-02-01' = {
+  name: '${network.subnets.rz.name}Udr'
   location: resourceGroup().location
   properties: {
-    routes: integrateToHubVirtualNetwork ? routesToHub : null
+    routes: network.peerToHubVirtualNetwork ? routesToHub : null
   }
 }
 
-resource udrData 'Microsoft.Network/routeTables@2021-02-01' = {
-  name: '${subnetDataName}Udr'
+resource udrHRZ 'Microsoft.Network/routeTables@2021-02-01' = {
+  name: '${network.subnets.hrz.name}Udr'
   location: resourceGroup().location
   properties: {
-    routes: integrateToHubVirtualNetwork ? routesToHub : null
+    routes: network.peerToHubVirtualNetwork ? routesToHub : null
   }
 }
 
 module udrDatabricksPublic '../../azresources/network/udr/udr-databricks-public.bicep' = {
   name: 'deploy-route-table-databricks-public'
   params: {
-    name: '${subnetDatabricksPublicName}Udr'
+    name: '${network.subnets.databricksPublic.name}Udr'
   }
 }
 
 module udrDatabricksPrivate '../../azresources/network/udr/udr-databricks-private.bicep' = {
   name: 'deploy-route-table-databricks-private'
   params: {
-    name: '${subnetDatabricksPrivateName}Udr'
+    name: '${network.subnets.databricksPrivate.name}Udr'
   }
 }
 
@@ -230,74 +281,72 @@ module udrDatabricksPrivate '../../azresources/network/udr/udr-databricks-privat
 module udrWebApp '../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-web-app'
   params: {
-    name: '${subnetWebAppName}Udr'
+    name: '${network.subnets.web.name}Udr'
     routes: []
   }
 }
 
 // Virtual Network
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
-  name: vnetName
+  name: network.name
   location: resourceGroup().location
   properties: {
     addressSpace: {
-      addressPrefixes: [
-        vnetAddressSpace
-      ]
+      addressPrefixes: network.addressPrefixes
     }
     subnets: [
       {
-        name: subnetFoundationalElementsName
+        name: network.subnets.oz.name
         properties: {
-          addressPrefix: subnetFoundationalElementsPrefix
+          addressPrefix: network.subnets.oz.addressPrefix
           routeTable: {
-            id: udrFoundationalElements.id
+            id: udrOZ.id
           }
           networkSecurityGroup: {
-            id: nsgFoundationalElements.id
+            id: nsgOZ.id
           }
         }
       }
       {
-        name: subnetPresentationName
+        name: network.subnets.paz.name
         properties: {
-          addressPrefix: subnetPresentationPrefix
+          addressPrefix: network.subnets.paz.addressPrefix
           routeTable: {
-            id: udrPresentation.id
+            id: udrPAZ.id
           }
           networkSecurityGroup: {
-            id: nsgPresentation.id
+            id: nsgPAZ.id
           }
         }
       }
       {
-        name: subnetApplicationName
+        name: network.subnets.rz.name
         properties: {
-          addressPrefix: subnetApplicationPrefix
+          addressPrefix: network.subnets.rz.addressPrefix
           routeTable: {
-            id: udrApplication.id
+            id: udrRZ.id
           }
           networkSecurityGroup: {
-            id: nsgApplication.id
+            id: nsgRZ.id
           }
         }
       }
       {
-        name: subnetDataName
+        name: network.subnets.hrz.name
         properties: {
-          addressPrefix: subnetDataPrefix
+          addressPrefix: network.subnets.hrz.addressPrefix
           routeTable: {
-            id: udrData.id
+            id: udrHRZ.id
           }
           networkSecurityGroup: {
-            id: nsgData.id
+            id: nsgHRZ.id
           }
         }
       }
       {
-        name: subnetPrivateEndpointsName
+        name: network.subnets.privateEndpoints.name
         properties: {
-          addressPrefix: subnetPrivateEndpointsPrefix
+          addressPrefix: network.subnets.privateEndpoints.addressPrefix
           privateEndpointNetworkPolicies: 'Disabled'
           serviceEndpoints: [
             {
@@ -307,9 +356,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         }
       }
       {
-        name: subnetWebAppName
+        name: network.subnets.web.name
         properties: {
-          addressPrefix: subnetWebAppPrefix
+          addressPrefix: network.subnets.web.addressPrefix
           networkSecurityGroup: {
             id: nsgWebApp.outputs.nsgId
           }
@@ -327,9 +376,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         }
       }
       {
-        name: subnetDatabricksPublicName
+        name: network.subnets.databricksPublic.name
         properties: {
-          addressPrefix: subnetDatabricksPublicPrefix
+          addressPrefix: network.subnets.databricksPublic.addressPrefix
           networkSecurityGroup: {
             id: nsgDatabricks.outputs.publicNsgId
           }
@@ -347,9 +396,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         }
       }
       {
-        name: subnetDatabricksPrivateName
+        name: network.subnets.databricksPrivate.name
         properties: {
-          addressPrefix: subnetDatabricksPrivatePrefix
+          addressPrefix: network.subnets.databricksPrivate.addressPrefix
           networkSecurityGroup: {
             id: nsgDatabricks.outputs.privateNsgId
           }
@@ -370,7 +419,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   }
 }
 
-module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = if (integrateToHubVirtualNetwork) {
+module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = if (network.peerToHubVirtualNetwork) {
   name: 'deploy-vnet-peering-spoke-to-hub'
   scope: resourceGroup()
   params: {
@@ -378,16 +427,16 @@ module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = if
     allowForwardedTraffic: true
     allowVirtualNetworkAccess: true
     sourceVnetName: vnet.name
-    targetVnetId: hubVnetId
-    //useRemoteGateways: true
+    targetVnetId: hubNetwork.virtualNetworkId
+    useRemoteGateways: network.useRemoteGateway
   }
 }
 
 // For Hub to Spoke vnet peering, we must rescope the deployment to the subscription id & resource group of where the Hub VNET is located.
-module vnetPeeringHubToSpoke '../../azresources/network/vnet-peering.bicep' = if (integrateToHubVirtualNetwork) {
+module vnetPeeringHubToSpoke '../../azresources/network/vnet-peering.bicep' = if (network.peerToHubVirtualNetwork) {
   name: 'deploy-vnet-peering-${subscription().subscriptionId}'
   // vnet id = /subscriptions/<<SUBSCRIPTION ID>>/resourceGroups/<<RESOURCE GROUP>>/providers/Microsoft.Network/virtualNetworks/<<VNET NAME>>
-  scope: resourceGroup(integrateToHubVirtualNetwork ? hubVnetIdSplit[2] : '', integrateToHubVirtualNetwork ? hubVnetIdSplit[4] : '')
+  scope: resourceGroup(network.peerToHubVirtualNetwork ? hubVnetIdSplit[2] : '', network.peerToHubVirtualNetwork ? hubVnetIdSplit[4] : '')
   params: {
     peeringName: 'Spoke-${last(hubVnetIdSplit)}-to-${vnet.name}-${uniqueString(vnet.id)}'
     allowForwardedTraffic: true
@@ -406,9 +455,9 @@ module privatezone_sqldb '../../azresources/network/private-dns-zone.bicep' = {
     zone: 'privatelink${environment().suffixes.sqlServerHostname}'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -419,9 +468,9 @@ module privatezone_adf_datafactory '../../azresources/network/private-dns-zone.b
     zone: 'privatelink.datafactory.azure.net'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -432,9 +481,9 @@ module privatezone_adf_portal '../../azresources/network/private-dns-zone.bicep'
     zone: 'privatelink.adf.azure.com'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -445,9 +494,9 @@ module privatezone_keyvault '../../azresources/network/private-dns-zone.bicep' =
     zone: 'privatelink.vaultcore.azure.net'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -458,9 +507,9 @@ module privatezone_acr '../../azresources/network/private-dns-zone.bicep' = {
     zone: 'privatelink.azurecr.io'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -471,9 +520,9 @@ module privatezone_datalake_blob '../../azresources/network/private-dns-zone.bic
     zone: 'privatelink.blob.${environment().suffixes.storage}'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -484,9 +533,9 @@ module privatezone_datalake_dfs '../../azresources/network/private-dns-zone.bice
     zone: 'privatelink.dfs.${environment().suffixes.storage}'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -497,9 +546,9 @@ module privatezone_datalake_file '../../azresources/network/private-dns-zone.bic
     zone: 'privatelink.file.${environment().suffixes.storage}'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -510,9 +559,9 @@ module privatezone_azureml_api '../../azresources/network/private-dns-zone.bicep
     zone: 'privatelink.api.azureml.ms'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -523,9 +572,9 @@ module privatezone_azureml_notebook '../../azresources/network/private-dns-zone.
     zone: 'privatelink.notebooks.azure.net'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -536,9 +585,9 @@ module privatezone_fhir '../../azresources/network/private-dns-zone.bicep' = {
     zone: 'privatelink.azurehealthcareapis.com'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -549,9 +598,9 @@ module privatezone_eventhub '../../azresources/network/private-dns-zone.bicep' =
     zone: 'privatelink.servicebus.windows.net'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -562,9 +611,9 @@ module privatezone_synapse '../../azresources/network/private-dns-zone.bicep' = 
     zone: 'privatelink.azuresynapse.net'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -575,9 +624,9 @@ module privatezone_synapse_dev '../../azresources/network/private-dns-zone.bicep
     zone: 'privatelink.dev.azuresynapse.net'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
@@ -588,23 +637,23 @@ module privatezone_synapse_sql '../../azresources/network/private-dns-zone.bicep
     zone: 'privatelink.sql.azuresynapse.net'
     vnetId: vnet.id
 
-    dnsCreateNewZone: !privateDnsManagedByHub
-    dnsExistingZoneSubscriptionId: privateDnsManagedByHubSubscriptionId
-    dnsExistingZoneResourceGroupName: privateDnsManagedByHubResourceGroupName
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
   }
 }
 
 output vnetId string = vnet.id
 
-output foundationalElementSubnetId string = '${vnet.id}/subnets/${subnetFoundationalElementsName}'
-output presentationSubnetId string = '${vnet.id}/subnets/${subnetPresentationName}'
-output applicationSubnetId string = '${vnet.id}/subnets/${subnetApplicationName}'
-output dataSubnetId string = '${vnet.id}/subnets/${subnetDataName}'
-output privateEndpointSubnetId string = '${vnet.id}/subnets/${subnetPrivateEndpointsName}'
-output webAppSubnetId string = '${vnet.id}/subnets/${subnetWebAppName}'
+output ozSubnetId string = '${vnet.id}/subnets/${network.subnets.oz.name}'
+output pazSubnetId string = '${vnet.id}/subnets/${network.subnets.paz.name}'
+output rzSubnetId string = '${vnet.id}/subnets/${network.subnets.rz.name}'
+output hrzId string = '${vnet.id}/subnets/${network.subnets.hrz.name}'
+output privateEndpointSubnetId string = '${vnet.id}/subnets/${network.subnets.privateEndpoints.name}'
+output webAppSubnetId string = '${vnet.id}/subnets/${network.subnets.web.name}'
 
-output databricksPublicSubnetName string = subnetDatabricksPublicName
-output databricksPrivateSubnetName string = subnetDatabricksPrivateName
+output databricksPublicSubnetName string = network.subnets.databricksPublic.name
+output databricksPrivateSubnetName string = network.subnets.databricksPrivate.name
 
 output dataLakeDfsPrivateDnsZoneId string = privatezone_datalake_dfs.outputs.privateDnsZoneId
 output dataLakeBlobPrivateDnsZoneId string = privatezone_datalake_blob.outputs.privateDnsZoneId

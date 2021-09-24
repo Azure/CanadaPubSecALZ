@@ -153,6 +153,7 @@ param hubNetwork object
 //     }
 //   }
 // }
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks) ')
 param network object
 
 var hubVnetIdSplit = split(hubNetwork.virtualNetworkId, '/')
@@ -437,7 +438,7 @@ module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = if
     allowVirtualNetworkAccess: true
     sourceVnetName: vnet.name
     targetVnetId: hubNetwork.virtualNetworkId
-    //useRemoteGateways: true
+    useRemoteGateways: network.useRemoteGateway
   }
 }
 

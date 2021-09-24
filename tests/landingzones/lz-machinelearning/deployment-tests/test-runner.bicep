@@ -46,31 +46,31 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
       phone: '555-555-5555'
     }
 
-    resourceGroups: {
-      'automation': rgAutomationName
-      'compute': rgComputeName
-      'monitor': rgMonitorName
-      'networking': rgNetworking
-      'networkWatcher': 'NetworkWatcherRG'
-      'security': rgSecurityName
-      'storage': rgStorageName
-    }
-
     subscriptionTags: {
-      'ISSO': '${testRunnerId}ISSO'
+      ISSO: '${testRunnerId}ISSO'
     }
 
     resourceTags: {
-      'ClientOrganization': '${testRunnerId}Org'
-      'CostCenter': '${testRunnerId}CostCenter'
-      'DataSensitivity': '${testRunnerId}DataSensitivity'
-      'ProjectContact': '${testRunnerId}ProjectContact'
-      'ProjectName': tagProjectName
-      'TechnicalContact': '${testRunnerId}TechContact'
+      ClientOrganization: '${testRunnerId}Org'
+      CostCenter: '${testRunnerId}CostCenter'
+      DataSensitivity: '${testRunnerId}DataSensitivity'
+      ProjectContact: '${testRunnerId}ProjectContact'
+      ProjectName: tagProjectName
+      TechnicalContact: '${testRunnerId}TechContact'
     }
 
     subscriptionBudget: {
       createBudget: false
+    }
+
+    resourceGroups: {
+      automation: rgAutomationName
+      compute: rgComputeName
+      monitor: rgMonitorName
+      networking: rgNetworking
+      networkWatcher: 'NetworkWatcherRG'
+      security: rgSecurityName
+      storage: rgStorageName
     }
 
     useCMK: useCMK

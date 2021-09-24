@@ -67,8 +67,8 @@ param logAnalyticsWorkspaceResourceId string
 // Example (Bicep)
 // -----------------------------
 // {
-//   'email': 'alzcanadapubsec@microsoft.com'
-//   'phone': '5555555555'
+//   email: 'alzcanadapubsec@microsoft.com'
+//   phone: '5555555555'
 // }
 @description('Security Center configuration.  It includes email and phone.')
 param securityCenter object
@@ -90,9 +90,9 @@ param securityCenter object
 // -----------------------------
 // [
 //   {
-//     'comments': 'Built-In Contributor Role'
-//     'roleDefinitionId': 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-//     'securityGroupObjectIds': [
+//     comments: 'Built-In Contributor Role'
+//     roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+//     securityGroupObjectIds: [
 //       '38f33f7e-a471-4630-8ce9-c6653495a2ee'
 //     ]
 //   }
@@ -139,7 +139,7 @@ param subscriptionBudget object
 // Example (Bicep)
 // ---------------------------
 // {
-//   'ISSO': 'isso-tag'
+//   ISSO: 'isso-tag'
 // }
 @description('A set of key/value pairs of tags assigned to the subscription.')
 param subscriptionTags object
@@ -160,12 +160,12 @@ param subscriptionTags object
 // Example (Bicep)
 // -----------------------------
 // {
-//   'ClientOrganization': 'client-organization-tag'
-//   'CostCenter': 'cost-center-tag'
-//   'DataSensitivity': 'data-sensitivity-tag'
-//   'ProjectContact': 'project-contact-tag'
-//   'ProjectName': 'project-name-tag'
-//   'TechnicalContact': 'technical-contact-tag'
+//   ClientOrganization: 'client-organization-tag'
+//   CostCenter: 'cost-center-tag'
+//   DataSensitivity: 'data-sensitivity-tag'
+//   ProjectContact: 'project-contact-tag'
+//   ProjectName: 'project-name-tag'
+//   TechnicalContact: 'technical-contact-tag'
 // }
 @description('A set of key/value pairs of tags assigned to the resource group and resources.')
 param resourceTags object
@@ -184,9 +184,9 @@ param resourceTags object
 // Example (Bicep)
 // -----------------------------
 // {
-//   'automation': 'rgAutomation092021W3'
-//   'networking': 'rgVnet092021W3'
-//   'networkWatcher': 'NetworkWatcherRG'
+//   automation: 'rgAutomation092021W3'
+//   networking: 'rgVnet092021W3'
+//   networkWatcher: 'NetworkWatcherRG'
 // }
 @description('Resource groups required for the achetype.  It includes automation, networking and networkWatcher.')
 param resourceGroups object
@@ -206,10 +206,10 @@ param resourceGroups object
 // Example (Bicep)
 // -----------------------------
 // {
-//   'virtualNetworkId': '/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet'
-//   'rfc1918IPRange': '10.18.0.0/22'
-//   'rfc6598IPRange': '100.60.0.0/16'
-//   'egressVirtualApplianceIp': '10.18.0.36'
+//   virtualNetworkId: '/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet'
+//   rfc1918IPRange: '10.18.0.0/22'
+//   rfc6598IPRange: '100.60.0.0/16'
+//   egressVirtualApplianceIp: '10.18.0.36'
 // }
 @description('Hub Network configuration that includes virtualNetworkId, rfc1918IPRange, rfc6598IPRange and egressVirtualApplianceIp.')
 param hubNetwork object
@@ -295,73 +295,73 @@ param hubNetwork object
 // Example (Bicep)
 // -----------------------------
 // {
-//   'deployVnet': true
+//   deployVnet: true
 //
-//   'peerToHubVirtualNetwork': true
-//   'useRemoteGateway': false
+//   peerToHubVirtualNetwork: true
+//   useRemoteGateway: false
 //
-//   'name': 'vnet'
-//   'addressPrefixes': [
+//   name: 'vnet'
+//   addressPrefixes: [
 //     '10.2.0.0/16'
 //   ]
-//   'subnets': {
-//     'oz': {
-//       'comments': 'Foundational Elements Zone (OZ)'
-//       'name': 'oz'
-//       'addressPrefix': '10.2.1.0/25'
-//       'nsg': {
-//         'enabled': true
+//   subnets: {
+//     oz: {
+//       comments: 'Foundational Elements Zone (OZ)'
+//       name: 'oz'
+//       addressPrefix: '10.2.1.0/25'
+//       nsg: {
+//         enabled: true
 //       }
-//       'udr': {
-//         'enabled': true
-//       }
-//     }
-//     'paz': {
-//       'comments': 'Presentation Zone (PAZ)'
-//       'name': 'paz'
-//       'addressPrefix': '10.2.2.0/25'
-//       'nsg': {
-//         'enabled': true
-//       }
-//       'udr': {
-//         'enabled': true
+//       udr: {
+//         enabled: true
 //       }
 //     }
-//     'rz': {
-//       'comments': 'Application Zone (RZ)'
-//       'name': 'rz'
-//       'addressPrefix': '10.2.3.0/25'
-//       'nsg': {
-//         'enabled': true
+//     paz: {
+//       comments: 'Presentation Zone (PAZ)'
+//       name: 'paz'
+//       addressPrefix: '10.2.2.0/25'
+//       nsg: {
+//         enabled: true
 //       }
-//       'udr': {
-//         'enabled': true
-//       }
-//     }
-//     'hrz': {
-//       'comments': 'Data Zone (HRZ)'
-//       'name': 'hrz'
-//       'addressPrefix': '10.2.4.0/25'
-//       'nsg': {
-//         'enabled': true
-//       }
-//       'udr': {
-//         'enabled': true
+//       udr: {
+//         enabled: true
 //       }
 //     }
-//     'optional': [
+//     rz: {
+//       comments: 'Application Zone (RZ)'
+//       name: 'rz'
+//       addressPrefix: '10.2.3.0/25'
+//       nsg: {
+//         enabled: true
+//       }
+//       udr: {
+//         enabled: true
+//       }
+//     }
+//     hrz: {
+//       comments: 'Data Zone (HRZ)'
+//       name: 'hrz'
+//       addressPrefix: '10.2.4.0/25'
+//       nsg: {
+//         enabled: true
+//       }
+//       udr: {
+//         enabled: true
+//       }
+//     }
+//     optional: [
 //       {
-//         'comments': 'App Service'
-//         'name': 'appservice'
-//         'addressPrefix': '10.2.5.0/25'
-//         'nsg': {
-//           'enabled': false
+//         comments: 'App Service'
+//         name: 'appservice'
+//         addressPrefix: '10.2.5.0/25'
+//         nsg: {
+//           enabled: false
 //         }
-//         'udr': {
-//           'enabled': false
+//         udr: {
+//           enabled: false
 //         }
-//         'delegations': {
-//           'serviceName': 'Microsoft.Web/serverFarms'
+//         delegations: {
+//           'serviceName: 'Microsoft.Web/serverFarms'
 //         }
 //       }
 //     ]

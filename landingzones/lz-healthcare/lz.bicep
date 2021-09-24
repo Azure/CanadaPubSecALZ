@@ -13,142 +13,275 @@ targetScope = 'subscription'
 @description('Contact email address for security alerts.')
 param securityContactEmail string
 
-// Resource Groups
-@description('Azure Network Watcher Resource Group Name.  Default: NetworkWatcherRG')
-param rgNetworkWatcherName string = 'NetworkWatcherRG'
-
-@description('Virtual Network Resource Group Name.')
-param rgVnetName string
-
-@description('Automation Account Resource Group Name.')
-param rgAutomationName string
-
-@description('Storage Resource Group Name.')
-param rgStorageName string
-
-@description('Compute Resource Group Name.')
-param rgComputeName string
-
-@description('Security Resource Group Name.')
-param rgSecurityName string
-
-@description('Monitoring Resource Group Name.')
-param rgMonitorName string
-
-// Automation
-@description('Azure Automation Account name.')
-param automationAccountName string
-
-// VNET
-@description('Virtual Network Name.')
-param vnetName string
-
-@description('Virtual Network Address Space.')
-param vnetAddressSpace string
-
-@description('Hub Virtual Network Resource Id.  It is required for configuring Virtual Network Peering & configuring route tables.')
-param hubVnetId string
-
-// Internal Foundational Elements (OZ) Subnet
-@description('Foundational Element (OZ) Subnet Name')
-param subnetFoundationalElementsName string
-
-@description('Foundational Element (OZ) Subnet Address Prefix.')
-param subnetFoundationalElementsPrefix string
-
-// Presentation Zone (PAZ) Subnet
-@description('Presentation Zone (PAZ) Subnet Name.')
-param subnetPresentationName string
-
-@description('Presentation Zone (PAZ) Subnet Address Prefix.')
-param subnetPresentationPrefix string
-
-// Application zone (RZ) Subnet
-@description('Application (RZ) Subnet Name.')
-param subnetApplicationName string
-
-@description('Application (RZ) Subnet Address Prefix.')
-param subnetApplicationPrefix string
-
-// Data Zone (HRZ) Subnet
-@description('Data Zone (HRZ) Subnet Name.')
-param subnetDataName string
-
-@description('Data Zone (HRZ) Subnet Address Prefix.')
-param subnetDataPrefix string
-
-// Delegated Subnets
-@description('Delegated Databricks Public Subnet Name.')
-param subnetDatabricksPublicName string
-
-@description('Delegated Databricks Public Subnet Address Prefix.')
-param subnetDatabricksPublicPrefix string
-
-@description('Delegated Databricks Private Subnet Name.')
-param subnetDatabricksPrivateName string
-
-@description('Delegated Databricks Private Subnet Address Prefix.')
-param subnetDatabricksPrivatePrefix string
-
-// Priavte Endpoint Subnet
-@description('Private Endpoints Subnet Name.  All private endpoints will be deployed to this subnet.')
-param subnetPrivateEndpointsName string
-
-@description('Private Endpoint Subnet Address Prefix.')
-param subnetPrivateEndpointsPrefix string
-
-// Web App Subnet
-@description('Web App Subnet Name.')
-param subnetWebAppName string
-
-@description('Web App Subnet Address Prefix.')
-param subnetWebAppPrefix string
-
-// Virtual Appliance IP
-@description('Egress Virtual Appliance IP.  It should be the IP address of the network virtual appliance.')
-param egressVirtualApplianceIp string
-
-// Hub IP Ranges
-@description('Hub Virtual Network IP Address - RFC 1918')
-param hubRFC1918IPRange string
-
-@description('Hub Virtual Network IP Address - RFC 6598 (CGNAT)')
-param hubRFC6598IPRange string
-
-// Private DNS Zones
-@description('Boolean flag to determine whether Private DNS Zones will be managed by Hub Network.')
-param privateDnsManagedByHub bool = false
-
-@description('Private DNS Zone Subscription Id.  Required when privateDnsManagedByHub=true')
-param privateDnsManagedByHubSubscriptionId string = ''
-
-@description('Private DNS Zone Resource Group Name.  Required when privateDnsManagedByHub=true')
-param privateDnsManagedByHubResourceGroupName string = ''
-
-// Azure Key Vault
-@description('Azure Key Vault Secret Expiry in days.')
-param secretExpiryInDays int
-
 // Tags
+// Example (JSON)
+// -----------------------------
+// "resourceTags": {
+//   "value": {
+//       "ClientOrganization": "client-organization-tag",
+//       "CostCenter": "cost-center-tag",
+//       "DataSensitivity": "data-sensitivity-tag",
+//       "ProjectContact": "project-contact-tag",
+//       "ProjectName": "project-name-tag",
+//       "TechnicalContact": "technical-contact-tag"
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   ClientOrganization: 'client-organization-tag'
+//   CostCenter: 'cost-center-tag'
+//   DataSensitivity: 'data-sensitivity-tag'
+//   ProjectContact: 'project-contact-tag'
+//   ProjectName: 'project-name-tag'
+//   TechnicalContact: 'technical-contact-tag'
+// }
+@description('A set of key/value pairs of tags assigned to the resource group and resources.')
 param resourceTags object
 
-// ML landing zone parameters - start
-@description('Boolean flag to determine whether SQL Database is deployed or not.')
-param deploySQLDB bool
+// Resource Groups
+// Example (JSON)
+// -----------------------------
+// "resourceGroups": {
+//   "value": {
+//     "automation": "healthAutomation",
+//     "compute": "healthCompute",
+//     "monitor": "healthMonitor",
+//     "networking": "healthNetworking",
+//     "networkWatcher": "NetworkWatcherRG",
+//     "security": "healthSecurity",
+//     "storage": "healthStorage"
+//   }
+// }
 
-@description('Synapse Analytics Username.')
-@secure()
-param synapseUsername string
+// Example (Bicep)
+// -----------------------------
+// {
+//   automation: 'healthAutomation'
+//   compute: 'healthCompute'
+//   monitor: 'healthMonitor'
+//   networking: 'healthNetworking'
+//   networkWatcher: 'NetworkWatcherRG'
+//   security: 'healthSecurity'
+//   storage: 'healthStorage'
+// }
+@description('Resource groups required for the achetype.  It includes automation, compute, monitor, networking, networkWatcher, security and storage.')
+param resourceGroups object
 
-@description('SQL Database Username.')
-@secure()
-param sqldbUsername string
-
-@description('Boolean flag to determine whether customer managed keys are used.')
+@description('Boolean flag to determine whether customer managed keys are used.  Default:  false')
 param useCMK bool = false
 
-var sqldbPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldbUsername))}'
-var synapsePassword = '${uniqueString(rgCompute.id)}*${toUpper(uniqueString(synapseUsername))}'
+// Azure Automation Account
+// Example (JSON)
+// -----------------------------
+// "automation": {
+//   "value": {
+//     "name": "healthAutomation"
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   name: 'healthAutomation'
+// }
+@description('Azure Automation Account configuration.  Includes name.')
+param automation object
+
+// Azure Key Vault
+// Example (JSON)
+//-----------------------------
+// "keyVault": {
+//   "value": {
+//     "secretExpiryInDays": 3650
+//   }
+// }
+
+// Example (Bicep)
+//-----------------------------
+// {
+//   secretExpiryInDays: 3650
+// }
+@description('Azure Key Vault configuraiton.  Includes secretExpiryInDays.')
+param keyVault object
+
+// SQL Database
+// -----------------------------
+// Example (JSON)
+// "sqldb": {
+//   "value": {
+//     "enabled": true,
+//     "username": "azadmin"
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   enabled: true
+//   username: 'azadmin'
+// }
+@description('SQL Database configuration.  Includes enabled flag and username.')
+param sqldb object
+
+// Synapse
+// -----------------------------
+// Example (JSON)
+// "synapse": {
+//   "value": {
+//     "username": "azadmin"
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   username: 'azadmin'
+// }
+@description('Synapse Analytics configuration.  Includes username.')
+param synapse object
+
+// Networking
+// Example (JSON)
+// -----------------------------
+// "hubNetwork": {
+//   "value": {
+//       "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+//       "rfc1918IPRange": "10.18.0.0/22",
+//       "rfc6598IPRange": "100.60.0.0/16",
+//       "egressVirtualApplianceIp": "10.18.0.36",
+//       "privateDnsManagedByHub": true,
+//       "privateDnsManagedByHubSubscriptionId": "ed7f4eed-9010-4227-b115-2a5e37728f27",
+//       "privateDnsManagedByHubResourceGroupName": "pubsec-dns-rg"
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   virtualNetworkId: '/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet'
+//   rfc1918IPRange: '10.18.0.0/22'
+//   rfc6598IPRange: '100.60.0.0/16'
+//   egressVirtualApplianceIp: '10.18.0.36'
+//   privateDnsManagedByHub: true,
+//   privateDnsManagedByHubSubscriptionId: 'ed7f4eed-9010-4227-b115-2a5e37728f27',
+//   privateDnsManagedByHubResourceGroupName: 'pubsec-dns-rg'
+// }
+@description('Hub Network configuration that includes virtualNetworkId, rfc1918IPRange, rfc6598IPRange, egressVirtualApplianceIp, privateDnsManagedByHub flag, privateDnsManagedByHubSubscriptionId and privateDnsManagedByHubResourceGroupName.')
+param hubNetwork object
+
+// Example (JSON)
+// -----------------------------
+// "network": {
+//   "value": {
+//     "peerToHubVirtualNetwork": true,
+//     "useRemoteGateway": false,
+//     "name": "vnet",
+//     "addressPrefixes": [
+//       "10.2.0.0/16"
+//     ],
+//     "subnets": {
+//       "oz": {
+//         "comments": "Foundational Elements Zone (OZ)",
+//         "name": "oz",
+//         "addressPrefix": "10.2.1.0/25"
+//       },
+//       "paz": {
+//         "comments": "Presentation Zone (PAZ)",
+//         "name": "paz",
+//         "addressPrefix": "10.2.2.0/25"
+//       },
+//       "rz": {
+//         "comments": "Application Zone (RZ)",
+//         "name": "rz",
+//         "addressPrefix": "10.2.3.0/25"
+//       },
+//       "hrz": {
+//         "comments": "Data Zone (HRZ)",
+//         "name": "hrz",
+//         "addressPrefix": "10.2.4.0/25"
+//       },
+//       "privateEndpoints": {
+//         "comments": "Private Endpoints Subnet",
+//         "name": "privateendpoints",
+//         "addressPrefix": "10.2.5.0/25"
+//       },
+//       "databricksPublic": {
+//         "comments": "Databricks Public Delegated Subnet",
+//         "name": "databrickspublic",
+//         "addressPrefix": "10.2.6.0/25"
+//       },
+//       "databricksPrivate": {
+//         "comments": "Databricks Private Delegated Subnet",
+//         "name": "databricksprivate",
+//         "addressPrefix": "10.2.7.0/25"
+//       },
+//       "web": {
+//         "comments": "Azure Web App Delegated Subnet",
+//         "name": "webapp",
+//         "addressPrefix": "10.2.8.0/25"
+//       }
+//     }
+//   }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   peerToHubVirtualNetwork: true
+//   useRemoteGateway: false
+//   name: 'vnet'
+//   addressPrefixes: [
+//     '10.5.0.0/16'
+//   ]
+//   subnets: {
+//     oz: {
+//       comments: 'Foundational Elements Zone (OZ)'
+//       name: 'oz'
+//       addressPrefix: '10.5.1.0/25'
+//     }
+//     paz: {
+//       comments: 'Presentation Zone (PAZ)'
+//       name: 'paz'
+//       addressPrefix: '10.5.2.0/25'
+//     }
+//     rz: {
+//       comments: 'Application Zone (RZ)'
+//       name: 'rz'
+//       addressPrefix: '10.5.3.0/25'
+//     }
+//     hrz: {
+//       comments: 'Data Zone (HRZ)'
+//       name: 'hrz'
+//       addressPrefix: '10.5.4.0/25'
+//     }
+//     databricksPublic: {
+//       comments: 'Databricks Public Delegated Subnet'
+//       name: 'databrickspublic'
+//       addressPrefix: '10.5.5.0/25'
+//     }
+//     databricksPrivate: {
+//       comments: 'Databricks Private Delegated Subnet'
+//       name: 'databricksprivate'
+//       addressPrefix: '10.5.6.0/25'
+//     }
+//     privateEndpoints: {
+//       comments: 'Private Endpoints Subnet'
+//       name: 'privateendpoints'
+//       addressPrefix: '10.5.7.0/25'
+//     }
+//     web: {
+//       comments: 'Azure Web App Delegated Subnet'
+//       name: 'webapp'
+//       addressPrefix: '10.5.8.0/25'
+//     }
+//   }
+// }
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, databricksPublic, databricksPrivate, web) ')
+param network object
+
+var sqldbPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldb.username))}'
+var synapsePassword = '${uniqueString(rgCompute.id)}*${toUpper(uniqueString(synapse.username))}'
 
 var databricksName = 'databricks'
 var databricksEgressLbName = 'egressLb'
@@ -169,46 +302,45 @@ var azfunhpName = 'azfunchp${uniqueString(rgCompute.id)}'
 var stranalyticsName = 'strana${uniqueString(rgCompute.id)}'
 var eventhubName = 'eventhub${uniqueString(rgCompute.id)}'
 
-
 //resource group deployments
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgNetworkWatcherName
+  name: resourceGroups.networkWatcher
   location: deployment().location
   tags: resourceTags
 }
 
 resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgAutomationName
+  name: resourceGroups.automation
   location: deployment().location
   tags: resourceTags
 }
 
 resource rgVnet 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: rgVnetName
+  name: resourceGroups.networking
   location: deployment().location
   tags: resourceTags
 }
 
 resource rgStorage 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgStorageName
+  name: resourceGroups.storage
   location: deployment().location
   tags: resourceTags
 }
 
 resource rgCompute 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgComputeName
+  name: resourceGroups.compute
   location: deployment().location
   tags: resourceTags
 }
 
 resource rgSecurity 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgSecurityName
+  name: resourceGroups.security
   location: deployment().location
   tags: resourceTags
 }
 
 resource rgMonitor 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgMonitorName
+  name: resourceGroups.monitor
   location: deployment().location
   tags: resourceTags
 }
@@ -218,7 +350,7 @@ module automationAccount '../../azresources/automation/automation-account.bicep'
   name: 'deploy-automation-account'
   scope: rgAutomation
   params: {
-    automationAccountName: automationAccountName
+    automationAccountName: automation.name
     tags: resourceTags
   }
 }
@@ -234,7 +366,7 @@ module deploymentScriptIdentity '../../azresources/iam/user-assigned-identity.bi
 
 module rgStorageDeploymentScriptRBAC '../../azresources/iam/resourceGroup/role-assignment-to-sp.bicep' = {
   scope: rgStorage
-  name: 'rbac-ds-${rgStorageName}'
+  name: 'rbac-ds-${resourceGroups.storage}'
   params: {
      // Owner - this role is cleaned up as part of this deployment
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -244,7 +376,7 @@ module rgStorageDeploymentScriptRBAC '../../azresources/iam/resourceGroup/role-a
 
 module rgComputeDeploymentScriptRBAC '../../azresources/iam/resourceGroup/role-assignment-to-sp.bicep' = {
   scope: rgCompute
-  name: 'rbac-ds-${rgComputeName}'
+  name: 'rbac-ds-${resourceGroups.compute}'
   params: {
      // Owner - this role is cleaned up as part of this deployment
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -262,15 +394,15 @@ module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploy
     acr
     dataLake
     storageLogging
-    synapse
+    synapseAnalytics
   ]
 
   scope: rgAutomation
-  name: 'ds-rbac-${rgStorageName}-cleanup'
+  name: 'ds-rbac-${resourceGroups.storage}-cleanup'
   params: {
     deploymentScript: format(azCliCommandDeploymentScriptPermissionCleanup, deploymentScriptIdentity.outputs.identityPrincipalId, rgStorage.id)
     deploymentScriptIdentityId: deploymentScriptIdentity.outputs.identityId
-    deploymentScriptName: 'ds-rbac-${rgStorageName}-cleanup'
+    deploymentScriptName: 'ds-rbac-${resourceGroups.storage}-cleanup'
   }  
 }
 
@@ -280,11 +412,11 @@ module rgComputeDeploymentScriptPermissionCleanup '../../azresources/util/deploy
   ]
 
   scope: rgAutomation
-  name: 'ds-rbac-${rgComputeName}-cleanup'
+  name: 'ds-rbac-${resourceGroups.compute}-cleanup'
   params: {
     deploymentScript: format(azCliCommandDeploymentScriptPermissionCleanup, deploymentScriptIdentity.outputs.identityPrincipalId, rgCompute.id)
     deploymentScriptIdentityId: deploymentScriptIdentity.outputs.identityId
-    deploymentScriptName: 'ds-rbac-${rgComputeName}-cleanup'
+    deploymentScriptName: 'ds-rbac-${resourceGroups.compute}-cleanup'
   }  
 }
 
@@ -293,46 +425,13 @@ module networking 'networking.bicep' = {
   name: 'deploy-networking'
   scope: rgVnet
   params: {
-    vnetName: vnetName
-    vnetAddressSpace: vnetAddressSpace
-
-    hubVnetId: hubVnetId
-    egressVirtualApplianceIp: egressVirtualApplianceIp
-    hubRFC1918IPRange: hubRFC1918IPRange
-    hubRFC6598IPRange: hubRFC6598IPRange
-
-    subnetFoundationalElementsName: subnetFoundationalElementsName
-    subnetFoundationalElementsPrefix: subnetFoundationalElementsPrefix
-
-    subnetPresentationName: subnetPresentationName
-    subnetPresentationPrefix: subnetPresentationPrefix
-
-    subnetApplicationName: subnetApplicationName
-    subnetApplicationPrefix: subnetApplicationPrefix
-
-    subnetDataName: subnetDataName
-    subnetDataPrefix: subnetDataPrefix
-    
-    subnetDatabricksPublicName: subnetDatabricksPublicName
-    subnetDatabricksPublicPrefix: subnetDatabricksPublicPrefix
-
-    subnetDatabricksPrivateName: subnetDatabricksPrivateName
-    subnetDatabricksPrivatePrefix: subnetDatabricksPrivatePrefix
-    
-    subnetPrivateEndpointsName: subnetPrivateEndpointsName
-    subnetPrivateEndpointsPrefix: subnetPrivateEndpointsPrefix
-
-    subnetWebAppName: subnetWebAppName
-    subnetWebAppPrefix: subnetWebAppPrefix
-
-    privateDnsManagedByHub: privateDnsManagedByHub
-    privateDnsManagedByHubSubscriptionId: privateDnsManagedByHubSubscriptionId
-    privateDnsManagedByHubResourceGroupName: privateDnsManagedByHubResourceGroupName
+    hubNetwork: hubNetwork
+    network: network
   }
 }
 
 // Data and AI & related services deployment
-module keyVault '../../azresources/security/key-vault.bicep' = {
+module akv '../../azresources/security/key-vault.bicep' = {
   name: 'deploy-akv'
   scope: rgSecurity
   params: {
@@ -363,11 +462,11 @@ module storageLogging '../../azresources/storage/storage-generalpurpose.bicep' =
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
     akvResourceGroupName: useCMK ? rgSecurity.name : ''
-    akvName: useCMK ? keyVault.outputs.akvName : ''
+    akvName: useCMK ? akv.outputs.akvName : ''
   }
 }
 
-module sqlDb '../../azresources/data/sqldb/main.bicep' = if (deploySQLDB == true) {
+module sqlDb '../../azresources/data/sqldb/main.bicep' = if (sqldb.enabled) {
   name: 'deploy-sqldb'
   scope: rgStorage
   params: {
@@ -375,7 +474,7 @@ module sqlDb '../../azresources/data/sqldb/main.bicep' = if (deploySQLDB == true
     sqlServerName: sqlServerName
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.sqlDBPrivateDnsZoneId
-    sqldbUsername: sqldbUsername
+    sqldbUsername: sqldb.username
     sqldbPassword: sqldbPassword
     sqlVulnerabilityLoggingStorageAccountName: storageLogging.outputs.storageName
     sqlVulnerabilityLoggingStoragePath: storageLogging.outputs.storagePath
@@ -383,7 +482,7 @@ module sqlDb '../../azresources/data/sqldb/main.bicep' = if (deploySQLDB == true
 
     useCMK: useCMK
     akvResourceGroupName: useCMK ? rgSecurity.name : ''
-    akvName: useCMK ? keyVault.outputs.akvName : ''
+    akvName: useCMK ? akv.outputs.akvName : ''
   }
 }
 
@@ -405,7 +504,7 @@ module dataLake '../../azresources/storage/storage-adlsgen2.bicep' = {
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
     akvResourceGroupName: useCMK ? rgSecurity.name : ''
-    akvName: useCMK ? keyVault.outputs.akvName : ''
+    akvName: useCMK ? akv.outputs.akvName : ''
   }
 }
 
@@ -447,7 +546,7 @@ module adf '../../azresources/analytics/adf/main.bicep' = {
     
     useCMK: useCMK
     akvResourceGroupName: useCMK ? rgSecurity.name : ''
-    akvName: useCMK ? keyVault.outputs.akvName : ''
+    akvName: useCMK ? akv.outputs.akvName : ''
   }
 }
 
@@ -464,7 +563,7 @@ module acr '../../azresources/containers/acr/main.bicep' = {
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
     akvResourceGroupName: useCMK ? rgSecurity.name : ''
-    akvName: useCMK ? keyVault.outputs.akvName : ''
+    akvName: useCMK ? akv.outputs.akvName : ''
   }
 }
 
@@ -493,7 +592,7 @@ module dataLakeMetaData '../../azresources/storage/storage-generalpurpose.bicep'
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
     akvResourceGroupName: useCMK ? rgSecurity.name : ''
-    akvName: useCMK ? keyVault.outputs.akvName : ''
+    akvName: useCMK ? akv.outputs.akvName : ''
   }
 }
 
@@ -513,11 +612,11 @@ module aml '../../azresources/analytics/aml/main.bicep' = {
 
     useCMK: useCMK
     akvResourceGroupName: rgSecurity.name
-    akvName: keyVault.outputs.akvName
+    akvName: akv.outputs.akvName
   }
 }
 
-module synapse '../../azresources/analytics/synapse/main.bicep' = {
+module synapseAnalytics '../../azresources/analytics/synapse/main.bicep' = {
   name: 'deploy-synapse'
   scope: rgCompute
   params: {
@@ -535,7 +634,7 @@ module synapse '../../azresources/analytics/synapse/main.bicep' = {
     synapseDevPrivateZoneId: networking.outputs.synapseDevPrivateDnsZoneId
     synapseSqlPrivateZoneId: networking.outputs.synapseSqlPrivateDnsZoneId
     
-    synapseUsername: synapseUsername 
+    synapseUsername: synapse.username 
     synapsePassword: synapsePassword
 
     sqlVulnerabilityLoggingStorageAccounResourceGroupName: rgStorage.name
@@ -547,41 +646,41 @@ module synapse '../../azresources/analytics/synapse/main.bicep' = {
 
     useCMK: useCMK
     akvResourceGroupName: useCMK ? rgSecurity.name : ''
-    akvName: useCMK ? keyVault.outputs.akvName : ''
+    akvName: useCMK ? akv.outputs.akvName : ''
   }
 }
 
 module akvsynapseUsername '../../azresources/security/key-vault-secret.bicep' = {
   dependsOn: [
-    keyVault
+    akv
   ]
   name: 'add-akv-secret-synapseUsername'
   scope: rgSecurity
   params: {
     akvName: akvName
     secretName: 'synapseUsername'
-    secretValue: synapseUsername
-    secretExpiryInDays: secretExpiryInDays
+    secretValue: synapse.username
+    secretExpiryInDays: keyVault.secretExpiryInDays
   }
 }
 
-module akvSqlDbUsername '../../azresources/security/key-vault-secret.bicep' = if (deploySQLDB == true) {
+module akvSqlDbUsername '../../azresources/security/key-vault-secret.bicep' = if (sqldb.enabled) {
   dependsOn: [
-    keyVault
+    akv
   ]
   name: 'add-akv-secret-sqldbUsername'
   scope: rgSecurity
   params: {
     akvName: akvName
     secretName: 'sqldbUsername'
-    secretValue: sqldbUsername
-    secretExpiryInDays: secretExpiryInDays
+    secretValue: sqldb.username
+    secretExpiryInDays: keyVault.secretExpiryInDays
   }
 }
 
-module akvSqlDbPassword '../../azresources/security/key-vault-secret.bicep' = if (deploySQLDB == true) {
+module akvSqlDbPassword '../../azresources/security/key-vault-secret.bicep' = if (sqldb.enabled) {
   dependsOn: [
-    keyVault
+    akv
   ]
   name: 'add-akv-secret-sqldbPassword'
   scope: rgSecurity
@@ -589,27 +688,27 @@ module akvSqlDbPassword '../../azresources/security/key-vault-secret.bicep' = if
     akvName: akvName
     secretName: 'sqldbPassword'
     secretValue: sqldbPassword
-    secretExpiryInDays: secretExpiryInDays
+    secretExpiryInDays: keyVault.secretExpiryInDays
   }
 }
 
-module akvSqlDbConnection '../../azresources/security/key-vault-secret.bicep' = if (deploySQLDB == true) {
+module akvSqlDbConnection '../../azresources/security/key-vault-secret.bicep' = if (sqldb.enabled) {
   dependsOn: [
-    keyVault
+    akv
   ]
   name: 'add-akv-secret-SqlDbConnectionString'
   scope: rgSecurity
   params: {
     akvName: akvName
     secretName: 'SqlDbConnectionString'
-    secretValue: 'Server=tcp:${deploySQLDB ? sqlDb.outputs.sqlDbFqdn : ''},1433;Initial Catalog=${sqlServerName};Persist Security Info=False;User ID=${sqldbUsername};Password=${sqldbPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
-    secretExpiryInDays: secretExpiryInDays
+    secretValue: 'Server=tcp:${sqldb.enabled ? sqlDb.outputs.sqlDbFqdn : ''},1433;Initial Catalog=${sqlServerName};Persist Security Info=False;User ID=${sqldb.username};Password=${sqldbPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+    secretExpiryInDays: keyVault.secretExpiryInDays
   }
 }
 
 module akvsynapsePassword '../../azresources/security/key-vault-secret.bicep' = {
   dependsOn: [
-    keyVault
+    akv
   ]
   name: 'add-akv-secret-synapsePassword'
   scope: rgSecurity
@@ -617,7 +716,7 @@ module akvsynapsePassword '../../azresources/security/key-vault-secret.bicep' = 
     akvName: akvName
     secretName: 'synapsePassword'
     secretValue: synapsePassword
-    secretExpiryInDays: secretExpiryInDays
+    secretExpiryInDays: keyVault.secretExpiryInDays
   }
 }
 
@@ -626,14 +725,13 @@ module roleAssignADFToAKV '../../azresources/iam/resource/key-vault-role-assignm
   name: 'rbac-${adfName}-${akvName}'
   scope: rgSecurity
   params: {
-    keyVaultName: keyVault.outputs.akvName
+    keyVaultName: akv.outputs.akvName
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6') // Key Vault Secrets User
     resourceSPObjectIds: array(adf.outputs.identityPrincipalId)
   }
 }
 
 // FHIR
-
 module fhir '../../azresources/compute/fhir.bicep' = {
   name: 'deploy-fhir'
   scope: rgCompute
@@ -661,7 +759,7 @@ module functionStorage '../../azresources/storage/storage-generalpurpose.bicep' 
     useCMK: useCMK
     deploymentScriptIdentityId: useCMK ? deploymentScriptIdentity.outputs.identityId : ''
     akvResourceGroupName: useCMK ? rgSecurity.name : ''
-    akvName: useCMK ? keyVault.outputs.akvName : ''
+    akvName: useCMK ? akv.outputs.akvName : ''
   }
 }
 

@@ -25,7 +25,7 @@ param useCMK bool
 param testRunnerCleanupAfterDeployment bool = true
 param testRunnerId string = 'dt${uniqueString(utcNow())}'
 
-var rgVnetName = '${testRunnerId}Network'
+var rgNetworking = '${testRunnerId}Network'
 var rgAutomationName = '${testRunnerId}Automation'
 var rgStorageName = '${testRunnerId}Storage'
 var rgComputeName = '${testRunnerId}Compute'
@@ -42,93 +42,119 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
 
     securityCenter: {
       email: 'alzcanadapubsec@microsoft.com'
-      phone: '555-555-5555'  
+      phone: '555-555-5555'
     }
 
-    rgVnetName: rgVnetName
-    rgAutomationName: rgAutomationName
-    rgStorageName: rgStorageName
-    rgComputeName: rgComputeName
-    rgSecurityName: rgSecurityName
-    rgMonitorName: rgMonitorName
-    
-    // Automation
-    automationAccountName: '${testRunnerId}AutomationAccount'
-    
-    // VNET
-    vnetName: '${testRunnerId}Vnet'
-    vnetAddressSpace: '10.1.0.0/16'
-    
-    // Internal Foundational Elements (OZ) Subnet
-    subnetFoundationalElementsName: 'foundationalElements'
-    subnetFoundationalElementsPrefix: '10.1.1.0/25'
-    
-    // Presentation Zone (PAZ) Subnet
-    subnetPresentationName: 'presentation'
-    subnetPresentationPrefix: '10.1.2.0/25'
-    
-    // Application zone (RZ) Subnet
-    subnetApplicationName: 'application'
-    subnetApplicationPrefix: '10.1.3.0/25'
-    
-    // Data Zone (HRZ) Subnet
-    subnetDataName: 'data'
-    subnetDataPrefix: '10.1.4.0/25'
-  
-    // Databricks
-    subnetDatabricksPublicName: 'databrickspublic'
-    subnetDatabricksPublicPrefix: '10.1.5.0/25'
-    
-    subnetDatabricksPrivateName: 'databricksprivate'
-    subnetDatabricksPrivatePrefix: '10.1.6.0/25'
-
-    // Web App
-    subnetWebAppName: 'webapp'
-    subnetWebAppPrefix: '10.1.7.0/25'
-    
-    // Priavte Endpoint Subnet
-    subnetPrivateEndpointsName: 'privateendpoints'
-    subnetPrivateEndpointsPrefix: '10.1.8.0/25'
-       
-    // Hub Virtual Network for virtual network peering
-    hubVnetId: hubVnetId
-    
-    // Virtual Appliance IP
-    egressVirtualApplianceIp: egressVirtualApplianceIp
-    
-    // Hub IP Ranges
-    hubRFC1918IPRange: hubRFC1918IPRange
-    hubRFC6598IPRange: hubRFC6598IPRange
-    
-    // parameters for Budget
     subscriptionBudget: {
       createBudget: false
     }
-        
-    // parameter for expiry of key vault secrets in days
-    secretExpiryInDays: 365
 
-    deploySQLDB: deploySQLDB
+    subscriptionTags: {
+      ISSO: '${testRunnerId}ISSO'
+    }
+
+    resourceTags: {
+      ClientOrganization: '${testRunnerId}Org'
+      CostCenter: '${testRunnerId}CostCenter'
+      DataSensitivity: '${testRunnerId}DataSensitivity'
+      ProjectContact: '${testRunnerId}ProjectContact'
+      ProjectName: tagProjectName
+      TechnicalContact: '${testRunnerId}TechContact'
+    }
+
+    resourceGroups: {
+      automation: rgAutomationName
+      compute: rgComputeName
+      monitor: rgMonitorName
+      networking: rgNetworking
+      networkWatcher: 'NetworkWatcherRG'
+      security: rgSecurityName
+      storage: rgStorageName
+    }
+
     useCMK: useCMK
 
-    sqldbUsername: 'azadmin'
-    synapseUsername: 'azadmin'
-   
-    // parameters for Tags
-    subscriptionTags: {
-      'ISSO': '${testRunnerId}ISSO'
+    automation: {
+      name: '${testRunnerId}AutomationAccount'
     }
-    resourceTags: {
-      'ClientOrganization': '${testRunnerId}Org'
-      'CostCenter': '${testRunnerId}CostCenter'
-      'DataSensitivity': '${testRunnerId}DataSensitivity'
-      'ProjectContact': '${testRunnerId}ProjectContact'
-      'ProjectName': tagProjectName
-      'TechnicalContact': '${testRunnerId}TechContact'      
+
+    keyVault: {
+      secretExpiryInDays: 365
+    }
+
+    sqldb: {
+      enabled: deploySQLDB
+      username: 'azadmin'
+    }
+
+    synapse: {
+      username: 'azadmin'
+    }
+
+    hubNetwork: {
+      virtualNetworkId: hubVnetId
+      egressVirtualApplianceIp: egressVirtualApplianceIp
+
+      rfc1918IPRange: hubRFC1918IPRange
+      rfc6598IPRange: hubRFC6598IPRange
+
+      privateDnsManagedByHub: false
+      privateDnsManagedByHubSubscriptionId: ''
+      privateDnsManagedByHubResourceGroupName: ''
+    }
+
+    network: {
+      peerToHubVirtualNetwork: true
+      useRemoteGateway: false
+      name: 'vnet'
+      addressPrefixes: [
+        '10.1.0.0/16'
+      ]
+      subnets: {
+        oz: {
+          comments: 'Foundational Elements Zone (OZ)'
+          name: 'oz'
+          addressPrefix: '10.1.1.0/25'
+        }
+        paz: {
+          comments: 'Presentation Zone (PAZ)'
+          name: 'paz'
+          addressPrefix: '10.1.2.0/25'
+        }
+        rz: {
+          comments: 'Application Zone (RZ)'
+          name: 'rz'
+          addressPrefix: '10.1.3.0/25'
+        }
+        hrz: {
+          comments: 'Data Zone (HRZ)'
+          name: 'hrz'
+          addressPrefix: '10.1.4.0/25'
+        }
+        databricksPublic: {
+          comments: 'Databricks Public Delegated Subnet'
+          name: 'databrickspublic'
+          addressPrefix: '10.1.5.0/25'
+        }
+        databricksPrivate: {
+          comments: 'Databricks Private Delegated Subnet'
+          name: 'databricksprivate'
+          addressPrefix: '10.1.6.0/25'
+        }
+        privateEndpoints: {
+          comments: 'Private Endpoints Subnet'
+          name: 'privateendpoints'
+          addressPrefix: '10.1.7.0/25'
+        }
+        web: {
+          comments: 'Azure Web App Delegated Subnet'
+          name: 'webapp'
+          addressPrefix: '10.1.8.0/25'
+        }
+      }
     }
   }
 }
-
 
 /*
   Clean up script will:
@@ -156,10 +182,10 @@ module testCleanup '../../../../azresources/util/deployment-script.bicep' = if (
     test
   ]
 
-  scope: resourceGroup(deploymentScriptResourceGroupName) 
+  scope: resourceGroup(deploymentScriptResourceGroupName)
   name: 'cleanup-test-${testRunnerId}'
   params: {
-    deploymentScript: format(cleanUpScript, subscription().subscriptionId, rgAutomationName, rgMonitorName, rgSecurityName, rgComputeName, rgStorageName, rgVnetName)
+    deploymentScript: format(cleanUpScript, subscription().subscriptionId, rgAutomationName, rgMonitorName, rgSecurityName, rgComputeName, rgStorageName, rgNetworking)
     deploymentScriptName: 'cleanup-test-${testRunnerId}'
     deploymentScriptIdentityId: deploymentScriptIdentityId
     timeout: 'PT6H'

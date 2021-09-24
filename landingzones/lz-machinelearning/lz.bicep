@@ -327,6 +327,7 @@ param hubNetwork object
 //     }
 //   }
 // }
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks) ')
 param network object
 
 var sqldbPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldb.username))}'
