@@ -100,11 +100,6 @@
                 "username": "azadmin"
             }
         },
-        "aml": {
-            "value": {
-                "enableHbiWorkspace": false
-            }
-        },
         "hubNetwork": {
             "value": {
                 "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
