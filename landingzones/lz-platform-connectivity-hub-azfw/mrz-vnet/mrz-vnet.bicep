@@ -69,35 +69,35 @@ param mgmtSubnetUdrId string
 @description('DDOS Standard Plan Resource Id - optional (blank value = DDOS Standard Plan will not be linked to virtual network).')
 param ddosStandardPlanId string
 
-module nsgmaz '../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsgmaz '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${mazSubnetName}'
   params: {
     name: '${mazSubnetName}Nsg'
   }
 }
 
-module nsginf '../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsginf '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${infSubnetName}'
   params: {
     name: '${infSubnetName}Nsg'
   }
 }
 
-module nsgsec '../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsgsec '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${secSubnetName}'
   params: {
     name: '${secSubnetName}Nsg'
   }
 }
 
-module nsglog '../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsglog '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${logSubnetName}'
   params: {
     name: '${logSubnetName}Nsg'
   }
 }
 
-module nsgmgmt '../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsgmgmt '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${mgmtSubnetName}'
   params: {
     name: '${mgmtSubnetName}Nsg'
@@ -183,7 +183,8 @@ resource mrzVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
 }
 
 // Outputs
-output mrzVnetId string = mrzVnet.id
+output vnetName string = mrzVnet.name
+output vnetId string = mrzVnet.id
 
 output MazSubnetId string = '${mrzVnet.id}/subnets/${mazSubnetName}'
 output InfSubnetId string = '${mrzVnet.id}/subnets/${infSubnetName}'

@@ -86,49 +86,49 @@ param bastionSubnetAddressPrefix string
 @description('DDOS Standard Plan Resource Id - optional (blank value = DDOS Standard Plan will not be linked to virtual network).')
 param ddosStandardPlanId string
 
-module nsgpublic '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsgpublic '../../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'deploy-nsg-${publicSubnetName}'
   params: {
     name: '${publicSubnetName}Nsg'
   }
 }
-module nsgean '../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsgean '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${eanSubnetName}'
   params: {
     name: '${eanSubnetName}Nsg'
   }
 }
-module nsgprd '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsgprd '../../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'deploy-nsg-${prodIntSubnetName}'
   params: {
     name: '${prodIntSubnetName}Nsg'
   }
 }
-module nsgdev '../../azresources/network/nsg/nsg-allowall.bicep' = {
+module nsgdev '../../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'deploy-nsg-${devIntSubnetName}'
   params: {
     name: '${devIntSubnetName}Nsg'
   }
 }
-module nsgha '../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsgha '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${haSubnetName}'
   params: {
     name: '${haSubnetName}Nsg'
   }
 }
-module nsgmrz '../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsgmrz '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${mrzIntSubnetName}'
   params: {
     name: '${mrzIntSubnetName}Nsg'
   }
 }
-module nsgpaz '../../azresources/network/nsg/nsg-appgwv2.bicep' = {
+module nsgpaz '../../../azresources/network/nsg/nsg-appgwv2.bicep' = {
   name: 'deploy-nsg-${pazSubnetName}'
   params: {
     name: '${pazSubnetName}Nsg'
   }
 }
-module nsgbastion '../../azresources/network/nsg/nsg-bastion.bicep' = {
+module nsgbastion '../../../azresources/network/nsg/nsg-bastion.bicep' = {
   name: 'deploy-nsg-AzureBastionNsg'
   params: {
     name: 'AzureBastionNsg'
@@ -236,7 +236,8 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   }
 }
 
-output hubVnetId string = hubVnet.id
+output vnetName string = hubVnet.name
+output vnetId string = hubVnet.id
 output PublicSubnetId string = '${hubVnet.id}/subnets/${publicSubnetName}'
 output EANSubnetId string = '${hubVnet.id}/subnets/${eanSubnetName}'
 output PrdIntSubnetId string = '${hubVnet.id}/subnets/${prodIntSubnetName}'

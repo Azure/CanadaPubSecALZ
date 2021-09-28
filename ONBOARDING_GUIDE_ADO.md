@@ -363,8 +363,8 @@ When a Log Analytics Workspace & Automation account already exists, enter Subscr
 
       Write down the username and password as it's not retrievable once saved.
 
-        * var-hubnetwork-fwUsername
-        * var-hubnetwork-fwPassword
+        * var-hubnetwork-nva-fwUsername
+        * var-hubnetwork-nva-fwPassword
 
     * Click Save 
 

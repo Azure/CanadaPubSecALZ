@@ -112,7 +112,7 @@ module runner 'test-runner.bicep' =  [for (scenario, i) in testScenarios: if (sc
     deploymentScriptResourceGroupName: rgTestHarnessInfraAssets.name
 
     hubVnetId: ''
-    egressVirtualApplianceIp: '10.18.0.36'
+    egressVirtualApplianceIp: '10.18.1.4'
     hubRFC1918IPRange: '10.18.0.0/22'
     hubRFC6598IPRange: '100.60.0.0/16'
 

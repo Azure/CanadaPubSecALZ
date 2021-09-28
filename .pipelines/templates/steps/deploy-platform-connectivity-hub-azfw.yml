@@ -58,6 +58,13 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
+      # Install Azure CLI extension for Azure Firewall
+      az extension add --name azure-firewall
+
+      # Identify Azure Firewall Policy
+      AZURE_FIREWALL_POLICY_ID=`az network firewall policy show --subscription $(var-hubnetwork-subscriptionId) --resource-group $(var-hubnetwork-azfw-rgPolicyName) --name $(var-hubnetwork-azfw-policyName) --query id -o tsv`
+      echo "Azure Firewall Policy Id: $AZURE_FIREWALL_POLICY_ID"
+
       echo "Deploying ${{ parameters.templateFile }} using ${{ parameters.deployOperation}} operation..."
       
       az deployment sub ${{ parameters.deployOperation }} \
@@ -92,64 +99,25 @@ steps:
           mrzLogSubnetAddressPrefix='$(var-hubnetwork-mrzLogSubnetAddressPrefix)' \
           mrzMgmtSubnetName='$(var-hubnetwork-mrzMgmtSubnetName)' \
           mrzMgmtSubnetAddressPrefix='$(var-hubnetwork-mrzMgmtSubnetAddressPrefix)' \
-          rgHubName='$(var-hubnetwork-nva-rgHubName)' \
-          hubVnetName='$(var-hubnetwork-nva-hubVnetName)' \
-          hubVnetAddressPrefixRFC1918='$(var-hubnetwork-nva-hubVnetAddressPrefixRFC1918)' \
-          hubVnetAddressPrefixRFC6598='$(var-hubnetwork-nva-hubVnetAddressPrefixRFC6598)' \
-          hubVnetAddressPrefixBastion='$(var-hubnetwork-nva-hubVnetAddressPrefixBastion)' \
-          hubEanSubnetName='$(var-hubnetwork-nva-hubEanSubnetName)' \
-          hubEanSubnetAddressPrefix='$(var-hubnetwork-nva-hubEanSubnetAddressPrefix)' \
-          hubPublicSubnetName='$(var-hubnetwork-nva-hubPublicSubnetName)' \
-          hubPublicSubnetAddressPrefix='$(var-hubnetwork-nva-hubPublicSubnetAddressPrefix)' \
-          hubPazSubnetName='$(var-hubnetwork-nva-hubPazSubnetName)' \
-          hubPazSubnetAddressPrefix='$(var-hubnetwork-nva-hubPazSubnetAddressPrefix)' \
-          hubDevIntSubnetName='$(var-hubnetwork-nva-hubDevIntSubnetName)' \
-          hubDevIntSubnetAddressPrefix='$(var-hubnetwork-nva-hubDevIntSubnetAddressPrefix)' \
-          hubProdIntSubnetName='$(var-hubnetwork-nva-hubProdIntSubnetName)' \
-          hubProdIntSubnetAddressPrefix='$(var-hubnetwork-nva-hubProdIntSubnetAddressPrefix)' \
-          hubMrzIntSubnetName='$(var-hubnetwork-nva-hubMrzIntSubnetName)' \
-          hubMrzIntSubnetAddressPrefix='$(var-hubnetwork-nva-hubMrzIntSubnetAddressPrefix)' \
-          hubHASubnetName='$(var-hubnetwork-nva-hubHASubnetName)' \
-          hubHASubnetAddressPrefix='$(var-hubnetwork-nva-hubHASubnetAddressPrefix)' \
-          hubGatewaySubnetPrefix='$(var-hubnetwork-nva-hubGatewaySubnetPrefix)' \
-          hubBastionSubnetAddressPrefix='$(var-hubnetwork-nva-hubBastionSubnetAddressPrefix)' \
-          deployFirewallVMs='$(var-hubnetwork-nva-deployFirewallVMs)' \
-          useFortigateFW='$(var-hubnetwork-nva-useFortigateFW)' \
-          fwDevILBName='$(var-hubnetwork-nva-fwDevILBName)' \
-          fwDevVMSku='$(var-hubnetwork-nva-fwDevVMSku)' \
-          fwDevVM1Name='$(var-hubnetwork-nva-fwDevVM1Name)' \
-          fwDevVM2Name='$(var-hubnetwork-nva-fwDevVM2Name)' \
-          fwDevILBExternalFacingIP='$(var-hubnetwork-nva-fwDevILBExternalFacingIP)' \
-          fwDevVM1ExternalFacingIP='$(var-hubnetwork-nva-fwDevVM1ExternalFacingIP)' \
-          fwDevVM2ExternalFacingIP='$(var-hubnetwork-nva-fwDevVM2ExternalFacingIP)' \
-          fwDevILBMrzIntIP='$(var-hubnetwork-nva-fwDevILBMrzIntIP)' \
-          fwDevVM1MrzIntIP='$(var-hubnetwork-nva-fwDevVM1MrzIntIP)' \
-          fwDevVM2MrzIntIP='$(var-hubnetwork-nva-fwDevVM2MrzIntIP)' \
-          fwDevILBDevIntIP='$(var-hubnetwork-nva-fwDevILBDevIntIP)' \
-          fwDevVM1DevIntIP='$(var-hubnetwork-nva-fwDevVM1DevIntIP)' \
-          fwDevVM2DevIntIP='$(var-hubnetwork-nva-fwDevVM2DevIntIP)' \
-          fwDevVM1HAIP='$(var-hubnetwork-nva-fwDevVM1HAIP)' \
-          fwDevVM2HAIP='$(var-hubnetwork-nva-fwDevVM2HAIP)' \
-          fwProdILBName='$(var-hubnetwork-nva-fwProdILBName)' \
-          fwProdVMSku='$(var-hubnetwork-nva-fwProdVMSku)' \
-          fwProdVM1Name='$(var-hubnetwork-nva-fwProdVM1Name)' \
-          fwProdVM2Name='$(var-hubnetwork-nva-fwProdVM2Name)' \
-          fwProdILBExternalFacingIP='$(var-hubnetwork-nva-fwProdILBExternalFacingIP)' \
-          fwProdVM1ExternalFacingIP='$(var-hubnetwork-nva-fwProdVM1ExternalFacingIP)' \
-          fwProdVM2ExternalFacingIP='$(var-hubnetwork-nva-fwProdVM2ExternalFacingIP)' \
-          fwProdILBMrzIntIP='$(var-hubnetwork-nva-fwProdILBMrzIntIP)' \
-          fwProdVM1MrzIntIP='$(var-hubnetwork-nva-fwProdVM1MrzIntIP)' \
-          fwProdVM2MrzIntIP='$(var-hubnetwork-nva-fwProdVM2MrzIntIP)' \
-          fwProdILBPrdIntIP='$(var-hubnetwork-nva-fwProdILBPrdIntIP)' \
-          fwProdVM1PrdIntIP='$(var-hubnetwork-nva-fwProdVM1PrdIntIP)' \
-          fwProdVM2PrdIntIP='$(var-hubnetwork-nva-fwProdVM2PrdIntIP)' \
-          fwProdVM1HAIP='$(var-hubnetwork-nva-fwProdVM1HAIP)' \
-          fwProdVM2HAIP='$(var-hubnetwork-nva-fwProdVM2HAIP)' \
-          fwUsername='$(var-hubnetwork-nva-fwUsername)' \
-          fwPassword='$(var-hubnetwork-nva-fwPassword)'
+          rgHubName='$(var-hubnetwork-azfw-rgHubName)' \
+          hubVnetName='$(var-hubnetwork-azfw-hubVnetName)' \
+          hubVnetAddressPrefixRFC1918='$(var-hubnetwork-azfw-hubVnetAddressPrefixRFC1918)' \
+          hubVnetAddressPrefixRFC6598='$(var-hubnetwork-azfw-hubVnetAddressPrefixRFC6598)' \
+          hubVnetAddressPrefixBastion='$(var-hubnetwork-azfw-hubVnetAddressPrefixBastion)' \
+          hubPazSubnetName='$(var-hubnetwork-azfw-hubPazSubnetName)' \
+          hubPazSubnetAddressPrefix='$(var-hubnetwork-azfw-hubPazSubnetAddressPrefix)' \
+          hubGatewaySubnetAddressPrefix='$(var-hubnetwork-azfw-hubGatewaySubnetPrefix)' \
+          hubAzureFirewallSubnetAddressPrefix='$(var-hubnetwork-azfw-hubAzureFirewallSubnetAddressPrefix)' \
+          hubAzureFirewallManagementSubnetAddressPrefix='$(var-hubnetwork-azfw-hubAzureFirewallManagementSubnetAddressPrefix)' \
+          hubBastionSubnetAddressPrefix='$(var-hubnetwork-azfw-hubBastionSubnetAddressPrefix)' \
+          azureFirewallName='$(var-hubnetwork-azfw-azureFirewallName)' \
+          azureFirewallZones='$(var-hubnetwork-azfw-azureFirewallZones)' \
+          azureFirewallForcedTunnelingEnabled='$(var-hubnetwork-azfw-azureFirewallForcedTunnelingEnabled)' \
+          azureFirewallForcedTunnelingNextHop='$(var-hubnetwork-azfw-azureFirewallForcedTunnelingNextHop)' \
+          azureFirewallExistingPolicyId="$AZURE_FIREWALL_POLICY_ID"
           
       $(var-bashPostInjectScript)
-    workingDirectory: '${{ parameters.workingDir }}/lz-platform-connectivity-hub-nva'
+    workingDirectory: '${{ parameters.workingDir }}/lz-platform-connectivity-hub-azfw'
 
 - task: AzureCLI@2
   displayName: Azure Policy - Enable Private DNS Zone Policies (if var-hubnetwork-deployPrivateDnsZones=true)

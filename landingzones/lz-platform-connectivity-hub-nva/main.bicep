@@ -60,8 +60,8 @@ param logAnalyticsWorkspaceResourceId string
 // Example (Bicep)
 // -----------------------------
 // {
-//   'email': 'alzcanadapubsec@microsoft.com'
-//   'phone': '5555555555'
+//   email: 'alzcanadapubsec@microsoft.com'
+//   phone: '5555555555'
 // }
 @description('Security Center configuration.  It includes email and phone.')
 param securityCenter object
@@ -83,9 +83,9 @@ param securityCenter object
 // -----------------------------
 // [
 //   {
-//     'comments': 'Built-In Contributor Role'
-//     'roleDefinitionId': 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-//     'securityGroupObjectIds': [
+//     comments: 'Built-In Contributor Role'
+//     roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+//     securityGroupObjectIds: [
 //       '38f33f7e-a471-4630-8ce9-c6653495a2ee'
 //     ]
 //   }
@@ -132,7 +132,7 @@ param subscriptionBudget object
 // Example (Bicep)
 // ---------------------------
 // {
-//   'ISSO': 'isso-tag'
+//   ISSO: 'isso-tag'
 // }
 @description('A set of key/value pairs of tags assigned to the subscription.')
 param subscriptionTags object
@@ -153,12 +153,12 @@ param subscriptionTags object
 // Example (Bicep)
 // -----------------------------
 // {
-//   'ClientOrganization': 'client-organization-tag'
-//   'CostCenter': 'cost-center-tag'
-//   'DataSensitivity': 'data-sensitivity-tag'
-//   'ProjectContact': 'project-contact-tag'
-//   'ProjectName': 'project-name-tag'
-//   'TechnicalContact': 'technical-contact-tag'
+//   ClientOrganization: 'client-organization-tag'
+//   CostCenter: 'cost-center-tag'
+//   DataSensitivity: 'data-sensitivity-tag'
+//   ProjectContact: 'project-contact-tag'
+//   ProjectName: 'project-name-tag'
+//   TechnicalContact: 'technical-contact-tag'
 // }
 @description('A set of key/value pairs of tags assigned to the resource group and resources.')
 param resourceTags object
@@ -402,7 +402,7 @@ param mrzMgmtSubnetName string //= 'MgmtSubnet'
 @description('Management Restricted Zone - Core Management Interfaces (Restricted Zone) Subnet Address Prefix.')
 param mrzMgmtSubnetAddressPrefix string //= '10.18.5.128/26'
 
-// Public Zone
+// Public Access Zone
 @description('Public Access Zone Resource Group Name.')
 param rgPazName string //= 'pubsecPazPbRsg'
 
@@ -502,7 +502,6 @@ module rgPazDeleteLock '../../azresources/util/delete-lock.bicep' = {
   name: 'deploy-delete-lock-${rgPazName}'
   scope: rgPaz
 }
-
 
 // DDOS Standard - optional
 module ddosPlan '../../azresources/network/ddos-standard.bicep' = if (deployDdosStandard) {
@@ -604,9 +603,8 @@ module udrPaz '../../azresources/network/udr/udr-custom.bicep' = {
   }
 }
 
-
 // Hub Virtual Network
-module hubVnet './hub-vnet.bicep' = {
+module hubVnet 'hub-vnet/hub-vnet.bicep' = {
   name: 'deploy-hub-vnet-${hubVnetName}'
   scope: rgHubVnet
   params: {
@@ -646,7 +644,7 @@ module hubVnet './hub-vnet.bicep' = {
 }
 
 // Management Restricted Virtual Network
-module mrzVnet './mrz-vnet.bicep' = {
+module mrzVnet 'mrz-vnet/mrz-vnet.bicep' = {
   name: 'deploy-management-vnet-${mrzVnetName}'
   scope: rgMrzVnet
   params: {
@@ -682,43 +680,35 @@ module privatelinkDnsZones '../../azresources/network/private-dns-zone-privateli
   name: 'deploy-privatelink-private-dns-zones'
   scope: rgPrivateDnsZones
   params: {
-    vnetId: hubVnet.outputs.hubVnetId
+    vnetId: hubVnet.outputs.vnetId
     dnsCreateNewZone: true
   }
 }
 
 // Virtual Network Peering - Management Restricted Zone to Hub
 module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = {
-  dependsOn: [
-    hubVnet
-    mrzVnet
-  ]
   name: 'deploy-vnet-peering-spoke-to-hub'
   scope: rgMrzVnet
   params: {
-    peeringName: '${mrzVnetName}-to-${hubVnetName}'
+    peeringName: '${mrzVnet.outputs.vnetName}-to-${hubVnet.outputs.vnetName}'
     allowForwardedTraffic: true
     allowVirtualNetworkAccess: true
-    sourceVnetName: mrzVnetName
-    targetVnetId: hubVnet.outputs.hubVnetId
+    sourceVnetName: mrzVnet.outputs.vnetName
+    targetVnetId: hubVnet.outputs.vnetId
     useRemoteGateways: false //to be changed once we have ExpressRoute or VPN GWs 
   }
 }
 
 // Virtual Network Peering - Hub to Management Restricted Zone
 module vnetPeeringHubToSpoke '../../azresources/network/vnet-peering.bicep' = {
-  dependsOn: [
-    hubVnet
-    mrzVnet
-  ]
   name: 'deploy-vnet-peering-hub-to-spoke'
   scope: rgHubVnet
   params: {
-    peeringName: '${hubVnetName}-to-${mrzVnetName}'
+    peeringName: '${hubVnet.outputs.vnetName}-to-${mrzVnet.outputs.vnetName}'
     allowForwardedTraffic: true
     allowVirtualNetworkAccess: true
-    sourceVnetName: hubVnetName
-    targetVnetId: mrzVnet.outputs.mrzVnetId
+    sourceVnetName: hubVnet.outputs.vnetName
+    targetVnetId: mrzVnet.outputs.vnetId
     useRemoteGateways: false
   }
 }
@@ -734,7 +724,7 @@ module bastion '../../azresources/network/bastion.bicep' = {
 }
 
 // Production traffic - Fortinet Firewall VM
-module ProdFW1_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
+module ProdFW1_fortigate 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   name: 'deploy-nva-ProdFW1_fortigate'
   scope: rgHubVnet
   params: {
@@ -755,7 +745,7 @@ module ProdFW1_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFor
 }
 
 // Production traffic - Ubuntu Firewall VM
-module ProdFW1_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFortigateFW) {
+module ProdFW1_ubuntu 'nva/ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFortigateFW) {
   name: 'deploy-nva-ProdFW1_ubuntu'
   scope: rgHubVnet
   params: {
@@ -776,7 +766,7 @@ module ProdFW1_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFort
 }
 
 // Production traffic - Fortinet Firewall VM
-module ProdFW2_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
+module ProdFW2_fortigate 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   name: 'deploy-nva-ProdFW2_fortigate'
   scope: rgHubVnet
   params: {
@@ -797,7 +787,7 @@ module ProdFW2_fortigate './fortinet-vm.bicep' = if (deployFirewallVMs && useFor
 }
 
 // Production traffic - Ubuntu Firewall VM
-module ProdFW2_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFortigateFW) {
+module ProdFW2_ubuntu 'nva/ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFortigateFW) {
   name: 'deploy-nva-ProdFW2_ubuntu'
   scope: rgHubVnet
   params: {
@@ -818,7 +808,7 @@ module ProdFW2_ubuntu './ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFort
 }
 
 // Non-Production traffic - Fortinet Firewall VM
-module DevFW1 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
+module DevFW1 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   name: 'deploy-nva-DevFW1_fortigate'
   scope: rgHubVnet
   params: {
@@ -839,7 +829,7 @@ module DevFW1 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
 }
 
 // Non-Production traffic - Fortinet Firewall VM
-module DevFW2 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
+module DevFW2 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
   name: 'deploy-nva-DevFW2_fortigate'
   scope: rgHubVnet
   params: {
@@ -860,12 +850,12 @@ module DevFW2 './fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
 }
 
 // Production traffic - Internal Load Balancer
-module ProdFWs_ILB './lb-firewalls-hub.bicep' = {
+module ProdFWs_ILB 'hub-vnet/lb-firewalls-hub.bicep' = {
   name: 'deploy-internal-loadblancer-ProdFWs_ILB'
   scope: rgHubVnet
   params: {
     name: fwProdILBName
-    backendVnetId: hubVnet.outputs.hubVnetId
+    backendVnetId: hubVnet.outputs.vnetId
     frontendIPExt: fwProdILBExternalFacingIP
     backendIP1Ext: fwProdVM1ExternalFacingIP
     backendIP2Ext: fwProdVM2ExternalFacingIP
@@ -884,12 +874,12 @@ module ProdFWs_ILB './lb-firewalls-hub.bicep' = {
 }
 
 // Non-Production traffic - Internal Load Balancer
-module DevFWs_ILB './lb-firewalls-hub.bicep' = {
+module DevFWs_ILB 'hub-vnet/lb-firewalls-hub.bicep' = {
   name: 'deploy-internal-loadblancer-DevFWs_ILB'
   scope: rgHubVnet
   params: {
     name: fwDevILBName
-    backendVnetId: hubVnet.outputs.hubVnetId
+    backendVnetId: hubVnet.outputs.vnetId
     frontendIPExt: fwDevILBExternalFacingIP
     backendIP1Ext: fwDevVM1ExternalFacingIP
     backendIP2Ext: fwDevVM2ExternalFacingIP

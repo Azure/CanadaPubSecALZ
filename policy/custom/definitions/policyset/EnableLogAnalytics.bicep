@@ -523,6 +523,27 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'CUSTOM'
         ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Network-azureFirewalls')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Azure Firewall to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
         policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Automation-automationAccounts')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Automation Account to Log Analytics Workspaces', ' ', '-'))
         parameters: {

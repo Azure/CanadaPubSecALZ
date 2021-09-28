@@ -64,8 +64,8 @@ param serviceHealthAlerts object = {}
 // Example (Bicep)
 // -----------------------------
 // {
-//   'email': 'alzcanadapubsec@microsoft.com'
-//   'phone': '5555555555'
+//   email: 'alzcanadapubsec@microsoft.com'
+//   phone: '5555555555'
 // }
 @description('Security Center configuration.  It includes email and phone.')
 param securityCenter object
@@ -87,9 +87,9 @@ param securityCenter object
 // -----------------------------
 // [
 //   {
-//     'comments': 'Built-In Contributor Role'
-//     'roleDefinitionId': 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-//     'securityGroupObjectIds': [
+//     comments: 'Built-In Contributor Role'
+//     roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+//     securityGroupObjectIds: [
 //       '38f33f7e-a471-4630-8ce9-c6653495a2ee'
 //     ]
 //   }
@@ -136,7 +136,7 @@ param subscriptionBudget object
 // Example (Bicep)
 // ---------------------------
 // {
-//   'ISSO': 'isso-tag'
+//   ISSO: 'isso-tag'
 // }
 @description('A set of key/value pairs of tags assigned to the subscription.')
 param subscriptionTags object
@@ -157,12 +157,12 @@ param subscriptionTags object
 // Example (Bicep)
 // -----------------------------
 // {
-//   'ClientOrganization': 'client-organization-tag'
-//   'CostCenter': 'cost-center-tag'
-//   'DataSensitivity': 'data-sensitivity-tag'
-//   'ProjectContact': 'project-contact-tag'
-//   'ProjectName': 'project-name-tag'
-//   'TechnicalContact': 'technical-contact-tag'
+//   ClientOrganization: 'client-organization-tag'
+//   CostCenter: 'cost-center-tag'
+//   DataSensitivity: 'data-sensitivity-tag'
+//   ProjectContact: 'project-contact-tag'
+//   ProjectName: 'project-name-tag'
+//   TechnicalContact: 'technical-contact-tag'
 // }
 @description('A set of key/value pairs of tags assigned to the resource group and resources.')
 param resourceTags object
