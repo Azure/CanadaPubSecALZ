@@ -285,49 +285,52 @@ param hubNetwork object
 //     "peerToHubVirtualNetwork": true,
 //     "useRemoteGateway": false,
 //     "name": "vnet",
+//     "dnsServers": [
+//       "10.18.1.4"
+//     ],
 //     "addressPrefixes": [
-//       "10.5.0.0/16"
+//       "10.2.0.0/16"
 //     ],
 //     "subnets": {
 //       "oz": {
 //         "comments": "Foundational Elements Zone (OZ)",
 //         "name": "oz",
-//         "addressPrefix": "10.5.1.0/25"
+//         "addressPrefix": "10.2.1.0/25"
 //       },
 //       "paz": {
 //         "comments": "Presentation Zone (PAZ)",
 //         "name": "paz",
-//         "addressPrefix": "10.5.2.0/25"
+//         "addressPrefix": "10.2.2.0/25"
 //       },
 //       "rz": {
 //         "comments": "Application Zone (RZ)",
 //         "name": "rz",
-//         "addressPrefix": "10.5.3.0/25"
+//         "addressPrefix": "10.2.3.0/25"
 //       },
 //       "hrz": {
 //         "comments": "Data Zone (HRZ)",
 //         "name": "hrz",
-//         "addressPrefix": "10.5.4.0/25"
-//       },
-//       "databricksPublic": {
-//         "comments": "Databricks Public Delegated Subnet",
-//         "name": "databrickspublic",
-//         "addressPrefix": "10.5.5.0/25"
-//       },
-//       "databricksPrivate": {
-//         "comments": "Databricks Private Delegated Subnet",
-//         "name": "databricksprivate",
-//         "addressPrefix": "10.5.6.0/25"
+//         "addressPrefix": "10.2.4.0/25"
 //       },
 //       "privateEndpoints": {
 //         "comments": "Private Endpoints Subnet",
 //         "name": "privateendpoints",
-//         "addressPrefix": "10.5.7.0/25"
+//         "addressPrefix": "10.2.5.0/25"
+//       },
+//       "databricksPublic": {
+//         "comments": "Databricks Public Delegated Subnet",
+//         "name": "databrickspublic",
+//         "addressPrefix": "10.2.6.0/25"
+//       },
+//       "databricksPrivate": {
+//         "comments": "Databricks Private Delegated Subnet",
+//         "name": "databricksprivate",
+//         "addressPrefix": "10.2.7.0/25"
 //       },
 //       "web": {
 //         "comments": "Azure Web App Delegated Subnet",
 //         "name": "webapp",
-//         "addressPrefix": "10.5.8.0/25"
+//         "addressPrefix": "10.2.8.0/25"
 //       }
 //     }
 //   }
@@ -338,53 +341,56 @@ param hubNetwork object
 //   peerToHubVirtualNetwork: true
 //   useRemoteGateway: false
 //   name: 'vnet'
+//   dnsServers: [
+//     '10.18.1.4'
+//   ]
 //   addressPrefixes: [
-//     '10.5.0.0/16'
+//     '10.2.0.0/16'
 //   ]
 //   subnets: {
 //     oz: {
 //       comments: 'Foundational Elements Zone (OZ)'
 //       name: 'oz'
-//       addressPrefix: '10.5.1.0/25'
+//       addressPrefix: '10.21.0/25'
 //     }
 //     paz: {
 //       comments: 'Presentation Zone (PAZ)'
 //       name: 'paz'
-//       addressPrefix: '10.5.2.0/25'
+//       addressPrefix: '10.22.0/25'
 //     }
 //     rz: {
 //       comments: 'Application Zone (RZ)'
 //       name: 'rz'
-//       addressPrefix: '10.5.3.0/25'
+//       addressPrefix: '10.2.3.0/25'
 //     }
 //     hrz: {
 //       comments: 'Data Zone (HRZ)'
 //       name: 'hrz'
-//       addressPrefix: '10.5.4.0/25'
+//       addressPrefix: '10.2.4.0/25'
 //     }
 //     databricksPublic: {
 //       comments: 'Databricks Public Delegated Subnet'
 //       name: 'databrickspublic'
-//       addressPrefix: '10.5.5.0/25'
+//       addressPrefix: '10.2.5.0/25'
 //     }
 //     databricksPrivate: {
 //       comments: 'Databricks Private Delegated Subnet'
 //       name: 'databricksprivate'
-//       addressPrefix: '10.5.6.0/25'
+//       addressPrefix: '10.2.6.0/25'
 //     }
 //     privateEndpoints: {
 //       comments: 'Private Endpoints Subnet'
 //       name: 'privateendpoints'
-//       addressPrefix: '10.5.7.0/25'
+//       addressPrefix: '10.2.7.0/25'
 //     }
 //     web: {
 //       comments: 'Azure Web App Delegated Subnet'
 //       name: 'webapp'
-//       addressPrefix: '10.5.8.0/25'
+//       addressPrefix: '10.2.8.0/25'
 //     }
 //   }
 // }
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, databricksPublic, databricksPrivate, web) ')
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, databricksPublic, databricksPrivate, web) ')
 param network object
 
 /*

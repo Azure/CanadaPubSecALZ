@@ -224,6 +224,9 @@ param hubNetwork object
 //       "useRemoteGateway": false,
 //
 //       "name": "vnet",
+//       "dnsServers": [
+//          "10.18.1.4"
+//       ],
 //       "addressPrefixes": [
 //           "10.2.0.0/16"
 //       ],
@@ -301,6 +304,9 @@ param hubNetwork object
 //   useRemoteGateway: false
 //
 //   name: 'vnet'
+//   dnsServers: [
+//     '10.18.1.4'
+//   ]
 //   addressPrefixes: [
 //     '10.2.0.0/16'
 //   ]
@@ -367,7 +373,7 @@ param hubNetwork object
 //     ]
 //   }
 // }
-@description('Network configuration for the spoke virtual network.  It includes name, address spaces, vnet peering and subnets.')
+@description('Network configuration for the spoke virtual network.  It includes name, dnsServers, address spaces, vnet peering and subnets.')
 param network object
 
 // Automation

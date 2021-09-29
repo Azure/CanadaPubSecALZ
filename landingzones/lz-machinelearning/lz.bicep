@@ -217,6 +217,9 @@ param hubNetwork object
 //     "peerToHubVirtualNetwork": true,
 //     "useRemoteGateway": false,
 //     "name": "vnet",
+//     "dnsServers": [
+//       "10.18.1.4"
+//     ],
 //     "addressPrefixes": [
 //       "10.2.0.0/16"
 //     ],
@@ -276,6 +279,9 @@ param hubNetwork object
 //   peerToHubVirtualNetwork: true
 //   useRemoteGateway: false
 //   name: 'vnet'
+//   dnsServers: [
+//     '10.18.1.4'
+//   ]
 //   addressPrefixes: [
 //     '10.2.0.0/16'
 //   ]
@@ -327,7 +333,7 @@ param hubNetwork object
 //     }
 //   }
 // }
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks) ')
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks) ')
 param network object
 
 var sqldbPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldb.username))}'

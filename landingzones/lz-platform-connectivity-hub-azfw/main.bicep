@@ -490,6 +490,11 @@ module privatelinkDnsZones '../../azresources/network/private-dns-zone-privateli
   params: {
     vnetId: hubVnet.outputs.vnetId
     dnsCreateNewZone: true
+    dnsLinkToVirtualNetwork: true
+
+    // Not required since the private dns zones will be created and linked to hub virtual network.
+    dnsExistingZoneSubscriptionId: ''
+    dnsExistingZoneResourceGroupName: ''
   }
 }
 

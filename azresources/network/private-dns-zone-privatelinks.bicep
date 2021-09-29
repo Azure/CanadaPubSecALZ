@@ -10,14 +10,17 @@
 @description('Virtual Network Resource Id')
 param vnetId string
 
-@description('Boolean flag to determine whether to create new Private DNS Zones or to reference existing ones.  Default: true')
-param dnsCreateNewZone bool = true
+@description('Boolean flag to determine whether to create new Private DNS Zones or to reference existing ones.')
+param dnsCreateNewZone bool
+
+@description('Boolean flag to determine whether to link the DNS zone to the virtual network.')
+param dnsLinkToVirtualNetwork bool
 
 @description('Private DNS Zones Subscription Id.  Required when dnsCreateNewZone=false')
-param dnsExistingZoneSubscriptionId string = ''
+param dnsExistingZoneSubscriptionId string
 
 @description('Private DNS Zones Resource Group.  Required when dnsCreateNewZone=false')
-param dnsExistingZoneResourceGroupName string = ''
+param dnsExistingZoneResourceGroupName string
 
 @description('Array of Private DNS Zones to provision.')
 param privateDnsZones array = [
@@ -80,6 +83,7 @@ module dnsZone 'private-dns-zone.bicep' = [for zone in privateDnsZones: {
     registrationEnabled: false
 
     dnsCreateNewZone: dnsCreateNewZone
+    dnsLinkToVirtualNetwork: dnsLinkToVirtualNetwork
     dnsExistingZoneSubscriptionId: dnsExistingZoneSubscriptionId
     dnsExistingZoneResourceGroupName: dnsExistingZoneResourceGroupName
   }

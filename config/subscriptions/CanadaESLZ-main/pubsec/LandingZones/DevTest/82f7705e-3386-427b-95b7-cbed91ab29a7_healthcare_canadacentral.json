@@ -67,13 +67,13 @@
         },
         "resourceGroups": {
             "value": {
-                "automation": "health092021W3Automation",
-                "compute": "health092021W3Compute",
-                "monitor": "health092021W3Monitor",
-                "networking": "health092021W3Network",
+                "automation": "health102021W1Automation",
+                "compute": "health102021W1Compute",
+                "monitor": "health102021W1Monitor",
+                "networking": "health102021W1Network",
                 "networkWatcher": "NetworkWatcherRG",
-                "security": "health092021W3Security",
-                "storage": "health092021W3Storage"
+                "security": "health102021W1Security",
+                "storage": "health102021W1Storage"
             }
         },
         "useCMK": {
@@ -86,7 +86,7 @@
         },
         "automation": {
             "value": {
-                "name": "health092021W3automation"
+                "name": "health102021W1automation"
             }
         },
         "sqldb": {
@@ -115,7 +115,10 @@
             "value": {
                 "peerToHubVirtualNetwork": true,
                 "useRemoteGateway": false,
-                "name": "health092021W3vnet",
+                "name": "health102021W1vnet",
+                "dnsServers": [
+                    "10.18.1.4"
+                ],
                 "addressPrefixes": [
                     "10.5.0.0/16"
                 ],

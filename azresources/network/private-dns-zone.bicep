@@ -13,17 +13,20 @@ param zone string
 @description('Virtual Network Resource Id.')
 param vnetId string
 
-@description('Boolean flag to enable automatic DNS registration for VMs.  Default: false')
-param registrationEnabled bool = false
+@description('Boolean flag to enable automatic DNS registration for VMs.')
+param registrationEnabled bool
 
-@description('Boolean flag to determine whether to create new Private DNS Zones or to reference existing ones.  Default: true')
-param dnsCreateNewZone bool = true
+@description('Boolean flag to determine whether to create new Private DNS Zones or to reference existing ones.')
+param dnsCreateNewZone bool
+
+@description('Boolean flag to determine whether to link the DNS zone to the virtual network.')
+param dnsLinkToVirtualNetwork bool
 
 @description('Private DNS Zones Subscription Id.  Required when dnsCreateNewZone=false')
-param dnsExistingZoneSubscriptionId string = ''
+param dnsExistingZoneSubscriptionId string
 
 @description('Private DNS Zones Resource Group.  Required when dnsCreateNewZone=false')
-param dnsExistingZoneResourceGroupName string = ''
+param dnsExistingZoneResourceGroupName string
 
 // When DNS Zone is managed in the Spoke
 resource privateDnsZoneNew 'Microsoft.Network/privateDnsZones@2018-09-01' = if (dnsCreateNewZone) {
@@ -31,7 +34,7 @@ resource privateDnsZoneNew 'Microsoft.Network/privateDnsZones@2018-09-01' = if (
   location: 'global'
 }
 
-module privateDnsZoneVirtualNetworkLinkNew 'private-dns-zone-virtual-network-link.bicep' = if (dnsCreateNewZone) {
+module privateDnsZoneVirtualNetworkLinkNew 'private-dns-zone-virtual-network-link.bicep' = if (dnsCreateNewZone && dnsLinkToVirtualNetwork) {
   name: 'configure-vnetlink-use-new-${uniqueString(zone, vnetId)}'
   params: {
     name: uniqueString(vnetId)
@@ -47,7 +50,7 @@ resource privateDnsZoneExisting 'Microsoft.Network/privateDnsZones@2018-09-01' e
   name: zone
 }
 
-module privateDnsZoneVirtualNetworkLinkExisting 'private-dns-zone-virtual-network-link.bicep' = if (!dnsCreateNewZone) {
+module privateDnsZoneVirtualNetworkLinkExisting 'private-dns-zone-virtual-network-link.bicep' = if (!dnsCreateNewZone && dnsLinkToVirtualNetwork) {
   name: 'configure-vnetlink-use-existing-${uniqueString(zone, vnetId)}'
   scope: resourceGroup(dnsExistingZoneSubscriptionId, dnsExistingZoneResourceGroupName)
   params: {

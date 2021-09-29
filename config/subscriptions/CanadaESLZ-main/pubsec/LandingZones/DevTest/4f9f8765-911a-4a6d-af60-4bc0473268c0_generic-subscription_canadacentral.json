@@ -67,8 +67,8 @@
         },
         "resourceGroups": {
             "value": {
-                "automation": "rgAutomation092021W3",
-                "networking": "rgVnet092021W3",
+                "automation": "rgAutomation102021W1",
+                "networking": "rgVnet102021W1",
                 "networkWatcher": "NetworkWatcherRG"
             }
         },
@@ -89,6 +89,9 @@
                 "peerToHubVirtualNetwork": true,
                 "useRemoteGateway": false,
                 "name": "vnet",
+                "dnsServers": [
+                    "10.18.1.4"
+                ],
                 "addressPrefixes": [
                     "10.2.0.0/16"
                 ],

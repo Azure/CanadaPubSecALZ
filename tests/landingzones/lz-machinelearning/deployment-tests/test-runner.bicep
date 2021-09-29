@@ -117,6 +117,7 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
       peerToHubVirtualNetwork: true
       useRemoteGateway: false
       name: 'vnet'
+      dnsServers: []
       addressPrefixes: [
         '10.2.0.0/16'
       ]

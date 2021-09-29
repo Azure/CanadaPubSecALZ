@@ -43,6 +43,9 @@ param hubNetwork object
 //     "peerToHubVirtualNetwork": true,
 //     "useRemoteGateway": false,
 //     "name": "vnet",
+//     "dnsServers": [
+//       "10.18.1.4"
+//     ],
 //     "addressPrefixes": [
 //       "10.2.0.0/16"
 //     ],
@@ -102,6 +105,9 @@ param hubNetwork object
 //   peerToHubVirtualNetwork: true
 //   useRemoteGateway: false
 //   name: 'vnet'
+//   dnsServers: [
+//     '10.18.1.4'
+//   ]
 //   addressPrefixes: [
 //     '10.2.0.0/16'
 //   ]
@@ -153,10 +159,11 @@ param hubNetwork object
 //     }
 //   }
 // }
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks) ')
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks) ')
 param network object
 
 var hubVnetIdSplit = split(hubNetwork.virtualNetworkId, '/')
+var usingCustomDNSServers = length(network.dnsServers) > 0
 
 var routesToHub = [
   // Force Routes to Hub IPs (RFC1918 range) via FW despite knowing that route via peering
@@ -294,6 +301,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   name: network.name
   location: resourceGroup().location
   properties: {
+    dhcpOptions: {
+      dnsServers: network.dnsServers
+    }
     addressSpace: {
       addressPrefixes: network.addressPrefixes
     }
@@ -466,8 +476,10 @@ module privatezone_sqldb '../../azresources/network/private-dns-zone.bicep' = {
     vnetId: vnet.id
 
     dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsLinkToVirtualNetwork: !hubNetwork.privateDnsManagedByHub || (hubNetwork.privateDnsManagedByHub && !usingCustomDNSServers)
     dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
     dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
+    registrationEnabled: false
   }
 }
 
@@ -479,8 +491,10 @@ module privatezone_adf_datafactory '../../azresources/network/private-dns-zone.b
     vnetId: vnet.id
 
     dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsLinkToVirtualNetwork: !hubNetwork.privateDnsManagedByHub || (hubNetwork.privateDnsManagedByHub && !usingCustomDNSServers)
     dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
     dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
+    registrationEnabled: false
   }
 }
 
@@ -492,8 +506,10 @@ module privatezone_adf_portal '../../azresources/network/private-dns-zone.bicep'
     vnetId: vnet.id
 
     dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsLinkToVirtualNetwork: !hubNetwork.privateDnsManagedByHub || (hubNetwork.privateDnsManagedByHub && !usingCustomDNSServers)
     dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
     dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
+    registrationEnabled: false
   }
 }
 
@@ -505,8 +521,10 @@ module privatezone_keyvault '../../azresources/network/private-dns-zone.bicep' =
     vnetId: vnet.id
 
     dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsLinkToVirtualNetwork: !hubNetwork.privateDnsManagedByHub || (hubNetwork.privateDnsManagedByHub && !usingCustomDNSServers)
     dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
     dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
+    registrationEnabled: false
   }
 }
 
@@ -518,8 +536,10 @@ module privatezone_acr '../../azresources/network/private-dns-zone.bicep' = {
     vnetId: vnet.id
 
     dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsLinkToVirtualNetwork: !hubNetwork.privateDnsManagedByHub || (hubNetwork.privateDnsManagedByHub && !usingCustomDNSServers)
     dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
     dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
+    registrationEnabled: false
   }
 }
 
@@ -531,8 +551,10 @@ module privatezone_datalake_blob '../../azresources/network/private-dns-zone.bic
     vnetId: vnet.id
 
     dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsLinkToVirtualNetwork: !hubNetwork.privateDnsManagedByHub || (hubNetwork.privateDnsManagedByHub && !usingCustomDNSServers)
     dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
     dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
+    registrationEnabled: false
   }
 }
 
@@ -544,8 +566,10 @@ module privatezone_datalake_dfs '../../azresources/network/private-dns-zone.bice
     vnetId: vnet.id
 
     dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsLinkToVirtualNetwork: !hubNetwork.privateDnsManagedByHub || (hubNetwork.privateDnsManagedByHub && !usingCustomDNSServers)
     dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
     dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
+    registrationEnabled: false
   }
 }
 
@@ -557,8 +581,10 @@ module privatezone_datalake_file '../../azresources/network/private-dns-zone.bic
     vnetId: vnet.id
 
     dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsLinkToVirtualNetwork: !hubNetwork.privateDnsManagedByHub || (hubNetwork.privateDnsManagedByHub && !usingCustomDNSServers)
     dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
     dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
+    registrationEnabled: false
   }
 }
 
@@ -570,8 +596,10 @@ module privatezone_azureml_api '../../azresources/network/private-dns-zone.bicep
     vnetId: vnet.id
 
     dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsLinkToVirtualNetwork: !hubNetwork.privateDnsManagedByHub || (hubNetwork.privateDnsManagedByHub && !usingCustomDNSServers)
     dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
     dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
+    registrationEnabled: false
   }
 }
 
@@ -583,8 +611,10 @@ module privatezone_azureml_notebook '../../azresources/network/private-dns-zone.
     vnetId: vnet.id
 
     dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsLinkToVirtualNetwork: !hubNetwork.privateDnsManagedByHub || (hubNetwork.privateDnsManagedByHub && !usingCustomDNSServers)
     dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
     dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
+    registrationEnabled: false
   }
 }
 
@@ -596,8 +626,10 @@ module privatezone_aks '../../azresources/network/private-dns-zone.bicep' = {
     vnetId: vnet.id
 
     dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsLinkToVirtualNetwork: !hubNetwork.privateDnsManagedByHub || (hubNetwork.privateDnsManagedByHub && !usingCustomDNSServers)
     dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
     dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
+    registrationEnabled: false
   }
 }
 

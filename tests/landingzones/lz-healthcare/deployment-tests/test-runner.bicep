@@ -107,6 +107,7 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
       peerToHubVirtualNetwork: true
       useRemoteGateway: false
       name: 'vnet'
+      dnsServers: []
       addressPrefixes: [
         '10.1.0.0/16'
       ]

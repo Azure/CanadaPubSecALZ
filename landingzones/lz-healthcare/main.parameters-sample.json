@@ -105,6 +105,9 @@
         "peerToHubVirtualNetwork": true,
         "useRemoteGateway": false,
         "name": "vnet",
+        "dnsServers": [
+          "10.18.1.4"
+        ],
         "addressPrefixes": [
           "10.2.0.0/16"
         ],
