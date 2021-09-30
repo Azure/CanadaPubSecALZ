@@ -20,9 +20,6 @@ param privateEndpointSubnetId string
 @description('Private DNS Zone Resource Id for Data Factory.')
 param datafactoryPrivateZoneId string
 
-@description('Private DNS Zone Resource Id for Data Factory Portal.')
-param portalPrivateZoneId string
-
 // Customer Managed Key
 @description('Boolean flag that determines whether to enable Customer Managed Key.')
 param useCMK bool
@@ -51,7 +48,6 @@ module adfWithoutCMK 'adf-without-cmk.bicep' = if (!useCMK) {
 
     privateEndpointSubnetId: privateEndpointSubnetId
     datafactoryPrivateZoneId: datafactoryPrivateZoneId
-    portalPrivateZoneId: portalPrivateZoneId
 
     userAssignedIdentityId: identity.outputs.identityId
   }
@@ -66,7 +62,6 @@ module adfWithCMK 'adf-with-cmk.bicep' = if (useCMK) {
 
     privateEndpointSubnetId: privateEndpointSubnetId
     datafactoryPrivateZoneId: datafactoryPrivateZoneId
-    portalPrivateZoneId: portalPrivateZoneId
     
     userAssignedIdentityId: identity.outputs.identityId
     userAssignedIdentityPrincipalId: identity.outputs.identityPrincipalId

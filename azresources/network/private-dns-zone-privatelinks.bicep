@@ -66,7 +66,6 @@ param privateDnsZones array = [
   'privatelink.cognitiveservices.azure.com'
   'privatelink.afs.azure.net'
   'privatelink.datafactory.azure.net'
-  'privatelink.adf.azure.com'
   'privatelink.redis.cache.windows.net'
   'privatelink.redisenterprise.cache.azure.net'
   'privatelink.purview.azure.com'

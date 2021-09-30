@@ -278,12 +278,6 @@
                     "groupId": "dataFactory"
                 },
                 {
-                    "privateLinkServiceNamespace": "Microsoft.DataFactory/factories",
-                    "zone": "privatelink.adf.azure.com",
-                    "filterLocationLike": "*",
-                    "groupId": "portal"
-                },
-                {
                     "privateLinkServiceNamespace": "Microsoft.Cache/Redis",
                     "zone": "privatelink.redis.cache.windows.net",
                     "filterLocationLike": "*",

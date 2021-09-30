@@ -20,9 +20,6 @@ param privateEndpointSubnetId string
 @description('Private DNS Zone Resource Id for Data Factory.')
 param datafactoryPrivateZoneId string
 
-@description('Private DNS Zone Resource Id for Data Factory Portal.')
-param portalPrivateZoneId string
-
 // User Assigned Identity
 @description('User Assigned Managed Identity Resource Id.')
 param userAssignedIdentityId string
@@ -93,41 +90,6 @@ resource adf_datafactory_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
           name: 'privatelink_datafactory_windows_net'
           properties: {
             privateDnsZoneId: datafactoryPrivateZoneId
-          }
-        }
-      ]
-    }
-  }
-}
-
-resource adf_portal_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
-  name: '${adf.name}-portal-endpoint'
-  properties: {
-    subnet: {
-      id: privateEndpointSubnetId
-    }
-    privateLinkServiceConnections: [
-      {
-        name: '${adf.name}-portal-endpoint'
-        properties: {
-          privateLinkServiceId: adf.id
-          groupIds: [
-            'portal'
-          ]
-        }
-      }
-    ]
-  }
-
-  resource adf_portal_pe_dns_reg 'privateDnsZoneGroups@2020-06-01' = {
-    name: 'default'
-    properties: {
-      privateDnsZoneConfigs: [
-        {
-          name: 'privatelink_adf_azure_com'
-          properties: {
-            privateDnsZoneId: portalPrivateZoneId
           }
         }
       ]
