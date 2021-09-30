@@ -1,0 +1,4 @@
+{
+    "name": "Deny Azure Bastion Hosts resource creation",
+    "mode": "indexed"
+}

@@ -1,0 +1,27 @@
+{
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "Tags-Audit-Missing-Tag-Resource",
+  "properties": {
+    "displayName": "Audit a tag on resources",
+    "mode": "Indexed",
+    "description": "Audit existence of a tag. Does not apply to resource groups.",
+    "parameters": {
+      "tagName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Tag Name",
+          "description": "Name of the tag, such as 'environment'"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "[concat('tags[', parameters('tagName'), ']')]",
+        "exists": "false"
+      },
+      "then": {
+        "effect": "audit"
+      }
+    }
+  }
+}

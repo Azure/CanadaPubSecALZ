@@ -1,0 +1,49 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: templateDirectory
+    type: string
+  - name: templateFile
+    type: string
+  - name: managementGroup
+    type: string
+  - name: subscriptionGuid
+    type: string
+  - name: subscriptionLocation
+    type: string
+  - name: workingDir
+    type: string
+
+steps: 
+- task: AzureCLI@2
+  displayName: Move Subscription
+  inputs:
+    azureSubscription: $(serviceConnection)
+    workingDirectory: '${{ parameters.templateDirectory }}'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      echo "Moving subscription ${{ parameters.subscriptionGuid }} to management group ${{ parameters.managementGroup }}..."
+
+      deployName='move-subscription-${{ parameters.subscriptionGuid }}-${{ parameters.subscriptionLocation }}'
+      deployName=${deployName:0:63}
+
+      az deployment mg $(deployOperation) \
+        --location ${{ parameters.subscriptionLocation }} \
+        --management-group-id ${{ parameters.managementGroup }} \
+        --template-file ${{ parameters.templateFile }} \
+        --name ${deployName} \
+        --parameters \
+            managementGroupId='${{ parameters.managementGroup }}' \
+            subscriptionId='${{ parameters.subscriptionGuid }}'
+
+      $(var-bashPostInjectScript)

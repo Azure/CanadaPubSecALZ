@@ -1,0 +1,59 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: validationTypes
+    type: string
+    default: ''
+
+steps:
+
+- task: Bash@3
+  displayName: Install Linter
+  inputs:
+    targetType: 'inline'
+    script: |
+      $(var-bashPreInjectScript)
+
+      echo
+      echo "Pulling the github/super-linter:latest docker image..."
+      echo
+
+      docker pull github/super-linter:latest
+
+      $(var-bashPostInjectScript)
+
+- task: Bash@3
+  displayName: Run Linter
+  inputs:
+    targetType: 'inline'
+    script: |
+      $(var-bashPreInjectScript)
+
+      # Possible enhancments:
+      #   * Detect and process only added or modified files (like trigger-subscriptions.yml)
+
+      if [[ -n '${{ parameters.validationTypes }}' ]]; then
+        echo
+        echo "Running GitHub Super Linter with validation types: ${{ parameters.validationTypes }} ..."
+        echo
+
+        declare -a vtypesArray=( ${{ parameters.validationTypes }} )
+        declare vtypesArgs=$(printf ' -e VALIDATE_%s=true ' "${vtypesArray[@]}")
+
+        docker run --name linter -e RUN_LOCAL=true -e LINTER_RULES_PATH=config/linters ${vtypesArgs} -v $(System.DefaultWorkingDirectory):/tmp/lint --name super_linter github/super-linter
+      else
+        echo
+        echo "Running GitHub Super Linter on all supported validation types ..."
+        echo
+
+        docker run --name linter -e RUN_LOCAL=true -e LINTER_RULES_PATH=config/linters -v $(System.DefaultWorkingDirectory):/tmp/lint --name super_linter github/super-linter
+      fi
+
+      $(var-bashPostInjectScript)

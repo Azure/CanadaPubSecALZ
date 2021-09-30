@@ -1,0 +1,45 @@
+{
+    "if": {
+        "allOf": [
+            {
+                "field": "type",
+                "equals": "Microsoft.Network/virtualNetworks"
+            },
+            {
+                "count": {
+                    "field": "Microsoft.Network/virtualNetworks/subnets[*]",
+                    "where": {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Network/virtualNetworks/subnets[*].privateEndpointNetworkPolicies",
+                                "notEquals": "Disabled"
+                            },
+                            {
+                                "field": "Microsoft.Network/virtualNetworks/subnets[*].routeTable",
+                                "exists": false
+                            },
+                            {
+                                "not": {
+                                    "anyOf": [
+                                        {
+                                            "field": "Microsoft.Network/virtualNetworks/subnets[*].name",
+                                            "equals": "AzureBastionSubnet"
+                                        },
+                                        {
+                                            "field": "Microsoft.Network/virtualNetworks/subnets[*].name",
+                                            "equals": "GatewaySubnet"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                },
+                "greater": 0
+            }
+        ]
+    },
+    "then": {
+        "effect": "audit"
+    }
+}

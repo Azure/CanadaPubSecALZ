@@ -1,0 +1,39 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+  
+stages:
+
+- stage: CheckBicepCompileStage
+  displayName: Checks - Bicep Compile Stage
+
+  jobs:
+
+  - deployment: CheckBicepCompileJob
+    displayName: Checks - Bicep Compile Job
+    environment: ${{ variables['Build.SourceBranchName'] }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+
+          - task: Bash@3
+            displayName: Compile all bicep templates
+            name: CompileBiceps
+            inputs:
+              targetType: 'inline'
+              script: |
+                find . -type f -name '*.bicep' | xargs -tn1 az bicep build -f 
+              
+              workingDirectory: ${{ variables['Build.SourcesDirectory'] }}

@@ -1,0 +1,221 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: description
+    type: string
+  - name: moveTemplate
+    type: string
+  - name: templateFile
+    type: string
+  - name: workingDir
+    type: string
+  - name: deployOperation
+    type: string
+    default: create
+    values:
+      - create
+      - what-if
+
+steps:
+
+- template: ./move-subscription.yml
+  parameters:
+    managementGroup: $(var-hubnetwork-managementGroupId)
+    subscriptionGuid: $(var-hubnetwork-subscriptionId)
+    subscriptionLocation: $(deploymentRegion)
+    templateDirectory: $(Build.SourcesDirectory)/landingzones/utils/mg-move
+    templateFile: move-subscription.bicep
+    workingDir: ${{ parameters.workingDir }}/utils/mg-move
+
+- task: AzureCLI@2
+  displayName: Register Resource Providers
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      az account set -s $(var-hubnetwork-subscriptionId)
+      
+      az provider register -n Microsoft.ContainerService --subscription '$(var-hubnetwork-subscriptionId)'
+
+      $(var-bashPostInjectScript)
+
+- task: AzureCLI@2
+  displayName: Configure Hub Networking
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      echo "Deploying ${{ parameters.templateFile }} using ${{ parameters.deployOperation}} operation..."
+      
+      az deployment sub ${{ parameters.deployOperation }} \
+      --location $(deploymentRegion) \
+      --subscription $(var-hubnetwork-subscriptionId) \
+      --template-file ${{ parameters.templateFile }} \
+      --parameters \
+          serviceHealthAlerts='$(var-hubnetwork-serviceHealthAlerts)' \
+          securityCenter='$(var-hubnetwork-securityCenter)' \
+          subscriptionRoleAssignments='$(var-hubnetwork-subscriptionRoleAssignments)' \
+          subscriptionBudget='$(var-hubnetwork-subscriptionBudget)' \
+          subscriptionTags='$(var-hubnetwork-subscriptionTags)' \
+          resourceTags='$(var-hubnetwork-resourceTags)' \
+          logAnalyticsWorkspaceResourceId='$(var-logging-logAnalyticsWorkspaceResourceId)' \
+          deployPrivateDnsZones='$(var-hubnetwork-deployPrivateDnsZones)' \
+          rgPrivateDnsZonesName='$(var-hubnetwork-rgPrivateDnsZonesName)' \
+          deployDdosStandard='$(var-hubnetwork-deployDdosStandard)' \
+          rgDdosName='$(var-hubnetwork-rgDdosName)' \
+          ddosPlanName='$(var-hubnetwork-ddosPlanName)' \
+          bastionName='$(var-hubnetwork-bastionName)' \
+          rgPazName='$(var-hubnetwork-rgPazName)' \
+          rgMrzName='$(var-hubnetwork-rgMrzName)' \
+          mrzVnetName='$(var-hubnetwork-mrzVnetName)' \
+          mrzVnetAddressPrefixRFC1918='$(var-hubnetwork-mrzVnetAddressPrefixRFC1918)' \
+          mrzMazSubnetName='$(var-hubnetwork-mrzMazSubnetName)' \
+          mrzMazSubnetAddressPrefix='$(var-hubnetwork-mrzMazSubnetAddressPrefix)' \
+          mrzInfSubnetName='$(var-hubnetwork-mrzInfSubnetName)' \
+          mrzInfSubnetAddressPrefix='$(var-hubnetwork-mrzInfSubnetAddressPrefix)' \
+          mrzSecSubnetName='$(var-hubnetwork-mrzSecSubnetName)' \
+          mrzSecSubnetAddressPrefix='$(var-hubnetwork-mrzSecSubnetAddressPrefix)' \
+          mrzLogSubnetName='$(var-hubnetwork-mrzLogSubnetName)' \
+          mrzLogSubnetAddressPrefix='$(var-hubnetwork-mrzLogSubnetAddressPrefix)' \
+          mrzMgmtSubnetName='$(var-hubnetwork-mrzMgmtSubnetName)' \
+          mrzMgmtSubnetAddressPrefix='$(var-hubnetwork-mrzMgmtSubnetAddressPrefix)' \
+          rgHubName='$(var-hubnetwork-nva-rgHubName)' \
+          hubVnetName='$(var-hubnetwork-nva-hubVnetName)' \
+          hubVnetAddressPrefixRFC1918='$(var-hubnetwork-nva-hubVnetAddressPrefixRFC1918)' \
+          hubVnetAddressPrefixRFC6598='$(var-hubnetwork-nva-hubVnetAddressPrefixRFC6598)' \
+          hubVnetAddressPrefixBastion='$(var-hubnetwork-nva-hubVnetAddressPrefixBastion)' \
+          hubEanSubnetName='$(var-hubnetwork-nva-hubEanSubnetName)' \
+          hubEanSubnetAddressPrefix='$(var-hubnetwork-nva-hubEanSubnetAddressPrefix)' \
+          hubPublicSubnetName='$(var-hubnetwork-nva-hubPublicSubnetName)' \
+          hubPublicSubnetAddressPrefix='$(var-hubnetwork-nva-hubPublicSubnetAddressPrefix)' \
+          hubPazSubnetName='$(var-hubnetwork-nva-hubPazSubnetName)' \
+          hubPazSubnetAddressPrefix='$(var-hubnetwork-nva-hubPazSubnetAddressPrefix)' \
+          hubDevIntSubnetName='$(var-hubnetwork-nva-hubDevIntSubnetName)' \
+          hubDevIntSubnetAddressPrefix='$(var-hubnetwork-nva-hubDevIntSubnetAddressPrefix)' \
+          hubProdIntSubnetName='$(var-hubnetwork-nva-hubProdIntSubnetName)' \
+          hubProdIntSubnetAddressPrefix='$(var-hubnetwork-nva-hubProdIntSubnetAddressPrefix)' \
+          hubMrzIntSubnetName='$(var-hubnetwork-nva-hubMrzIntSubnetName)' \
+          hubMrzIntSubnetAddressPrefix='$(var-hubnetwork-nva-hubMrzIntSubnetAddressPrefix)' \
+          hubHASubnetName='$(var-hubnetwork-nva-hubHASubnetName)' \
+          hubHASubnetAddressPrefix='$(var-hubnetwork-nva-hubHASubnetAddressPrefix)' \
+          hubGatewaySubnetPrefix='$(var-hubnetwork-nva-hubGatewaySubnetPrefix)' \
+          hubBastionSubnetAddressPrefix='$(var-hubnetwork-nva-hubBastionSubnetAddressPrefix)' \
+          deployFirewallVMs='$(var-hubnetwork-nva-deployFirewallVMs)' \
+          useFortigateFW='$(var-hubnetwork-nva-useFortigateFW)' \
+          fwDevILBName='$(var-hubnetwork-nva-fwDevILBName)' \
+          fwDevVMSku='$(var-hubnetwork-nva-fwDevVMSku)' \
+          fwDevVM1Name='$(var-hubnetwork-nva-fwDevVM1Name)' \
+          fwDevVM2Name='$(var-hubnetwork-nva-fwDevVM2Name)' \
+          fwDevILBExternalFacingIP='$(var-hubnetwork-nva-fwDevILBExternalFacingIP)' \
+          fwDevVM1ExternalFacingIP='$(var-hubnetwork-nva-fwDevVM1ExternalFacingIP)' \
+          fwDevVM2ExternalFacingIP='$(var-hubnetwork-nva-fwDevVM2ExternalFacingIP)' \
+          fwDevVM1MrzIntIP='$(var-hubnetwork-nva-fwDevVM1MrzIntIP)' \
+          fwDevVM2MrzIntIP='$(var-hubnetwork-nva-fwDevVM2MrzIntIP)' \
+          fwDevILBDevIntIP='$(var-hubnetwork-nva-fwDevILBDevIntIP)' \
+          fwDevVM1DevIntIP='$(var-hubnetwork-nva-fwDevVM1DevIntIP)' \
+          fwDevVM2DevIntIP='$(var-hubnetwork-nva-fwDevVM2DevIntIP)' \
+          fwDevVM1HAIP='$(var-hubnetwork-nva-fwDevVM1HAIP)' \
+          fwDevVM2HAIP='$(var-hubnetwork-nva-fwDevVM2HAIP)' \
+          fwProdILBName='$(var-hubnetwork-nva-fwProdILBName)' \
+          fwProdVMSku='$(var-hubnetwork-nva-fwProdVMSku)' \
+          fwProdVM1Name='$(var-hubnetwork-nva-fwProdVM1Name)' \
+          fwProdVM2Name='$(var-hubnetwork-nva-fwProdVM2Name)' \
+          fwProdILBExternalFacingIP='$(var-hubnetwork-nva-fwProdILBExternalFacingIP)' \
+          fwProdVM1ExternalFacingIP='$(var-hubnetwork-nva-fwProdVM1ExternalFacingIP)' \
+          fwProdVM2ExternalFacingIP='$(var-hubnetwork-nva-fwProdVM2ExternalFacingIP)' \
+          fwProdVM1MrzIntIP='$(var-hubnetwork-nva-fwProdVM1MrzIntIP)' \
+          fwProdVM2MrzIntIP='$(var-hubnetwork-nva-fwProdVM2MrzIntIP)' \
+          fwProdILBPrdIntIP='$(var-hubnetwork-nva-fwProdILBPrdIntIP)' \
+          fwProdVM1PrdIntIP='$(var-hubnetwork-nva-fwProdVM1PrdIntIP)' \
+          fwProdVM2PrdIntIP='$(var-hubnetwork-nva-fwProdVM2PrdIntIP)' \
+          fwProdVM1HAIP='$(var-hubnetwork-nva-fwProdVM1HAIP)' \
+          fwProdVM2HAIP='$(var-hubnetwork-nva-fwProdVM2HAIP)' \
+          fwUsername='$(var-hubnetwork-nva-fwUsername)' \
+          fwPassword='$(var-hubnetwork-nva-fwPassword)'
+          
+      $(var-bashPostInjectScript)
+    workingDirectory: '${{ parameters.workingDir }}/lz-platform-connectivity-hub-nva'
+
+- task: AzureCLI@2
+  displayName: Azure Policy - Enable Private DNS Zone Policies (if var-hubnetwork-deployPrivateDnsZones=true)
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      case $(var-hubnetwork-deployPrivateDnsZones) in
+        (true)
+          echo "Hub Network will manage private dns zones, creating Azure Policy assignment to automatically create Private Endpoint DNS Zones"
+
+          # Apply the policy assignment
+          echo "Deploying policy assignment using policy/custom/assignments/dns-private-endpoints.bicep"
+
+          az deployment mg ${{ parameters.deployOperation }} \
+            --location $(deploymentRegion) \
+            --management-group-id $(var-topLevelManagementGroupName) \
+            --template-file dns-private-endpoints.bicep \
+            --parameters \
+                policyAssignmentManagementGroupId='$(var-topLevelManagementGroupName)' \
+                policyDefinitionManagementGroupId='$(var-topLevelManagementGroupName)' \
+                privateDNSZoneSubscriptionId='$(var-hubnetwork-subscriptionId)' \
+                privateDNSZoneResourceGroupName='$(var-hubnetwork-rgPrivateDnsZonesName)'
+          ;;
+        (*)
+          echo "Hub Network will not manage private dns zones.  Azure Policy assignment will be skipped."
+          ;;
+      esac
+
+      $(var-bashPostInjectScript)
+    workingDirectory: '$(System.DefaultWorkingDirectory)/policy/custom/assignments'
+
+- task: AzureCLI@2
+  displayName: Azure Policy - Enable DDoS Standard (if var-hubnetwork-deployDdosStandard=true)
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      case $(var-hubnetwork-deployDdosStandard) in
+        (true)
+          echo "DDoS Standard is enabled, creating Azure Policy assignment to protect for all Virtual Networks in '$(var-topLevelManagementGroupName)' management group."
+
+          # Identify the Resource Id for DDOS Standard Plan
+          DDOS_PLAN_ID=`az network ddos-protection show -g $(var-hubnetwork-rgDdosName) -n $(var-hubnetwork-ddosPlanName) --subscription $(var-hubnetwork-subscriptionId) --query id -o tsv`
+          echo "DDoS Standard Plan Id: $DDOS_PLAN_ID"
+
+          # Apply the policy assignment
+          echo "Deploying policy assignment using policy/custom/assignments/ddos.bicep"
+
+          az deployment mg ${{ parameters.deployOperation }} \
+            --location $(deploymentRegion) \
+            --management-group-id $(var-topLevelManagementGroupName) \
+            --template-file ddos.bicep \
+            --parameters \
+                policyAssignmentManagementGroupId='$(var-topLevelManagementGroupName)' \
+                policyDefinitionManagementGroupId=$(var-topLevelManagementGroupName) \
+                ddosStandardPlanId="$DDOS_PLAN_ID"
+          ;;
+        (*)
+          echo "DDoS Standard is not enabled.  Azure Policy assignment will be skipped."
+          ;;
+      esac
+
+      $(var-bashPostInjectScript)
+    workingDirectory: '$(System.DefaultWorkingDirectory)/policy/custom/assignments'

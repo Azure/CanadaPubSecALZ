@@ -1,0 +1,46 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: description
+    type: string
+  - name: templateFile
+    type: string
+  - name: workingDir
+    type: string
+  - name: deployOperation
+    type: string
+    default: create
+    values:
+      - create
+      - what-if
+
+steps:
+
+- task: AzureCLI@2
+  displayName: ${{ parameters.description }}
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+      
+      echo "Deploying ${{ parameters.templateFile }} using ${{ parameters.deployOperation }} operation..."
+
+      az deployment mg ${{ parameters.deployOperation }} \
+        --location $(deploymentRegion) \
+        --management-group-id $(var-parentManagementGroupId) \
+        --template-file ${{ parameters.templateFile }} \
+        --parameters \
+            parentManagementGroupId=$(var-parentManagementGroupId) \
+            topLevelManagementGroupName=$(var-topLevelManagementGroupName)
+
+      $(var-bashPostInjectScript)
+    workingDirectory: '${{ parameters.workingDir }}'

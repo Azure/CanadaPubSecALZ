@@ -1,0 +1,34 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "policyAssignmentManagementGroupId": {
+            "value": "{{var-topLevelManagementGroupName}}"
+        },
+        "requiredRetentionDays": {
+            "value": "730"
+        },
+        "approvedVMExtensions": {
+            "value": [
+                "AzureDiskEncryption",
+                "AzureDiskEncryptionForLinux",
+                "ConfigurationforWindows",
+                "DependencyAgentWindows",
+                "DependencyAgentLinux",
+                "IaaSAntimalware",
+                "IaaSDiagnostics",
+                "LinuxDiagnostic",
+                "MicrosoftMonitoringAgent",
+                "NetworkWatcherAgentLinux",
+                "NetworkWatcherAgentWindows",
+                "OmsAgentForLinux",
+                "VMSnapshot",
+                "VMSnapshotLinux",
+                "WindowsAgent.AzureSecurityCenter"
+            ]
+        },
+        "linuxPythonLatestVersion": {
+            "value": "3.9"
+        }
+    }
+}

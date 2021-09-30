@@ -1,0 +1,4 @@
+{
+    "name": "DNS - Deny privatelinks Private DNS Zones",
+    "mode": "indexed"
+}

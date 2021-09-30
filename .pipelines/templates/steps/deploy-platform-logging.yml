@@ -1,0 +1,81 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: description
+    type: string
+  - name: moveTemplate
+    type: string
+  - name: configTemplate
+    type: string
+  - name: workingDir
+    type: string
+  - name: deployOperation
+    type: string
+    default: create
+    values:
+      - create
+      - what-if
+
+steps:
+
+- template: ./move-subscription.yml
+  parameters:
+    managementGroup: $(var-logging-managementGroupId)
+    subscriptionGuid: $(var-logging-subscriptionId)
+    subscriptionLocation: $(deploymentRegion)
+    templateDirectory: $(Build.SourcesDirectory)/landingzones/utils/mg-move
+    templateFile: move-subscription.bicep
+    workingDir: ${{ parameters.workingDir }}/utils/mg-move
+
+
+- task: AzureCLI@2
+  displayName: Register Resource Providers
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      az account set -s $(var-logging-subscriptionId)
+      
+      az provider register -n Microsoft.ContainerService --subscription '$(var-logging-subscriptionId)'
+
+      $(var-bashPostInjectScript)
+
+
+- task: AzureCLI@2
+  displayName: Configure Logging
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      echo "Deploying ${{ parameters.configTemplate }} using ${{ parameters.deployOperation}} operation..."
+
+      az deployment sub ${{ parameters.deployOperation }} \
+        --location $(deploymentRegion) \
+        --subscription $(var-logging-subscriptionId) \
+        --template-file ${{ parameters.configTemplate }} \
+        --parameters \
+            serviceHealthAlerts='$(var-logging-serviceHealthAlerts)' \
+            securityCenter='$(var-logging-securityCenter)' \
+            subscriptionRoleAssignments='$(var-logging-subscriptionRoleAssignments)' \
+            subscriptionBudget='$(var-logging-subscriptionBudget)'\
+            subscriptionTags='$(var-logging-subscriptionTags)' \
+            resourceTags='$(var-logging-resourceTags)' \
+            logAnalyticsResourceGroupName='$(var-logging-logAnalyticsResourceGroupName)' \
+            logAnalyticsWorkspaceName='$(var-logging-logAnalyticsWorkspaceName)' \
+            logAnalyticsAutomationAccountName='$(var-logging-logAnalyticsAutomationAccountName)'
+
+      $(var-bashPostInjectScript)
+    workingDirectory: '${{ parameters.workingDir }}/lz-platform-logging'

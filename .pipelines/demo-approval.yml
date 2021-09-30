@@ -1,0 +1,71 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+# To setup a CI trigger so this pipeline is automatically run on new commits:
+#   1. Remove the 'none' keyword after the 'trigger:' statement in the line below
+#   2. Uncomment the indented lines following the 'trigger:' statement
+trigger: none
+  # batch: true
+  # branches:
+  #   include:
+  #     - main
+  # paths:
+  #   include:
+  #     - config/*
+
+variables:
+- name: devops-org-name
+  value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: variable-template-file
+  value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
+- template: ../config/variables/common.yml
+- template: ../config/variables/${{ variables['variable-template-file'] }}
+
+pool:
+  vmImage: $[ variables.vmImage ]
+  
+stages:
+
+- stage: DemoApprovalStage
+  displayName: Demo Approval Stage
+
+  jobs:
+
+  # - job: WaitForApproval
+  #   displayName: Wait For Approval
+  #   pool: server
+  #   timeoutInMinutes: 2
+  #   steps:
+  #     - task: ManualValidation@0
+  #       timeoutInMinutes: 2
+  #       inputs:
+  #         notifyUsers: |
+  #           alzcanadapubsec@microsoft.com
+  #           doic-release-approvers@microsoft.onmicrosoft.com
+  #         instructions: 'Review release and resume or reject'
+  #         onTimeout: 'reject'
+
+  # - job: DemoApprovalJob
+  #   displayName: Demo Approval Job
+  #   dependsOn: WaitForApproval
+  #   steps:
+  #     - script: |
+  #         echo "Demonstrating manual approval workflow"
+
+  - deployment: DemoApprovalJob2
+    displayName: Demo Approval Job 2
+    environment: ${{ variables['Build.SourceBranchName'] }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+            - script: |
+                echo "Demonstrating manual approval workflow for environment: $(var-environmentName)"
+                ls -al $(System.DefaultWorkingDirectory)

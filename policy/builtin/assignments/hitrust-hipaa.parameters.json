@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "policyAssignmentManagementGroupId": {
+            "value": "{{var-topLevelManagementGroupName}}"
+        },
+        "deployDiagnosticSettingsforNetworkSecurityGroupsStoragePrefix": {
+            "value": "{{var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix}}"
+        },
+        "deployDiagnosticSettingsforNetworkSecurityGroupsRgName": {
+            "value": "NetworkWatcherRG"
+        },
+        "installedApplicationsOnWindowsVM": {
+            "value": "__tbd__implementation_specific__"
+        },
+        "certificateThumbprints": {
+            "value": "__tbd__implementation_specific__"
+        }
+    }
+}

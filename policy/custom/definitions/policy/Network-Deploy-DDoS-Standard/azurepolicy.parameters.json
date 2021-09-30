@@ -1,0 +1,22 @@
+{
+    "effect": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Effect",
+            "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+            "auditIfNotExists",
+            "DeployIfNotExists",
+            "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+    },
+    "planId": {
+        "type": "String",
+        "metadata": {
+            "displayName": "DDoS Protection Plan Resource ID",
+            "description": "Full resource ID of the DDoS Protection Plan to be associated to VNets"
+        }
+    }
+}

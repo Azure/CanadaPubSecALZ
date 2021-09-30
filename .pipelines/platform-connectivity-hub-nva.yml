@@ -1,0 +1,61 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+trigger: none
+  # batch: true
+  # branches:
+  #   include:
+  #     - main
+  # paths:
+  #   include:
+  #     - landingzones/lz-platform-connectivity-hub-nva
+  #     - .pipelines/platform-connectivity-hub-nva.yml  
+  #     - .pipelines/templates/steps/deploy-platform-connectivity-hub-nva.yml
+
+variables:
+- name: devops-org-name
+  value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: variable-template-file
+  value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
+- template: ../config/variables/common.yml
+- template: ../config/variables/${{ variables['variable-template-file'] }}
+- group: firewall-secrets
+
+pool:
+  vmImage: $[ variables.vmImage ]
+  
+stages:
+
+- stage: DeployNetworkingStage
+  displayName: Deploy Networking Stage
+
+  jobs:
+
+  - deployment: DeployNetworkingJob
+    displayName: Deploy Networking Job
+    environment: ${{ variables['Build.SourceBranchName'] }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+
+          - template: templates/steps/load-log-analytics-vars.yml
+
+          - template: templates/steps/show-variables.yml
+            parameters:
+              json: ${{ convertToJson(variables) }}
+
+          - template: templates/steps/deploy-platform-connectivity-hub-nva.yml
+            parameters:
+              description: 'Deploy Networking'
+              moveTemplate: move-subscription.bicep
+              templateFile: main.bicep
+              deployOperation: ${{ variables['deployOperation'] }}
+              workingDir: $(System.DefaultWorkingDirectory)/landingzones

@@ -1,0 +1,57 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+trigger: 
+  batch: true
+  branches:
+    include:
+     - main
+  paths:
+    include:
+      - management-groups
+      - .pipelines/management-groups.yml
+      - .pipelines/templates/steps/deploy-management-groups.yml
+
+variables:
+- name: devops-org-name
+  value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: variable-template-file
+  value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
+- template: ../config/variables/common.yml
+- template: ../config/variables/${{ variables['variable-template-file'] }}
+
+pool:
+  vmImage: $[ variables.vmImage ]
+  
+stages:
+
+- stage: DeployManagementGroupsStage
+  displayName: Deploy Management Groups Stage
+
+  jobs:
+
+  - deployment: DeployManagementGroupsJob
+    displayName: Deploy Management Groups Job
+    environment: ${{ variables['Build.SourceBranchName'] }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+
+          - template: templates/steps/show-variables.yml
+            parameters:
+              json: ${{ convertToJson(variables) }}
+
+          - template: templates/steps/deploy-management-groups.yml
+            parameters:
+              description: 'Create/Update Management Groups'
+              templateFile: structure.bicep
+              deployOperation: ${{ variables['deployOperation'] }}
+              workingDir: $(System.DefaultWorkingDirectory)/management-groups

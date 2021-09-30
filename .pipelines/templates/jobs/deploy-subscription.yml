@@ -1,0 +1,158 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: config
+    type: string
+  - name: enviro
+    type: string
+  - name: subscription
+    type: string
+
+jobs:
+
+- deployment: DeploySubscriptionJob_${{ replace(parameters.subscription, '-', '_') }}
+  displayName: Deploy Subscription Job - ${{ parameters.subscription }}
+  timeoutInMinutes: 0
+  environment: ${{ variables['Build.SourceBranchName'] }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - checkout: self
+
+        - template: ../steps/show-variables.yml
+          parameters:
+            json: ${{ convertToJson(variables) }}
+
+        - task: Bash@3
+          displayName: Parse Subscription - ${{ parameters.subscription }}
+          name: ParseSubscription
+          inputs:
+            targetType: 'inline'
+            script: |
+              $(var-bashPreInjectScript)
+
+              subscription=${{ parameters.subscription }}
+              config=${{ parameters.config }}
+              config_sed=$(echo ${{ parameters.config }} | sed 's/\//\\\//g')
+              enviro=${{ parameters.enviro }}
+              enviro_sed=$(echo ${{ parameters.enviro }} | sed 's/\//\\\//g')
+
+              # Resolve partial configuration file specification
+              if [[ ! ${subscription} =~ .*/.* ]]; then
+                echo
+                echo "Resolving partial configuration file specifier: ${subscription} ..."
+                readarray -t lines < <(find ${config}/${enviro} -type f -name "*${subscription}*" | sed "s/^${config_sed}\///g")
+                if [[ ${#lines[@]} < 1 || ${#lines[@]} > 1 ]]; then
+                  echo "##vso[task.logissue type=error]Found ${#lines[@]} subscription configuration file matches based on qualifier: ${subscription}. Partial configuration file name search must have exactly 1 match."
+                  exit 1
+                else
+                  subscription=${lines[0]}
+                  echo "  - partial configuration file specifier resolved to: ${subscription}"
+                fi
+              else
+                echo
+                echo "Fully qualified configuration specified: ${subscription}"
+              fi
+
+              # Deconstruct full path
+              echo
+              echo "Analyzing subscription configuration file path..."
+              readarray -t dparts < <(echo ${subscription} | sed "s/^${config_sed}\///g" | tr "/" "\n")
+              environment=${dparts[@]:0:1}
+              echo "  - environment: $environment"
+              filename=${dparts[@]: -1:1}
+              echo "  - configuration file: $filename"
+              pathToFile=$(printf "%s/" "${dparts[@]:0:${#dparts[@]}-1}")
+              pathToFile="${pathToFile%/}"
+              echo "  - path to file: ${pathToFile}"
+              mgmt_group=$(printf "%s" "${dparts[@]:1:${#dparts[@]}-2}")
+              echo "  - management Group: ${mgmt_group}"
+
+              # Deconstruct file name
+              echo
+              echo "Analyzing subscription configuration file name..."
+              readarray -t fparts < <(echo ${filename} | sed 's/\.json$//g' | tr "_" "\n")
+              fparts_num=${#fparts[@]}
+              sub_guid=''
+              sub_type=''
+              sub_loc=$(deploymentRegion)
+              sub_guid_index=0
+              sub_type_index=1
+              sub_loc_index=2
+
+              # Parse required subscription GUID
+              if [[ ${fparts_num} > ${sub_guid_index} ]]; then
+                  sub_guid=${fparts[$sub_guid_index]}
+              fi
+
+              # Parse required template type
+              if [[ ${fparts_num} > ${sub_type_index} ]]; then
+                  sub_type=${fparts[$sub_type_index]}
+              fi
+
+              # Parse optional location
+              if [[ ${fparts_num} > ${sub_loc_index} ]]; then
+                  if [[ -n ${fparts[$sub_loc_index]} && ${fparts[$sub_loc_index]} != 'default' ]]; then
+                      sub_loc=${fparts[$sub_loc_index]}
+                  fi
+              fi
+
+              # Emit parsed values: Subscription GUID, Template Type, Location
+              echo "  - subscription GUID: ${sub_guid}"
+              echo "  - template type: ${sub_type}"
+              echo "  - location: ${sub_loc}"
+
+              # Validate JSON configuration file name by testing parts
+              if [[ -z ${sub_guid} || -z ${sub_type} ]]; then
+                  echo
+                  echo "##vso[task.logissue type=error]Invalid configuration file name format (${filename}). It must be in the form [SubGuid]_[TemplateType].json or [SubGuid]_[TemplateType]_[Location].json"
+                  exit 1
+              fi
+
+              # Create output variables
+              echo "##vso[task.setvariable variable=Environment;isoutput=true]${environment}"
+              echo "##vso[task.setvariable variable=Filename;isoutput=true]${filename}"
+              echo "##vso[task.setvariable variable=FullPath;isoutput=true]${subscription}"
+              echo "##vso[task.setvariable variable=RelativePath;isoutput=true]${pathToFile}"
+              echo "##vso[task.setvariable variable=MgmtGroup;isoutput=true]${mgmt_group}"
+              echo "##vso[task.setvariable variable=SubGuid;isoutput=true]${sub_guid}"
+              echo "##vso[task.setvariable variable=SubType;isoutput=true]${sub_type}"
+              echo "##vso[task.setvariable variable=SubLocation;isoutput=true]${sub_loc}"
+
+              $(var-bashPostInjectScript)
+
+            workingDirectory: ${{ variables['Build.SourcesDirectory'] }}
+
+        # --------------------------------------------------------------------------------
+        # EXAMPLE OUTPUT VARIABLE VALUES FROM PREVIOUS STEP:
+        # --------------------------------------------------------------------------------
+        # Environment = devopsincanada-main
+        # Filename = xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx_generic-subscription.json
+        # FullPath = devopsincanada-main/doic/LandingZones/Prod/DAPI/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx_generic-subscription.json
+        # RelativePath = devopsincanada-main/doic/LandingZones/Prod/DAPI
+        # MgmtGroup = doicLandingZonesProdDAPI
+        # SubGuid = xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        # SubType = generic-subscription
+        # --------------------------------------------------------------------------------
+
+        - template: ../steps/deploy-subscription.yml
+          parameters:
+            config: ${{ parameters.config }}
+            enviro: ${{ parameters.enviro }}
+            environment: $(ParseSubscription.Environment)
+            filename: $(ParseSubscription.Filename)
+            fullpath: $(ParseSubscription.FullPath)
+            relativepath: $(ParseSubscription.RelativePath)
+            mgmtgroup: $(ParseSubscription.MgmtGroup)
+            subguid: $(ParseSubscription.SubGuid)
+            subtype: $(ParseSubscription.SubType)
+            sublocation: $(ParseSubscription.SubLocation)
+

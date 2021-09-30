@@ -1,0 +1,76 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: config
+    type: string
+  - name: enviro
+    type: string
+  - name: environment
+    type: string
+  - name: filename
+    type: string
+  - name: fullpath
+    type: string
+  - name: relativepath
+    type: string
+  - name: mgmtgroup
+    type: string
+  - name: subguid
+    type: string
+  - name: subtype
+    type: string
+  - name: sublocation
+    type: string
+
+steps:
+
+- template: ./move-subscription.yml
+  parameters:
+    managementGroup: ${{ parameters.mgmtgroup }}
+    subscriptionGuid: ${{ parameters.subguid }}
+    subscriptionLocation: ${{ parameters.sublocation }}
+    templateDirectory: $(Build.SourcesDirectory)/landingzones/utils/mg-move
+    templateFile: move-subscription.bicep
+    workingDir: $(Build.SourcesDirectory)/$(subscriptionsPathFromRoot)/${{ parameters.relativePath }}
+
+- template: ./load-log-analytics-vars.yml
+
+- task: AzureCLI@2
+  displayName: Register Azure Provider Features
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      az account set -s ${{ parameters.subguid }}
+
+      echo 'Registering feature Microsoft.Compute/EncryptionAtHost'
+      az feature register --namespace Microsoft.Compute --name EncryptionAtHost
+
+      while [ "`az feature show --namespace Microsoft.Compute --name EncryptionAtHost --query properties.state -o tsv`" != "Registered" ]
+      do
+          echo 'Waiting for Microsoft.Compute/EncryptionAtHost to register, checking in 5s ...'
+          sleep 5s
+      done
+
+      echo 'Registering Microsoft.Compute namespace'
+      az provider register -n Microsoft.Compute
+
+      $(var-bashPostInjectScript)
+
+- template: ./config-subscription.yml
+  parameters:
+    subscriptionGuid: ${{ parameters.subguid }}
+    subscriptionType: ${{ parameters.subtype }}
+    subscriptionLocation: ${{ parameters.sublocation }}
+    filename: ${{ parameters.filename }}
+    workingDir: $(Build.SourcesDirectory)/$(subscriptionsPathFromRoot)/${{ parameters.relativePath }}

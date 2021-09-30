@@ -1,0 +1,47 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: subscriptionGuid
+    type: string
+  - name: subscriptionType
+    type: string
+  - name: subscriptionLocation
+    type: string
+  - name: filename
+    type: string
+  - name: workingDir
+    type: string
+
+steps:
+  
+- task: AzureCLI@2
+  displayName: Configure Subscription
+  inputs:
+    azureSubscription: $(serviceConnection)
+    workingDirectory: '${{ parameters.workingDir }}'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      template="landingzones/lz-${{ parameters.subscriptionType}}/main.bicep"
+      deployName='main-${{ parameters.subscriptionGuid }}-${{ parameters.subscriptionLocation }}'
+      deployName=${deployName:0:63}
+
+      echo "Configuring subscription ${{ parameters.subscriptionGuid }} using template ${template} ..."
+      az deployment sub $(deployOperation) \
+        --subscription ${{ parameters.subscriptionGuid }} \
+        --location ${{ parameters.subscriptionLocation }} \
+        --template-file $(Build.SourcesDirectory)/${template} \
+        --name ${deployName} \
+        --parameters @${{ parameters.filename }} \
+          logAnalyticsWorkspaceResourceId='$(var-logging-logAnalyticsWorkspaceResourceId)'
+          
+      $(var-bashPostInjectScript)

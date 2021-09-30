@@ -1,0 +1,56 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - roles
+      - .pipelines/roles.yml
+
+resources:
+  pipelines:
+    - pipeline: ManagementGroups
+      source: management-groups-ci
+      trigger:
+        branches:
+          include:
+            - refs/heads/main
+
+variables:
+- name: devops-org-name
+  value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: variable-template-file
+  value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
+- template: ../config/variables/common.yml
+- template: ../config/variables/${{ variables['variable-template-file'] }}
+
+pool:
+  vmImage: $[ variables.vmImage ]
+
+stages:
+
+- stage: DeployRoleStage
+  displayName: Deploy Custom Roles Stage
+
+  jobs:
+
+  - job: CustomRolesJob
+    displayName: Custom Roles Job
+
+    steps:
+    - template: templates/steps/create-roles.yml
+      parameters:
+        description: 'Create Custom Roles'
+        workingDir: $(System.DefaultWorkingDirectory)/roles
+        deployTemplates: [la-vminsights-readonly, lz-appowner]
+        deployOperation: ${{ variables['deployOperation'] }}

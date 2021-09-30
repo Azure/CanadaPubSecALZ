@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for SQLDB Database to Log Analytics Workspaces",
+    "mode": "indexed"
+}

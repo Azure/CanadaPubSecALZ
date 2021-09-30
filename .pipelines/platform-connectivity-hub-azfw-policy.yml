@@ -1,0 +1,44 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+trigger: none
+
+variables:
+- name: devops-org-name
+  value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: variable-template-file
+  value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
+- template: ../config/variables/common.yml
+- template: ../config/variables/${{ variables['variable-template-file'] }}
+
+pool:
+  vmImage: $[ variables.vmImage ]
+  
+stages:
+
+- stage: DeployAzureFirewallPolicyStage
+  displayName: Deploy Azure Firewall Policy Stage
+
+  jobs:
+
+  - deployment: DeployAzureFirewallPolicyJob
+    displayName: Deploy Azure Firewall Policy Job
+    environment: ${{ variables['Build.SourceBranchName'] }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+
+          - template: templates/steps/deploy-platform-connectivity-hub-azfw-policy.yml
+            parameters:
+              description: 'Deploy Azure Firewall Policy'
+              templateFile: main-azfw-policy.bicep
+              deployOperation: ${{ variables['deployOperation'] }}
+              workingDir: $(System.DefaultWorkingDirectory)/landingzones

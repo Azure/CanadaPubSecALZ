@@ -1,0 +1,54 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: json
+    type: string
+    default: ''
+
+steps:
+
+# Show variables (hard-coded)
+- task: Bash@3
+  displayName: Variables
+  inputs:
+    targetType: inline
+    script: |
+      $(var-bashPreInjectScript)
+
+      echo
+      echo "COMMON"
+      echo "  deploymentRegion = $(deploymentRegion)"
+      echo "  serviceConnection = $(serviceConnection)"
+      echo "  vmImage = $(vmImage)"
+      echo "  deployOperation = $(deployOperation)"
+      echo "  subscriptionsPathFromRoot = $(subscriptionsPathFromRoot)"
+      echo "  var-TriggerSubscriptionDeployOn = $(var-TriggerSubscriptionDeployOn)"
+
+      # echo "  var-bashPreInjectScript = $(var-bashPreInjectScript)"
+      # echo "  var-bashPostInjectScript = $(var-bashPostInjectScript)"
+
+      echo
+      echo "MANAGEMENT GROUPS"
+      echo "  var-parentManagementGroupId = $(var-parentManagementGroupId)"
+      echo "  var-topLevelManagementGroupName = $(var-topLevelManagementGroupName)"
+    
+      echo
+      echo "LOGGING"
+      echo "  var-logging-managementGroupId = $(var-logging-managementGroupId)"
+      echo "  var-logging-subscriptionId = $(var-logging-subscriptionId)"
+      echo "  var-logging-logAnalyticsResourceGroupName = $(var-logging-logAnalyticsResourceGroupName)"
+      echo "  var-logging-logAnalyticsWorkspaceName = $(var-logging-logAnalyticsWorkspaceName)"
+    
+      echo
+      echo "HUB NETWORKING"
+      echo "  var-hubnetwork-managementGroupId = $(var-hubnetwork-managementGroupId)"
+      echo "  var-hubnetwork-subscriptionId = $(var-hubnetwork-subscriptionId)"
+    
+      $(var-bashPostInjectScript)

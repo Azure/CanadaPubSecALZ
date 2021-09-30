@@ -1,0 +1,37 @@
+{
+  "profileName": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Profile Name for Config",
+      "description": "The profile name Azure Diagnostics"
+    }
+  },
+  "logAnalytics": {
+    "type": "string",
+    "metadata": {
+      "displayName": "logAnalytics",
+      "description": "The target Log Analytics Workspace for Azure Diagnostics",
+      "strongType": "omsWorkspace"
+    }
+  },
+  "logsEnabled": {
+    "type": "String",
+    "defaultValue": "True",
+    "allowedValues": [
+      "True",
+      "False"
+    ],
+    "metadata": {
+      "displayName": "Enable logs",
+      "description": "Whether to enable logs stream to the Log Analytics workspace - True or False"
+    }
+  },
+  "location": {
+    "type": "string",
+    "defaultValue": "canadacentral",
+    "metadata": {
+      "displayName": "Region",
+      "description": "Azure region that will be used for policy remediation"
+    }
+  }
+}

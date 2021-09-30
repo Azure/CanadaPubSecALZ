@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Databricks to Log Analytics Workspaces",
+    "mode": "indexed"
+}

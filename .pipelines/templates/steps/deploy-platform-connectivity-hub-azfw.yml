@@ -1,0 +1,191 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: description
+    type: string
+  - name: moveTemplate
+    type: string
+  - name: templateFile
+    type: string
+  - name: workingDir
+    type: string
+  - name: deployOperation
+    type: string
+    default: create
+    values:
+      - create
+      - what-if
+
+steps:
+
+- template: ./move-subscription.yml
+  parameters:
+    managementGroup: $(var-hubnetwork-managementGroupId)
+    subscriptionGuid: $(var-hubnetwork-subscriptionId)
+    subscriptionLocation: $(deploymentRegion)
+    templateDirectory: $(Build.SourcesDirectory)/landingzones/utils/mg-move
+    templateFile: move-subscription.bicep
+    workingDir: ${{ parameters.workingDir }}/utils/mg-move
+
+- task: AzureCLI@2
+  displayName: Register Resource Providers
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      az account set -s $(var-hubnetwork-subscriptionId)
+      
+      az provider register -n Microsoft.ContainerService --subscription '$(var-hubnetwork-subscriptionId)'
+
+      $(var-bashPostInjectScript)
+
+- task: AzureCLI@2
+  displayName: Configure Hub Networking
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      # Install Azure CLI extension for Azure Firewall
+      az extension add --name azure-firewall
+
+      # Identify Azure Firewall Policy
+      AZURE_FIREWALL_POLICY_ID=`az network firewall policy show --subscription $(var-hubnetwork-subscriptionId) --resource-group $(var-hubnetwork-azfw-rgPolicyName) --name $(var-hubnetwork-azfw-policyName) --query id -o tsv`
+      echo "Azure Firewall Policy Id: $AZURE_FIREWALL_POLICY_ID"
+
+      echo "Deploying ${{ parameters.templateFile }} using ${{ parameters.deployOperation}} operation..."
+      
+      az deployment sub ${{ parameters.deployOperation }} \
+      --location $(deploymentRegion) \
+      --subscription $(var-hubnetwork-subscriptionId) \
+      --template-file ${{ parameters.templateFile }} \
+      --parameters \
+          serviceHealthAlerts='$(var-hubnetwork-serviceHealthAlerts)' \
+          securityCenter='$(var-hubnetwork-securityCenter)' \
+          subscriptionRoleAssignments='$(var-hubnetwork-subscriptionRoleAssignments)' \
+          subscriptionBudget='$(var-hubnetwork-subscriptionBudget)' \
+          subscriptionTags='$(var-hubnetwork-subscriptionTags)' \
+          resourceTags='$(var-hubnetwork-resourceTags)' \
+          logAnalyticsWorkspaceResourceId='$(var-logging-logAnalyticsWorkspaceResourceId)' \
+          deployPrivateDnsZones='$(var-hubnetwork-deployPrivateDnsZones)' \
+          rgPrivateDnsZonesName='$(var-hubnetwork-rgPrivateDnsZonesName)' \
+          deployDdosStandard='$(var-hubnetwork-deployDdosStandard)' \
+          rgDdosName='$(var-hubnetwork-rgDdosName)' \
+          ddosPlanName='$(var-hubnetwork-ddosPlanName)' \
+          bastionName='$(var-hubnetwork-bastionName)' \
+          rgPazName='$(var-hubnetwork-rgPazName)' \
+          rgMrzName='$(var-hubnetwork-rgMrzName)' \
+          mrzVnetName='$(var-hubnetwork-mrzVnetName)' \
+          mrzVnetAddressPrefixRFC1918='$(var-hubnetwork-mrzVnetAddressPrefixRFC1918)' \
+          mrzMazSubnetName='$(var-hubnetwork-mrzMazSubnetName)' \
+          mrzMazSubnetAddressPrefix='$(var-hubnetwork-mrzMazSubnetAddressPrefix)' \
+          mrzInfSubnetName='$(var-hubnetwork-mrzInfSubnetName)' \
+          mrzInfSubnetAddressPrefix='$(var-hubnetwork-mrzInfSubnetAddressPrefix)' \
+          mrzSecSubnetName='$(var-hubnetwork-mrzSecSubnetName)' \
+          mrzSecSubnetAddressPrefix='$(var-hubnetwork-mrzSecSubnetAddressPrefix)' \
+          mrzLogSubnetName='$(var-hubnetwork-mrzLogSubnetName)' \
+          mrzLogSubnetAddressPrefix='$(var-hubnetwork-mrzLogSubnetAddressPrefix)' \
+          mrzMgmtSubnetName='$(var-hubnetwork-mrzMgmtSubnetName)' \
+          mrzMgmtSubnetAddressPrefix='$(var-hubnetwork-mrzMgmtSubnetAddressPrefix)' \
+          rgHubName='$(var-hubnetwork-azfw-rgHubName)' \
+          hubVnetName='$(var-hubnetwork-azfw-hubVnetName)' \
+          hubVnetAddressPrefixRFC1918='$(var-hubnetwork-azfw-hubVnetAddressPrefixRFC1918)' \
+          hubVnetAddressPrefixRFC6598='$(var-hubnetwork-azfw-hubVnetAddressPrefixRFC6598)' \
+          hubVnetAddressPrefixBastion='$(var-hubnetwork-azfw-hubVnetAddressPrefixBastion)' \
+          hubPazSubnetName='$(var-hubnetwork-azfw-hubPazSubnetName)' \
+          hubPazSubnetAddressPrefix='$(var-hubnetwork-azfw-hubPazSubnetAddressPrefix)' \
+          hubGatewaySubnetAddressPrefix='$(var-hubnetwork-azfw-hubGatewaySubnetPrefix)' \
+          hubAzureFirewallSubnetAddressPrefix='$(var-hubnetwork-azfw-hubAzureFirewallSubnetAddressPrefix)' \
+          hubAzureFirewallManagementSubnetAddressPrefix='$(var-hubnetwork-azfw-hubAzureFirewallManagementSubnetAddressPrefix)' \
+          hubBastionSubnetAddressPrefix='$(var-hubnetwork-azfw-hubBastionSubnetAddressPrefix)' \
+          azureFirewallName='$(var-hubnetwork-azfw-azureFirewallName)' \
+          azureFirewallZones='$(var-hubnetwork-azfw-azureFirewallZones)' \
+          azureFirewallForcedTunnelingEnabled='$(var-hubnetwork-azfw-azureFirewallForcedTunnelingEnabled)' \
+          azureFirewallForcedTunnelingNextHop='$(var-hubnetwork-azfw-azureFirewallForcedTunnelingNextHop)' \
+          azureFirewallExistingPolicyId="$AZURE_FIREWALL_POLICY_ID"
+          
+      $(var-bashPostInjectScript)
+    workingDirectory: '${{ parameters.workingDir }}/lz-platform-connectivity-hub-azfw'
+
+- task: AzureCLI@2
+  displayName: Azure Policy - Enable Private DNS Zone Policies (if var-hubnetwork-deployPrivateDnsZones=true)
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      case $(var-hubnetwork-deployPrivateDnsZones) in
+        (true)
+          echo "Hub Network will manage private dns zones, creating Azure Policy assignment to automatically create Private Endpoint DNS Zones"
+
+          # Apply the policy assignment
+          echo "Deploying policy assignment using policy/custom/assignments/dns-private-endpoints.bicep"
+
+          az deployment mg ${{ parameters.deployOperation }} \
+            --location $(deploymentRegion) \
+            --management-group-id $(var-topLevelManagementGroupName) \
+            --template-file dns-private-endpoints.bicep \
+            --parameters \
+                policyAssignmentManagementGroupId='$(var-topLevelManagementGroupName)' \
+                policyDefinitionManagementGroupId='$(var-topLevelManagementGroupName)' \
+                privateDNSZoneSubscriptionId='$(var-hubnetwork-subscriptionId)' \
+                privateDNSZoneResourceGroupName='$(var-hubnetwork-rgPrivateDnsZonesName)'
+          ;;
+        (*)
+          echo "Hub Network will not manage private dns zones.  Azure Policy assignment will be skipped."
+          ;;
+      esac
+
+      $(var-bashPostInjectScript)
+    workingDirectory: '$(System.DefaultWorkingDirectory)/policy/custom/assignments'
+
+- task: AzureCLI@2
+  displayName: Azure Policy - Enable DDoS Standard (if var-hubnetwork-deployDdosStandard=true)
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      case $(var-hubnetwork-deployDdosStandard) in
+        (true)
+          echo "DDoS Standard is enabled, creating Azure Policy assignment to protect for all Virtual Networks in '$(var-topLevelManagementGroupName)' management group."
+
+          # Identify the Resource Id for DDOS Standard Plan
+          DDOS_PLAN_ID=`az network ddos-protection show -g $(var-hubnetwork-rgDdosName) -n $(var-hubnetwork-ddosPlanName) --subscription $(var-hubnetwork-subscriptionId) --query id -o tsv`
+          echo "DDoS Standard Plan Id: $DDOS_PLAN_ID"
+
+          # Apply the policy assignment
+          echo "Deploying policy assignment using policy/custom/assignments/ddos.bicep"
+
+          az deployment mg ${{ parameters.deployOperation }} \
+            --location $(deploymentRegion) \
+            --management-group-id $(var-topLevelManagementGroupName) \
+            --template-file ddos.bicep \
+            --parameters \
+                policyAssignmentManagementGroupId='$(var-topLevelManagementGroupName)' \
+                policyDefinitionManagementGroupId=$(var-topLevelManagementGroupName) \
+                ddosStandardPlanId="$DDOS_PLAN_ID"
+          ;;
+        (*)
+          echo "DDoS Standard is not enabled.  Azure Policy assignment will be skipped."
+          ;;
+      esac
+
+      $(var-bashPostInjectScript)
+    workingDirectory: '$(System.DefaultWorkingDirectory)/policy/custom/assignments'

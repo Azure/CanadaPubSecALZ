@@ -1,0 +1,107 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: config
+    type: string
+  - name: enviro
+    type: string
+  - name: commit
+    type: string
+
+jobs:
+
+- job: TriggerSubscriptionsJob
+  displayName: Trigger Subscriptions Job
+
+  steps:
+
+  - template: ../steps/show-variables.yml
+    parameters:
+      json: ${{ convertToJson(variables) }}
+
+  - task: Bash@3
+    name: IdentifySubscriptions
+    displayName: Identify Subscriptions
+    inputs:
+      targetType: 'inline'
+      script: |
+        $(var-bashPreInjectScript)
+
+        echo "Find changed subscription configuration files in: ${{ parameters.config }}"
+        echo "  where environment is: ${{ parameters.enviro }}"
+        echo "  and change status flag in set: [$(var-TriggerSubscriptionDeployOn)]"
+        echo "  for Git commit id: ${{ parameters.commit }}"
+        echo
+
+        # Escape any '/' characters in the config path (for sed's benefit)
+        config=$(echo ${{ parameters.config }} | sed 's/\//\\\//g')
+        enviro=${{ parameters.enviro }}
+
+        # # Get array of subscription configuration files changed in this commit
+        # readarray -t lines < <(git show --pretty="" --name-only ${{ parameters.commit }} | sed "/^${{ parameters.config }}\//!d" | sed "s/^${{ parameters.config }}\///g")
+
+        # Get array of subscription configuration files in this commit & enviro, [AMD] per global variable
+        readarray -t lines < <(git show --pretty="" --name-status ${{ parameters.commit }} | sed "/^[$(var-TriggerSubscriptionDeployOn)].*${config}\/${enviro}/!d" | cut -f 2 - | sed "s/^${config}\///g")
+
+        # Output diagnostic information
+        echo "All subscription configuration Files changed in this commit: (${{ parameters.commit }})"
+        git show --pretty="" --name-status ${{ parameters.commit }}
+        echo
+        echo "Filtered subscription configuration files changed in this commit: (${{ parameters.commit }})"
+        echo $(printf "  %s\n" "${lines[@]}")
+        echo
+
+        # Convert array to comma-separated string of values
+        changes=$(printf "%s," "${lines[@]}")
+
+        # # Convert array to comma-separated string of quoted values
+        # changes=$(printf "\"%s\"," "${lines[@]}")
+
+        # Remove trailing comma and display result
+        changes="${changes%,}"
+
+        # Create an output variable named 'LoadSubscriptions.Changes'
+        echo "Creating output variable: IdentifySubscriptions.Changes=${changes}"
+        echo
+        echo "##vso[task.setvariable variable=Changes;isoutput=true]${changes}"
+
+        $(var-bashPostInjectScript)
+        
+      workingDirectory: ${{ variables['Build.SourcesDirectory'] }}
+
+  - task: PowerShell@2
+    name: TriggerSubscriptions
+    displayName: Trigger Subscriptions
+    inputs:
+      targetType: 'inline'
+      script: |
+        Write-Host "Subscription changes: $env:SUBSCRIPTION_CHANGES"
+        if (($env:SUBSCRIPTION_CHANGES).Length -gt 0)
+        {
+          $url = "$($env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI)$env:SYSTEM_TEAMPROJECTID/_apis/pipelines/$($env:SYSTEM_DEFINITIONID)/runs?api-version=6.0-preview.1"
+          Write-Host "Invoking pipeline definition with URL: $url"
+          $body = @"
+          {
+            "templateParameters": {
+              "subscriptions":"[$env:SUBSCRIPTION_CHANGES]"
+              },
+          }
+        "@
+          $headers = @{ Authorization = "Bearer $env:SYSTEM_ACCESSTOKEN" }
+          $pipeline = Invoke-RestMethod -Uri $url -Headers $headers -Method Post -Body $body -ContentType application/json
+          Write-Host "Pipeline invocation result = $($pipeline | ConvertTo-Json -Depth 100)"
+        }
+        else
+        {
+          Write-Host "No subscription configuration changes detected in current commit ($BUILD_SOURCEVERSION)"
+        }
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+      SUBSCRIPTION_CHANGES: $(IdentifySubscriptions.Changes)

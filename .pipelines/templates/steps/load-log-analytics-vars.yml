@@ -1,0 +1,38 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+steps:
+
+- task: AzureCLI@2
+  displayName: Load Log Analytics variables
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      # Get workspace info via Azure CLI
+      echo 'Retrieving log analytics workspace info via Azure CLI...'
+      workspaceInfo=`az monitor log-analytics workspace show --subscription $(var-logging-subscriptionId) -g $(var-logging-logAnalyticsResourceGroupName) -n $(var-logging-logAnalyticsWorkspaceName) --query '{workspaceResourceId:id,workspaceId:customerId}' -o json`
+    
+      # Set local environment variables
+      LOG_ANALYTICS_WORKSPACE_RESOURCE_ID=`echo $workspaceInfo | jq -r .workspaceResourceId`
+      LOG_ANALYTICS_WORKSPACE_ID=`echo $workspaceInfo | jq -r .workspaceId`
+
+      # Show found workspace info
+      echo "  log analytics workspace resource ID: $LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
+      echo "  log analytics workspace ID: $LOG_ANALYTICS_WORKSPACE_ID"
+
+      # Set pipeline environment variables
+      echo 'Storing workspace info in pipeline variables: var-logging-logAnalyticsWorkspaceResourceId, var-logging-logAnalyticsWorkspaceId...'
+      echo "##vso[task.setvariable variable=var-logging-logAnalyticsWorkspaceResourceId]$LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
+      echo "##vso[task.setvariable variable=var-logging-logAnalyticsWorkspaceId]$LOG_ANALYTICS_WORKSPACE_ID"
+
+      $(var-bashPostInjectScript)
