@@ -8,8 +8,8 @@
                 "incidentTypes": [ "Incident", "Security" ],
                 "regions": [ "Global", "Canada East", "Canada Central" ],
                 "receivers": {
-                    "app": [ "alzcanadapubsec@microsoft.com" ],
-                    "email": [ "alzcanadapubsec@microsoft.com" ],
+                    "app": [ "skeeler@m365incanada.onmicrosoft.com" ],
+                    "email": [ "skeeler@m365incanada.onmicrosoft.com" ],
                     "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
                     "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
                 },
@@ -21,7 +21,7 @@
         },
         "securityCenter": {
             "value": {
-                "email": "alzcanadapubsec@microsoft.com",
+                "email": "skeeler@m365incanada.onmicrosoft.com",
                 "phone": "5555555555"
             }
         },
@@ -31,14 +31,14 @@
                     "comments": "Built-in Role: Contributor",
                     "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
                     "securityGroupObjectIds": [
-                        "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+                        "ae712826-a993-4819-a167-4045d965b5a5"
                     ]
                 },
                 {
                     "comments": "Custom Role: Landing Zone Application Owner",
                     "roleDefinitionId": "b4c87314-c1a1-5320-9c43-779585186bcc",
                     "securityGroupObjectIds": [
-                        "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+                        "ae712826-a993-4819-a167-4045d965b5a5"
                     ]
                 }
             ]
@@ -50,7 +50,7 @@
                 "amount": 1000,
                 "timeGrain": "Monthly",
                 "contactEmails": [
-                    "alzcanadapubsec@microsoft.com"
+                    "skeeler@m365incanada.onmicrosoft.com"
                 ]
             }
         },
@@ -71,102 +71,95 @@
         },
         "resourceGroups": {
             "value": {
-                "automation": "health102021W1Automation",
-                "compute": "health102021W1Compute",
-                "monitor": "health102021W1Monitor",
-                "networking": "health102021W1Network",
-                "networkWatcher": "NetworkWatcherRG",
-                "security": "health102021W1Security",
-                "storage": "health102021W1Storage"
+                "automation": "rgAutomation",
+                "networking": "rgVnet",
+                "networkWatcher": "NetworkWatcherRG"
             }
         },
-        "useCMK": {
-            "value": true
-        },
-        "keyVault": {
-            "value": {
-                "secretExpiryInDays": 3650
-            }
-        },
-        "automation": {
-            "value": {
-                "name": "health102021W1automation"
-            }
-        },
-        "sqldb": {
-            "value": {
-                "enabled": true,
-                "username": "azadmin"
-            }
-        },
-        "synapse": {
-            "value": {
-                "username": "azadmin"
-            }
+        "automationAccountName": {
+            "value": "automation"
         },
         "hubNetwork": {
             "value": {
-                "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+                "virtualNetworkId": "/subscriptions/1a7025c7-f492-4eb9-9cf6-12c7889e4dfd/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
                 "rfc1918IPRange": "10.18.0.0/22",
                 "rfc6598IPRange": "100.60.0.0/16",
-                "egressVirtualApplianceIp": "10.18.1.4",
-                "privateDnsManagedByHub": true,
-                "privateDnsManagedByHubSubscriptionId": "ed7f4eed-9010-4227-b115-2a5e37728f27",
-                "privateDnsManagedByHubResourceGroupName": "pubsec-dns-rg"
+                "egressVirtualApplianceIp": "10.18.0.36"
             }
         },
         "network": {
             "value": {
+                "deployVnet": true,
                 "peerToHubVirtualNetwork": true,
                 "useRemoteGateway": false,
-                "name": "health102021W1vnet",
+                "name": "vnet",
                 "dnsServers": [
                     "10.18.1.4"
                 ],
                 "addressPrefixes": [
-                    "10.5.0.0/16"
+                    "10.11.0.0/16"
                 ],
                 "subnets": {
                     "oz": {
                         "comments": "Foundational Elements Zone (OZ)",
                         "name": "oz",
-                        "addressPrefix": "10.5.1.0/25"
+                        "addressPrefix": "10.11.1.0/25",
+                        "nsg": {
+                            "enabled": true
+                        },
+                        "udr": {
+                            "enabled": true
+                        }
                     },
                     "paz": {
                         "comments": "Presentation Zone (PAZ)",
                         "name": "paz",
-                        "addressPrefix": "10.5.2.0/25"
+                        "addressPrefix": "10.11.2.0/25",
+                        "nsg": {
+                            "enabled": true
+                        },
+                        "udr": {
+                            "enabled": true
+                        }
                     },
                     "rz": {
                         "comments": "Application Zone (RZ)",
                         "name": "rz",
-                        "addressPrefix": "10.5.3.0/25"
+                        "addressPrefix": "10.11.3.0/25",
+                        "nsg": {
+                            "enabled": true
+                        },
+                        "udr": {
+                            "enabled": true
+                        }
                     },
                     "hrz": {
                         "comments": "Data Zone (HRZ)",
                         "name": "hrz",
-                        "addressPrefix": "10.5.4.0/25"
+                        "addressPrefix": "10.11.4.0/25",
+                        "nsg": {
+                            "enabled": true
+                        },
+                        "udr": {
+                            "enabled": true
+                        }
                     },
-                    "databricksPublic": {
-                        "comments": "Databricks Public Delegated Subnet",
-                        "name": "databrickspublic",
-                        "addressPrefix": "10.5.5.0/25"
-                    },
-                    "databricksPrivate": {
-                        "comments": "Databricks Private Delegated Subnet",
-                        "name": "databricksprivate",
-                        "addressPrefix": "10.5.6.0/25"
-                    },
-                    "privateEndpoints": {
-                        "comments": "Private Endpoints Subnet",
-                        "name": "privateendpoints",
-                        "addressPrefix": "10.5.7.0/25"
-                    },
-                    "web": {
-                        "comments": "Azure Web App Delegated Subnet",
-                        "name": "webapp",
-                        "addressPrefix": "10.5.8.0/25"
-                    }
+                    "optional": [
+                        {
+                            "comments": "App Service",
+                            "name": "appservice",
+                            "addressPrefix": "10.11.5.0/25",
+                            "nsg": {
+                                "enabled": false
+                            },
+                            "udr": {
+                                "enabled": false
+                            },
+                            "delegations": {
+                                "serviceName": "Microsoft.Web/serverFarms"
+                            }
+                        }
+                    ]
                 }
             }
         }

@@ -21,7 +21,11 @@ targetScope = 'subscription'
 //       "email": [ "email-1@company.com", "email-3@company.com", "email-4@company.com" ],
 //       "sms": [ { "countryCode": "1", "phoneNumber": "1234567890" }, { "countryCode": "1",  "phoneNumber": "0987654321" } ],
 //       "voice": [ { "countryCode": "1", "phoneNumber": "1234567890" } ]
-//     }
+//     },
+//     "actionGroupName": "ALZ action group",
+//     "actionGroupShortName": "alz-alert",
+//     "alertRuleName": "ALZ alert rule",
+//     "alertRuleDescription": "Alert rule for Azure Landing Zone"
 //   }
 // }
 @description('Service Health alerts')
@@ -194,6 +198,10 @@ module serviceHealth '../azresources/service-health/service-health.bicep' = if (
     incidentTypes: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.incidentTypes : []
     regions: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.regions : []
     receivers: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.receivers : {}
+    actionGroupName: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.actionGroupName : ''
+    actionGroupShortName: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.actionGroupShortName : ''
+    alertRuleName: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.alertRuleName : ''
+    alertRuleDescription: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.alertRuleDescription : ''
   }
 }
 

@@ -21,7 +21,11 @@ targetScope = 'subscription'
 //       "email": [ "email-1@company.com", "email-3@company.com", "email-4@company.com" ],
 //       "sms": [ { "countryCode": "1", "phoneNumber": "1234567890" }, { "countryCode": "1",  "phoneNumber": "0987654321" } ],
 //       "voice": [ { "countryCode": "1", "phoneNumber": "1234567890" } ]
-//     }
+//     },
+//     "actionGroupName": "ALZ action group",
+//     "actionGroupShortName": "alz-alert",
+//     "alertRuleName": "ALZ alert rule",
+//     "alertRuleDescription": "Alert rule for Azure Landing Zone"
 //   }
 // }
 @description('Service Health alerts')

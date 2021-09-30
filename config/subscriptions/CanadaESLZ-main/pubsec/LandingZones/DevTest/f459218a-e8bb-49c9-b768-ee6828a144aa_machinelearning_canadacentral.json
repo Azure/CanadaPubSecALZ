@@ -12,7 +12,11 @@
           "email": [ "alzcanadapubsec@microsoft.com" ],
           "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
           "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
-        }
+        },
+        "actionGroupName": "Sub5 ALZ action group",
+        "actionGroupShortName": "sub5-alert",
+        "alertRuleName": "Sub5 ALZ alert rule",
+        "alertRuleDescription": "Alert rule for Azure Landing Zone"
       }
     },
     "securityCenter": {
