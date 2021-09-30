@@ -44,19 +44,6 @@ param backendIP1Int string
 @description('Internal Facing - Backend IP #2.')
 param backendIP2Int string
 
-// management
-@description('Management - Frontend Subnet Resource Id.')
-param frontendSubnetIdMrz string
-
-@description('Management - Frontend IP.')
-param frontendIPMrz string
-
-@description('Management - Backend IP #1.')
-param backendIP1Mrz string
-
-@description('Management - Backend IP #2.')
-param backendIP2Mrz string
-
 // probe
 @description('Load Balancer Probe Tcp Port.')
 param lbProbeTcpPort int 
@@ -87,22 +74,6 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
         ]
       }
       {
-        name: '${name}-Frontend-mrz'
-        properties: {
-          privateIPAddress: frontendIPMrz
-          privateIPAllocationMethod: 'Static'
-          subnet: {
-            id: frontendSubnetIdMrz
-          }
-          privateIPAddressVersion: 'IPv4'
-        }
-        zones: [
-          '1'
-          '2'
-          '3'
-        ]
-      }
-      {
         name: '${name}-Frontend-int'
         properties: {
           privateIPAddress: frontendIPInt
@@ -121,9 +92,6 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
     ]
     backendAddressPools: [ {
       name: '${name}-Backend-ext'
-    }
-    {
-      name: '${name}-Backend-mrz'
     }
     {
       name: '${name}-Backend-int'
@@ -146,28 +114,6 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
           disableOutboundSnat: false
           backendAddressPool: {
             id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools',name,'${name}-Backend-ext')
-          }
-          probe: {
-            id: resourceId('Microsoft.Network/loadBalancers/probes',name,'lbprobe')
-          }
-        }
-      }
-      {
-        name: 'lbruleFE2all-mrz'
-        properties: {
-          frontendIPConfiguration: {
-            id: resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', name,'${name}-Frontend-mrz')
-          }
-          frontendPort: 0
-          backendPort: 0
-          enableFloatingIP: true
-          idleTimeoutInMinutes: 5
-          protocol: 'All'
-          enableTcpReset: false
-          loadDistribution: 'Default'
-          disableOutboundSnat: false
-          backendAddressPool: {
-            id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools',name,'${name}-Backend-mrz')
           }
           probe: {
             id: resourceId('Microsoft.Network/loadBalancers/probes',name,'lbprobe')
@@ -229,32 +175,6 @@ resource ILBBackendExt 'Microsoft.Network/loadBalancers/backendAddressPools@2020
         name: '${ILB.name}-ext2'
         properties: {
           ipAddress: backendIP2Ext
-          virtualNetwork: {
-            id: backendVnetId
-          }
-        }
-      }
-    ]
-  }
-}
-
-resource ILBBackendMrz 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
-  name: '${ILB.name}/${name}-Backend-mrz'
-  properties: {
-    loadBalancerBackendAddresses: configureEmptyBackendPool ? null : [
-      {
-        name: '${ILB.name}-mrz1'
-        properties: {
-          ipAddress: backendIP1Mrz
-          virtualNetwork: {
-            id: backendVnetId
-          }
-        }
-      }
-      {
-        name: '${ILB.name}-mrz2'
-        properties: {
-          ipAddress: backendIP2Mrz
           virtualNetwork: {
             id: backendVnetId
           }

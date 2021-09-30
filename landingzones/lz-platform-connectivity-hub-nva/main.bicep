@@ -280,9 +280,6 @@ param fwDevVM1ExternalFacingIP string //= '100.60.0.8'
 @description('Non-production NVA - VM #2 External Facing IP (based on RFC 6598).')
 param fwDevVM2ExternalFacingIP string //= '100.60.0.9'
 
-@description('Non-production NVA - Internal Load Balancer Management Restricted Zone IP (based on RFC 1918).')
-param fwDevILBMrzIntIP string //= '10.18.0.103'
-
 @description('Non-production NVA - VM #1 Management Restricted Zone IP (based on RFC 1918).')
 param fwDevVM1MrzIntIP string //= '10.18.0.104'
 
@@ -331,9 +328,6 @@ param fwProdVM1ExternalFacingIP string //= '100.60.0.5'
 
 @description('Production NVA - VM #2 External Facing IP (based on RFC 6598).')
 param fwProdVM2ExternalFacingIP string //= '100.60.0.6'
-
-@description('Production NVA - Internal Load Balancer Management Restricted Zone IP (based on RFC 1918).')
-param fwProdILBMrzIntIP string //= '10.18.0.100'
 
 @description('Production NVA - VM #1 Management Restricted Zone IP (based on RFC 1918).')
 param fwProdVM1MrzIntIP string //= '10.18.0.101'
@@ -560,7 +554,7 @@ module udrMrzSpoke '../../azresources/network/udr/udr-custom.bicep' = {
         properties: {
           addressPrefix: '0.0.0.0/0'
           nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: fwProdILBMrzIntIP
+          nextHopIpAddress: fwProdILBPrdIntIP
         }
       }
       // Force Routes to Hub IPs (RFC1918 range) via FW despite knowing that route via peering
@@ -569,7 +563,7 @@ module udrMrzSpoke '../../azresources/network/udr/udr-custom.bicep' = {
         properties: {
           addressPrefix: hubVnetAddressPrefixRFC1918
           nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: fwProdILBMrzIntIP
+          nextHopIpAddress: fwProdILBPrdIntIP
         }
       }
       // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
@@ -578,7 +572,7 @@ module udrMrzSpoke '../../azresources/network/udr/udr-custom.bicep' = {
         properties: {
           addressPrefix: hubVnetAddressPrefixRFC6598
           nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: fwProdILBMrzIntIP
+          nextHopIpAddress: fwProdILBPrdIntIP
         }
       }
     ]
@@ -865,10 +859,6 @@ module ProdFWs_ILB 'hub-vnet/lb-firewalls-hub.bicep' = {
     backendIP1Ext: fwProdVM1ExternalFacingIP
     backendIP2Ext: fwProdVM2ExternalFacingIP
     frontendSubnetIdExt: hubVnet.outputs.PublicSubnetId
-    frontendIPMrz: fwProdILBMrzIntIP
-    backendIP1Mrz: fwProdVM1MrzIntIP
-    backendIP2Mrz: fwProdVM2MrzIntIP
-    frontendSubnetIdMrz: hubVnet.outputs.MrzIntSubnetId
     frontendIPInt: fwProdILBPrdIntIP
     backendIP1Int: fwProdVM1PrdIntIP
     backendIP2Int: fwProdVM2PrdIntIP
@@ -889,10 +879,6 @@ module DevFWs_ILB 'hub-vnet/lb-firewalls-hub.bicep' = {
     backendIP1Ext: fwDevVM1ExternalFacingIP
     backendIP2Ext: fwDevVM2ExternalFacingIP
     frontendSubnetIdExt: hubVnet.outputs.PublicSubnetId
-    frontendIPMrz: fwDevILBMrzIntIP
-    backendIP1Mrz: fwDevVM1MrzIntIP
-    backendIP2Mrz: fwDevVM2MrzIntIP
-    frontendSubnetIdMrz: hubVnet.outputs.MrzIntSubnetId
     frontendIPInt: fwDevILBDevIntIP
     backendIP1Int: fwDevVM1DevIntIP
     backendIP2Int: fwDevVM2DevIntIP

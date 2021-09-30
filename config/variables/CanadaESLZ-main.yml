@@ -248,7 +248,6 @@ variables:
   var-hubnetwork-nva-fwDevILBExternalFacingIP: 100.60.0.7
   var-hubnetwork-nva-fwDevVM1ExternalFacingIP: 100.60.0.8
   var-hubnetwork-nva-fwDevVM2ExternalFacingIP: 100.60.0.9
-  var-hubnetwork-nva-fwDevILBMrzIntIP: 10.18.0.103
   var-hubnetwork-nva-fwDevVM1MrzIntIP: 10.18.0.104
   var-hubnetwork-nva-fwDevVM2MrzIntIP: 10.18.0.105
   var-hubnetwork-nva-fwDevILBDevIntIP: 10.18.0.68
@@ -265,7 +264,6 @@ variables:
   var-hubnetwork-nva-fwProdILBExternalFacingIP: 100.60.0.4
   var-hubnetwork-nva-fwProdVM1ExternalFacingIP: 100.60.0.5
   var-hubnetwork-nva-fwProdVM2ExternalFacingIP: 100.60.0.6
-  var-hubnetwork-nva-fwProdILBMrzIntIP: 10.18.0.100
   var-hubnetwork-nva-fwProdVM1MrzIntIP: 10.18.0.101
   var-hubnetwork-nva-fwProdVM2MrzIntIP: 10.18.0.102
   var-hubnetwork-nva-fwProdILBPrdIntIP: 10.18.0.36

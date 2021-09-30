@@ -122,7 +122,6 @@ steps:
           fwDevILBExternalFacingIP='$(var-hubnetwork-nva-fwDevILBExternalFacingIP)' \
           fwDevVM1ExternalFacingIP='$(var-hubnetwork-nva-fwDevVM1ExternalFacingIP)' \
           fwDevVM2ExternalFacingIP='$(var-hubnetwork-nva-fwDevVM2ExternalFacingIP)' \
-          fwDevILBMrzIntIP='$(var-hubnetwork-nva-fwDevILBMrzIntIP)' \
           fwDevVM1MrzIntIP='$(var-hubnetwork-nva-fwDevVM1MrzIntIP)' \
           fwDevVM2MrzIntIP='$(var-hubnetwork-nva-fwDevVM2MrzIntIP)' \
           fwDevILBDevIntIP='$(var-hubnetwork-nva-fwDevILBDevIntIP)' \
@@ -137,7 +136,6 @@ steps:
           fwProdILBExternalFacingIP='$(var-hubnetwork-nva-fwProdILBExternalFacingIP)' \
           fwProdVM1ExternalFacingIP='$(var-hubnetwork-nva-fwProdVM1ExternalFacingIP)' \
           fwProdVM2ExternalFacingIP='$(var-hubnetwork-nva-fwProdVM2ExternalFacingIP)' \
-          fwProdILBMrzIntIP='$(var-hubnetwork-nva-fwProdILBMrzIntIP)' \
           fwProdVM1MrzIntIP='$(var-hubnetwork-nva-fwProdVM1MrzIntIP)' \
           fwProdVM2MrzIntIP='$(var-hubnetwork-nva-fwProdVM2MrzIntIP)' \
           fwProdILBPrdIntIP='$(var-hubnetwork-nva-fwProdILBPrdIntIP)' \
