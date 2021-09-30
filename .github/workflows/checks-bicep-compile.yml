@@ -1,0 +1,22 @@
+name: Compile all bicep templates
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**.bicep"
+
+jobs:
+  bicep_unit_tests:
+    name: Compile all bicep templates
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Transpile
+        shell: bash
+        run: |
+          find . -type f -name '*.bicep' | xargs -tn1 az bicep build -f 
