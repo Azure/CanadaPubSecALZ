@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/subscriptionRoleAssignmentsDefinition",
+  "definitions": {
+    "subscriptionRoleAssignmentsDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "subscriptionRoleAssignments": {
+          "$ref": "#/definitions/SubscriptionRoleAssignments"
+        }
+      },
+      "required": [
+        "subscriptionRoleAssignments"
+      ],
+      "title": "subscriptionRoleAssignmentsDefinition"
+    },
+    "SubscriptionRoleAssignments": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Value"
+          }
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "SubscriptionRoleAssignments"
+    },
+    "Value": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "comments": {
+          "type": "string"
+        },
+        "roleDefinitionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "securityGroupObjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "comments",
+        "roleDefinitionId",
+        "securityGroupObjectIds"
+      ],
+      "title": "Value"
+    }
+  }
+}

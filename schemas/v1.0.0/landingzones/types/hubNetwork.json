@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/hubNetworkDefinition",
+  "definitions": {
+    "hubNetworkDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hubNetwork": {
+          "$ref": "#/definitions/HubNetwork"
+        }
+      },
+      "required": [
+        "hubNetwork"
+      ],
+      "title": "hubNetworkDefinition"
+    },
+    "HubNetwork": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/Value"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "HubNetwork"
+    },
+    "Value": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "virtualNetworkId": {
+          "type": "string"
+        },
+        "rfc1918IPRange": {
+          "type": "string"
+        },
+        "rfc6598IPRange": {
+          "type": "string"
+        },
+        "egressVirtualApplianceIp": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "egressVirtualApplianceIp",
+        "rfc1918IPRange",
+        "rfc6598IPRange",
+        "virtualNetworkId"
+      ],
+      "title": "Value"
+    }
+  }
+}

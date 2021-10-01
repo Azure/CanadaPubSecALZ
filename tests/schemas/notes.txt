@@ -1,0 +1,3 @@
+sudo apt-get install powershell -y
+
+pwsh -File ./test-all.ps1 -TestFolder . -SchemaFolder ../../schemas/v1.0.0/landingzones

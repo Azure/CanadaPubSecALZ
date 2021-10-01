@@ -1,0 +1,49 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/securityCenterDefinition",
+    "definitions": {
+        "securityCenterDefinition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "securityCenter": {
+                    "$ref": "#/definitions/SecurityCenter"
+                }
+            },
+            "required": [
+                "securityCenter"
+            ],
+            "title": "securityCenterDefinition"
+        },
+        "SecurityCenter": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "value": {
+                    "$ref": "#/definitions/Value"
+                }
+            },
+            "required": [
+                "value"
+            ],
+            "title": "SecurityCenter"
+        },
+        "Value": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "email",
+                "phone"
+            ],
+            "title": "Value"
+        }
+    }
+}

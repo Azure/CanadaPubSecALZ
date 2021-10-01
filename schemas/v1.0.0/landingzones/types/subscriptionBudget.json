@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/subscriptionBudgetDefinition",
+  "definitions": {
+    "subscriptionBudgetDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "subscriptionBudget": {
+          "$ref": "#/definitions/SubscriptionBudget"
+        }
+      },
+      "required": [
+        "subscriptionBudget"
+      ],
+      "title": "subscriptionBudgetDefinition"
+    },
+    "SubscriptionBudget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "createBudget": {
+                  "type": "boolean",
+                  "enum": [
+                    true
+                  ]
+                },
+                "name": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "integer"
+                },
+                "timeGrain": {
+                  "type": "string"
+                },
+                "contactEmails": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "createBudget",
+                "amount",
+                "contactEmails",
+                "name",
+                "timeGrain"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "createBudget": {
+                  "type": "boolean",
+                  "enum": [
+                    false
+                  ]
+                }
+              },
+              "required": [
+                "createBudget"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "SubscriptionBudget"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/resourceTagsDefinition",
+  "definitions": {
+    "resourceTagsDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resourceTags": {
+          "$ref": "#/definitions/ResourceTags"
+        }
+      },
+      "required": [
+        "resourceTags"
+      ],
+      "title": "resourceTagsDefinition"
+    },
+    "ResourceTags": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/Value"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "ResourceTags"
+    },
+    "Value": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Key/Value pairs of tags"
+      },
+      "title": "Value"
+    }
+  }
+}
