@@ -64,17 +64,11 @@
         "keyVault": {
           "$ref": "types/keyVault.json#/definitions/KeyVault"
         },
-        "aks": {
-          "$ref": "types/aks.json#/definitions/AKS"
-        },
         "sqldb": {
           "$ref": "types/sqldb.json#/definitions/SQLDB"
         },
-        "sqlmi": {
-          "$ref": "types/sqlmi.json#/definitions/SQLMI"
-        },
-        "aml": {
-          "$ref": "types/aml.json#/definitions/AML"
+        "synapse": {
+          "$ref": "types/synapse.json#/definitions/Synapse"
         },
         "hubNetwork": {
           "$ref": "types/hubNetwork.json#/definitions/HubNetworkWithPrivateDNS"
@@ -94,10 +88,7 @@
         "resourceGroups",
         "automation",
         "keyVault",
-        "aks",
         "sqldb",
-        "sqlmi",
-        "aml",
         "hubNetwork"
       ],
       "title": "Parameters"
@@ -233,9 +224,6 @@
         "hrz": {
           "$ref": "#/definitions/Subnet"
         },
-        "sqlmi": {
-          "$ref": "#/definitions/Subnet"
-        },
         "databricksPublic": {
           "$ref": "#/definitions/Subnet"
         },
@@ -245,7 +233,7 @@
         "privateEndpoints": {
           "$ref": "#/definitions/Subnet"
         },
-        "aks": {
+        "web": {
           "$ref": "#/definitions/Subnet"
         }
       },
@@ -254,11 +242,10 @@
         "paz",
         "rz",
         "hrz",
-        "sqlmi",
         "databricksPublic",
         "databricksPrivate",
         "privateEndpoints",
-        "aks"
+        "web"
       ],
       "title": "Subnets"
     },
