@@ -70,8 +70,10 @@
                 "networkWatcher": "NetworkWatcherRG"
             }
         },
-        "automationAccountName": {
-            "value": "automation"
+        "automation": {
+            "value": {
+                "name": "automation"
+            }
         },
         "hubNetwork": {
             "value": {

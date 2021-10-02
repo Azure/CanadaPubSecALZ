@@ -195,6 +195,23 @@ param resourceTags object
 @description('Resource groups required for the achetype.  It includes automation, networking and networkWatcher.')
 param resourceGroups object
 
+// Azure Automation Account
+// Example (JSON)
+// -----------------------------
+// "automation": {
+//   "value": {
+//     "name": "healthAutomation"
+//   }
+// }
+
+// Example (Bicep)
+// -----------------------------
+// {
+//   name: 'healthAutomation'
+// }
+@description('Azure Automation Account configuration.  Includes name.')
+param automation object
+
 // Networking
 // Example (JSON)
 // -----------------------------
@@ -380,10 +397,6 @@ param hubNetwork object
 @description('Network configuration for the spoke virtual network.  It includes name, dnsServers, address spaces, vnet peering and subnets.')
 param network object
 
-// Automation
-@description('Azure Automation Account name.')
-param automationAccountName string
-
 /*
   Scaffold the subscription which includes:
     * Azure Security Center - Enable Azure Defender (all available options)
@@ -435,7 +448,7 @@ module automationAccount '../../azresources/automation/automation-account.bicep'
   name: 'deploy-automation-account'
   scope: rgAutomation
   params: {
-    automationAccountName: automationAccountName
+    automationAccountName: automation.name
     tags: resourceTags
   }
 }

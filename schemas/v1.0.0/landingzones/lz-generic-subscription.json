@@ -55,8 +55,8 @@
         "resourceGroups": {
           "$ref": "#/definitions/ResourceGroups"
         },
-        "automationAccountName": {
-          "$ref": "#/definitions/AutomationAccountName"
+        "automation": {
+          "$ref": "types/automation.json#/definitions/Automation"
         },
         "hubNetwork": {
           "$ref": "types/hubNetwork.json#/definitions/HubNetworkWithoutPrivateDNS"
@@ -73,7 +73,7 @@
         "subscriptionRoleAssignments",
         "subscriptionTags",
         "resourceGroups",
-        "automationAccountName",
+        "automation",
         "hubNetwork",
         "network"
       ],
@@ -112,19 +112,6 @@
         "networking"
       ],
       "title": "ResourceGroupsValue"
-    },
-    "AutomationAccountName": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "value": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "value"
-      ],
-      "title": "AutomationAccountName"
     },
     "Network": {
       "type": "object",
