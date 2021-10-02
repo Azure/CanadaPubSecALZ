@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
-  "$ref": "#/definitions/MachineLearningArchetypeDefinition",
+  "$ref": "#/definitions/HealthcareArchetypeDefinition",
   "definitions": {
-    "MachineLearningArchetypeDefinition": {
+    "HealthcareArchetypeDefinition": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -28,7 +28,7 @@
         "contentVersion",
         "parameters"
       ],
-      "title": "MachineLearningArchetypeDefinition"
+      "title": "HealthcareArchetypeDefinition"
     },
     "Parameters": {
       "type": "object",
