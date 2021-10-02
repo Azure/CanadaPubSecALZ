@@ -6,30 +6,48 @@
             "additionalProperties": false,
             "properties": {
                 "value": {
-                    "$ref": "#/definitions/Value"
+                    "oneOf": [
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "enum": [
+                                        true
+                                    ]
+                                },
+                                "username": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "enabled",
+                                "username"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "enum": [
+                                        false
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "enabled"
+                            ]
+                        }
+                    ]
                 }
             },
             "required": [
                 "value"
             ],
             "title": "SQLDB"
-        },
-        "Value": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
-                },
-                "username": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "enabled",
-                "username"
-            ],
-            "title": "Value"
         }
     }
 }

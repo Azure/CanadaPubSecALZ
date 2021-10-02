@@ -5,13 +5,34 @@
     "serviceHealthAlerts": {
       "value": {
         "resourceGroupName": "pubsec-service-health",
-        "incidentTypes": [ "Incident", "Security" ],
-        "regions": [ "Global", "Canada East", "Canada Central" ],
+        "incidentTypes": [
+          "Incident",
+          "Security"
+        ],
+        "regions": [
+          "Global",
+          "Canada East",
+          "Canada Central"
+        ],
         "receivers": {
-          "app": [ "alzcanadapubsec@microsoft.com" ],
-          "email": [ "alzcanadapubsec@microsoft.com" ],
-          "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-          "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+          "app": [
+            "alzcanadapubsec@microsoft.com"
+          ],
+          "email": [
+            "alzcanadapubsec@microsoft.com"
+          ],
+          "sms": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "5555555555"
+            }
+          ],
+          "voice": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "5555555555"
+            }
+          ]
         },
         "actionGroupName": "Sub3 ALZ action group",
         "actionGroupShortName": "sub3-alert",
@@ -100,14 +121,12 @@
     },
     "sqldb": {
       "value": {
-        "enabled": true,
-        "username": "azadmin"
+        "enabled": false
       }
     },
     "sqlmi": {
       "value": {
-        "enabled": true,
-        "username": "azadmin"
+        "enabled": false
       }
     },
     "aml": {
