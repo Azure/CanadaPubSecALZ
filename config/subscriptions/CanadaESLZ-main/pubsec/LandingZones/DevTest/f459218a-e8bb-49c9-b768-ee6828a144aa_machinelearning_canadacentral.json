@@ -45,13 +45,7 @@
     },
     "subscriptionBudget": {
       "value": {
-        "createBudget": false,
-        "name": "MonthlySubscriptionBudget",
-        "amount": 1000,
-        "timeGrain": "Monthly",
-        "contactEmails": [
-          "alzcanadapubsec@microsoft.com"
-        ]
+        "createBudget": false
       }
     },
     "subscriptionTags": {
