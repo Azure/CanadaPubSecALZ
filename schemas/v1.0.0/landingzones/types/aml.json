@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
   "definitions": {
-    "ResourceTags": {
+    "AML": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -12,14 +12,19 @@
       "required": [
         "value"
       ],
-      "title": "ResourceTags"
+      "title": "Aml"
     },
     "Value": {
       "type": "object",
-      "additionalProperties": {
-        "type": "string",
-        "description": "Key/Value pairs of tags"
+      "additionalProperties": false,
+      "properties": {
+        "enableHbiWorkspace": {
+          "type": "boolean"
+        }
       },
+      "required": [
+        "enableHbiWorkspace"
+      ],
       "title": "Value"
     }
   }

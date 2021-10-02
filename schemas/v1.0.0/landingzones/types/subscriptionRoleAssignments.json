@@ -1,20 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
-  "$ref": "#/definitions/subscriptionRoleAssignmentsDefinition",
   "definitions": {
-    "subscriptionRoleAssignmentsDefinition": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "subscriptionRoleAssignments": {
-          "$ref": "#/definitions/SubscriptionRoleAssignments"
-        }
-      },
-      "required": [
-        "subscriptionRoleAssignments"
-      ],
-      "title": "subscriptionRoleAssignmentsDefinition"
-    },
     "SubscriptionRoleAssignments": {
       "type": "object",
       "additionalProperties": false,

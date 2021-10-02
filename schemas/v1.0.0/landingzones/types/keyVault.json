@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
   "definitions": {
-    "ResourceTags": {
+    "KeyVault": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -12,14 +12,19 @@
       "required": [
         "value"
       ],
-      "title": "ResourceTags"
+      "title": "KeyVault"
     },
     "Value": {
       "type": "object",
-      "additionalProperties": {
-        "type": "string",
-        "description": "Key/Value pairs of tags"
+      "additionalProperties": false,
+      "properties": {
+        "secretExpiryInDays": {
+          "type": "integer"
+        }
       },
+      "required": [
+        "secretExpiryInDays"
+      ],
       "title": "Value"
     }
   }

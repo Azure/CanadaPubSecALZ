@@ -1,20 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
-  "$ref": "#/definitions/subscriptionTagsDefinition",
   "definitions": {
-    "subscriptionTagsDefinition": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "subscriptionTags": {
-          "$ref": "#/definitions/SubscriptionTags"
-        }
-      },
-      "required": [
-        "subscriptionTags"
-      ],
-      "title": "subscriptionTagsDefinition"
-    },
     "SubscriptionTags": {
       "type": "object",
       "additionalProperties": false,

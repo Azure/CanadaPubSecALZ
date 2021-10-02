@@ -1,20 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
-  "$ref": "#/definitions/subscriptionBudgetDefinition",
   "definitions": {
-    "subscriptionBudgetDefinition": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "subscriptionBudget": {
-          "$ref": "#/definitions/SubscriptionBudget"
-        }
-      },
-      "required": [
-        "subscriptionBudget"
-      ],
-      "title": "subscriptionBudgetDefinition"
-    },
     "SubscriptionBudget": {
       "type": "object",
       "additionalProperties": false,

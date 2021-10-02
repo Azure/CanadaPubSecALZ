@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
-  "$ref": "#/definitions/GenericSubscriptionArchetypeDefinition",
+  "$ref": "#/definitions/MachineLearningArchetypeDefinition",
   "definitions": {
-    "GenericSubscriptionArchetypeDefinition": {
+    "MachineLearningArchetypeDefinition": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -28,11 +28,11 @@
         "contentVersion",
         "parameters"
       ],
-      "title": "GenericSubscriptionArchetypeDefinition"
+      "title": "MachineLearningArchetypeDefinition"
     },
     "Parameters": {
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "serviceHealthAlerts": {
           "$ref": "types/serviceHealthAlerts.json#/definitions/ServiceHealthAlerts"
@@ -52,14 +52,32 @@
         "resourceTags": {
           "$ref": "types/resourceTags.json#/definitions/ResourceTags"
         },
+        "useCMK": {
+          "$ref": "#/definitions/UseCMK"
+        },
         "resourceGroups": {
           "$ref": "#/definitions/ResourceGroups"
         },
-        "automationAccountName": {
-          "$ref": "#/definitions/AutomationAccountName"
+        "automation": {
+          "$ref": "types/automation.json#/definitions/Automation"
+        },
+        "keyVault": {
+          "$ref": "types/keyVault.json#/definitions/KeyVault"
+        },
+        "aks": {
+          "$ref": "types/aks.json#/definitions/AKS"
+        },
+        "sqldb": {
+          "$ref": "types/sqldb.json#/definitions/SQLDB"
+        },
+        "sqlmi": {
+          "$ref": "types/sqlmi.json#/definitions/SQLMI"
+        },
+        "aml": {
+          "$ref": "types/aml.json#/definitions/AML"
         },
         "hubNetwork": {
-          "$ref": "types/hubNetwork.json#/definitions/HubNetworkWithoutPrivateDNS"
+          "$ref": "types/hubNetwork.json#/definitions/HubNetworkWithPrivateDNS"
         },
         "network": {
           "$ref": "#/definitions/Network"
@@ -72,12 +90,30 @@
         "subscriptionBudget",
         "subscriptionRoleAssignments",
         "subscriptionTags",
+        "useCMK",
         "resourceGroups",
-        "automationAccountName",
-        "hubNetwork",
-        "network"
+        "automation",
+        "keyVault",
+        "aks",
+        "sqldb",
+        "sqlmi",
+        "aml",
+        "hubNetwork"
       ],
       "title": "Parameters"
+    },
+    "UseCMK": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "UseCMK"
     },
     "ResourceGroups": {
       "type": "object",
@@ -99,32 +135,35 @@
         "automation": {
           "type": "string"
         },
+        "compute": {
+          "type": "string"
+        },
+        "monitor": {
+          "type": "string"
+        },
         "networking": {
           "type": "string"
         },
         "networkWatcher": {
           "type": "string"
-        }
-      },
-      "required": [
-        "automation",
-        "networkWatcher",
-        "networking"
-      ],
-      "title": "ResourceGroupsValue"
-    },
-    "AutomationAccountName": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "value": {
+        },
+        "security": {
+          "type": "string"
+        },
+        "storage": {
           "type": "string"
         }
       },
       "required": [
-        "value"
+        "automation",
+        "compute",
+        "monitor",
+        "networkWatcher",
+        "networking",
+        "security",
+        "storage"
       ],
-      "title": "AutomationAccountName"
+      "title": "ResourceGroupsValue"
     },
     "Network": {
       "type": "object",
@@ -143,9 +182,6 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "deployVnet": {
-          "type": "boolean"
-        },
         "peerToHubVirtualNetwork": {
           "type": "boolean"
         },
@@ -173,7 +209,6 @@
       },
       "required": [
         "addressPrefixes",
-        "deployVnet",
         "dnsServers",
         "name",
         "peerToHubVirtualNetwork",
@@ -198,11 +233,20 @@
         "hrz": {
           "$ref": "#/definitions/Subnet"
         },
-        "optional": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Subnet"
-          }
+        "sqlmi": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "databricksPublic": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "databricksPrivate": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "privateEndpoints": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "aks": {
+          "$ref": "#/definitions/Subnet"
         }
       },
       "required": [
@@ -210,35 +254,13 @@
         "paz",
         "rz",
         "hrz",
-        "optional"
+        "sqlmi",
+        "databricksPublic",
+        "databricksPrivate",
+        "privateEndpoints",
+        "aks"
       ],
       "title": "Subnets"
-    },
-    "Delegations": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "serviceName": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "serviceName"
-      ],
-      "title": "Delegations"
-    },
-    "Nsg": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "enabled"
-      ],
-      "title": "Nsg"
     },
     "Subnet": {
       "type": "object",
@@ -252,23 +274,12 @@
         },
         "addressPrefix": {
           "type": "string"
-        },
-        "nsg": {
-          "$ref": "#/definitions/Nsg"
-        },
-        "udr": {
-          "$ref": "#/definitions/Nsg"
-        },
-        "delegations": {
-          "$ref": "#/definitions/Delegations"
         }
       },
       "required": [
         "addressPrefix",
         "comments",
-        "name",
-        "nsg",
-        "udr"
+        "name"
       ],
       "title": "subnet"
     }

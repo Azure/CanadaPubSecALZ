@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
     "definitions": {
-        "SecurityCenter": {
+        "SQLMI": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -12,22 +12,22 @@
             "required": [
                 "value"
             ],
-            "title": "SecurityCenter"
+            "title": "Sqlmi"
         },
         "Value": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "email": {
-                    "type": "string"
+                "enabled": {
+                    "type": "boolean"
                 },
-                "phone": {
+                "username": {
                     "type": "string"
                 }
             },
             "required": [
-                "email",
-                "phone"
+                "enabled",
+                "username"
             ],
             "title": "Value"
         }

@@ -1,20 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
-  "$ref": "#/definitions/serviceHealthAlertsDefinition",
   "definitions": {
-    "serviceHealthAlertsDefinition": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "serviceHealthAlerts": {
-          "$ref": "#/definitions/ServiceHealthAlerts"
-        }
-      },
-      "required": [
-        "serviceHealthAlerts"
-      ],
-      "title": "serviceHealthAlertsDefinition"
-    },
     "ServiceHealthAlerts": {
       "type": "object",
       "additionalProperties": false,

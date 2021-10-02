@@ -11,7 +11,7 @@ Get-ChildItem -Directory -Path $TestFolder | Foreach-Object {
 
     Write-Host "Archetype: $archetypeName"
 
-    Get-ChildItem -Recurse -Filter '*.json' -Path $archetype | ForEach-Object {
+    Get-ChildItem -Recurse -Filter '*.json' -Path $archetypeName | ForEach-Object {
         Write-Host "   Test: $_"
         Get-Content -Raw $_ | Test-Json -SchemaFile "$SchemaFolder/$archetypeName.json"
     }
