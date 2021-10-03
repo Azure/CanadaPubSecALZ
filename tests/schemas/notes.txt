@@ -1,9 +1,9 @@
 sudo apt-get install powershell -y
 
-pwsh -File ./test-all.ps1 -TestFolder . -SchemaFolder ../../schemas/v1.0.0/landingzones
+pwsh -File ./test-all.ps1 -TestFolder . -SchemaFolder ../../schemas/v0.1.0/landingzones
 
-pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/v1.0.0/landingzones/lz-generic-subscription.json' -TestFolder '../../config/subscriptions/' -FileFilter '*generic-subscription*.json'
+pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/v0.1.0/landingzones/lz-generic-subscription.json' -TestFolder '../../config/subscriptions/' -FileFilter '*generic-subscription*.json'
 
-pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/v1.0.0/landingzones/lz-machinelearning.json' -TestFolder '../../config/subscriptions/' -FileFilter '*machinelearning*.json'
+pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/v0.1.0/landingzones/lz-machinelearning.json' -TestFolder '../../config/subscriptions/' -FileFilter '*machinelearning*.json'
 
-pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/v1.0.0/landingzones/lz-healthcare.json' -TestFolder '../../config/subscriptions/' -FileFilter '*healthcare*.json'
+pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/v0.1.0/landingzones/lz-healthcare.json' -TestFolder '../../config/subscriptions/' -FileFilter '*healthcare*.json'
