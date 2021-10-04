@@ -37,7 +37,7 @@ stages:
           - checkout: self
 
           - task: PowerShell@2
-            displayName: Validate Archetype Schema
+            displayName: Run schema test cases
             inputs:
               targetType: 'inline'
               script: |
@@ -61,6 +61,14 @@ stages:
                         Get-Content -Raw $_ | Test-Json -SchemaFile "$SchemaFolder/$archetypeName.json"
                     }
                 }
+              workingDirectory: ${{ variables['Build.SourcesDirectory'] }}
+
+          - task: PowerShell@2
+            displayName: Validate exising subscription archetype parameter files
+            inputs:
+              targetType: 'inline'
+              script: |
+                $SchemaFolder="schemas/v0.1.0/landingzones"
 
                 # Validate exising subscription archetype parameter files
                 Write-Host "Validate exising subscription archetype parameter files..."
