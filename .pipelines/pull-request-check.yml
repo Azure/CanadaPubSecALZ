@@ -93,6 +93,7 @@ stages:
           - task: Bash@3
             displayName: Validate Bicep Templates
             name: CompileBiceps
+            disabled: true
             inputs:
               targetType: 'inline'
               script: |
