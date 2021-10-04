@@ -336,8 +336,8 @@ param hubNetwork object
 @description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks) ')
 param network object
 
-var sqldbPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldb.username))}'
-var sqlmiPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqlmi.username))}'
+var sqldbPassword = sqldb.enabled ? '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldb.username))}' : ''
+var sqlmiPassword = sqlmi.enabled ? '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqlmi.username))}' : ''
 
 var databricksName = 'databricks'
 var databricksEgressLbName = 'egressLb'
