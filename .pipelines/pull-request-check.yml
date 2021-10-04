@@ -10,7 +10,12 @@
 trigger: none
 
 variables:
+- name: devops-org-name
+  value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: variable-template-file
+  value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
 - template: ../config/variables/common.yml
+- template: ../config/variables/${{ variables['variable-template-file'] }}
 
 pool:
   vmImage: ubuntu-latest
