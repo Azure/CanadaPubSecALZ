@@ -72,8 +72,7 @@
         },
         "automation": {
             "value": {
-                "name": "automation",
-                "test": "foobar"
+                "name": "automation"
             }
         },
         "hubNetwork": {
