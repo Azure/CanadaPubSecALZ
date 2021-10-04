@@ -38,6 +38,8 @@ stages:
 
           - task: PowerShell@2
             displayName: Run schema test cases
+            name: ParametersSchemaTestCases
+            enabled: true
             inputs:
               targetType: 'inline'
               script: |
@@ -65,6 +67,8 @@ stages:
 
           - task: PowerShell@2
             displayName: Validate exising subscription archetype parameter files
+            name: SubscriptionArchetypeParametersValidation
+            enabled: true
             inputs:
               targetType: 'inline'
               script: |
@@ -101,7 +105,7 @@ stages:
           - task: Bash@3
             displayName: Validate Bicep Templates
             name: CompileBiceps
-            enabled: false
+            enabled: true
             inputs:
               targetType: 'inline'
               script: |
