@@ -286,7 +286,7 @@ param hubNetwork object
 @description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, databricksPublic, databricksPrivate, web) ')
 param network object
 
-var sqldbPassword = '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldb.username))}'
+var sqldbPassword = sqldb.enabled ? '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldb.username))}' : ''
 var synapsePassword = '${uniqueString(rgCompute.id)}*${toUpper(uniqueString(synapse.username))}'
 
 var databricksName = 'databricks'
