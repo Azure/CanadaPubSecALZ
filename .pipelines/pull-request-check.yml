@@ -69,7 +69,7 @@ stages:
                 $GenericSubscriptionSchemaFile="${SchemaFolder}/lz-generic-subscription.json"
 
                 Get-ChildItem -Recurse -Filter $GenericSubscriptionFileFilter -Path "$(subscriptionsPathFromRoot)" | ForEach-Object {
-                    Write-Host "Validating: $_"
+                    Write-Host "Validating: $_ with $GenericSubscriptionSchemaFile"
                     Get-Content -Raw $_ | Test-Json -SchemaFile $GenericSubscriptionSchemaFile
                 }
 
@@ -77,7 +77,7 @@ stages:
                 $MachineLearningSchemaFile="${SchemaFolder}/lz-machinelearning.json"
 
                 Get-ChildItem -Recurse -Filter $MachineLearningFileFilter -Path "$(subscriptionsPathFromRoot)" | ForEach-Object {
-                    Write-Host "Validating: $_"
+                    Write-Host "Validating: $_ with $MachineLearningSchemaFile"
                     Get-Content -Raw $_ | Test-Json -SchemaFile $MachineLearningSchemaFile
                 }
 
@@ -85,7 +85,7 @@ stages:
                 $HealthcareSchemaFile="${SchemaFolder}/lz-healthcare.json"
 
                 Get-ChildItem -Recurse -Filter $HealthcareFileFilter -Path "$(subscriptionsPathFromRoot)" | ForEach-Object {
-                    Write-Host "Validating: $_"
+                    Write-Host "Validating: $_ with $HealthcareSchemaFile"
                     Get-Content -Raw $_ | Test-Json -SchemaFile $HealthcareSchemaFile
                 }
               workingDirectory: ${{ variables['Build.SourcesDirectory'] }}
