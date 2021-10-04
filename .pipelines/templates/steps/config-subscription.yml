@@ -28,9 +28,9 @@ steps:
     script: |
       schemaFile="$(Build.SourcesDirectory)/schemas/v0.1.0/landingzones/lz-${{ parameters.subscriptionType}}.json"
 
-      echo "Parameters File: ${{ parameters.filename }}"
-      echo "Schema File: ${schemaFile}"
-      
+      White-Host "Parameters File: ${{ parameters.filename }}"
+      White-Host "Schema File: ${schemaFile}"
+
       Get-Content -Raw "${{ parameters.filename }}" | Test-Json -SchemaFile "${schemaFile}"
 
   
