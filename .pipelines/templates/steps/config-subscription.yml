@@ -22,7 +22,7 @@ parameters:
 steps:
 
 - task: PowerShell@2
-  displayName: Validate Parameters File
+  displayName: Validate Archetype Parameters
   inputs:
     targetType: 'inline'
     script: |
@@ -36,7 +36,7 @@ steps:
 
   
 - task: AzureCLI@2
-  displayName: Configure Subscription
+  displayName: Deploy Archetype
   inputs:
     azureSubscription: $(serviceConnection)
     workingDirectory: '${{ parameters.workingDir }}'
