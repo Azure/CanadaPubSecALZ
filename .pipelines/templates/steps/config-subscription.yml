@@ -20,9 +20,23 @@ parameters:
     type: string
 
 steps:
+
+- task: PowerShell@2
+  displayName: Validate Archetype Parameters
+  inputs:
+    targetType: 'inline'
+    script: |
+      $schemaFile="$(Build.SourcesDirectory)/schemas/v0.1.0/landingzones/lz-${{ parameters.subscriptionType}}.json"
+      $parameterFile="${{ parameters.workingDir }}/${{ parameters.filename }}"
+
+      Write-Host "Parameters File: ${parameterFile}"
+      Write-Host "Schema File: ${schemaFile}"
+
+      Get-Content -Raw "${parameterFile}" | Test-Json -SchemaFile "${schemaFile}"
+
   
 - task: AzureCLI@2
-  displayName: Configure Subscription
+  displayName: Deploy Archetype
   inputs:
     azureSubscription: $(serviceConnection)
     workingDirectory: '${{ parameters.workingDir }}'
