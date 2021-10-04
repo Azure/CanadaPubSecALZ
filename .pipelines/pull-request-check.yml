@@ -56,10 +56,10 @@ stages:
 
                     Write-Host "Archetype: $archetypeName"
 
-                    Get-ChildItem -Recurse -Filter '*.json' -Path $archetypeName | ForEach-Object {
-                        Write-Host "   Test: $_"
-                        Get-Content -Raw $_ | Test-Json -SchemaFile "$SchemaFolder/$archetypeName.json"
-                    }
+                  Get-ChildItem -Recurse -Filter '*.json' -Path "$SchemaTestsFolder/$archetypeName" | ForEach-Object {
+                      Write-Host "   Validating: $_ with $SchemaFolder/$archetypeName.json"
+                      Get-Content -Raw $_ | Test-Json -SchemaFile "$SchemaFolder/$archetypeName.json"
+                  }
                 }
               workingDirectory: ${{ variables['Build.SourcesDirectory'] }}
 
