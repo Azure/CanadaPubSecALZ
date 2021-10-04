@@ -27,11 +27,12 @@ steps:
     targetType: 'inline'
     script: |
       $schemaFile="$(Build.SourcesDirectory)/schemas/v0.1.0/landingzones/lz-${{ parameters.subscriptionType}}.json"
+      $parameterFile="${{ parameters.workingDir }}/${{ parameters.filename }}"
 
-      Write-Host "Parameters File: ${{ parameters.filename }}"
+      Write-Host "Parameters File: ${parameterFile}"
       Write-Host "Schema File: ${schemaFile}"
 
-      Get-Content -Raw "${{ parameters.filename }}" | Test-Json -SchemaFile "${schemaFile}"
+      Get-Content -Raw "${parameterFile}" | Test-Json -SchemaFile "${schemaFile}"
 
   
 - task: AzureCLI@2
