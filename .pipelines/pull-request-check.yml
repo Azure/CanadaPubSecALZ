@@ -12,7 +12,6 @@ trigger: none
 variables:
 - template: ../config/variables/common.yml
 
-
 pool:
   vmImage: ubuntu-latest
   
