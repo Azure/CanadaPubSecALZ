@@ -20,6 +20,19 @@ parameters:
     type: string
 
 steps:
+
+- task: PowerShell@2
+  displayName: Validate Parameters File
+  inputs:
+    targetType: 'inline'
+    script: |
+      schemaFile="$(Build.SourcesDirectory)/schemas/v0.1.0/landingzones/lz-${{ parameters.subscriptionType}}.json"
+
+      echo "Parameters File: ${{ parameters.filename }}"
+      echo "Schema File: ${schemaFile}"
+      
+      Get-Content -Raw "${{ parameters.filename }}" | Test-Json -SchemaFile "${schemaFile}"
+
   
 - task: AzureCLI@2
   displayName: Configure Subscription
