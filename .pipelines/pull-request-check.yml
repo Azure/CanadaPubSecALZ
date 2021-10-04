@@ -1,0 +1,93 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+  
+stages:
+
+- stage: PullRequestCheckStage
+  displayName: Pull Request Check
+
+  jobs:
+
+  - deployment: PullRequestCheckJob
+    displayName: Pull Request Check Job
+    environment: ${{ variables['Build.SourceBranchName'] }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+
+          - task: PowerShell@2
+            displayName: Validate Archetype Schema
+            inputs:
+              targetType: 'inline'
+              script: |
+                $SchemaFolder="schemas/v0.1.0/landingzones"
+
+                # Validate schema test cases
+                $SchemaTestsFolder="tests/schemas"
+
+                Write-Host "Validating schema test cases..."
+
+                Write-Host "Schema Test Folder: $SchemaTestsFolder"
+                Write-Host "Schema Folder: $SchemaFolder"
+
+                Get-ChildItem -Directory -Path $SchemaTestsFolder | Foreach-Object {
+                    $archetypeName = $_.BaseName
+
+                    Write-Host "Archetype: $archetypeName"
+
+                    Get-ChildItem -Recurse -Filter '*.json' -Path $archetypeName | ForEach-Object {
+                        Write-Host "   Test: $_"
+                        Get-Content -Raw $_ | Test-Json -SchemaFile "$SchemaFolder/$archetypeName.json"
+                    }
+                }
+
+                # Validate exising subscription archetype parameter files
+                Write-Host "Validate exising subscription archetype parameter files..."
+
+                $GenericSubscriptionFileFilter="*generic-subscription*.json"
+                $GenericSubscriptionSchemaFile="${SchemaFolder}/lz-generic-subscription.json"
+
+                Get-ChildItem -Recurse -Filter $GenericSubscriptionFileFilter -Path "${{subscriptionsPathFromRoot}}" | ForEach-Object {
+                    Write-Host "Validating: $_"
+                    Get-Content -Raw $_ | Test-Json -SchemaFile $GenericSubscriptionSchemaFile
+                }
+
+                $MachineLearningFileFilter="${SchemaFolder}/lz-machinelearning.json"
+                $MachineLearningSchemaFile="*machinelearning*.json"
+
+                Get-ChildItem -Recurse -Filter $MachineLearningFileFilter -Path "${{subscriptionsPathFromRoot}}" | ForEach-Object {
+                    Write-Host "Validating: $_"
+                    Get-Content -Raw $_ | Test-Json -SchemaFile $MachineLearningSchemaFile
+                }
+
+                $HealthcareFileFilter="${SchemaFolder}/lz-healthcare.json"
+                $HealthcareSchemaFile="*healthcare*.json"
+
+                Get-ChildItem -Recurse -Filter $HealthcareFileFilter -Path "${{subscriptionsPathFromRoot}}" | ForEach-Object {
+                    Write-Host "Validating: $_"
+                    Get-Content -Raw $_ | Test-Json -SchemaFile $HealthcareSchemaFile
+                }
+              workingDirectory: ${{ variables['Build.SourcesDirectory'] }}
+
+          - task: Bash@3
+            displayName: Validate Bicep Templates
+            name: CompileBiceps
+            inputs:
+              targetType: 'inline'
+              script: |
+                find . -type f -name '*.bicep' | xargs -tn1 az bicep build -f 
+              
+              workingDirectory: ${{ variables['Build.SourcesDirectory'] }}
