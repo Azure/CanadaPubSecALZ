@@ -93,48 +93,48 @@ resource ascAzureDefender 'Microsoft.Authorization/policySetDefinitions@2020-03-
         groupNames: [
           'EXTRA'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-ACR')
-        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for ACR', ' ', '-'))
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/d3d1e68e-49d4-4b56-acff-93cef644b432'
+        policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for container registries to be enabled', ' ', '-'))
         parameters: {}
       }
       {
         groupNames: [
           'EXTRA'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-AKS')
-        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for AKS', ' ', '-'))
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/133047bf-1369-41e3-a3be-74a11ed1395a'
+        policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for Kubernetes to be enabled', ' ', '-'))
         parameters: {}
       }
       {
         groupNames: [
           'EXTRA'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-AKV')
-        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for AKV', ' ', '-'))
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/1f725891-01c0-420a-9059-4fa46cb770b7'
+        policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for Key Vaults to be enabled', ' ', '-'))
         parameters: {}
       }
       {
         groupNames: [
           'EXTRA'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-AppService')
-        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for App Service', ' ', '-'))
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/b40e7bcd-a1e5-47fe-b9cf-2f534d0bfb7d'
+        policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for App Service to be enabled', ' ', '-'))
         parameters: {}
       }
       {
         groupNames: [
           'EXTRA'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-ARM')
-        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for ARM', ' ', '-'))
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/b7021b2b-08fd-4dc0-9de7-3c6ece09faf9'
+        policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for Resource Manager to be enabled', ' ', '-'))
         parameters: {}
       }
       {
         groupNames: [
           'EXTRA'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-DNS')
-        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for DNS', ' ', '-'))
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/2370a3c1-4a25-4283-a91a-c9c1a145fb2f'
+        policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for DNS to be enabled', ' ', '-'))
         parameters: {}
       }
       {
@@ -149,32 +149,32 @@ resource ascAzureDefender 'Microsoft.Authorization/policySetDefinitions@2020-03-
         groupNames: [
           'EXTRA'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-SQLDB')
-        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for SQLDB', ' ', '-'))
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/b99b73e7-074b-4089-9395-b7236f094491'
+        policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for Azure SQL database to be enabled', ' ', '-'))
         parameters: {}
       }
       {
         groupNames: [
           'EXTRA'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-SQLDBVM')
-        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for SQL on VM', ' ', '-'))
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/50ea7265-7d8c-429e-9a7d-ca1f410191c3'
+        policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for SQL servers on machines to be enabled', ' ', '-'))
         parameters: {}
       }
       {
         groupNames: [
           'EXTRA'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-Storage')
-        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for Storage Account', ' ', '-'))
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/74c30959-af11-47b3-9ed2-a26e03f427a3'
+        policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for Storage to be enabled', ' ', '-'))
         parameters: {}
       }
       {
         groupNames: [
           'EXTRA'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-VM')
-        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for VM', ' ', '-'))
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/8e86a5b6-b9bd-49d1-8e21-4bb8a0862222'
+        policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for servers to be enabled', ' ', '-'))
         parameters: {}
       }
     ]
