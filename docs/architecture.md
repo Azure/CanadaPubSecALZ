@@ -13,15 +13,15 @@ This document describes the architecture and design decisions for building a **[
 
 ## Table of Contents
 
-1. [Key Decisions](\#1.-key-decisions)
-2. [Security Controls](\#2.-security-controls)
-3. [Management Groups](\#3.-management-groups)
-4. [Identity](\#4.-identity)
-5. [Network](\#5.-network)
-6. [Logging](\#6.-logging)
-7. [Tagging](\#7.-tagging)
-8. [Archetypes](\#8.-archetypes)
-9. [Automation](\#9.-automation)
+1. [Key Decisions](\#1-key-decisions)
+2. [Security Controls](\#2-security-controls)
+3. [Management Groups](\#3-management-groups)
+4. [Identity](\#4-identity)
+5. [Network](\#5-network)
+6. [Logging](\#6-logging)
+7. [Tagging](\#7-tagging)
+8. [Archetypes](\#8-archetypes)
+9. [Automation](\#9-automation)
 
 
 ---
@@ -56,102 +56,13 @@ Guardrails in Azure are deployed through [Azure Policy](https://docs.microsoft.c
 
 Common use cases for Azure Policy include implementing governance for resource consistency, regulatory compliance, security, cost, and management. Policy definitions for these common use cases are already available in your Azure environment as built-ins to help you get started.
 
-Azure Landing Zones for Canadian Public Sector is configured with a set of built-in Azure Policy Sets.  These can be further extended or removed as required by the department through automation:
-
-* [Canada Federal PBMM Policy Set][pbmmPolicySet]
-* [NIST SP 800-53 Revision 4 Policy Set][nist80053R4policySet]
-* [NIST SP 800-53 Revision 5 Policy Set][nist80053R5policySet]
-* [Azure Security Benchmark][asbPolicySet]
-* [CIS Microsoft Azure Foundations Benchmark 1.3.0][cisMicrosoftAzureFoundationPolicySet]
-*	[FedRAMP Moderate][fedrampmPolicySet]
-* [HIPAA / HITRUST 9.2][hipaaHitrustPolicySet]
-
-> **Note**: The built-in policy sets are used as-is to ensure future improvements from Azure Engineering teams are automatically incorproated into the Azure environment.
+See [Azure Policy for Guardrails for explanation of the built-in and custom policy definitions](policy/readme.md).
 
 Azure Policy Compliance dashboard provides an up-to-date compliance view across the Azure environment.  Non-compliant resources can then be addressed through automated remediations, exemptions or through appropriate teams within the department.
 
 ![Azure Policy Compliance](media/architecture/policy-compliance.jpg)
 
-Custom policy sets have been designed to increase compliance for logging, networking & tagging requirements.  These include:
-
-* **Azure Defender for Azure Services**
-
-  * A vulnerability assessment solution should be enabled on your virtual machines
-  * Deploy Azure Defender for Azure Container Registry
-  * Deploy Azure Defender for Azure Kubernetes Service
-  * Deploy Azure Defender for Azure Key Vault
-  * Deploy Azure Defender for Azure App Services
-  * Deploy Azure Defender for Azure Resource Manager
-  * Deploy Azure Defender for DNS
-  * Deploy Azure Defender for Open-source relational databases
-  * Deploy Azure Defender for Azure SQL Databases
-  * Deploy Azure Defender for SQL on Virtual Machines
-  * Deploy Azure Defender for Virtual Machines
-  * Deploy Azure Defender for Storage Account
-  * Deploy Azure Defender for Virtual Machines
-  * Deploy Advanced Data Security on SQL servers
-  * Deploy Advanced Threat Protection on Storage Accounts
-  * Deploy Threat Detection on SQL servers
-  * Vulnerabilities in security configuration on your machines should be remediated
-  * Vulnerabilities in security configuration on your virtual machine scale sets should be remediated
-  * Vulnerabilities on your SQL databases should be remediated
-  * Configure machines to receive the Qualys vulnerability assessment agent
-
-* **Log Analytics for Azure Services**
-
-  * [Preview]: Audit Log Analytics Agent Deployment - VM Image (OS) unlisted
-  * Audit Log Analytics agent deployment in virtual machine scale sets - VM Image (OS) unlisted
-  * Audit Log Analytics workspace for VM - Report Mismatch
-  * Configure diagnostic settings for storage accounts to Log Analytics workspace
-  * Deploy Dependency agent for Linux virtual machine scale sets
-  * Deploy Dependency agent for Linux virtual machines
-  * Deploy Dependency agent for Windows virtual machine scale sets
-  * Deploy Dependency agent for Windows virtual machines
-  * Deploy Diagnostic Settings for Automation Account to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for Azure Application Gateway to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for Azure Cognitive Services to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for Azure Container Registry to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for Azure Machine Learning workspaces to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for Bastion Hosts to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for Batch Account to Log Analytics workspace
-  * Deploy Diagnostic Settings for Data Factory to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for Data Lake Analytics to Log Analytics workspace
-  * Deploy Diagnostic Settings for Data Lake Storage Gen1 to Log Analytics workspace
-  * Deploy Diagnostic Settings for Databricks to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for Event Hub to Log Analytics workspace
-  * Deploy Diagnostic Settings for FHIR R4 to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for FHIR STU3 to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for Key Vault to Log Analytics workspace
-  * Deploy Diagnostic Settings for Logic Apps to Log Analytics workspace
-  * Deploy Diagnostic Settings for Network Security Groups to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for Recovery Services Vault to Log Analytics workspace for resource specific categories.
-  * Deploy Diagnostic Settings for SQL Managed Instance to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for SQLDB Database to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for Search Services to Log Analytics workspace
-  * Deploy Diagnostic Settings for Service Bus to Log Analytics workspace
-  * Deploy Diagnostic Settings for Stream Analytics to Log Analytics workspace
-  * Deploy Diagnostic Settings for Synapse workspace to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for Subscriptions to Log Analytics Workspaces
-  * Deploy Diagnostic Settings for Virtual Network to Log Analytics Workspaces
-  * Deploy Log Analytics agent for Linux virtual machine scale sets
-  * Deploy Log Analytics agent for Linux VMs
-  * Deploy Log Analytics agent for Windows virtual machine scale sets
-  * Deploy Log Analytics agent for Windows VMs
-  * Public IP addresses should have resource logs enabled for Azure DDoS Protection Standard
-  * [Custom] Audit diagnostic setting – Logs
-
-* **Azure Kubernetes Service**
-
-  * Deploy Azure Policy Add-on to Azure Kubernetes Service clusters
-  * Kubernetes cluster pod security restricted standards for Linux-based workloads
-  * Kubernetes cluster pod security baseline standards for Linux-based workloads
-
-* **Network**
-
-  * Network interfaces should not have public IPs
-  * Audit for missing UDR on subnets
-
-* **Tag Governance**
+Custom policy sets have been designed to increase compliance for logging, networking & tagging requirements.
 
 ### 2.3 Policy Remediations
 
@@ -605,10 +516,6 @@ Steps to implement user validation (approval) check:
 [nist80053r4Policyset]: https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r4
 [nist80053r5Policyset]: https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r5
 [pbmmPolicyset]: https://docs.microsoft.com/azure/governance/policy/samples/canada-federal-pbmm
-[asbPolicySet]: https://docs.microsoft.com/security/benchmark/azure/overview
-[cisMicrosoftAzureFoundationPolicySet]: https://docs.microsoft.com/azure/governance/policy/samples/cis-azure-1-3-0
-[fedrampmPolicySet]: https://docs.microsoft.com/azure/governance/policy/samples/fedramp-moderate
-[hipaaHitrustPolicySet]: https://docs.microsoft.com/azure/governance/policy/samples/hipaa-hitrust-9-2
 [cafLandingZones]: https://docs.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/
 [policyRemediation]: https://docs.microsoft.com/azure/governance/policy/how-to/remediate-resources
 [nsgAzureBastion]: https://docs.microsoft.com/azure/bastion/bastion-nsg#apply
