@@ -139,7 +139,7 @@ Azure Landing Zones for Canadian Public Sector assumes that Azure Active Directo
 * Conditional Access Policies - Configured based on location & devices
 * Privileged Identity Management (PIM) - Enabled for elevated access control. 
 * App Registration - Consider disabling for all users and created on-demand by CloudOps teams.
-* Sign-In Logs - Logs are expected to Log Analytics workspace & Sentinel used for threat hunting (Security Monitoring Team).
+* Sign-In Logs - Logs are exported to Log Analytics workspace & Sentinel used for threat hunting (Security Monitoring Team).
 * Break-glass procedure - Process documented and implemented including 2 break glass accounts with different MFA devices & split up passwords.
 *	Azure Directory to Azure Active Directory sychronization - Are the identities synchronized or using cloud only account?
 
@@ -204,9 +204,10 @@ Both network designs will require 3 IP blocks:
 
 Reference implementation provides two topologies for Hub Network design:
 
-1. [Hub Networking with Fortigate Firewalls](archetypes/hubnetwork-nva-fortigate.md) (departments must configure the firewalls)
+1. [Hub Networking with Azure Firewalls](archetypes/hubnetwork-azfw.md) (pre-configured with firewall rules, DNS proxy and forced tunneling mode)
 
-2. [Hub Networking with Azure Firewalls](archetypes/hubnetwork-azfw.md) (pre-configured with firewall rules, DNS proxy and forced tunneling mode)
+2. [Hub Networking with Fortigate Firewalls](archetypes/hubnetwork-nva-fortigate.md) (departments must configure the firewalls).  Implementation can be adopted for additional firewall ISVs.
+
 
 
 ### Azure Bastion
@@ -470,7 +471,7 @@ By using gates, approvals, and manual intervention you can take full control of 
 | Scenario | Feature(s) to use |
 | --- | --- |
 | A user must manually validate the change request and approve the deployment to a certain stage. | [Pre-deployment approvals](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/approvals?view=azure-devops) |
-| A user must manually sign out after deployment before the release is triggered to other stages. | [Post-deployment approvals](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/approvals?view=azure-devops) |
+| A user must manually sign off after deployment before the release is triggered to other stages. | [Post-deployment approvals](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/approvals?view=azure-devops) |
 | A team wants to ensure there are no active issues in the work item or problem management system before deploying a build to a stage. | [Pre-deployment gates](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/gates?view=azure-devops) |
 | A team wants to ensure there are no reported incidents after deployment, before triggering a release. | [Post-deployment gates](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/gates?view=azure-devops) |
 | After deployment, a team wants to wait for a specified time before prompting users to sign out. | [Post-deployment gates](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/gates?view=azure-devops) and [post-deployment approvals](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/approvals?view=azure-devops) |
