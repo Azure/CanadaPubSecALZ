@@ -54,4 +54,4 @@ Reference implementation uses parameter files with `object` parameters to consol
 
 ## Deployment Instructions
 
-Use the [Onboarding Guide for Azure DevOps](../../ONBOARDING_GUIDE_ADO.md) to configure this archetype.
+Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure this archetype.

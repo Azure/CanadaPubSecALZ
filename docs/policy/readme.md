@@ -41,7 +41,7 @@ Azure DevOps Pipeline ([.pipelines/policy.yml](../../.pipelines/policy.yml)) is 
         workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
 ```
 
-All policy set assignments are at the `pubsec` top level management group.  This top level management group is retrieved from configuration parameter `var-topLevelManagementGroupName`.  See [Onboarding Guide for Azure DevOps](../../ONBOARDING_GUIDE_ADO.md) for instructions to setting up management groups & policy pipeline.
+All policy set assignments are at the `pubsec` top level management group.  This top level management group is retrieved from configuration parameter `var-topLevelManagementGroupName`.  See [Onboarding Guide for Azure DevOps](../onboarding/ado.md) for instructions to setting up management groups & policy pipeline.
 
 
 | Policy Set | Description | Deployment Template | Configuration |
@@ -59,7 +59,7 @@ All policy set assignments are at the `pubsec` top level management group.  This
 
 > **Note**: The custom policies & policy sets are used when built-in alternative does not exist.  Automation is regularly revised to use built-in policies and policy sets as new options are made available.
 
-All policies and policy set definitions & assignments are at the `pubsec` top level management group.  This top level management group is retrieved from configuration parameter `var-topLevelManagementGroupName`.  See [Onboarding Guide for Azure DevOps](../../ONBOARDING_GUIDE_ADO.md) for instructions to setting up management groups & policy pipeline.
+All policies and policy set definitions & assignments are at the `pubsec` top level management group.  This top level management group is retrieved from configuration parameter `var-topLevelManagementGroupName`.  See [Onboarding Guide for Azure DevOps](../onboarding/ado.md) for instructions to setting up management groups & policy pipeline.
 
 ### Custom Policy Definitions
 

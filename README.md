@@ -9,20 +9,17 @@ Architecture supported up to Treasury Board of Canada Secretariat (TBS) Cloud Pr
 * Cloud-based services hosting sensitive (up to Protected B) information
 * No direct system to system network interconnections required with GC data centers
 
-### Automation
+## Architecture
+
+See [architecture documentation for detailed walkthrough of design](docs/architecture.md).
+
+Deployment to Azure is supported using Azure DevOps Pipelines and can be adopted for other automated deployment systems like GitHub Actions, Jenkins, etc.
 
 The automation is built with [Project Bicep](https://github.com/Azure/bicep/blob/main/README.md) and Azure Resource Manager template.
 
-This project provides 6 modules that can be further customized based on requirements:
+## Onboarding to Azure DevOps
 
-1. Management Groups
-2. Centralized Logging
-3. Azure Policies (built-in & custom Azure Policies)
-4. Custom Roles
-5. Hub Network Design based on Hub/Spoke topology
-6. Subscription Archetypes (Generic Subscription, Machine Learning & Healthcare)
-
-Deployment to Azure is supported using Azure DevOps Pipelines and can be adopted for other automated deployment systems like GitHub Actions, Jenkins, etc.
+See [onboarding guide for Azure DevOps](docs/onboarding/ado.md) for setup instructions.
 
 
 ## Goals

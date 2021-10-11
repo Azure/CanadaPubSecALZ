@@ -24,7 +24,7 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 
 ## Deployment to your environment
 
-See [Onboarding Guide for Azure DevOps](ONBOARDING_GUIDE_ADO.md)
+See [Onboarding Guide for Azure DevOps](docs/onboarding/ado.md)
 
 ## Pull Requests
 

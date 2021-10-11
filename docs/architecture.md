@@ -202,7 +202,7 @@ Both network designs will require 3 IP blocks:
 
 ### Topology
 
-Reference implementation provides two topologies Hub Network design:
+Reference implementation provides two topologies for Hub Network design:
 
 1. [Hub Networking with Fortigate Firewalls](archetypes/hubnetwork-nva-fortigate.md) (departments must configure the firewalls)
 
@@ -446,7 +446,7 @@ Pipelines are stored as YAML definitions in Git and imported into Azure DevOps P
 5.	Select Existing Azure Pipeline YAML file
 6.	Identify the pipeline using the table below and add.
 
-Use the [onboarding guide for Azure DevOps](../ONBOARDING_GUIDE_ADO.md) to configure each pipeline.
+Use the [onboarding guide for Azure DevOps](onboarding/ado.md) to configure each pipeline.
 
 > Imported pipelines should be renamed to match the names in the table.
 
