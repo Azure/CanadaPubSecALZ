@@ -1,4 +1,4 @@
-# Archetype: Hub Networking with Fortigate Firewalls
+# Archetype: Hub Networking with Azure Firewall
 
 ## Table of Contents
 
