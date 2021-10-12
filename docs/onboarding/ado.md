@@ -31,7 +31,7 @@ A service principal account is required to automate the Azure DevOps pipelines.
 
 ### Step: 3.1: Update common.yml in git repository
 
-Create/edit **./config/variables/common.yml** in Git.  This file is used in all Azure DevOps pipelines.
+Create/edit `./config/variables/common.yml` in Git.  This file is used in all Azure DevOps pipelines.
 
 **Sample YAML**
 ```yaml
@@ -46,7 +46,7 @@ variables:
 
 ### Step 3.2:  Update environment config file in git repository
 
-1. Create/edit **./config/variables/<devops-org-name>-<branch-name>.yml** in Git (i.e. CanadaESLZ-main.yml).  This file name is automatically inferred based on the Azure DevOps organization name and the branch.
+1. Create/edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git (i.e. CanadaESLZ-main.yml).  This file name is automatically inferred based on the Azure DevOps organization name and the branch.
 
     **Sample environment YAML**
 
