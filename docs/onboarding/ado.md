@@ -31,7 +31,7 @@ A service principal account is required to automate the Azure DevOps pipelines.
 
 ### Step: 3.1: Update common.yml in git repository
 
-Create/edit **.pipelines/templates/variables/common.yml** in Git.  This file is used in all Azure DevOps pipelines.
+Create/edit **./config/variables/common.yml** in Git.  This file is used in all Azure DevOps pipelines.
 
 **Sample YAML**
 ```yaml
@@ -46,7 +46,7 @@ variables:
 
 ### Step 3.2:  Update environment config file in git repository
 
-1. Create/edit **./pipelines/templates/variables/<devops-org-name>-<branch-name>.yml** in Git (i.e. CanadaESLZ-main.yml).  This file name is automatically inferred based on the Azure DevOps organization name and the branch.
+1. Create/edit **./config/variables/<devops-org-name>-<branch-name>.yml** in Git (i.e. CanadaESLZ-main.yml).  This file name is automatically inferred based on the Azure DevOps organization name and the branch.
 
     **Sample environment YAML**
 
@@ -92,7 +92,7 @@ Set the configuration parameters even if there's an existing central Log Analyti
 
 When a Log Analytics Workspace & Automation account already exists, enter Subscription ID, Resource Group, Log Analytics Workspace name and Automation account name.  The automation will update the existing deployment instead of creating new resources.
 
-1. Edit `.pipelines/templates/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
+1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
     **Sample environment YAML**
 
@@ -222,7 +222,7 @@ When a Log Analytics Workspace & Automation account already exists, enter Subscr
 
 ## Step 7:  Configure Hub Networking using NVAs
 
-1. Edit `.pipelines/templates/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
+1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
    Update configuration with the networking section.  There are two options for Hub Networking:
 
