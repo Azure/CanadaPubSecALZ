@@ -135,7 +135,7 @@ Customers with existing management group structure can consider merging the reco
 Azure Landing Zones for Canadian Public Sector assumes that Azure Active Directory has been provisioned and configured based on department's requirements.  It is important to check the following configuration for Azure Active Directory:
 
 * License - Consider Azure PD Premium P2
-* Multi-Factor Authentication - Enabled for all useres
+* Multi-Factor Authentication - Enabled for all users
 * Conditional Access Policies - Configured based on location & devices
 * Privileged Identity Management (PIM) - Enabled for elevated access control. 
 * App Registration - Consider disabling for all users and created on-demand by CloudOps teams.
