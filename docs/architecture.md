@@ -152,6 +152,8 @@ The service principal requires `Owner` role to configure role assignments for:
 * Policy Assignments that provide remediation (i.e. `deployIfNotExists` policies)
 * Archetype deployments (i.e. workload deployments) with role assignments between Azure Services for integration and to Security Groups for user access
 
+> **Recommendation:**  Consider setting up approval flow through Azure DevOps to ensure better control over pipeline execution.  See [Release gates and approvals overview](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/?view=azure-devops) in Azure Docs.
+
 Additional service principal accounts must be created and scoped to child management groups, subscriptions or resource groups based on tasks that are expected of the service principal accounts.
 
 ### 4.2 User Accounts
