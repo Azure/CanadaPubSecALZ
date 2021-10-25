@@ -145,7 +145,12 @@ Azure Landing Zones for Canadian Public Sector assumes that Azure Active Directo
 
 ### 4.1 Service Principal Accounts
 
-To support the landing zone deployment, **one** service principal account will be used for management. This service principal account should be limited to the Platform Automation as it has Owner permission across all management group scopes. Owner role is automatically assigned when management groups are created.
+To support the landing zone deployment, **one** service principal account will be used for management. This service principal account should be limited to the Platform Automation as it has `Owner` permission across all management group scopes. `Owner` role is automatically assigned when management groups are created.
+
+The service principal requires `Owner` role to configure role assignments for:
+
+* Policy Assignments that provide remediation (i.e. `deployIfNotExists` policies)
+* Archetype deployments (i.e. workload deployments) with role assignments between Azure Services for integration and to Security Groups for user access
 
 Additional service principal accounts must be created and scoped to child management groups, subscriptions or resource groups based on tasks that are expected of the service principal accounts.
 
