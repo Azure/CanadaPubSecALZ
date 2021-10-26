@@ -459,7 +459,7 @@ When a Log Analytics Workspace & Automation account already exists - set the fol
 
 2. Create a subscription configuration file (JSON)
 
-    Review the README.md under `/config/subscriptions` to create the folder structure required for subscriptions deployments. 
+    *Review the [README.md under `/config/subscriptions`](../../config/subscriptions/README.md) to create the folder structure required for subscriptions deployments.*
 
     1. Make a copy of an existing subscription configuration file under `config/subscriptions/CanadaESLZ-main` as a starting point
 
