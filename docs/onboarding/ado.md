@@ -16,6 +16,8 @@ A service principal account is required to automate the Azure DevOps pipelines.
 
     * Role:  Owner
 
+*  **Instructions**:  [Create an Azure service principal with the Azure CLI | Microsoft Docs](https://docs.microsoft.com/cli/azure/create-an-azure-service-principal-azure-cli)
+
 ## Step 2:  Configure Service Connection in Azure DevOps Project Configuration
 
 * **Scope Level**:  Management Group
@@ -31,7 +33,7 @@ A service principal account is required to automate the Azure DevOps pipelines.
 
 ### Step: 3.1: Update common.yml in git repository
 
-Create/edit `./config/variables/common.yml` in Git.  This file is used in all Azure DevOps pipelines.
+Create/edit `./config/variables/common.yml` in Git with Service Connection name.  This file is used in all Azure DevOps pipelines.
 
 **Sample YAML**
 ```yaml
@@ -46,7 +48,11 @@ variables:
 
 ### Step 3.2:  Update environment config file in git repository
 
-1. Create/edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git (i.e. CanadaESLZ-main.yml).  This file name is automatically inferred based on the Azure DevOps organization name and the branch.
+1. Identify the parent management group and obtain its ID. 
+
+    * *Note: By default, the root management group's name is Tenant root group. Its ID is the Azure Active Directory (AAD) tenant ID.*
+
+2. Create/edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git (i.e. CanadaESLZ-main.yml).  This file name is automatically inferred based on the Azure DevOps organization name and the branch.
 
     **Sample environment YAML**
 
@@ -59,7 +65,7 @@ variables:
 
     ```
 
-2. Commit the changes to git repository
+3. Commit the changes to git repository
 
 ### Step 3.3:  Configure Azure DevOps Pipeline
 
@@ -82,25 +88,34 @@ variables:
 
 ## Step 4:  Logging Landing Zone
 
-### Step 4.1:  Setup Azure AD Security Group (Optional)
+### Step 4.1:  Setup Azure AD Security Group (Recommended)
 
-At least one Azure AD Security Group is required for role assignment.  Role assignment can be set for Owner, Contributor, and/or Reader roles.  Note down the Security Group object id, it will be required for next step.
+At least one Azure AD Security Group is required for role assignment.  Role assignment can be set for Owner, Contributor, and/or Reader roles.  Note down the Security Group object id, it will be required for next step. <Let's add more explanation on what this group would responsible for>. 
+
+**Note: Since the service principal used for ADO Pipelines has been assigned 'Owner' role at parent management group - it does need to be a member of the group.**
 
 ### Step 4.2:  Update configuration files in git repository
 
 Set the configuration parameters even if there's an existing central Log Analytics Workspace.  These settings are used by other deployments such as Azure Policy for Log Analytics.  In this case, use the values of the existing Log Analytics Workspace.
 
-When a Log Analytics Workspace & Automation account already exists, enter Subscription ID, Resource Group, Log Analytics Workspace name and Automation account name.  The automation will update the existing deployment instead of creating new resources.
+When a Log Analytics Workspace & Automation account already exists - set the following: 
 
-1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
+    - Subscription ID
+    - Resource Group
+    - Log Analytics Workspace name
+    - Automation account name  
+ 
+**The automation will update the existing deployment instead of creating new resources.**
 
-    **Sample environment YAML**
+1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3. Make sure to include the contanct information for Service Heatlh (email and phone number). Include the values for the tags for the logging resources (i.e. Cost Center, Project contact, etc.). Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 4.1. 
+
+    * Note:  For **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate unique storage account name. 
+
+    **Sample environment YAML (Logging section)**
 
     ```yml
         variables:
-            # Management Groups
-            var-parentManagementGroupId: 343ddfdb-bef5-46d9-99cf-ed67d5948783
-            var-topLevelManagementGroupName: pubsec
+
 
             # Logging
             var-logging-managementGroupId: pubsecPlatform
@@ -229,75 +244,16 @@ When a Log Analytics Workspace & Automation account already exists, enter Subscr
     1. Hub Networking with Azure Firewall
     2. Hub Networking with Fortinet Firewall (NVA)
 
-    Depending on the preference, you may delete/comment the configuration that is not required.
+    Depending on the preference, you may delete/comment the configuration that is not required. For example, if deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls". 
 
-    **Sample environment YAML**
+    Update the values for the Management group, Sunbscription ID, resource tags, Service Health , IP ranges and AAD object ID of the group from Step 4.1
+
+
+    **Sample environment YAML (Hub Networking with Azure Firewall section)**
 
     ```yml
         variables:
-            # Management Groups
-            var-parentManagementGroupId: 343ddfdb-bef5-46d9-99cf-ed67d5948783
-            var-topLevelManagementGroupName: pubsec
 
-            # Logging
-            var-logging-managementGroupId: pubsecPlatform
-            var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
-            var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
-            var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
-            var-logging-logAnalyticsAutomationAccountName: automation-account
-            var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
-            var-logging-serviceHealthAlerts: >
-                {
-                    "resourceGroupName": "pubsec-service-health",
-                    "incidentTypes": [ "Incident", "Security" ],
-                    "regions": [ "Global", "Canada East", "Canada Central" ],
-                    "receivers": {
-                        "app": [ "alzcanadapubsec@microsoft.com" ],
-                        "email": [ "alzcanadapubsec@microsoft.com" ],
-                        "sms": [
-                            { "countryCode": "1", "phoneNumber": "5555555555" }
-                        ],
-                        "voice": [
-                            { "countryCode": "1", "phoneNumber": "5555555555" }
-                        ]
-                    }
-                }
-            var-logging-securityCenter: >
-                {
-                    "email": "alzcanadapubsec@microsoft.com",
-                    "phone": "5555555555"
-                }
-            var-logging-subscriptionRoleAssignments: >
-                [
-                    {
-                        "comments": "Built-in Contributor Role",
-                        "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-                        "securityGroupObjectIds": [
-                            "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-                        ]
-                    }
-                ]
-            var-logging-subscriptionBudget: >
-                {
-                    "createBudget": false,
-                    "name": "MonthlySubscriptionBudget",
-                    "amount": 1000,
-                    "timeGrain": "Monthly",
-                    "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
-                }
-            var-logging-subscriptionTags: >
-                {
-                    "ISSO": "isso-tbd"
-                }
-            var-logging-resourceTags: >
-                {
-                    "ClientOrganization": "client-organization-tag",
-                    "CostCenter": "cost-center-tag",
-                    "DataSensitivity": "data-sensitivity-tag",
-                    "ProjectContact": "project-contact-tag",
-                    "ProjectName": "project-name-tag",
-                    "TechnicalContact": "technical-contact-tag"
-                }
 
             # Hub Networking
             var-hubnetwork-managementGroupId: pubsecPlatform
@@ -414,79 +370,6 @@ When a Log Analytics Workspace & Automation account already exists, enter Subscr
             var-hubnetwork-azfw-azureFirewallForcedTunnelingEnabled: false
             var-hubnetwork-azfw-azureFirewallForcedTunnelingNextHop: 10.17.1.4
 
-            ####################################################################################
-            ### Hub Networking with Fortinet Firewalls                                       ###
-            ####################################################################################
-            
-            ## Hub Networking - Core Virtual Network
-            var-hubnetwork-nva-rgHubName: pubsec-hub-networking-rg
-            var-hubnetwork-nva-hubVnetName: hub-vnet
-            var-hubnetwork-nva-hubVnetAddressPrefixRFC1918: 10.18.0.0/22
-            var-hubnetwork-nva-hubVnetAddressPrefixRFC6598: 100.60.0.0/16
-            var-hubnetwork-nva-hubVnetAddressPrefixBastion: 192.168.0.0/16
-
-            var-hubnetwork-nva-hubEanSubnetName: EanSubnet
-            var-hubnetwork-nva-hubEanSubnetAddressPrefix: 10.18.0.0/27
-
-            var-hubnetwork-nva-hubPublicSubnetName: PublicSubnet
-            var-hubnetwork-nva-hubPublicSubnetAddressPrefix: 100.60.0.0/24
-
-            var-hubnetwork-nva-hubPazSubnetName: PAZSubnet
-            var-hubnetwork-nva-hubPazSubnetAddressPrefix: 100.60.1.0/24
-
-            var-hubnetwork-nva-hubDevIntSubnetName: DevIntSubnet
-            var-hubnetwork-nva-hubDevIntSubnetAddressPrefix: 10.18.0.64/27
-
-            var-hubnetwork-nva-hubProdIntSubnetName: PrdIntSubnet
-            var-hubnetwork-nva-hubProdIntSubnetAddressPrefix: 10.18.0.32/27
-
-            var-hubnetwork-nva-hubMrzIntSubnetName: MrzSubnet
-            var-hubnetwork-nva-hubMrzIntSubnetAddressPrefix: 10.18.0.96/27
-
-            var-hubnetwork-nva-hubHASubnetName: HASubnet
-            var-hubnetwork-nva-hubHASubnetAddressPrefix: 10.18.0.128/28
-
-            var-hubnetwork-nva-hubGatewaySubnetPrefix: 10.18.1.0/27
-
-            var-hubnetwork-nva-hubBastionSubnetAddressPrefix: 192.168.0.0/24
-
-            ## Hub Networking - Firewall Virtual Appliances
-            var-hubnetwork-nva-deployFirewallVMs: false
-            var-hubnetwork-nva-useFortigateFW: false
-
-            ### Hub Networking - Firewall Virtual Appliances - For Non-production Traffic
-            var-hubnetwork-nva-fwDevILBName: pubsecDevFWILB
-            var-hubnetwork-nva-fwDevVMSku: Standard_D8s_v4
-            var-hubnetwork-nva-fwDevVM1Name: pubsecDevFW1
-            var-hubnetwork-nva-fwDevVM2Name: pubsecDevFW2
-            var-hubnetwork-nva-fwDevILBExternalFacingIP: 100.60.0.7
-            var-hubnetwork-nva-fwDevVM1ExternalFacingIP: 100.60.0.8
-            var-hubnetwork-nva-fwDevVM2ExternalFacingIP: 100.60.0.9
-            var-hubnetwork-nva-fwDevILBMrzIntIP: 10.18.0.103
-            var-hubnetwork-nva-fwDevVM1MrzIntIP: 10.18.0.104
-            var-hubnetwork-nva-fwDevVM2MrzIntIP: 10.18.0.105
-            var-hubnetwork-nva-fwDevILBDevIntIP: 10.18.0.68
-            var-hubnetwork-nva-fwDevVM1DevIntIP: 10.18.0.69
-            var-hubnetwork-nva-fwDevVM2DevIntIP: 10.18.0.70
-            var-hubnetwork-nva-fwDevVM1HAIP: 10.18.0.134
-            var-hubnetwork-nva-fwDevVM2HAIP: 10.18.0.135
-
-            ### Hub Networking - Firewall Virtual Appliances - For Production Traffic
-            var-hubnetwork-nva-fwProdILBName: pubsecProdFWILB
-            var-hubnetwork-nva-fwProdVMSku: Standard_F8s_v2
-            var-hubnetwork-nva-fwProdVM1Name: pubsecProdFW1
-            var-hubnetwork-nva-fwProdVM2Name: pubsecProdFW2
-            var-hubnetwork-nva-fwProdILBExternalFacingIP: 100.60.0.4
-            var-hubnetwork-nva-fwProdVM1ExternalFacingIP: 100.60.0.5
-            var-hubnetwork-nva-fwProdVM2ExternalFacingIP: 100.60.0.6
-            var-hubnetwork-nva-fwProdILBMrzIntIP: 10.18.0.100
-            var-hubnetwork-nva-fwProdVM1MrzIntIP: 10.18.0.101
-            var-hubnetwork-nva-fwProdVM2MrzIntIP: 10.18.0.102
-            var-hubnetwork-nva-fwProdILBPrdIntIP: 10.18.0.36
-            var-hubnetwork-nva-fwProdVM1PrdIntIP: 10.18.0.37
-            var-hubnetwork-nva-fwProdVM2PrdIntIP: 10.18.0.38
-            var-hubnetwork-nva-fwProdVM1HAIP: 10.18.0.132
-            var-hubnetwork-nva-fwProdVM2HAIP: 10.18.0.133
     ```
 
 2. Configure Variable Group:  firewall-secrets **(required for Fortinet Firewall deployment)**
@@ -575,6 +458,8 @@ When a Log Analytics Workspace & Automation account already exists, enter Subscr
     8. Rename the pipeline to `subscription-ci`
 
 2. Create a subscription configuration file (JSON)
+
+    *Review the [README.md under `/config/subscriptions`](../../config/subscriptions/README.md) to create the folder structure required for subscriptions deployments.*
 
     1. Make a copy of an existing subscription configuration file under `config/subscriptions/CanadaESLZ-main` as a starting point
 
