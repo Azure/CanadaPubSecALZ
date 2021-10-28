@@ -1,4 +1,4 @@
-# Azure Landing Zones Reference Implementation for Canadian Public Sector
+# Azure Landing Zones for Canadian Public Sector
 
 ## Introduction
 
@@ -8,6 +8,8 @@ Architecture supported up to Treasury Board of Canada Secretariat (TBS) Cloud Pr
 
 * Cloud-based services hosting sensitive (up to Protected B) information
 * No direct system to system network interconnections required with GC data centers
+
+> This implementation is specific to **Canadian Public Sector departments**. Please see [Implement Cloud Adoption Framework enterprise-scale landing zones in Azure](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/implementation) if you are looking for implementation for other industries or customers.
 
 ## Architecture
 
