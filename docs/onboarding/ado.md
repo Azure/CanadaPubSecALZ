@@ -21,17 +21,43 @@ This document provides steps required to onboard to the Azure Landing Zones desi
 
 ## Step 1:  Create Service Principal Account & Assign RBAC
 
-A service principal account is required to automate the Azure DevOps pipelines. 
+An Azure service principal is an identity created for use with applications, hosted services, and automated tools to access Azure resources. This access is restricted by the roles assigned to the service principal, giving you control over which resources can be accessed and at which level. For security reasons, it's always recommended to use service principals with automated tools rather than allowing them to log in with a user identity.
 
 * **Service Principal Name**:  any name (i.e. spn-azure-platform-ops)
 
 * **RBAC Assignment**
 
-    * Scope:  Tenant Root Group (this is a management group)
+    * **Scope:**  Tenant Root Group (this is a management group in the Azure environment)
 
-    * Role:  Owner
+    * **Role:**  [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in Azure RBAC.  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
 
 *  **Instructions**:  [Create an Azure service principal with the Azure CLI | Microsoft Docs](https://docs.microsoft.com/cli/azure/create-an-azure-service-principal-azure-cli)
+
+To create the service principal account and role assignment through Azure CLI:
+
+> To execute the Azure CLI command, the user account must be either `User Access Administrator` or `Owner` on Tenant Root Group management group.
+
+> Replace `<Azure Active Directory Tenant Id>` with your tenant id.
+
+```bash
+
+az ad sp create-for-rbac --name spn-azure-platform-ops --role Owner --scopes /providers/Microsoft.Management/managementGroups/<Azure Active Directory Tenant Id>
+
+```
+
+**Sample Output**
+
+Note down the `appId`, `tenant` and `password`.  These will be required to for setting up a Service Connection in Azure DevOps.  The default password expiry is **1 Year**.
+
+```json
+{
+  "appId": "c996807d-1111-0000-0000-e2171950dd5d",
+  "displayName": "spn-azure-platform-ops",
+  "name": "c996807d-1111-0000-0000-e2171950dd5d",
+  "password": "<your password>",
+  "tenant": "<your tenant id>"
+}
+```
 
 ---
 
