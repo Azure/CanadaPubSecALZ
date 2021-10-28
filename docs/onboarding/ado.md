@@ -9,13 +9,13 @@ This document provides steps required to onboard to the Azure Landing Zones desi
 ## Instructions
 
 * [Step 1: Create Service Principal Account & Assign RBAC](#step-1--create-service-principal-account--assign-rbac)
-* [Step 2: Configure Service Connection in Azure DevOps Project Configuration](##step-2--configure-service-connection-in-azure-devops-project-configuration)
+* [Step 2: Configure Service Connection in Azure DevOps Project Configuration](#step-2--configure-service-connection-in-azure-devops-project-configuration)
 * [Step 3: Configure Management Group Deployment](#step-3--configure-management-group-deployment)
 * [Step 4: Configure Custom Roles](#step-4--configure-custom-roles)
 * [Step 5: Configure Logging Landing Zone](#step-5--configure-logging-landing-zone)
 * [Step 6: Configure Azure Policies](#step-6--configure-azure-policies)
-* [Step 7: Configure Hub Networking](step-7--configure-hub-networking)
-* [Step 8: Configure Subscription Archetypes](#step-8--configure-subscription-archetype)
+* [Step 7: Configure Hub Networking](#step-7--configure-hub-networking)
+* [Step 8: Configure Subscription Archetypes](#step-8--configure-subscription-archetypes)
 
 ---
 
