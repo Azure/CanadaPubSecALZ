@@ -180,7 +180,7 @@ When a Log Analytics Workspace & Automation account already exists - set the fol
 
 2. Commit the changes to git repository.
 
-### Step 4.3:  Configure Azure DevOps Pipeline (only required if a new central Log Analytics Workspace is required)
+### Step 4.3:  Configure Azure DevOps Pipeline
 
 1. Pipeline definition for Central Logging.
 
@@ -197,6 +197,27 @@ When a Log Analytics Workspace & Automation account already exists - set the fol
 
 
 2. Run pipeline and wait for completion.
+
+### Step 4.4:  Configure Audit Stream from Azure DevOps to Log Analytics Workspace (Optional)
+
+Audit streams represent a pipeline that flows audit events from your Azure DevOps organization to a stream target. Every half hour or less, new audit events are bundled and streamed to your targets. 
+
+We recommend reviewing common [Azure Sentinel detection patterns and rules provided in GitHub](https://github.com/Azure/Azure-Sentinel/tree/master/Detections/AzureDevOpsAuditing) as part of configuring Azure Sentinel.
+
+In order to configure audit stream for Azure Monitor, identify the following information:
+
+* Log Analytics Workspace ID
+    1. Navigate to Azure Portal
+    2. Navigate to Log Analytics Workspace
+    3. Workspace ID is listed on the Overview screen
+* Log Analytics Shared Key 
+    1. Navigate to Azure Portal
+    2. Navigate to Log Analytics Workspace
+    3. Navigate to Agents Management
+    4. Select either Primary or Secondary Key
+
+**Instructions**: [Create an audit stream in Azure DevOps for Azure Monitor](https://docs.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops#create-a-stream).
+
 
 ## Step 5:  Configure Azure Policies
 
