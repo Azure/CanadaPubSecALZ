@@ -25,7 +25,7 @@ An Azure service principal is an identity created for use with applications, hos
 
 * **Service Principal Name**:  any name (i.e. spn-azure-platform-ops)
 
-* **RBAC Assignment**
+* **RBAC Assignment Settings**
 
     * **Scope:**  Tenant Root Group (this is a management group in the Azure environment)
 
@@ -63,13 +63,14 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 
 ## Step 2:  Configure Service Connection in Azure DevOps Project Configuration
 
-* **Scope Level**:  Management Group
+* Settings
+    * **Scope Level**:  Management Group
 
-* **Service Connection Name**:  spn-azure-platform-ops
+    * **Service Connection Name**:  spn-azure-platform-ops
 
-    *Service Connection Name will be used to configure Azure DevOps Pipelines.*
+        *Service Connection Name is referenced in the Azure DevOps Pipelines for Azure authentication and authorization.*
 
-*  **Instructions**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml)
+*  **Instructions**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml).  Use the settings described above when following the instructions.
 
 ---
 
@@ -155,93 +156,99 @@ variables:
 
 ### Step 5.1:  Setup Azure AD Security Group (Recommended)
 
-At least one Azure AD Security Group is required for role assignment.  Role assignment can be set for Owner, Contributor, and/or Reader roles.  Note down the Security Group object id, it will be required for next step. <Let's add more explanation on what this group would responsible for>. 
+At least one Azure AD Security Group is recommended for role assignment.  Role assignment are set at the Subscription scope and can be either built-In roles (i.e. Owner, Contributor, Reader) or any custom roles that are configured in the Azure Active Directory tenant.  Note down the Security Group object id, it will be required for next step.
 
-**Note: Since the service principal used for ADO Pipelines has been assigned 'Owner' role at parent management group - it does need to be a member of the group.**
+This role assignment is used to grant users access to the logging subscription based on their roles & responsibilities.
 
 ### Step 5.2:  Update configuration files in git repository
 
-Set the configuration parameters even if there's an existing central Log Analytics Workspace.  These settings are used by other deployments such as Azure Policy for Log Analytics.  In this case, use the values of the existing Log Analytics Workspace.
+> **If you are using an existing Log Analytics Workspace in your subscription.**
+> 
+>Set the configuration parameters of the existing Log Analytics Workspace.  These settings will be used by deployments such as Azure Policy for Log Analytics integration.
+>
+> When a Log Analytics Workspace & Automation account already exists - set the following: 
+>    - Subscription ID
+>    - Resource Group
+>    - Log Analytics Workspace name
+>    - Automation account name  
+>
+> **The deployment automation will update the existing resources instead of creating new.**
 
-When a Log Analytics Workspace & Automation account already exists - set the following: 
+1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
-    - Subscription ID
-    - Resource Group
-    - Log Analytics Workspace name
-    - Automation account name  
- 
-**The automation will update the existing deployment instead of creating new resources.**
+Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
 
-1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3. Make sure to include the contanct information for Service Heatlh (email and phone number). Include the values for the tags for the logging resources (i.e. Cost Center, Project contact, etc.). Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 4.1. 
+```yml
+    var-logging-subscriptionRoleAssignments: >
+        []
+```
 
-    * Note:  For **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate unique storage account name. 
+Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for` HIPAA/HITRUST Policy Assignment`.
 
-    **Sample environment YAML (Logging section)**
+**Sample environment YAML (Logging section only)**
 
-    ```yml
-        variables:
-
-
-            # Logging
-            var-logging-managementGroupId: pubsecPlatform
-            var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
-            var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
-            var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
-            var-logging-logAnalyticsAutomationAccountName: automation-account
-            var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
-            var-logging-serviceHealthAlerts: >
-                {
-                    "resourceGroupName": "pubsec-service-health",
-                    "incidentTypes": [ "Incident", "Security" ],
-                    "regions": [ "Global", "Canada East", "Canada Central" ],
-                    "receivers": {
-                        "app": [ "alzcanadapubsec@microsoft.com" ],
-                        "email": [ "alzcanadapubsec@microsoft.com" ],
-                        "sms": [
-                            { "countryCode": "1", "phoneNumber": "5555555555" }
-                        ],
-                        "voice": [
-                            { "countryCode": "1", "phoneNumber": "5555555555" }
-                        ]
-                    }
+```yml
+    variables:
+        # Logging
+        var-logging-managementGroupId: pubsecPlatform
+        var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
+        var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
+        var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
+        var-logging-logAnalyticsAutomationAccountName: automation-account
+        var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
+        var-logging-serviceHealthAlerts: >
+            {
+                "resourceGroupName": "pubsec-service-health",
+                "incidentTypes": [ "Incident", "Security" ],
+                "regions": [ "Global", "Canada East", "Canada Central" ],
+                "receivers": {
+                    "app": [ "alzcanadapubsec@microsoft.com" ],
+                    "email": [ "alzcanadapubsec@microsoft.com" ],
+                    "sms": [
+                        { "countryCode": "1", "phoneNumber": "5555555555" }
+                    ],
+                    "voice": [
+                        { "countryCode": "1", "phoneNumber": "5555555555" }
+                    ]
                 }
-            var-logging-securityCenter: >
+            }
+        var-logging-securityCenter: >
+            {
+                "email": "alzcanadapubsec@microsoft.com",
+                "phone": "5555555555"
+            }
+        var-logging-subscriptionRoleAssignments: >
+            [
                 {
-                    "email": "alzcanadapubsec@microsoft.com",
-                    "phone": "5555555555"
+                    "comments": "Built-in Contributor Role",
+                    "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                    "securityGroupObjectIds": [
+                        "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+                    ]
                 }
-            var-logging-subscriptionRoleAssignments: >
-                [
-                    {
-                        "comments": "Built-in Contributor Role",
-                        "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-                        "securityGroupObjectIds": [
-                            "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-                        ]
-                    }
-                ]
-            var-logging-subscriptionBudget: >
-                {
-                    "createBudget": false,
-                    "name": "MonthlySubscriptionBudget",
-                    "amount": 1000,
-                    "timeGrain": "Monthly",
-                    "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
-                }
-            var-logging-subscriptionTags: >
-                {
-                    "ISSO": "isso-tbd"
-                }
-            var-logging-resourceTags: >
-                {
-                    "ClientOrganization": "client-organization-tag",
-                    "CostCenter": "cost-center-tag",
-                    "DataSensitivity": "data-sensitivity-tag",
-                    "ProjectContact": "project-contact-tag",
-                    "ProjectName": "project-name-tag",
-                    "TechnicalContact": "technical-contact-tag"
-                }
-    ```
+            ]
+        var-logging-subscriptionBudget: >
+            {
+                "createBudget": false,
+                "name": "MonthlySubscriptionBudget",
+                "amount": 1000,
+                "timeGrain": "Monthly",
+                "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
+            }
+        var-logging-subscriptionTags: >
+            {
+                "ISSO": "isso-tbd"
+            }
+        var-logging-resourceTags: >
+            {
+                "ClientOrganization": "client-organization-tag",
+                "CostCenter": "cost-center-tag",
+                "DataSensitivity": "data-sensitivity-tag",
+                "ProjectContact": "project-contact-tag",
+                "ProjectName": "project-name-tag",
+                "TechnicalContact": "technical-contact-tag"
+            }
+```
 
 2. Commit the changes to git repository.
 
@@ -319,12 +326,10 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     Update the values for the Management group, Sunbscription ID, resource tags, Service Health , IP ranges and AAD object ID of the group from Step 4.1
 
 
-    **Sample environment YAML (Hub Networking with Azure Firewall section)**
+    **Sample environment YAML (Hub Networking with Azure Firewall section only)**
 
     ```yml
         variables:
-
-
             # Hub Networking
             var-hubnetwork-managementGroupId: pubsecPlatform
             var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
