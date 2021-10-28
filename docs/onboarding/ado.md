@@ -183,7 +183,7 @@ Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD
         []
 ```
 
-Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for` HIPAA/HITRUST Policy Assignment`.
+Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
 
 **Sample environment YAML (Logging section only)**
 
