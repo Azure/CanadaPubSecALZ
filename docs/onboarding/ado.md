@@ -4,6 +4,21 @@ This document provides steps required to onboard to the Azure Landing Zones desi
 
 **All steps will need to be repeated per Azure AD tenant.**
 
+---
+
+## Instructions
+
+* [Step 1: Create Service Principal Account & Assign RBAC](#step-1--create-service-principal-account--assign-rbac)
+* [Step 2: Configure Service Connection in Azure DevOps Project Configuration](##step-2--configure-service-connection-in-azure-devops-project-configuration)
+* [Step 3: Configure Management Group Deployment](#step-3--configure-management-group-deployment)
+* [Step 4: Configure Custom Roles](#step-4--configure-custom-roles)
+* [Step 5: Configure Logging Landing Zone](#step-5--configure-logging-landing-zone)
+* [Step 6: Configure Azure Policies](#step-6--configure-azure-policies)
+* [Step 7: Configure Hub Networking](step-7--configure-hub-networking)
+* [Step 8: Configure Subscription Archetypes](#step-8--configure-subscription-archetype)
+
+---
+
 ## Step 1:  Create Service Principal Account & Assign RBAC
 
 A service principal account is required to automate the Azure DevOps pipelines. 
@@ -18,6 +33,8 @@ A service principal account is required to automate the Azure DevOps pipelines.
 
 *  **Instructions**:  [Create an Azure service principal with the Azure CLI | Microsoft Docs](https://docs.microsoft.com/cli/azure/create-an-azure-service-principal-azure-cli)
 
+---
+
 ## Step 2:  Configure Service Connection in Azure DevOps Project Configuration
 
 * **Scope Level**:  Management Group
@@ -28,6 +45,7 @@ A service principal account is required to automate the Azure DevOps pipelines.
 
 *  **Instructions**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml)
 
+---
 
 ## Step 3:  Configure Management Group Deployment
 
@@ -85,16 +103,37 @@ variables:
 
 2. Run pipeline and wait for completion.
 
+---
 
-## Step 4:  Logging Landing Zone
+## Step 4:  Configure Custom Roles
 
-### Step 4.1:  Setup Azure AD Security Group (Recommended)
+1. Pipeline definition for Custom Roles.
+
+    *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
+
+    1.    Go to Pipelines
+    2.    New Pipeline
+    3.    Choose Azure Repos Git
+    4.    Select Repository
+    5.    Select Existing Azure Pipeline YAML file
+    6.    Identify the pipeline in `.pipelines/roles.yml`.
+    7.  Save the pipeline (don't run it yet)
+    8.  Rename the pipeline to `roles-ci`
+
+
+2. Run pipeline and wait for completion.
+
+---
+
+## Step 5:  Configure Logging Landing Zone
+
+### Step 5.1:  Setup Azure AD Security Group (Recommended)
 
 At least one Azure AD Security Group is required for role assignment.  Role assignment can be set for Owner, Contributor, and/or Reader roles.  Note down the Security Group object id, it will be required for next step. <Let's add more explanation on what this group would responsible for>. 
 
 **Note: Since the service principal used for ADO Pipelines has been assigned 'Owner' role at parent management group - it does need to be a member of the group.**
 
-### Step 4.2:  Update configuration files in git repository
+### Step 5.2:  Update configuration files in git repository
 
 Set the configuration parameters even if there's an existing central Log Analytics Workspace.  These settings are used by other deployments such as Azure Policy for Log Analytics.  In this case, use the values of the existing Log Analytics Workspace.
 
@@ -180,7 +219,7 @@ When a Log Analytics Workspace & Automation account already exists - set the fol
 
 2. Commit the changes to git repository.
 
-### Step 4.3:  Configure Azure DevOps Pipeline
+### Step 5.3:  Configure Azure DevOps Pipeline
 
 1. Pipeline definition for Central Logging.
 
@@ -198,7 +237,7 @@ When a Log Analytics Workspace & Automation account already exists - set the fol
 
 2. Run pipeline and wait for completion.
 
-### Step 4.4:  Configure Audit Stream from Azure DevOps to Log Analytics Workspace (Optional)
+### Step 5.4:  Configure Audit Stream from Azure DevOps to Log Analytics Workspace (Optional)
 
 Audit streams represent a pipeline that flows audit events from your Azure DevOps organization to a stream target. Every half hour or less, new audit events are bundled and streamed to your targets. 
 
@@ -218,8 +257,9 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 **Instructions**: [Create an audit stream in Azure DevOps for Azure Monitor](https://docs.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops#create-a-stream).
 
+---
 
-## Step 5:  Configure Azure Policies
+## Step 6:  Configure Azure Policies
 
 1. Pipeline definition for Azure Policies.
 
@@ -237,26 +277,9 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 2. Run pipeline and wait for completion.
 
+---
 
-## Step 6:  Configure Custom Roles
-
-1. Pipeline definition for Custom Roles.
-
-    *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
-
-    1.    Go to Pipelines
-    2.    New Pipeline
-    3.    Choose Azure Repos Git
-    4.    Select Repository
-    5.    Select Existing Azure Pipeline YAML file
-    6.    Identify the pipeline in `.pipelines/roles.yml`.
-    7.  Save the pipeline (don't run it yet)
-    8.  Rename the pipeline to `roles-ci`
-
-
-2. Run pipeline and wait for completion.
-
-## Step 7:  Configure Hub Networking using NVAs
+## Step 7:  Configure Hub Networking
 
 1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
@@ -463,7 +486,9 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
     * When using Hub Networking with Azure Firewall, run `platform-connectivity-hub-azfw-policy-ci` pipeline first.  This ensures that the Azure Firewall Policy is deployed and can be used as a reference for Azure Firewall.  This approach allows for Azure Firewall Policies (such as allow/deny rules) to be managed independently from the Hub Networking components.
 
-## Step 8:  Configure Subscription Archetype
+---
+
+## Step 8:  Configure Subscription Archetypes
 
 1. Configure Pipeline definition for subscription archetypes
 
