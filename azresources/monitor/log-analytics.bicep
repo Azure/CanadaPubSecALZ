@@ -58,6 +58,7 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' = {
 // Link Log Analytics Workspace to Automation Account
 resource automationAccountLinkedToWorkspace 'Microsoft.OperationalInsights/workspaces/linkedServices@2020-08-01' = {
   name: '${workspace.name}/Automation'
+  tags: tags
   properties: {
     resourceId: automationAccount.outputs.automationAccountId
   }
@@ -66,6 +67,7 @@ resource automationAccountLinkedToWorkspace 'Microsoft.OperationalInsights/works
 // Add Log Analytics Workspace Solutions
 resource workspaceSolutions 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = [for solution in solutions: {
   name: '${solution}(${workspace.name})'
+  tags: tags
   location: resourceGroup().location
   properties: {
     workspaceResourceId: workspace.id
