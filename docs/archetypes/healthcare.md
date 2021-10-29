@@ -51,7 +51,7 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Resource Tags | A set of tags that are assigned to the resource group and resources.  These tags must include all required tags as defined the Tag Governance policy. |
 | Automation | Deploys an Azure Automation Account in each subscription. |
 | Hub Networking | Configures virtual network peering to Hub Network which is required for egress traffic flow and hub-managed DNS resolution (on-premises or other spokes, private endpoints).
-| Networking | A spoke virtual network with minimum 4 zones:  oz (Opertional Zone), paz (Public Access Zone), rz (Restricted Zone), hrz (Highly Restricted Zone).  Additional subnets can be configured at deployment time using configuration (see below). |
+| Networking | A spoke virtual network with minimum 4 zones: oz (Operational Zone), paz (Public Access Zone), rz (Restricted Zone), hrz (Highly Restricted Zone).  Additional subnets can be configured at deployment time using configuration (see below). |
 | Key Vault | Deploys a spoke managed Azure Key Vault instance that is used for key and secret management. |
 | SQL Database | Deploys Azure SQL Database.  Optional. |
 | Azure Data Lake Store Gen 2 | Deploys an Azure Data Lake Gen 2 instance with hierarchical namespace.  *There aren't any parameters for customization.* |

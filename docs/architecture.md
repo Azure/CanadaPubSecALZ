@@ -1,8 +1,8 @@
 # Azure Landing Zones for Canadian Public Sector
 
-The purpose of the reference implementation is to guide Canadian Public Sector customers on building Landing Zones in their Azure environment.  The reference implementation is based on [Cloud Adoption Framework for Azure][cafLandingZones] and provides an opininated implementation that enables ITSG-33 regulatory compliance by using [NIST SP 800-53 Rev. 4][nist80053r4Policyset] and [Canada Federal PBMM][pbmmPolicyset] Regulatory Compliance Policy Sets.
+The purpose of the reference implementation is to guide Canadian Public Sector customers on building Landing Zones in their Azure environment.  The reference implementation is based on [Cloud Adoption Framework for Azure][cafLandingZones] and provides an opinionated implementation that enables ITSG-33 regulatory compliance by using [NIST SP 800-53 Rev. 4][nist80053r4Policyset] and [Canada Federal PBMM][pbmmPolicyset] Regulatory Compliance Policy Sets.
 
-Architecture supports up to **Treasury Board of Canada Secretariat (TBS) Cloud Profile 3** - Cloud Only Applications.  This proflie is applicable to Infrastructure as a Service (IaaS) and Platform as a Service (PaaS) with [characteristics][cloudUsageProfiles]:
+Architecture supports up to **Treasury Board of Canada Secretariat (TBS) Cloud Profile 3** - Cloud Only Applications.  This profile is applicable to Infrastructure as a Service (IaaS) and Platform as a Service (PaaS) with [characteristics][cloudUsageProfiles]:
 
 * Cloud-based services hosting sensitive (up to Protected B) information
 * No direct system to system network interconnections required with GC data centers
@@ -141,7 +141,7 @@ Azure Landing Zones for Canadian Public Sector assumes that Azure Active Directo
 * App Registration - Consider disabling for all users and created on-demand by CloudOps teams.
 * Sign-In Logs - Logs are exported to Log Analytics workspace & Sentinel used for threat hunting (Security Monitoring Team).
 * Break-glass procedure - Process documented and implemented including 2 break glass accounts with different MFA devices & split up passwords.
-*	Azure Directory to Azure Active Directory sychronization - Are the identities synchronized or using cloud only account?
+*	Azure Directory to Azure Active Directory synchronization - Are the identities synchronized or using cloud only account?
 
 ### 4.1 Service Principal Accounts
 
@@ -260,7 +260,7 @@ The reference implementation does not deploy DNS Servers (as Virtual Machines) i
 
 * Link Private DNS Zones directly to the spoke virtual networks and use the [built-in DNS resolver in each virtual network](https://docs.microsoft.com/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances). Virtual network(s) in spoke subscriptions be configured through Virtual Network Link for name resolution. DNS resolution is automatic once the Private DNS Zone is linked to the virtual network.
 
-* Leverage DNS Servers on virtaul machines that are managed by department's IT.
+* Leverage DNS Servers on virtual machines that are managed by department's IT.
 
 ### Spoke Landing Zone Networks
 Following the nomenclature of [ITSG-22][itsg22], these would be the default subnets created in the spokes as part of new subscriptions.
@@ -285,7 +285,7 @@ The design and recommendation are based on the following requirements:
 * Limit data access based on resource permissions granted to individuals and teams.
 * Tune alerting based on environments (i.e., less alerts from non-production environments).
 
-![Log Analytics Worksace](media/architecture/log-analytics-workspace.jpg)
+![Log Analytics Workspace](media/architecture/log-analytics-workspace.jpg)
 
 This approach offers:
 
@@ -351,7 +351,7 @@ A tagging strategy include business and operational details:
 
 Tags can be assigned to resources using 3 approaches:
 
-| Approach | Mechnishm |
+| Approach | Mechanism |
 | --- | --- |
 | Automatically assigned from the Subscription tags | Azure Policy:  Inherit a tag from the subscription if missing |
 | Automatically assigned from the Resource Group tags | Azure Policy:  Inherit a tag from the resource group if missing |
@@ -465,10 +465,10 @@ Use the [onboarding guide for Azure DevOps](onboarding/ado.md) to configure each
 | Azure Policy | policy.yml | policy-ci | Deploys policy definitions & assignments at Management Group scope. | spn-azure-platform-ops | None |
 | Platform - Logging | platform-logging.yml | platform-logging-ci | Configures a Logging Landing Zone that will be used by all landing zones for managing their logs. | spn-azure-platform-ops | None |
 | Platform – Hub Networking using NVAs | platform-connectivity-hub-nva.yml | platform-connectivity-hub-nva-ci | Configures Hub Networking with Fortigate Firewalls. | spn-azure-platform-ops | None |
-| Platform – Hub Networking with Azure Firewall - Firewall Policy | platform-connectivity-hub-azfw-policy.yml | platform-connectivity-hub-azfw-policy-ci | Configures Azure Firewall Policy.  A policy containts firewall rules and firewall configuration such as enabling DNS Proxy.  Firewall policies can be updated independently of Azure Firewall. | spn-azure-platform-ops | None |
+| Platform – Hub Networking with Azure Firewall - Firewall Policy | platform-connectivity-hub-azfw-policy.yml | platform-connectivity-hub-azfw-policy-ci | Configures Azure Firewall Policy.  A policy contains firewall rules and firewall configuration such as enabling DNS Proxy.  Firewall policies can be updated independently of Azure Firewall. | spn-azure-platform-ops | None |
 | Platform – Hub Networking with Azure Firewall | platform-connectivity-hub-azfw.yml | platform-connectivity-hub-azfw-ci | Configures Hub Networking with Azure Firewall. | spn-azure-platform-ops | None |
 | Subscriptions | subscription.yml | subscription-ci | Configures a new subscription based on the archetype defined in the configuration file name. | spn-azure-platform-ops | None |
-| Pull Request Validation | pull-request-check.yml | pull-request-validation-ci | Checks for breaking changes to Bicep templates & parameter scehmas prior to merging the change to main branch.  This pipeline must be configured as a check for the `main` branch. | spn-azure-platform-ops | None |
+| Pull Request Validation | pull-request-check.yml | pull-request-validation-ci | Checks for breaking changes to Bicep templates & parameter schemas prior to merging the change to main branch.  This pipeline must be configured as a check for the `main` branch. | spn-azure-platform-ops | None |
 
 
 ### 9.4 Release Process

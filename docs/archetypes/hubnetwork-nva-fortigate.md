@@ -27,7 +27,7 @@ The recommended network design achieves the purpose of hosting [**Protected B** 
 * The firewalls have one interface for their respective Internal Area Networks (Prod/Dev)
 * The hub a contains subnet acting as a public access zones (PAZ, using [RFC 6598][rfc6598] space) where service delivery occurs (i.e. web application delivery), either dedicated to line of business workload or as a shared system. When using Azure Application Gateway, the subnet will be of its exclusively use.
 * Hub links to a spoke MRZ Virtual Network (Management Restricted Zone) for management, security, and shared infrastructure purposes (i.e. Domain Controllers, Secure Jumpbox, Software Management, Log Relays, etc.).
-* Spokes contains RZ (Restricted Zone) for line of business workloads, including dedicated PAZ (Public Accces Zone), App RZ (Restricted Zone), and Data RZ (Data Restricted Zone).
+* Spokes contains RZ (Restricted Zone) for line of business workloads, including dedicated PAZ (Public Access Zone), App RZ (Restricted Zone), and Data RZ (Data Restricted Zone).
 * All ingress traffic traverses the hub's firewall, and all egress to internet routed to the firewall for complete traffic inspection for virtual machines. PaaS services will have direct communication with the Azure control plane to avoid asymmetric routing.
 * No public IPs allowed in the landing zone spokes for virtual machines. Public IPs for landing zones are only allowed in the external area network (EAN).  Azure Policy is in place to present Public IPs from being directly attached to Virtual Machines NICs.
 * Spokes have network segmentation and security rules to filter East-West traffic and Spoke-to-Spoke traffic will be denied by default in the firewall.
