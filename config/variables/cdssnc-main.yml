@@ -1,0 +1,78 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+# Environment YAML files can be used to supplement
+# the variables specified in 'config/variables/common.yml'. You can:
+#   * Override existing common-vars.yml variable value settings, and
+#   * Create new variable values not present in common-vars.yml
+#
+# The naming convention for these YAML files is:
+#   {organization}-{branch}.yml
+#
+# where {organization} is the organization variable from the
+#         common.yml file
+# and   {branch} is the Azure Repos branch name used by the
+#         currently executing pipeline.
+
+variables:
+  # Management Groups
+  var-parentManagementGroupId: 221ca1d3-b3f2-4346-8abc-88f802495c7d
+  var-topLevelManagementGroupName: pubsec
+
+  # Logging
+  var-logging-managementGroupId: pubsecPlatform
+  var-logging-subscriptionId: f27b081a-aa54-4ab4-9f26-a4c5375dc8fa
+  var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
+  var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
+  var-logging-logAnalyticsAutomationAccountName: automation-account
+  var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
+  var-logging-serviceHealthAlerts: >
+    {
+      "resourceGroupName": "pubsec-service-health",
+      "incidentTypes": [ "Incident", "Security" ],
+      "regions": [ "Global", "Canada East", "Canada Central" ],
+      "receivers": {
+          "app": [ "calvin.rodo@cds-snc.ca" ],
+          "email": [ "calvin.rodo@cds-snc.ca" ],
+          "sms": [],
+          "voice": []
+      },
+      "actionGroupName": "ALZ action group",
+      "actionGroupShortName": "alz-alert",
+      "alertRuleName": "ALZ alert rule",
+      "alertRuleDescription": "Alert rule for Azure Landing Zone"
+    }
+  var-logging-securityCenter: >
+    {
+      "email": "calvin@cds-snc.ca",
+      "phone": ""
+    }
+  var-logging-subscriptionRoleAssignments: >
+    [ ]
+  var-logging-subscriptionBudget: >
+    {
+      "createBudget": false,
+      "name": "MonthlySubscriptionBudget",
+      "amount": 1000,
+      "timeGrain": "Monthly",
+      "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
+    }
+  var-logging-subscriptionTags: >
+    {
+      "ISSO": "security@cds-snc.ca"
+    }
+  var-logging-resourceTags: >
+    {
+      "ClientOrganization": "cds-snc",
+      "CostCenter": "sentinel",
+      "DataSensitivity": "PB",
+      "ProjectContact": "Calvin Rodo",
+      "ProjectName": "Sentinel",
+      "TechnicalContact": "calvin.rodo@cds-snc.ca"
+    }
