@@ -107,7 +107,7 @@ When a Log Analytics Workspace & Automation account already exists - set the fol
  
 **The automation will update the existing deployment instead of creating new resources.**
 
-1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3. Make sure to include the contanct information for Service Heatlh (email and phone number). Include the values for the tags for the logging resources (i.e. Cost Center, Project contact, etc.). Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 4.1. 
+1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3. Make sure to include the contact information for Service Health (email and phone number). Include the values for the tags for the logging resources (i.e. Cost Center, Project contact, etc.). Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 4.1. 
 
     * Note:  For **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate unique storage account name. 
 
@@ -267,7 +267,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
     Depending on the preference, you may delete/comment the configuration that is not required. For example, if deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls". 
 
-    Update the values for the Management group, Sunbscription ID, resource tags, Service Health , IP ranges and AAD object ID of the group from Step 4.1
+    Update the values for the Management group, Subscription ID, resource tags, Service Health, IP ranges and AAD object ID of the group from Step 4.1
 
 
     **Sample environment YAML (Hub Networking with Azure Firewall section)**

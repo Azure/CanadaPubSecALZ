@@ -22,7 +22,7 @@ Azure Landing Zones for Canadian Public Sector is configured with a set of built
 
 ## Built-In Policy Sets Assignments
 
-> **Note**: The built-in policy sets are used as-is to ensure future improvements from Azure Engineering teams are automatically incorproated into the Azure environment.
+> **Note**: The built-in policy sets are used as-is to ensure future improvements from Azure Engineering teams are automatically incorporated into the Azure environment.
 
 All built-in policy set assignments are located in [policy/builtin/assignments](../../policy/builtin/assignments) folder.
 
