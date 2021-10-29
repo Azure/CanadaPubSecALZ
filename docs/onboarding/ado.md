@@ -141,7 +141,7 @@ variables:
     1. Go to Pipelines
     2. New Pipeline
     3.    Choose Azure Repos Git
-    4.    Select Repository
+    4. Select Repository
     5.    Select Existing Azure Pipeline YAML file
     6.    Identify the pipeline in `.pipelines/roles.yml`.
     7.  Save the pipeline (don't run it yet)
