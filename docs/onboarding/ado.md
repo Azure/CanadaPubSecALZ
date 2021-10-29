@@ -145,7 +145,7 @@ variables:
     5. Select Existing Azure Pipeline YAML file
     6. Identify the pipeline in `.pipelines/roles.yml`
     7.  Save the pipeline (don't run it yet)
-    8.  Rename the pipeline to `roles-ci`
+    8. Rename the pipeline to `roles-ci`
 
 
 2. Run pipeline and wait for completion.
