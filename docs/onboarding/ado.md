@@ -138,7 +138,7 @@ variables:
 
     *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
-    1.    Go to Pipelines
+    1. Go to Pipelines
     2.    New Pipeline
     3.    Choose Azure Repos Git
     4.    Select Repository
