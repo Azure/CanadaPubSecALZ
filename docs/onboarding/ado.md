@@ -4,30 +4,75 @@ This document provides steps required to onboard to the Azure Landing Zones desi
 
 **All steps will need to be repeated per Azure AD tenant.**
 
+---
+
+## Instructions
+
+* [Step 1: Create Service Principal Account & Assign RBAC](#step-1--create-service-principal-account--assign-rbac)
+* [Step 2: Configure Service Connection in Azure DevOps Project Configuration](#step-2--configure-service-connection-in-azure-devops-project-configuration)
+* [Step 3: Configure Management Group Deployment](#step-3--configure-management-group-deployment)
+* [Step 4: Configure Custom Roles](#step-4--configure-custom-roles)
+* [Step 5: Configure Logging Landing Zone](#step-5--configure-logging-landing-zone)
+* [Step 6: Configure Azure Policies](#step-6--configure-azure-policies)
+* [Step 7: Configure Hub Networking](#step-7--configure-hub-networking)
+* [Step 8: Configure Subscription Archetypes](#step-8--configure-subscription-archetypes)
+
+---
+
 ## Step 1:  Create Service Principal Account & Assign RBAC
 
-A service principal account is required to automate the Azure DevOps pipelines. 
+An Azure service principal is an identity created for use with applications, hosted services, and automated tools to access Azure resources. This access is restricted by the roles assigned to the service principal, giving you control over which resources can be accessed and at which level. For security reasons, it's always recommended to use service principals with automated tools rather than allowing them to log in with a user identity.
 
 * **Service Principal Name**:  any name (i.e. spn-azure-platform-ops)
 
-* **RBAC Assignment**
+* **RBAC Assignment Settings**
 
-    * Scope:  Tenant Root Group (this is a management group)
+    * **Scope:**  Tenant Root Group (this is a management group in the Azure environment)
 
-    * Role:  Owner
+    * **Role:**  [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in Azure RBAC.  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
 
 *  **Instructions**:  [Create an Azure service principal with the Azure CLI | Microsoft Docs](https://docs.microsoft.com/cli/azure/create-an-azure-service-principal-azure-cli)
 
+To create the service principal account and role assignment through Azure CLI:
+
+> To execute the Azure CLI command, the user account must be either `User Access Administrator` or `Owner` on Tenant Root Group management group.
+
+> Replace `<Azure Active Directory Tenant Id>` with your tenant id.
+
+```bash
+
+az ad sp create-for-rbac --name spn-azure-platform-ops --role Owner --scopes /providers/Microsoft.Management/managementGroups/<Azure Active Directory Tenant Id>
+
+```
+
+**Sample Output**
+
+Note down the `appId`, `tenant` and `password`.  These will be required to for setting up a Service Connection in Azure DevOps.  The default password expiry is **1 Year**.
+
+```json
+{
+  "appId": "c996807d-1111-0000-0000-e2171950dd5d",
+  "displayName": "spn-azure-platform-ops",
+  "name": "c996807d-1111-0000-0000-e2171950dd5d",
+  "password": "<your password>",
+  "tenant": "<your tenant id>"
+}
+```
+
+---
+
 ## Step 2:  Configure Service Connection in Azure DevOps Project Configuration
 
-* **Scope Level**:  Management Group
+* Settings
+    * **Scope Level**:  Management Group
 
-* **Service Connection Name**:  spn-azure-platform-ops
+    * **Service Connection Name**:  spn-azure-platform-ops
 
-    *Service Connection Name will be used to configure Azure DevOps Pipelines.*
+        *Service Connection Name is referenced in the Azure DevOps Pipelines for Azure authentication and authorization.*
 
-*  **Instructions**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml)
+*  **Instructions**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml).  Use the settings described above when following the instructions.
 
+---
 
 ## Step 3:  Configure Management Group Deployment
 
@@ -85,102 +130,127 @@ variables:
 
 2. Run pipeline and wait for completion.
 
+---
 
-## Step 4:  Logging Landing Zone
+## Step 4:  Configure Custom Roles
 
-### Step 4.1:  Setup Azure AD Security Group (Recommended)
+1. Pipeline definition for Custom Roles.
 
-At least one Azure AD Security Group is required for role assignment.  Role assignment can be set for Owner, Contributor, and/or Reader roles.  Note down the Security Group object id, it will be required for next step. <Let's add more explanation on what this group would responsible for>. 
+    *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
-**Note: Since the service principal used for ADO Pipelines has been assigned 'Owner' role at parent management group - it does need to be a member of the group.**
-
-### Step 4.2:  Update configuration files in git repository
-
-Set the configuration parameters even if there's an existing central Log Analytics Workspace.  These settings are used by other deployments such as Azure Policy for Log Analytics.  In this case, use the values of the existing Log Analytics Workspace.
-
-When a Log Analytics Workspace & Automation account already exists - set the following: 
-
-    - Subscription ID
-    - Resource Group
-    - Log Analytics Workspace name
-    - Automation account name  
- 
-**The automation will update the existing deployment instead of creating new resources.**
-
-1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3. Make sure to include the contact information for Service Health (email and phone number). Include the values for the tags for the logging resources (i.e. Cost Center, Project contact, etc.). Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 4.1. 
-
-    * Note:  For **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate unique storage account name. 
-
-    **Sample environment YAML (Logging section)**
-
-    ```yml
-        variables:
+    1. Go to Pipelines
+    2. New Pipeline
+    3. Choose Azure Repos Git
+    4. Select Repository
+    5. Select Existing Azure Pipeline YAML file
+    6. Identify the pipeline in `.pipelines/roles.yml`
+    7. Save the pipeline (don't run it yet)
+    8. Rename the pipeline to `roles-ci`
 
 
-            # Logging
-            var-logging-managementGroupId: pubsecPlatform
-            var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
-            var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
-            var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
-            var-logging-logAnalyticsAutomationAccountName: automation-account
-            var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
-            var-logging-serviceHealthAlerts: >
-                {
-                    "resourceGroupName": "pubsec-service-health",
-                    "incidentTypes": [ "Incident", "Security" ],
-                    "regions": [ "Global", "Canada East", "Canada Central" ],
-                    "receivers": {
-                        "app": [ "alzcanadapubsec@microsoft.com" ],
-                        "email": [ "alzcanadapubsec@microsoft.com" ],
-                        "sms": [
-                            { "countryCode": "1", "phoneNumber": "5555555555" }
-                        ],
-                        "voice": [
-                            { "countryCode": "1", "phoneNumber": "5555555555" }
-                        ]
-                    }
+2. Run pipeline and wait for completion.
+
+---
+
+## Step 5:  Configure Logging Landing Zone
+
+### Step 5.1:  Setup Azure AD Security Group (Recommended)
+
+At least one Azure AD Security Group is recommended for role assignment.  Role assignment are set at the Subscription scope and can be either built-In roles (i.e. Owner, Contributor, Reader) or any custom roles that are configured in the Azure Active Directory tenant.  Note down the Security Group object id, it will be required for next step.
+
+This role assignment is used to grant users access to the logging subscription based on their roles & responsibilities.
+
+### Step 5.2:  Update configuration files in git repository
+
+> **When you are using an existing Log Analytics Workspace in your subscription**, set the configuration parameters of the existing Log Analytics Workspace.  These settings will be used by deployments such as Azure Policy for Log Analytics integration.
+>
+> When a Log Analytics Workspace & Automation account already exists - set the following: 
+>    - Subscription ID
+>    - Resource Group
+>    - Log Analytics Workspace name
+>    - Automation account name  
+>
+> **The deployment automation will update the existing resources instead of creating new.**
+
+1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
+
+Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
+
+```yml
+    var-logging-subscriptionRoleAssignments: >
+        []
+```
+
+Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
+
+**Sample environment YAML (Logging section only)**
+
+```yml
+    variables:
+        # Logging
+        var-logging-managementGroupId: pubsecPlatform
+        var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
+        var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
+        var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
+        var-logging-logAnalyticsAutomationAccountName: automation-account
+        var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
+        var-logging-serviceHealthAlerts: >
+            {
+                "resourceGroupName": "pubsec-service-health",
+                "incidentTypes": [ "Incident", "Security" ],
+                "regions": [ "Global", "Canada East", "Canada Central" ],
+                "receivers": {
+                    "app": [ "alzcanadapubsec@microsoft.com" ],
+                    "email": [ "alzcanadapubsec@microsoft.com" ],
+                    "sms": [
+                        { "countryCode": "1", "phoneNumber": "5555555555" }
+                    ],
+                    "voice": [
+                        { "countryCode": "1", "phoneNumber": "5555555555" }
+                    ]
                 }
-            var-logging-securityCenter: >
+            }
+        var-logging-securityCenter: >
+            {
+                "email": "alzcanadapubsec@microsoft.com",
+                "phone": "5555555555"
+            }
+        var-logging-subscriptionRoleAssignments: >
+            [
                 {
-                    "email": "alzcanadapubsec@microsoft.com",
-                    "phone": "5555555555"
+                    "comments": "Built-in Contributor Role",
+                    "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                    "securityGroupObjectIds": [
+                        "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+                    ]
                 }
-            var-logging-subscriptionRoleAssignments: >
-                [
-                    {
-                        "comments": "Built-in Contributor Role",
-                        "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-                        "securityGroupObjectIds": [
-                            "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-                        ]
-                    }
-                ]
-            var-logging-subscriptionBudget: >
-                {
-                    "createBudget": false,
-                    "name": "MonthlySubscriptionBudget",
-                    "amount": 1000,
-                    "timeGrain": "Monthly",
-                    "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
-                }
-            var-logging-subscriptionTags: >
-                {
-                    "ISSO": "isso-tbd"
-                }
-            var-logging-resourceTags: >
-                {
-                    "ClientOrganization": "client-organization-tag",
-                    "CostCenter": "cost-center-tag",
-                    "DataSensitivity": "data-sensitivity-tag",
-                    "ProjectContact": "project-contact-tag",
-                    "ProjectName": "project-name-tag",
-                    "TechnicalContact": "technical-contact-tag"
-                }
-    ```
+            ]
+        var-logging-subscriptionBudget: >
+            {
+                "createBudget": false,
+                "name": "MonthlySubscriptionBudget",
+                "amount": 1000,
+                "timeGrain": "Monthly",
+                "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
+            }
+        var-logging-subscriptionTags: >
+            {
+                "ISSO": "isso-tbd"
+            }
+        var-logging-resourceTags: >
+            {
+                "ClientOrganization": "client-organization-tag",
+                "CostCenter": "cost-center-tag",
+                "DataSensitivity": "data-sensitivity-tag",
+                "ProjectContact": "project-contact-tag",
+                "ProjectName": "project-name-tag",
+                "TechnicalContact": "technical-contact-tag"
+            }
+```
 
 2. Commit the changes to git repository.
 
-### Step 4.3:  Configure Azure DevOps Pipeline
+### Step 5.3:  Configure Azure DevOps Pipeline
 
 1. Pipeline definition for Central Logging.
 
@@ -198,7 +268,7 @@ When a Log Analytics Workspace & Automation account already exists - set the fol
 
 2. Run pipeline and wait for completion.
 
-### Step 4.4:  Configure Audit Stream from Azure DevOps to Log Analytics Workspace (Optional)
+### Step 5.4:  Configure Audit Stream from Azure DevOps to Log Analytics Workspace (Optional)
 
 Audit streams represent a pipeline that flows audit events from your Azure DevOps organization to a stream target. Every half hour or less, new audit events are bundled and streamed to your targets. 
 
@@ -218,8 +288,9 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 **Instructions**: [Create an audit stream in Azure DevOps for Azure Monitor](https://docs.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops#create-a-stream).
 
+---
 
-## Step 5:  Configure Azure Policies
+## Step 6:  Configure Azure Policies
 
 1. Pipeline definition for Azure Policies.
 
@@ -237,26 +308,9 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 2. Run pipeline and wait for completion.
 
+---
 
-## Step 6:  Configure Custom Roles
-
-1. Pipeline definition for Custom Roles.
-
-    *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
-
-    1.    Go to Pipelines
-    2.    New Pipeline
-    3.    Choose Azure Repos Git
-    4.    Select Repository
-    5.    Select Existing Azure Pipeline YAML file
-    6.    Identify the pipeline in `.pipelines/roles.yml`.
-    7.  Save the pipeline (don't run it yet)
-    8.  Rename the pipeline to `roles-ci`
-
-
-2. Run pipeline and wait for completion.
-
-## Step 7:  Configure Hub Networking using NVAs
+## Step 7:  Configure Hub Networking
 
 1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
@@ -270,12 +324,10 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     Update the values for the Management group, Subscription ID, resource tags, Service Health, IP ranges and AAD object ID of the group from Step 4.1
 
 
-    **Sample environment YAML (Hub Networking with Azure Firewall section)**
+    **Sample environment YAML (Hub Networking with Azure Firewall section only)**
 
     ```yml
         variables:
-
-
             # Hub Networking
             var-hubnetwork-managementGroupId: pubsecPlatform
             var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
@@ -463,7 +515,9 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
     * When using Hub Networking with Azure Firewall, run `platform-connectivity-hub-azfw-policy-ci` pipeline first.  This ensures that the Azure Firewall Policy is deployed and can be used as a reference for Azure Firewall.  This approach allows for Azure Firewall Policies (such as allow/deny rules) to be managed independently from the Hub Networking components.
 
-## Step 8:  Configure Subscription Archetype
+---
+
+## Step 8:  Configure Subscription Archetypes
 
 1. Configure Pipeline definition for subscription archetypes
 
