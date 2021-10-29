@@ -143,7 +143,7 @@ variables:
     3.    Choose Azure Repos Git
     4. Select Repository
     5. Select Existing Azure Pipeline YAML file
-    6.    Identify the pipeline in `.pipelines/roles.yml`.
+    6. Identify the pipeline in `.pipelines/roles.yml`
     7.  Save the pipeline (don't run it yet)
     8.  Rename the pipeline to `roles-ci`
 
