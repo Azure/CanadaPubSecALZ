@@ -323,7 +323,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
     Depending on the preference, you may delete/comment the configuration that is not required. For example, if deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls". 
 
-    Update the values for the Management group, Sunbscription ID, resource tags, Service Health , IP ranges and AAD object ID of the group from Step 4.1
+    Update the values for the Management group, Subscription ID, resource tags, Service Health, IP ranges and AAD object ID of the group from Step 4.1
 
 
     **Sample environment YAML (Hub Networking with Azure Firewall section only)**
