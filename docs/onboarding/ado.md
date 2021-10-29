@@ -162,9 +162,7 @@ This role assignment is used to grant users access to the logging subscription b
 
 ### Step 5.2:  Update configuration files in git repository
 
-> **If you are using an existing Log Analytics Workspace in your subscription.**
-> 
->Set the configuration parameters of the existing Log Analytics Workspace.  These settings will be used by deployments such as Azure Policy for Log Analytics integration.
+> **When you are using an existing Log Analytics Workspace in your subscription**, set the configuration parameters of the existing Log Analytics Workspace.  These settings will be used by deployments such as Azure Policy for Log Analytics integration.
 >
 > When a Log Analytics Workspace & Automation account already exists - set the following: 
 >    - Subscription ID
