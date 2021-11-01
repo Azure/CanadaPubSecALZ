@@ -37,7 +37,7 @@ To create the service principal account and role assignment through Azure CLI:
 
 > To execute the Azure CLI command, the user account must be either `User Access Administrator` or `Owner` on Tenant Root Group management group.
 
-> Replace `<Azure Active Directory Tenant Id>` with your tenant id.
+> Replace `<Azure Active Directory Tenant Id>` with your AAD tenant id.
 
 ```bash
 
