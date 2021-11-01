@@ -318,7 +318,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
-> Update **var-hubnetwork-subscriptionRoleAssignments** with Azure AD security group's object ID responsible for managing Azure networking. 
+> Note **var-hubnetwork-subscriptionRoleAssignments** should include Azure AD security group's object ID responsible for managing Azure networking. 
 
    Update configuration with the networking section.  There are two options for Hub Networking:
 
