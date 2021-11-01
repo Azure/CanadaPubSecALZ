@@ -29,7 +29,7 @@ An Azure service principal is an identity created for use with applications, hos
 
     * **Scope:**  Tenant Root Group (this is a management group in the Azure environment)
 
-    * **Role:**  [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in Azure RBAC.  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
+    * **Role:**  [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in [Azure RBAC](https://docs.microsoft.com/azure/role-based-access-control/overview).  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
 
 *  **Instructions**:  [Create an Azure service principal with the Azure CLI | Microsoft Docs](https://docs.microsoft.com/cli/azure/create-an-azure-service-principal-azure-cli)
 
