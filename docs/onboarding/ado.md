@@ -185,7 +185,7 @@ Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** p
 
 Update with valid contact information for the Azure Service Health Alerts: email and phone number. 
 
-Set the values for the Azure tags. 
+Set the values for the Azure tags that would be applied to the logging resources. 
 
 **Sample environment YAML (Logging section only)**
 
@@ -317,6 +317,8 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 ## Step 7:  Configure Hub Networking
 
 1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
+
+Update **var-hubnetwork-subscriptionRoleAssignments** with Azure AD security group's object ID responsible for managing Azure networking. 
 
    Update configuration with the networking section.  There are two options for Hub Networking:
 
