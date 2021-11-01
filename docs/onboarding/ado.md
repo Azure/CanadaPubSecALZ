@@ -160,7 +160,7 @@ At least one Azure AD Security Group is recommended for role assignment.  Role a
 
 This role assignment is used to grant users access to the logging subscription based on their roles & responsibilities.
 
-### Step 5.2:  Update configuration files in git repository
+### Step 5.2:  Update configuration file(s) in git repository
 
 > **When you are using an existing Log Analytics Workspace in your subscription**, set the configuration parameters of the existing Log Analytics Workspace.  These settings will be used by deployments such as Azure Policy for Log Analytics integration.
 >
@@ -182,6 +182,10 @@ Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD
 ```
 
 Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
+
+Update with valid contact information for the Azure Service Health Alerts: email and phone number. 
+
+Set the values for the Azure tags. 
 
 **Sample environment YAML (Logging section only)**
 
