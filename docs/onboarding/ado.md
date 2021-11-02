@@ -12,7 +12,7 @@ This document provides steps required to onboard to the Azure Landing Zones desi
 * [Step 2: Configure Service Connection in Azure DevOps Project Configuration](#step-2--configure-service-connection-in-azure-devops-project-configuration)
 * [Step 3: Configure Management Group Deployment](#step-3--configure-management-group-deployment)
 * [Step 4: Configure Custom Roles](#step-4--configure-custom-roles)
-* [Step 5: Configure Logging Landing Zone](#step-5--configure-logging-landing-zone)
+* [Step 5: Configure Logging](#step-5--configure-logging)
 * [Step 6: Configure Azure Policies](#step-6--configure-azure-policies)
 * [Step 7: Configure Hub Networking](#step-7--configure-hub-networking)
 * [Step 8: Configure Subscription Archetypes](#step-8--configure-subscription-archetypes)
@@ -152,7 +152,7 @@ variables:
 
 ---
 
-## Step 5:  Configure Logging Landing Zone
+## Step 5:  Configure Logging
 
 ### Step 5.1:  Setup Azure AD Security Group (Recommended)
 
