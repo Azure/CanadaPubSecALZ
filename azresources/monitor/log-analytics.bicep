@@ -16,7 +16,7 @@ param automationAccountName string
 @description('Key/Value pair of tags.')
 param tags object = {}
 
-@description('Log Analytics Workspace Data Retention in Days.')
+@description('Log Analytics Workspace Data Retention in days.')
 param workspaceRetentionInDays int
 
 // Log Analytics Workspace Solutions

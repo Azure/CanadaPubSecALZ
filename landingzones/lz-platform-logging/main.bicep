@@ -181,7 +181,7 @@ param logAnalyticsWorkspaceName string
 @description('Automation account name.')
 param logAnalyticsAutomationAccountName string
 
-@description('Log Analytics Workspace Data Retention in Days.')
+@description('Log Analytics Workspace Data Retention in days.')
 param logAnalyticsRetentionInDays int
 
 // Create Log Analytics Workspace Resource Group
