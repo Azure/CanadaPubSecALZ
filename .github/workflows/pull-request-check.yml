@@ -53,7 +53,7 @@ jobs:
           $GenericSubscriptionFileFilter="*generic-subscription*.json"
           $GenericSubscriptionSchemaFile="${{env.SCHEMA_FOLDER}}/lz-generic-subscription.json"
 
-          Get-ChildItem -Recurse -Filter $GenericSubscriptionFileFilter -Path "${{SUBSCRIPTIONS_PATH_FROM_ROOT}}" | ForEach-Object {
+          Get-ChildItem -Recurse -Filter $GenericSubscriptionFileFilter -Path "${{env.SUBSCRIPTIONS_PATH_FROM_ROOT}}" | ForEach-Object {
               Write-Host "Validating: $_ with $GenericSubscriptionSchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $GenericSubscriptionSchemaFile
           }
@@ -61,7 +61,7 @@ jobs:
           $MachineLearningFileFilter="*machinelearning*.json"
           $MachineLearningSchemaFile="${{env.SCHEMA_FOLDER}}/lz-machinelearning.json"
 
-          Get-ChildItem -Recurse -Filter $MachineLearningFileFilter -Path "${{SUBSCRIPTIONS_PATH_FROM_ROOT}}" | ForEach-Object {
+          Get-ChildItem -Recurse -Filter $MachineLearningFileFilter -Path "${{env.SUBSCRIPTIONS_PATH_FROM_ROOT}}" | ForEach-Object {
               Write-Host "Validating: $_ with $MachineLearningSchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $MachineLearningSchemaFile
           }
@@ -69,7 +69,7 @@ jobs:
           $HealthcareFileFilter="*healthcare*.json"
           $HealthcareSchemaFile="${{env.SCHEMA_FOLDER}}/lz-healthcare.json"
 
-          Get-ChildItem -Recurse -Filter $HealthcareFileFilter -Path "${{SUBSCRIPTIONS_PATH_FROM_ROOT}}" | ForEach-Object {
+          Get-ChildItem -Recurse -Filter $HealthcareFileFilter -Path "${{env.SUBSCRIPTIONS_PATH_FROM_ROOT}}" | ForEach-Object {
               Write-Host "Validating: $_ with $HealthcareSchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $HealthcareSchemaFile
           }
