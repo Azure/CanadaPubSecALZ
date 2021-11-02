@@ -420,7 +420,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
            var-hubnetwork-bastionName: bastion
            var-hubnetwork-bastionSku: Standard
-           var-hubnetwork-bastionScaleUnits: 1
+           var-hubnetwork-bastionScaleUnits: 2
 
            ####################################################################################
            ### Hub Networking with Azure Firewall                                           ###

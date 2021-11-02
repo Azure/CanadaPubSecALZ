@@ -259,8 +259,8 @@ param bastionName string //= 'pubsecHubBastion'
 ])
 param bastionSku string
 
-@description('Azure Bastion Scale Units (1 to 50).')
-@minValue(1)
+@description('Azure Bastion Scale Units (2 to 50).  Required for Standard SKU.  Set to any number in min/max for Basic SKU as it is ignored.')
+@minValue(2)
 @maxValue(50)
 param bastionScaleUnits int
 
