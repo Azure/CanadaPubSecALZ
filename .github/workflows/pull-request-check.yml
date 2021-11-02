@@ -10,7 +10,7 @@ on:
 
 jobs:
   bicep_unit_tests:
-    name: Compile all bicep templates
+    name: Pull Request Check Job
     runs-on: ubuntu-latest
 
     steps:
