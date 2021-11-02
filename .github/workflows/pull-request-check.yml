@@ -1,0 +1,80 @@
+name: Pull Request Check
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**.bicep"
+env:
+  SCHEMA_FOLDER: schemas/v0.1.0/landingzones
+  SUBSCRIPTIONS_PATH_FROM_ROOT: config/subscriptions
+
+jobs:
+  pull_request_checks:
+    name: Pull Request Check Job
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Run schema test cases
+        shell: pwsh
+        working-directory: ${{env.working-directory}}
+        run: |
+          # Validate schema test cases
+          $SchemaTestsFolder="tests/schemas"
+
+          Write-Host "Validating schema test cases..."
+
+          Write-Host "Schema Test Folder: $SchemaTestsFolder"
+          Write-Host "Schema Folder: ${{env.SCHEMA_FOLDER}}"
+
+          Get-ChildItem -Directory -Path $SchemaTestsFolder | Foreach-Object {
+              $archetypeName = $_.BaseName
+
+              Write-Host "Archetype: $archetypeName"
+
+            Get-ChildItem -Recurse -Filter '*.json' -Path "$SchemaTestsFolder/$archetypeName" | ForEach-Object {
+                Write-Host "   Validating: $_ with ${{env.SCHEMA_FOLDER}}/$archetypeName.json"
+                Get-Content -Raw $_ | Test-Json -SchemaFile "${{env.SCHEMA_FOLDER}}/$archetypeName.json"
+            }
+          }
+
+      - name: Validate exising subscription archetype parameter files
+        shell: pwsh
+        working-directory: ${{env.working-directory}}
+        run: |
+          # Validate exising subscription archetype parameter files
+          Write-Host "Validate exising subscription archetype parameter files..."
+
+          $GenericSubscriptionFileFilter="*generic-subscription*.json"
+          $GenericSubscriptionSchemaFile="${{env.SCHEMA_FOLDER}}/lz-generic-subscription.json"
+
+          Get-ChildItem -Recurse -Filter $GenericSubscriptionFileFilter -Path "${{env.SUBSCRIPTIONS_PATH_FROM_ROOT}}" | ForEach-Object {
+              Write-Host "Validating: $_ with $GenericSubscriptionSchemaFile"
+              Get-Content -Raw $_ | Test-Json -SchemaFile $GenericSubscriptionSchemaFile
+          }
+
+          $MachineLearningFileFilter="*machinelearning*.json"
+          $MachineLearningSchemaFile="${{env.SCHEMA_FOLDER}}/lz-machinelearning.json"
+
+          Get-ChildItem -Recurse -Filter $MachineLearningFileFilter -Path "${{env.SUBSCRIPTIONS_PATH_FROM_ROOT}}" | ForEach-Object {
+              Write-Host "Validating: $_ with $MachineLearningSchemaFile"
+              Get-Content -Raw $_ | Test-Json -SchemaFile $MachineLearningSchemaFile
+          }
+
+          $HealthcareFileFilter="*healthcare*.json"
+          $HealthcareSchemaFile="${{env.SCHEMA_FOLDER}}/lz-healthcare.json"
+
+          Get-ChildItem -Recurse -Filter $HealthcareFileFilter -Path "${{env.SUBSCRIPTIONS_PATH_FROM_ROOT}}" | ForEach-Object {
+              Write-Host "Validating: $_ with $HealthcareSchemaFile"
+              Get-Content -Raw $_ | Test-Json -SchemaFile $HealthcareSchemaFile
+          }
+
+      - name: Validate Bicep Templates
+        shell: bash
+        run: |
+          find . -type f -name '*.bicep' | xargs -tn1 az bicep build -f 
