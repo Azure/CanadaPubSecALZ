@@ -1,4 +1,4 @@
-name: Compile all bicep templates
+name: Pull Request Check
 
 on:
   pull_request:
