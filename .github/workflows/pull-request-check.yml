@@ -47,6 +47,7 @@ jobs:
         working-directory: ${{env.working-directory}}
         run: |
           $SchemaFolder="schemas/v0.1.0/landingzones"
+          $subscriptionsPathFromRoot="config/subscriptions"
 
           # Validate exising subscription archetype parameter files
           Write-Host "Validate exising subscription archetype parameter files..."
@@ -54,7 +55,7 @@ jobs:
           $GenericSubscriptionFileFilter="*generic-subscription*.json"
           $GenericSubscriptionSchemaFile="${SchemaFolder}/lz-generic-subscription.json"
 
-          Get-ChildItem -Recurse -Filter $GenericSubscriptionFileFilter -Path "$(subscriptionsPathFromRoot)" | ForEach-Object {
+          Get-ChildItem -Recurse -Filter $GenericSubscriptionFileFilter -Path "$subscriptionsPathFromRoot" | ForEach-Object {
               Write-Host "Validating: $_ with $GenericSubscriptionSchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $GenericSubscriptionSchemaFile
           }
@@ -62,7 +63,7 @@ jobs:
           $MachineLearningFileFilter="*machinelearning*.json"
           $MachineLearningSchemaFile="${SchemaFolder}/lz-machinelearning.json"
 
-          Get-ChildItem -Recurse -Filter $MachineLearningFileFilter -Path "$(subscriptionsPathFromRoot)" | ForEach-Object {
+          Get-ChildItem -Recurse -Filter $MachineLearningFileFilter -Path "$subscriptionsPathFromRoot" | ForEach-Object {
               Write-Host "Validating: $_ with $MachineLearningSchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $MachineLearningSchemaFile
           }
@@ -70,7 +71,7 @@ jobs:
           $HealthcareFileFilter="*healthcare*.json"
           $HealthcareSchemaFile="${SchemaFolder}/lz-healthcare.json"
 
-          Get-ChildItem -Recurse -Filter $HealthcareFileFilter -Path "$(subscriptionsPathFromRoot)" | ForEach-Object {
+          Get-ChildItem -Recurse -Filter $HealthcareFileFilter -Path "$subscriptionsPathFromRoot" | ForEach-Object {
               Write-Host "Validating: $_ with $HealthcareSchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $HealthcareSchemaFile
           }
