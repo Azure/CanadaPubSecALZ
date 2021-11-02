@@ -17,7 +17,7 @@ param name string
 ])
 param sku string
 
-@description('Azure Bastion Scale Units (1 to 50).')
+@description('Azure Bastion Scale Units (1 to 50).  Required for Standard SKU.  Set to 1 for Basic SKU.')
 @minValue(1)
 @maxValue(50)
 param scaleUnits int
@@ -51,7 +51,7 @@ resource bastion 'Microsoft.Network/bastionHosts@2021-03-01' = {
   }
   properties: {
       dnsName: uniqueString(resourceGroup().id)
-      scaleUnits: scaleUnits
+      scaleUnits: sku == 'Basic' ? scaleUnits : json('null')
       ipConfigurations: [
           {
               name: 'IpConf'
