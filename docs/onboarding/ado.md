@@ -10,7 +10,7 @@ This document provides steps required to onboard to the Azure Landing Zones desi
 
 * [Step 1: Create Service Principal Account & Assign RBAC](#step-1--create-service-principal-account--assign-rbac)
 * [Step 2: Configure Service Connection in Azure DevOps Project Configuration](#step-2--configure-service-connection-in-azure-devops-project-configuration)
-* [Step 3: Configure Management Group Deployment](#step-3--configure-management-group-deployment)
+* [Step 3: Configure Management Groups](#step-3--configure-management-groups)
 * [Step 4: Configure Custom Roles](#step-4--configure-custom-roles)
 * [Step 5: Configure Logging](#step-5--configure-logging)
 * [Step 6: Configure Azure Policies](#step-6--configure-azure-policies)
@@ -74,7 +74,7 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 
 ---
 
-## Step 3:  Configure Management Group Deployment
+## Step 3:  Configure Management Groups
 
 ### Step: 3.1: Update common.yml in git repository
 
