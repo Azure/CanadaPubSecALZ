@@ -25,10 +25,12 @@ jobs:
         working-directory: ${{env.working-directory}}
         run: |
           # Validate schema test cases
+          $SchemaTestsFolder="tests/schemas"
+
           Write-Host "Validating schema test cases..."
 
           Write-Host "Schema Test Folder: $SchemaTestsFolder"
-          Write-Host "Schema Folder: $SchemaFolder"
+          Write-Host "Schema Folder: ${SchemaFolder}"
 
           Get-ChildItem -Directory -Path $SchemaTestsFolder | Foreach-Object {
               $archetypeName = $_.BaseName
@@ -36,8 +38,8 @@ jobs:
               Write-Host "Archetype: $archetypeName"
 
             Get-ChildItem -Recurse -Filter '*.json' -Path "$SchemaTestsFolder/$archetypeName" | ForEach-Object {
-                Write-Host "   Validating: $_ with $SchemaFolder/$archetypeName.json"
-                Get-Content -Raw $_ | Test-Json -SchemaFile "$SchemaFolder/$archetypeName.json"
+                Write-Host "   Validating: $_ with ${SchemaFolder}/$archetypeName.json"
+                Get-Content -Raw $_ | Test-Json -SchemaFile "${SchemaFolder}/$archetypeName.json"
             }
           }
 
@@ -51,7 +53,7 @@ jobs:
           $GenericSubscriptionFileFilter="*generic-subscription*.json"
           $GenericSubscriptionSchemaFile="${SchemaFolder}/lz-generic-subscription.json"
 
-          Get-ChildItem -Recurse -Filter $GenericSubscriptionFileFilter -Path "$subscriptionsPathFromRoot" | ForEach-Object {
+          Get-ChildItem -Recurse -Filter $GenericSubscriptionFileFilter -Path "${subscriptionsPathFromRoot}" | ForEach-Object {
               Write-Host "Validating: $_ with $GenericSubscriptionSchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $GenericSubscriptionSchemaFile
           }
@@ -59,7 +61,7 @@ jobs:
           $MachineLearningFileFilter="*machinelearning*.json"
           $MachineLearningSchemaFile="${SchemaFolder}/lz-machinelearning.json"
 
-          Get-ChildItem -Recurse -Filter $MachineLearningFileFilter -Path "$subscriptionsPathFromRoot" | ForEach-Object {
+          Get-ChildItem -Recurse -Filter $MachineLearningFileFilter -Path "${subscriptionsPathFromRoot}" | ForEach-Object {
               Write-Host "Validating: $_ with $MachineLearningSchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $MachineLearningSchemaFile
           }
@@ -67,7 +69,7 @@ jobs:
           $HealthcareFileFilter="*healthcare*.json"
           $HealthcareSchemaFile="${SchemaFolder}/lz-healthcare.json"
 
-          Get-ChildItem -Recurse -Filter $HealthcareFileFilter -Path "$subscriptionsPathFromRoot" | ForEach-Object {
+          Get-ChildItem -Recurse -Filter $HealthcareFileFilter -Path "${subscriptionsPathFromRoot}" | ForEach-Object {
               Write-Host "Validating: $_ with $HealthcareSchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $HealthcareSchemaFile
           }
