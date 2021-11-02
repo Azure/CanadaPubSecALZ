@@ -10,6 +10,18 @@
 @description('Azure Bastion Name')
 param name string
 
+@description('Azure Bastion Sku')
+@allowed([
+    'Basic'
+    'Standard'
+])
+param sku string
+
+@description('Azure Bastion Scale Units (1 to 50).')
+@minValue(1)
+@maxValue(50)
+param scaleUnits int
+
 @description('Key/Value pair of tags.')
 param tags object = {}
 
@@ -30,12 +42,16 @@ resource bastionPublicIP 'Microsoft.Network/publicIPAddresses@2020-06-01' = {
   }
 }
 
-resource bastion 'Microsoft.Network/bastionHosts@2020-06-01' = {
+resource bastion 'Microsoft.Network/bastionHosts@2021-03-01' = {
   location: resourceGroup().location
   name: name
   tags: tags
+  sku: {
+    name: sku
+  }
   properties: {
       dnsName: uniqueString(resourceGroup().id)
+      scaleUnits: scaleUnits
       ipConfigurations: [
           {
               name: 'IpConf'
