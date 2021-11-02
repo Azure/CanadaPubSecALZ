@@ -9,9 +9,12 @@ on:
       - "**.bicep"
 
 jobs:
-  bicep_unit_tests:
+  pull_request_checks:
     name: Pull Request Check Job
     runs-on: ubuntu-latest
+    env:
+      SchemaFolder: schemas/v0.1.0/landingzones
+      subscriptionsPathFromRoot: config/subscriptions
 
     steps:
       - name: Checkout Repo
@@ -21,11 +24,7 @@ jobs:
         shell: pwsh
         working-directory: ${{env.working-directory}}
         run: |
-          $SchemaFolder="schemas/v0.1.0/landingzones"
-
           # Validate schema test cases
-          $SchemaTestsFolder="tests/schemas"
-
           Write-Host "Validating schema test cases..."
 
           Write-Host "Schema Test Folder: $SchemaTestsFolder"
@@ -46,9 +45,6 @@ jobs:
         shell: pwsh
         working-directory: ${{env.working-directory}}
         run: |
-          $SchemaFolder="schemas/v0.1.0/landingzones"
-          $subscriptionsPathFromRoot="config/subscriptions"
-
           # Validate exising subscription archetype parameter files
           Write-Host "Validate exising subscription archetype parameter files..."
 
