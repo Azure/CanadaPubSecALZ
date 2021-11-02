@@ -7,14 +7,14 @@ on:
       - main
     paths:
       - "**.bicep"
+env:
+  SCHEMA_FOLDER: schemas/v0.1.0/landingzones
+  SUBSCRIPTIONS_PATH_FROM_ROOT: config/subscriptions
 
 jobs:
   pull_request_checks:
     name: Pull Request Check Job
     runs-on: ubuntu-latest
-    env:
-      SchemaFolder: schemas/v0.1.0/landingzones
-      subscriptionsPathFromRoot: config/subscriptions
 
     steps:
       - name: Checkout Repo
@@ -30,7 +30,7 @@ jobs:
           Write-Host "Validating schema test cases..."
 
           Write-Host "Schema Test Folder: $SchemaTestsFolder"
-          Write-Host "Schema Folder: ${SchemaFolder}"
+          Write-Host "Schema Folder: ${SCHEMA_FOLDER}"
 
           Get-ChildItem -Directory -Path $SchemaTestsFolder | Foreach-Object {
               $archetypeName = $_.BaseName
@@ -38,8 +38,8 @@ jobs:
               Write-Host "Archetype: $archetypeName"
 
             Get-ChildItem -Recurse -Filter '*.json' -Path "$SchemaTestsFolder/$archetypeName" | ForEach-Object {
-                Write-Host "   Validating: $_ with ${SchemaFolder}/$archetypeName.json"
-                Get-Content -Raw $_ | Test-Json -SchemaFile "${SchemaFolder}/$archetypeName.json"
+                Write-Host "   Validating: $_ with ${SCHEMA_FOLDER}/$archetypeName.json"
+                Get-Content -Raw $_ | Test-Json -SchemaFile "${SCHEMA_FOLDER}/$archetypeName.json"
             }
           }
 
@@ -51,25 +51,25 @@ jobs:
           Write-Host "Validate exising subscription archetype parameter files..."
 
           $GenericSubscriptionFileFilter="*generic-subscription*.json"
-          $GenericSubscriptionSchemaFile="${SchemaFolder}/lz-generic-subscription.json"
+          $GenericSubscriptionSchemaFile="${SCHEMA_FOLDER}/lz-generic-subscription.json"
 
-          Get-ChildItem -Recurse -Filter $GenericSubscriptionFileFilter -Path "${subscriptionsPathFromRoot}" | ForEach-Object {
+          Get-ChildItem -Recurse -Filter $GenericSubscriptionFileFilter -Path "${SUBSCRIPTIONS_PATH_FROM_ROOT}" | ForEach-Object {
               Write-Host "Validating: $_ with $GenericSubscriptionSchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $GenericSubscriptionSchemaFile
           }
 
           $MachineLearningFileFilter="*machinelearning*.json"
-          $MachineLearningSchemaFile="${SchemaFolder}/lz-machinelearning.json"
+          $MachineLearningSchemaFile="${SCHEMA_FOLDER}/lz-machinelearning.json"
 
-          Get-ChildItem -Recurse -Filter $MachineLearningFileFilter -Path "${subscriptionsPathFromRoot}" | ForEach-Object {
+          Get-ChildItem -Recurse -Filter $MachineLearningFileFilter -Path "${SUBSCRIPTIONS_PATH_FROM_ROOT}" | ForEach-Object {
               Write-Host "Validating: $_ with $MachineLearningSchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $MachineLearningSchemaFile
           }
 
           $HealthcareFileFilter="*healthcare*.json"
-          $HealthcareSchemaFile="${SchemaFolder}/lz-healthcare.json"
+          $HealthcareSchemaFile="${SCHEMA_FOLDER}/lz-healthcare.json"
 
-          Get-ChildItem -Recurse -Filter $HealthcareFileFilter -Path "${subscriptionsPathFromRoot}" | ForEach-Object {
+          Get-ChildItem -Recurse -Filter $HealthcareFileFilter -Path "${SUBSCRIPTIONS_PATH_FROM_ROOT}" | ForEach-Object {
               Write-Host "Validating: $_ with $HealthcareSchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $HealthcareSchemaFile
           }
