@@ -95,6 +95,7 @@ module logAnalyticsWorkspace '../../../../azresources/monitor/log-analytics.bice
   params: {
     workspaceName: 'workspace-${uniqueString(rgTestHarnessSupportingAssets.name)}'
     automationAccountName: 'automation-${uniqueString(rgTestHarnessSupportingAssets.name)}'
+    workspaceRetentionInDays: 90
     tags: tags
   }
 }

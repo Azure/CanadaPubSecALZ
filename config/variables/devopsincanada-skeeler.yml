@@ -30,6 +30,7 @@ variables:
   var-logging-subscriptionId: 1a7025c7-f492-4eb9-9cf6-12c7889e4dfd
   var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
   var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
+  var-logging-logAnalyticsRetentionInDays: 730
   var-logging-logAnalyticsAutomationAccountName: automation-account
   var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
   var-logging-serviceHealthAlerts: >

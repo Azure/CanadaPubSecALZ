@@ -192,6 +192,7 @@ Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** p
         var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
         var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
         var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
+        var-logging-logAnalyticsRetentionInDays: 730
         var-logging-logAnalyticsAutomationAccountName: automation-account
         var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
         var-logging-serviceHealthAlerts: >
