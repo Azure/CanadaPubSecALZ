@@ -419,6 +419,8 @@ In order to configure audit stream for Azure Monitor, identify the following inf
            var-hubnetwork-mrzMgmtSubnetAddressPrefix: 10.18.5.128/26
 
            var-hubnetwork-bastionName: bastion
+           var-hubnetwork-bastionSku: Standard
+           var-hubnetwork-bastionScaleUnits: 1
 
            ####################################################################################
            ### Hub Networking with Azure Firewall                                           ###
