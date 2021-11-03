@@ -78,6 +78,8 @@ steps:
           rgDdosName='$(var-hubnetwork-rgDdosName)' \
           ddosPlanName='$(var-hubnetwork-ddosPlanName)' \
           bastionName='$(var-hubnetwork-bastionName)' \
+          bastionSku='$(var-hubnetwork-bastionSku)' \
+          bastionScaleUnits='$(var-hubnetwork-bastionScaleUnits)' \
           rgPazName='$(var-hubnetwork-rgPazName)' \
           rgMrzName='$(var-hubnetwork-rgMrzName)' \
           mrzVnetName='$(var-hubnetwork-mrzVnetName)' \

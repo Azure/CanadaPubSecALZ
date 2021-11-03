@@ -183,6 +183,8 @@ variables:
   var-hubnetwork-mrzMgmtSubnetAddressPrefix: 10.18.5.128/26
 
   var-hubnetwork-bastionName: bastion
+  var-hubnetwork-bastionSku: Standard
+  var-hubnetwork-bastionScaleUnits: 2 
 
   ####################################################################################
   ### Hub Networking with Azure Firewall                                           ###

@@ -218,6 +218,18 @@ param hubAzureFirewallManagementSubnetAddressPrefix string //= '10.18.3.0/26'
 @description('Azure Bastion Name.')
 param bastionName string //= 'pubsecHubBastion'
 
+@description('Hub - Azure Bastion SKU.')
+@allowed([
+  'Basic'
+  'Standard'
+])
+param bastionSku string
+
+@description('Azure Bastion Scale Units (2 to 50).  Required for Standard SKU.  Set to any number in min/max for Basic SKU as it is ignored.')
+@minValue(2)
+@maxValue(50)
+param bastionScaleUnits int
+
 @description('Azure Bastion Subnet Address Prefix.')
 param hubBastionSubnetAddressPrefix string //= '10.18.4.0/24'
 
@@ -508,6 +520,8 @@ module bastion '../../azresources/network/bastion.bicep' = {
   scope: rgHubVnet
   params: {
     name: bastionName
+    sku: bastionSku
+    scaleUnits: bastionScaleUnits
     subnetId: hubVnet.outputs.AzureBastionSubnetId
   }
 }
