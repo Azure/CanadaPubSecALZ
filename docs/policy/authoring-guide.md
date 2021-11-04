@@ -40,7 +40,7 @@ This reference implementation uses Built-In and Custom Policies to provide guard
     * [Step 2: Remove custom policy set assignment](#step-2-remove-custom-policy-set-assignment)
     * [Step 3: Remove custom policy set from Azure DevOps Pipeline](#step-3-remove-custom-policy-set-from-azure-devops-pipeline)
     * [Step 4: Remove custom policy set assignment's IAM assignments](#step-4-remove-custom-policy-set-assignments-iam-assignments)
-  * [Auto generating custom Diagnostic Settings policies for PaaS services](#auto-generating-custom-diagnostic-settings-policies-for-paas-services)
+  * [Auto generate custom Diagnostic Settings policies for PaaS services](#auto-generate-custom-diagnostic-settings-policies-for-paas-services)
 
 ---
 ## Existing configuration
@@ -943,7 +943,7 @@ When there are deployment errors:
 
 ---
 
-### Auto generating custom Diagnostic Settings policies for PaaS services
+### Auto generate custom Diagnostic Settings policies for PaaS services
 
 Before auto generating a custom Diagnostic Settings policies, we recommend searching for a suitable built-in policy through [Azure Policy Definitions][portalAzurePolicyDefinition].
 
