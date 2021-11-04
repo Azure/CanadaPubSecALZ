@@ -181,6 +181,9 @@ param logAnalyticsWorkspaceName string
 @description('Automation account name.')
 param logAnalyticsAutomationAccountName string
 
+@description('Log Analytics Workspace Data Retention in days.')
+param logAnalyticsRetentionInDays int
+
 // Create Log Analytics Workspace Resource Group
 resource rgLogging 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: logAnalyticsResourceGroupName
@@ -194,6 +197,7 @@ module logAnalytics '../../azresources/monitor/log-analytics.bicep' = {
   scope: rgLogging
   params: {
     workspaceName: logAnalyticsWorkspaceName
+    workspaceRetentionInDays: logAnalyticsRetentionInDays
     automationAccountName: logAnalyticsAutomationAccountName
     tags: resourceTags
   }

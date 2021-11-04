@@ -75,7 +75,8 @@ steps:
             resourceTags='$(var-logging-resourceTags)' \
             logAnalyticsResourceGroupName='$(var-logging-logAnalyticsResourceGroupName)' \
             logAnalyticsWorkspaceName='$(var-logging-logAnalyticsWorkspaceName)' \
-            logAnalyticsAutomationAccountName='$(var-logging-logAnalyticsAutomationAccountName)'
+            logAnalyticsAutomationAccountName='$(var-logging-logAnalyticsAutomationAccountName)' \
+            logAnalyticsRetentionInDays='$(var-logging-logAnalyticsRetentionInDays)'
 
       $(var-bashPostInjectScript)
     workingDirectory: '${{ parameters.workingDir }}/lz-platform-logging'
