@@ -373,7 +373,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 #### **Step 2: Deploy policy definition template**
 
-Execute `Azure DevOps Policy pipeline` to automatically deploy the policy definition.  The policy definition will be deployed to the `top level management group`.
+Execute `Azure DevOps Policy pipeline` to deploy.  The policy definition will be deployed to the `top level management group`.
 
 > Deploying the policy definition does not put it in effect.  You must either [create a new policy set](#new-custom-policy-set-definition--assignment) or [update an existing policy set](#update-custom-policy-set-definition--assignment) to put it in effect.
 
@@ -401,10 +401,321 @@ When there are deployment errors:
 * [Step 5: Verify policy set definition and assignment deployment](#step-5-verify-policy-set-definition-and-assignment-deployment)
 
 #### **Step 1: Create policy set definition template**
+
+1. Navigate to `policy/custom/definitions/policyset` and create two files.  Replace `POLICY_SET_DEFINITION` with the name of your assignment such as `loganalytics`.
+
+   * POLICY_SET_DEFINITION.bicep (i.e. `loganalytics.bicep`) - this file defines the policy set definition deployment
+   * POLICY_SET_DEFINITION.parameters.json (i.e. `loganalytics.parameters.json`) - this file defines the parameters used to deploy the policy set definition
+
+2. Edit the Bicep file to include the following template.  This template can be customized as required.  Pre-requisites are:
+
+    * targetScope must be `managementGroup`
+    * parameter `policyDefinitionManagementGroupId` must be defined.  This parameter identifies the scope of the policy set definition (i.e. `pubsec`).
+
+    Example [See Log Analytics Policy Set definition](../../policy/custom/definitions/policyset/EnableLogAnalytics.bicep).
+
+    ```bicep
+      targetScope = 'managementGroup'
+
+      @description('Management Group scope for the policy definition.')
+      param policyDefinitionManagementGroupId string
+
+      var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)
+
+      resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01' = {
+        // Policy definition name.  This value is used when setting up the policy assignment template in the follow steps.  It should be all lowercase and no spaces.
+        // i.e. name: 'custom-enable-logging-to-loganalytics'
+        name: '<< NAME >>
+        properties: {
+          // Display name for the policy set definition
+          displayName: '<< POLICY SET DEFINITION DISPLAY NAME >> '
+          parameters: {
+            // Add any parameters required for the policy set definition.  These parameters are used to pass down information to each policy.
+          }
+          policyDefinitionGroups: [
+            // Define policy definition groups.  These are arbitrary groups that can be created based on your organization's requirements.
+            // The group names are referenced when defining the policies.
+            {
+              name: 'CUSTOM'
+              displayName: 'Additional Controls as Custom Policies'
+            }
+          ]
+          policyDefinitions: [
+            // List the policies in this policy set.  Repeat this block for every policy definition
+            {
+              groupNames: [
+                'CUSTOM'
+              ]
+              policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/5ee9e9ed-0b42-41b7-8c9c-3cfb2fbe2069'
+              policyDefinitionReferenceId: toLower(replace('Deploy Log Analytics agent for Linux virtual machine scale sets', ' ', '-'))
+              parameters: {
+                // Set the values of parameters for each policy.
+              }
+            }
+          ]
+        }
+      }
+    ```
+
+3. Edit the JSON parameters file to define the input parameters for the Bicep template.  This parameters JSON file is used by Azure Resource Manager (ARM) for runtime inputs.
+
+    You may use any of the [templated parameters](#templated-parameters) listed above to set values based on environment configuration or hard code them as needed. 
+
+    ```json
+      {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+              "policyDefinitionManagementGroupId": {
+                  "value": "{{var-topLevelManagementGroupName}}"
+              },
+              "EXTRA_POLICY_SET_ASSIGNMENT_PARAMETER_NAME_1": {
+                  "value": "EXTRA_POLICY_SET_ASSIGNMENT_PARAMETER_VALUE_1"
+              },
+              "EXTRA_POLICY_SET_ASSIGNMENT_PARAMETER_NAME_2": {
+                  "value": "EXTRA_POLICY_SET_ASSIGNMENT_PARAMETER_VALUE_2"
+              }
+          }
+      }
+    ```
+
+    Example:  Log Analytics Policy Set Parameters
+
+    ```json
+      {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+              "policyDefinitionManagementGroupId": {
+                  "value": "{{var-topLevelManagementGroupName}}"
+              }
+          }
+      }
+    ```
+
 #### **Step 2: Create policy set assignment template**
+
+1. Navigate to `policy/custom/assignments` and create two files.  Replace `POLICY_SET_ASSIGNMENT` with the name of your assignment such as `loganalytics`.
+
+   * POLICY_SET_ASSIGNMENT.bicep (i.e. `loganalytics.bicep`) - this file defines the policy set assignment deployment
+   * POLICY_SET_ASSIGNMENT.parameters.json (i.e. `loganalytics.parameters.json`) - this file defines the parameters used to deploy the policy set assignment
+
+2. Edit the Bicep file to include the following template.  This template can be customized as required.  Pre-requisites are:
+
+    * targetScope must be `managementGroup`
+    * parameter `policyDefinitionManagementGroupId` must be defined.  This parameter identifies the scope of the policy set definition (i.e. `pubsec`).
+    * parameter `policyAssignmentManagementGroupId` must be defined.  This parameter identifies the scope of the policy set assignment (i.e. `pubsec`).
+
+    ```bicep
+    targetScope = 'managementGroup'
+
+    @description('Management Group scope for the policy definition.')
+    param policyDefinitionManagementGroupId string
+
+    @description('Management Group scope for the policy assignment.')
+    param policyAssignmentManagementGroupId string
+
+    // Start - Any custom parameters required for your policy set assignment
+    param ...
+    // End - Any custom parameters required for your policy set assignment
+
+    var policyId = '<< NAME OF THE POLICY SET DEFINITION >>'
+    var assignmentName = '<< DISPLAY NAME OF THE POLICY SET ASSIGNMENT >>'
+
+    var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
+    var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${policyId}'
+
+    resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
+      // Set the name of the policy set assignment
+      // Example: name: 'logging-${uniqueString('law-',policyAssignmentManagementGroupId)}'
+
+      name: '<< NAME >>'
+
+      properties: {
+        displayName: assignmentName
+        policyDefinitionId: policyScopedId
+        scope: scope
+        notScopes: [
+        ]
+        parameters: {
+          // Add any parameters identified earlier into this section
+        }
+        enforcementMode: 'Default'
+      }
+      identity: {
+        type: 'SystemAssigned'
+      }
+      location: deployment().location
+    }
+
+    // These role assignments are required to allow Policy Assignment to remediate.
+    // Add this section only when there are permissions to assign to the policy set.
+    // Ensure that the name is a GUID and generated with a deterministic formula such as the example below.
+    // Set the role definition id based on the policies in the policy set
+    resource policySetRoleAssignmentLogAnalyticsContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+      name: guid(policyAssignmentManagementGroupId, 'loganalytics', 'Log Analytics Contributor')
+      scope: managementGroup()
+      properties: {
+        roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'
+        principalId: policySetAssignment.identity.principalId
+        principalType: 'ServicePrincipal'
+      }
+    }
+    ```
+
+    Example: Log Analytics Policy Set Assignment
+
+    ```
+      targetScope = 'managementGroup'
+
+      @description('Management Group scope for the policy definition.')
+      param policyDefinitionManagementGroupId string
+
+      @description('Management Group scope for the policy assignment.')
+      param policyAssignmentManagementGroupId string
+
+      @description('Log Analytics Workspace Resource Id')
+      param logAnalyticsResourceId string
+
+      @description('Log Analytics Workspace Id')
+      param logAnalyticsWorkspaceId string
+
+      var policyId = 'custom-enable-logging-to-loganalytics'
+      var assignmentName = 'Custom - Log Analytics for Azure Services'
+
+      var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
+      var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${policyId}'
+
+      resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
+        name: 'logging-${uniqueString('law-',policyAssignmentManagementGroupId)}'
+        properties: {
+          displayName: assignmentName
+          policyDefinitionId: policyScopedId
+          scope: scope
+          notScopes: [
+          ]
+          parameters: {
+            logAnalytics: {
+              value: logAnalyticsResourceId
+            }
+            logAnalyticsWorkspaceId: {
+              value: logAnalyticsWorkspaceId
+            }
+          }
+          enforcementMode: 'Default'
+        }
+        identity: {
+          type: 'SystemAssigned'
+        }
+        location: deployment().location
+      }
+
+      // These role assignments are required to allow Policy Assignment to remediate.
+      resource policySetRoleAssignmentLogAnalyticsContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+        name: guid(policyAssignmentManagementGroupId, 'loganalytics', 'Log Analytics Contributor')
+        scope: managementGroup()
+        properties: {
+          roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'
+          principalId: policySetAssignment.identity.principalId
+          principalType: 'ServicePrincipal'
+        }
+      }
+
+      resource policySetRoleAssignmentVirtualMachineContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+        name: guid(policyAssignmentManagementGroupId, 'loganalytics', 'Virtual Machine Contributor')
+        scope: managementGroup()
+        properties: {
+          roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+          principalId: policySetAssignment.identity.principalId
+          principalType: 'ServicePrincipal'
+        }
+      }
+
+      resource policySetRoleAssignmentMonitoringContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+        name: guid(policyAssignmentManagementGroupId, 'loganalytics', 'Monitoring Contributor')
+        scope: managementGroup()
+        properties: {
+          roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa'
+          principalId: policySetAssignment.identity.principalId
+          principalType: 'ServicePrincipal'
+        }
+      }
+    ```
+
+3. Edit the JSON parameters file to define the input parameters for the Bicep template.  This parameters JSON file is used by Azure Resource Manager (ARM) for runtime inputs.
+
+    You may use any of the [templated parameters](#templated-parameters) listed above to set values based on environment configuration or hard code them as needed. 
+
+    ```json
+      {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+        "contentVersion": "1.0.0.0",
+        "parameters": {
+          "policyDefinitionManagementGroupId": {
+              "value": "{{var-topLevelManagementGroupName}}"
+          },
+          "policyAssignmentManagementGroupId": {
+              "value": "{{var-topLevelManagementGroupName}}"
+          },
+          "CUSTOM_POLICY_ASSIGNMENT_PARAMETER_NAME_1": {
+              "value": "CUSTOM_POLICY_ASSIGNMENT_PARAMETER_VALUE_1"
+          },
+          "CUSTOM_POLICY_ASSIGNMENT_PARAMETER_NAME_2": {
+              "value": "CUSTOM_POLICY_ASSIGNMENT_PARAMETER_VALUE_2"
+          }
+        }
+      }
+    ```
+
+    Example:  Log Analytics Policy Set Parameters
+
+    ```json
+      {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "policyDefinitionManagementGroupId": {
+                "value": "{{var-topLevelManagementGroupName}}"
+            },
+            "policyAssignmentManagementGroupId": {
+                "value": "{{var-topLevelManagementGroupName}}"
+            },
+            "logAnalyticsWorkspaceId": {
+                "value": "{{var-logging-logAnalyticsWorkspaceId}}"
+            },
+            "logAnalyticsResourceId": {
+                "value": "{{var-logging-logAnalyticsWorkspaceResourceId}}"
+            }
+          }
+      }
+    ```
+
 #### **Step 3: Configure Azure DevOps Pipeline**
+
+  * Edit `.pipelines/policy.yml`
+  * Navigate to the `CustomPolicyJob` Job definition
+  * Navigate to the `Define Policy Set` Step definition and add the policy definition file name (without extension) to the `deployTemplates` array parameter
+  * Navigate to the `Assign Policy Set` Step definition and add the policy assignment file name (without extension) to the `deployTemplates` array parameter
+
 #### **Step 4: Deploy definition & assignment**
+
+Execute `Azure DevOps Policy pipeline` to deploy.  The policy set definition and assignment will be deployed to the `top level management group`.
+
+> It takes around 30 minutes for the assignment to be applied to the defined scope. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs.
+
+
 #### **Step 5: Verify policy set definition and assignment deployment**
+
+Execute `Azure DevOps Policy pipeline` to deploy the policy set definition & assignment.
+
+Navigate to [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) and [Azure Policy Assignments](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Assignments) to verify that the policy set has been created.
+
+When there are deployment errors:
+
+  * Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+  * Select the top level management group (i.e. `pubsec`)
+  * Select Deployments
+  * Review the deployment errors
 
 --- 
 ### **Update custom policy definition**
@@ -424,7 +735,7 @@ Execute `Azure DevOps Policy pipeline` to automatically deploy the policy defini
 
 Navigate to [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) to verify that the policy has been updated.
 
-> The policy definition will be updated immediately and takes effect within 30 minutes.  All assignments (made through Policy Sets) will reflect the changes without any additional steps.
+> It takes around 30 minutes for the update to be applied. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs.
 
 When there are deployment errors:
 
@@ -442,5 +753,29 @@ When there are deployment errors:
 * [Step 1: Update policy set definition & assignment](#step-1-update-policy-set-definition--assignment)
 * [Step 2: Verify policy set definition & assignment after update](#step-2-verify-policy-set-definition--assignment-after-update)
 
+
 #### **Step 1: Update policy set definition & assignment**
+
+* Update policy set definition Bicep template as required.
+* Update policy set assignment Bicep template as required (typically when a new role assignment expected to support a new policy).
+
+Consider when updating a policy set definition & assignment:
+
+* Any new parameter added to the policy set definition must have a `default value` to stay backward compatible with existing assignments.
+* Ensure that any new role assignments are incorporated in the policy assignment definition.
+* Avoid changing the policy set definition name.  If this is required, remove the policy set assignment and its role assignments first.
+* Avoid changing the policy set role assignment names.  If this is required, remove the policy set assignment and its role assignments first.
+
+
 #### **Step 2: Verify policy set definition & assignment after update**
+
+Execute `Azure DevOps Policy pipeline` to deploy the policy set definition & assignment update.
+
+Navigate to [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) and [Azure Policy Assignments](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Assignments) to verify that the policy set has been updated.
+
+When there are deployment errors:
+
+  * Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+  * Select the top level management group (i.e. `pubsec`)
+  * Select Deployments
+  * Review the deployment errors
