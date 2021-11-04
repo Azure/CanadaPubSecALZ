@@ -246,7 +246,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 3. Edit the JSON parameters file to define the input parameters for the Bicep template.  This parameters JSON file is used by Azure Resource Manager (ARM) for runtime inputs.
 
-    You may use any of the [templated parameters](#templated-parameters) listed above to set values based on environment configuration or hard code them as needed. 
+    You may use any of the [templated parameters](readme.md#templated-parameters) listed above to set values based on environment configuration or hard code them as needed. 
 
     ```json
     {
@@ -523,7 +523,7 @@ When there are deployment errors:
 
 3. Edit the JSON parameters file to define the input parameters for the Bicep template.  This parameters JSON file is used by Azure Resource Manager (ARM) for runtime inputs.
 
-    You may use any of the [templated parameters](#templated-parameters) listed above to set values based on environment configuration or hard code them as needed. 
+    You may use any of the [templated parameters](readme.md#templated-parameters) listed above to set values based on environment configuration or hard code them as needed. 
 
     ```json
       {
@@ -708,7 +708,7 @@ When there are deployment errors:
 
 3. Edit the JSON parameters file to define the input parameters for the Bicep template.  This parameters JSON file is used by Azure Resource Manager (ARM) for runtime inputs.
 
-    You may use any of the [templated parameters](#templated-parameters) listed above to set values based on environment configuration or hard code them as needed. 
+    You may use any of the [templated parameters](readme.md#templated-parameters) listed above to set values based on environment configuration or hard code them as needed. 
 
     ```json
       {
