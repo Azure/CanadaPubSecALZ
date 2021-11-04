@@ -4,6 +4,7 @@ This reference implementation uses Built-In and Custom Policies to provide guard
 
 ## Table of Contents
 
+* [Existing configuration](#existing-configuration)
 * [Built-in policies](#built-in-policies)
   * [New built-in policy assignment](#new-built-in-policy-assignment)
     * [Step 1: Collect information](#step-1-collect-information)
@@ -32,6 +33,34 @@ This reference implementation uses Built-In and Custom Policies to provide guard
     * [Step 1: Update policy set definition & assignment](#step-1-update-policy-set-definition--assignment)
     * [Step 2: Verify policy set definition & assignment after update](#step-2-verify-policy-set-definition--assignment-after-update)
 
+---
+## Existing configuration
+
+### Built-in policy assignments
+
+| Policy Set | Description | Deployment Template | Configuration |
+| --- | --- | --- | --- |
+| [Canada Federal PBMM][pbmmPolicySet] | This initiative includes audit and virtual machine extension deployment policies that address a subset of Canada Federal PBMM controls. | [pbmm.bicep](../../policy/builtin/assignments/pbmm.bicep) | [pbmm.parameters.json](../../policy/builtin/assignments/pbmm.parameters.json) |
+| [NIST SP 800-53 Revision 4][nist80053R4policySet] | This initiative includes policies that address a subset of NIST SP 800-53 Rev. 4 controls. | [nist80053r4.bicep](../../policy/builtin/assignments/nist80053r4.bicep) | [nist80053r4.parameters.json](../../policy/builtin/assignments/nist80053r4.parameters.json) |
+| [NIST SP 800-53 Revision 5][nist80053R5policySet] | This initiative includes policies that address a subset of NIST SP 800-53 Rev. 5 controls. | [nist80053r5.bicep](../../policy/builtin/assignments/nist80053r5.bicep) | [nist80053r5.parameters.json](../../policy/builtin/assignments/nist80053r5.parameters.json) |
+| [Azure Security Benchmark][asbPolicySet] | The Azure Security Benchmark initiative represents the policies and controls implementing security recommendations defined in Azure Security Benchmark v2, see https://aka.ms/azsecbm. This also serves as the Azure Security Center default policy initiative. | [asb.bicep](../../policy/builtin/assignments/asb.bicep) | [asb.parameters.json](../../policy/builtin/assignments/asb.parameters.json) |
+| [CIS Microsoft Azure Foundations Benchmark 1.3.0][cisMicrosoftAzureFoundationPolicySet] | This initiative includes policies that address a subset of CIS Microsoft Azure Foundations Benchmark recommendations. | [cis-msft-130.bicep](../../policy/builtin/assignments/cis-msft-130.bicep) | [cis-msft-130.parameters.json](../../policy/builtin/assignments/cis-msft-130.parameters.json) |
+|	[FedRAMP Moderate][fedrampmPolicySet] | This initiative includes policies that address a subset of FedRAMP Moderate controls. | [fedramp-moderate.bicep](../../policy/builtin/assignments/fedramp-moderate.bicep) | [fedramp-moderate.parameters.json](../../policy/builtin/assignments/fedramp-moderate.parameters.json) |
+| [HIPAA / HITRUST 9.2][hipaaHitrustPolicySet] | This initiative includes audit and virtual machine extension deployment policies that address a subset of HITRUST/HIPAA controls. | [hitrust-hipaa.bicep](../../policy/builtin/assignments/hitrust-hipaa.bicep) | [fedramp-moderate.parameters.json](../../policy/builtin/assignments/fedramp-moderate.parameters.json)
+| Location | Restrict deployments to Canadian regions. | [location.bicep](../../policy/builtin/assignments/location.bicep) | [location.parameters.json](../../policy/builtin/assignments/location.parameters.json) |
+
+
+### Custom policy set definitions and assignments
+
+| Policy Set | Description | Deployment Template | Configuration |
+| --- | --- | --- | --- |
+| Azure Kubernetes Service | Azure Policy Add-on to Azure Kubernetes Service clusters & Pod Security. | [aks.bicep](../../policy/custom/assignments/aks.bicep) | [aks.parameters.json](../../policy/custom/assignments/aks.parameters.json)
+| Azure Security Center | Configures Azure Security Center, including Azure Defender for subscription and resources. | [asc.bicep](../../policy/custom/assignments/asc.bicep) | [asc.parameters.json](../../policy/custom/assignments/asc.parameters.json)
+| Azure DDOS | Configures policy to automatically protect virtual networks with public IP addresses.  Policy set is assigned through deployment pipeline when DDOS Standard is configured. | [ddos.bicep](../../policy/custom/assignments/ddos.bicep) | [ddos.parameters.json](../../policy/custom/assignments/ddos.parameters.json)
+| Private DNS Zones for Private Endpoints | Policies to configure DNS Zone records for Private Endpoints.  Policy set is assigned through deployment pipeline when private endpoint DNS zones are managed in the Hub Network. | [dns-private-endpoints.bicep](../../policy/custom/assignments/dns-private-endpoints.bicep) | [dns-private-endpoints.parameters.json](../../policy/custom/assignments/dns-private-endpoints.parameters.json)
+| Log Analytics for Azure Services (IaaS and PaaS) | Configures monitoring agents for IaaS and diagnostic settings for PaaS to send logs to a central Log Analytics Workspace. | [loganalytics.bicep](../../policy/custom/assignments/loganalytics.bicep) | [loganalytics.parameters.json](../../policy/custom/assignments/loganalytics.parameters.json)
+| Networking | Configures policies for network resources. | [network.bicep](../../policy/custom/assignments/network.bicep) | [network.parameters.json](../../policy/custom/assignments/network.parameters.json)
+| Tag Governance | Configures required tags and tag propagation from resource groups to resources. | [tags.bicep](../../policy/custom/assignments/tags.bicep) | [tags.parameters.json](../../policy/custom/assignments/tags.parameters.json)
 
 ---
 
