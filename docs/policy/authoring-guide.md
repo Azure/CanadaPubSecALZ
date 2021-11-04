@@ -46,6 +46,8 @@ This reference implementation uses Built-In and Custom Policies to provide guard
 
 ### Built-in policy assignments
 
+Built-in policy set assignment templates are located in [`policy/builtin/assignments/`](../../policy/builtin/assignments) directory.
+
 | Policy Set | Description | Deployment Template | Configuration |
 | --- | --- | --- | --- |
 | [Canada Federal PBMM][pbmmPolicySet] | This initiative includes audit and virtual machine extension deployment policies that address a subset of Canada Federal PBMM controls. | [pbmm.bicep](../../policy/builtin/assignments/pbmm.bicep) | [pbmm.parameters.json](../../policy/builtin/assignments/pbmm.parameters.json) |
@@ -60,6 +62,10 @@ This reference implementation uses Built-In and Custom Policies to provide guard
 
 ### Custom policy set definitions and assignments
 
+Custom policy set definition templates are located in [`policy/custom/definitions/policyset`](../../policy/custom/definitions/policyset) directory.
+
+Custom policy set assignment templates are located in [`policy/custom/assignments`](../../policy/custom/assignments) directory.
+
 | Policy Set | Description | Deployment Template | Configuration |
 | --- | --- | --- | --- |
 | Azure Kubernetes Service | Azure Policy Add-on to Azure Kubernetes Service clusters & Pod Security. | [aks.bicep](../../policy/custom/assignments/aks.bicep) | [aks.parameters.json](../../policy/custom/assignments/aks.parameters.json)
@@ -72,7 +78,7 @@ This reference implementation uses Built-In and Custom Policies to provide guard
 
 ---
 
-## Built-In policy sets
+## Built-in policy sets
 
 The built-in policy sets are used as-is to ensure future improvements from Azure Engineering teams are automatically incorporated into the Azure environment.
 
@@ -115,7 +121,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 #### **Step 2: Create Bicep template & parameters JSON file**
 
-1. Navigate to `policy/builtin/assignments` folder and create two files.  Replace `POLICY_ASSIGNMENT` with the name of your assignment such as `pbmm`.
+1. Navigate to `policy/builtin/assignments` directory and create two files.  Replace `POLICY_ASSIGNMENT` with the name of your assignment such as `pbmm`.
 
    * POLICY_ASSIGNMENT.bicep (i.e. `pbmm.bicep`) - this file defines the policy assignment deployment
    * POLICY_ASSIGNMENT.parameters.json (i.e. `pbmm.parameters.json`) - this file defines the parameters used to deploy the policy assignment.
@@ -124,6 +130,8 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
     * targetScope must be `managementGroup`
     * parameter `policyAssignmentManagementGroupId` must be defined.  It is used to set the policy assignment through automation.
+
+    **Sample Template**
 
     ```bicep
       targetScope = 'managementGroup'
@@ -183,7 +191,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
       }
     ```
 
-    Example: PBMM Policy Set Assignment
+    **Example: PBMM Policy Set Assignment**
     ```bicep
       targetScope = 'managementGroup'
 
@@ -246,7 +254,9 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 3. Edit the JSON parameters file to define the input parameters for the Bicep template.  This parameters JSON file is used by Azure Resource Manager (ARM) for runtime inputs.
 
-    You may use any of the [templated parameters](readme.md#templated-parameters) listed above to set values based on environment configuration or hard code them as needed. 
+    You can use any of the [templated parameters](readme.md#templated-parameters) to set values based on environment configuration or hard code them as needed. 
+
+    **Sample Template**
 
     ```json
     {
@@ -266,7 +276,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
     }
     ```
 
-    Example:  PBMM Policy Set Parameters
+    **Example:  PBMM Policy Set Parameters**
 
     ```json
     {
@@ -298,13 +308,13 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 #### **Step 4: Deploy built-in policy set assignment**
 
-Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment will be deployed to the `top level management group`.
+Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment will be deployed to the `top level management group` (i.e. `pubsec`).
 
-> It takes around 30 minutes for the assignment to be applied to the defined scope. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs.
+> It takes around 30 minutes for the assignment to be applied to the defined scope. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs.  See [Azure Docs for more information](https://docs.microsoft.com/azure/governance/policy/how-to/get-compliance-data).
 
 #### **Step 5: Verify policy set assignment**
 
-  * You may navigate to [Azure Policy Compliance](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Compliance) to verify in Azure Portal.
+  * You can navigate to [Azure Policy Compliance](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Compliance) to verify in Azure Portal.
   * When there are deployment errors:
   
       * Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
@@ -326,9 +336,9 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 * Edit `.pipelines/policy.yml`
 * Navigate to the `BuiltInPolicyJob` Job definition
 * Navigate to the `Assign Policy Set` Step definition
-* Remove the policy assignment from the `deployTemplates` array parameter
+* Remove the policy set assignment from the `deployTemplates` array parameter
 
-> Automation does not remove an existing policy set assignment.  Removing the policy set assignment from the Azure DevOps pipeline ensures that the policy assignment is no longer created.  Any existing policy set assignments must be deleted manually.
+> Automation does not remove an existing policy set assignment.  Removing the policy set assignment from the Azure DevOps pipeline ensures that it's no longer created.  Any existing policy set assignments must be deleted manually.
 
 #### **Step 2: Remove built-in policy set assignment's IAM assignments**
 
@@ -345,9 +355,11 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 ## Custom policies
 
+Custom policies and policy sets enable an organization to expand their governance in Azure.  Prior to creating any custom policies, we recommend searching for a suitable built-in policy through [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions).  You can create custom policy sets that contain built-in and custom policies.
+
 ### **New custom policy definition**
 
-> We recommend custom policies are organized into a custom policy sets and assigned as a unit.  This approach will reduce the management overhead and complexity in the future.  You may have as many custom policy sets as required.
+> We recommend organizing the custom policies into a custom policy sets and assigned as a unit.  This approach will reduce the management overhead and complexity in the future.  You can have as many custom policy sets as required.
 
 **Steps**
 
@@ -358,7 +370,7 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 #### **Step 1: Create policy definition template**
 
-1. Create a subdirectory in `policy/custom/definitions/policy`  Each policy is organized into it's own folder.  The folder name must not have any spaces nor special characters.
+1. Create a subdirectory in `policy/custom/definitions/policy` directory. Each policy is organized into it's own directory.  The directory name must not have any spaces nor special characters.
 
 2. Create 3 files in the newly created directory:
 
@@ -368,7 +380,7 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 3. Edit `azurepolicy.config.json`.
 
-    Information from this file is used as part of deploying Azure Policy definitions.
+    Information from this file is used as part of deploying Azure Policy definition.
 
     Example: 
 
@@ -410,6 +422,8 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
     Describes the policy rule that will be evaluated by Azure Policy.  The rule can have any effect such as Audit, Deny, DeployIfNotExists.
 
+    See [Azure Policy docs for more information on creating custom policies](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure).
+
     Example:
 
     ```yml
@@ -437,9 +451,9 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 #### **Step 2: Deploy policy definition template**
 
-Execute `Azure DevOps Policy pipeline` to deploy.  The policy definition will be deployed to the `top level management group`.
+Execute `Azure DevOps Policy pipeline` to deploy.  The policy definition will be deployed to the `top level management group` (i.e. `pubsec`).
 
-> Deploying the policy definition does not put it in effect.  You must either [create a new policy set](#new-custom-policy-set-definition--assignment) or [update an existing policy set](#update-custom-policy-set-definition--assignment) to put it in effect.
+> Deploying the policy definition does not put it in effect.  You must either [create a new custom policy set](#new-custom-policy-set-definition--assignment) or [update an existing custom policy set](#update-custom-policy-set-definition--assignment) to put it in effect.
 
 #### **Step 3: Verify policy definition deployment**
 
@@ -478,6 +492,8 @@ When there are deployment errors:
 
     Example [See Log Analytics Policy Set definition](../../policy/custom/definitions/policyset/EnableLogAnalytics.bicep).
 
+    **Sample Template**
+
     ```bicep
       targetScope = 'managementGroup'
 
@@ -500,20 +516,41 @@ When there are deployment errors:
             // Define policy definition groups.  These are arbitrary groups that can be created based on your organization's requirements.
             // The group names are referenced when defining the policies.
             {
+              name: 'BUILTIN'
+              displayName: 'Additional Controls as Builtin Policies'
+            }
+            {
               name: 'CUSTOM'
               displayName: 'Additional Controls as Custom Policies'
             }
           ]
           policyDefinitions: [
             // List the policies in this policy set.  Repeat this block for every policy definition
+
+            // An example of a built in policy where the policy definition id can be retrieved from Azure Portal.
             {
               groupNames: [
-                'CUSTOM'
+                'BUILTIN'
               ]
               policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/5ee9e9ed-0b42-41b7-8c9c-3cfb2fbe2069'
               policyDefinitionReferenceId: toLower(replace('Deploy Log Analytics agent for Linux virtual machine scale sets', ' ', '-'))
               parameters: {
                 // Set the values of parameters for each policy.
+              }
+            }
+
+            // An example of a custom policy where the policy definition id is inferred from the customPolicyDefinitionMgScope variable.
+            // The policy definition name is the directory name.  In this example the directory is 'LA-Logs-Diagnostic-Settings' and located in /policy/custom/definitions/policy/LA-Logs-Diagnostic-Settings
+            {
+              groupNames: [
+                'CUSTOM'
+              ]
+              policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Logs-Diagnostic-Settings')
+              policyDefinitionReferenceId: toLower(replace('Audit diagnostic setting', ' ', '-'))
+              parameters: {
+                listOfResourceTypes: {
+                  value: '[parameters(\'listOfResourceTypesToAuditDiagnosticSettings\')]'
+                }
               }
             }
           ]
@@ -523,7 +560,9 @@ When there are deployment errors:
 
 3. Edit the JSON parameters file to define the input parameters for the Bicep template.  This parameters JSON file is used by Azure Resource Manager (ARM) for runtime inputs.
 
-    You may use any of the [templated parameters](readme.md#templated-parameters) listed above to set values based on environment configuration or hard code them as needed. 
+    You can use any of the [templated parameters](readme.md#templated-parameters) to set values based on environment configuration or hard code them as needed. 
+
+    **Sample Template**
 
     ```json
       {
@@ -543,7 +582,7 @@ When there are deployment errors:
       }
     ```
 
-    Example:  Log Analytics Policy Set Parameters
+    **Example:  Log Analytics Policy Set Parameters**
 
     ```json
       {
@@ -569,6 +608,8 @@ When there are deployment errors:
     * targetScope must be `managementGroup`
     * parameter `policyDefinitionManagementGroupId` must be defined.  This parameter identifies the scope of the policy set definition (i.e. `pubsec`).
     * parameter `policyAssignmentManagementGroupId` must be defined.  This parameter identifies the scope of the policy set assignment (i.e. `pubsec`).
+
+    **Sample Template**
 
     ```bicep
     targetScope = 'managementGroup'
@@ -627,7 +668,7 @@ When there are deployment errors:
     }
     ```
 
-    Example: Log Analytics Policy Set Assignment
+    **Example: Log Analytics Policy Set Assignment**
 
     ```
       targetScope = 'managementGroup'
@@ -708,7 +749,9 @@ When there are deployment errors:
 
 3. Edit the JSON parameters file to define the input parameters for the Bicep template.  This parameters JSON file is used by Azure Resource Manager (ARM) for runtime inputs.
 
-    You may use any of the [templated parameters](readme.md#templated-parameters) listed above to set values based on environment configuration or hard code them as needed. 
+    You can use any of the [templated parameters](readme.md#templated-parameters) to set values based on environment configuration or hard code them as needed. 
+
+    **Sample Template**
 
     ```json
       {
@@ -731,7 +774,7 @@ When there are deployment errors:
       }
     ```
 
-    Example:  Log Analytics Policy Set Parameters
+    **Example:  Log Analytics Policy Set Parameters**
 
     ```json
       {
@@ -763,14 +806,12 @@ When there are deployment errors:
 
 #### **Step 4: Deploy definition & assignment**
 
-Execute `Azure DevOps Policy pipeline` to deploy.  The policy set definition and assignment will be deployed to the `top level management group`.
+Execute `Azure DevOps Policy pipeline` to deploy.  The policy set definition and assignment will be deployed to the `top level management group` (i.e. `pubsec`).
 
-> It takes around 30 minutes for the assignment to be applied to the defined scope. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs.
+> It takes around 30 minutes for the assignment to be applied to the defined scope. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs. See [Azure Docs for more information](https://docs.microsoft.com/azure/governance/policy/how-to/get-compliance-data).
 
 
 #### **Step 5: Verify policy set definition and assignment deployment**
-
-Execute `Azure DevOps Policy pipeline` to deploy the policy set definition & assignment.
 
 Navigate to [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) and [Azure Policy Assignments](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Assignments) to verify that the policy set has been created.
 
@@ -799,7 +840,7 @@ Execute `Azure DevOps Policy pipeline` to automatically deploy the policy defini
 
 Navigate to [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) to verify that the policy has been updated.
 
-> It takes around 30 minutes for the update to be applied. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs.
+> It takes around 30 minutes for the update to be applied. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs. See [Azure Docs for more information](https://docs.microsoft.com/azure/governance/policy/how-to/get-compliance-data).
 
 When there are deployment errors:
 
@@ -820,8 +861,8 @@ When there are deployment errors:
 
 #### **Step 1: Update policy set definition & assignment**
 
-* Update policy set definition Bicep template as required.
-* Update policy set assignment Bicep template as required (typically when a new role assignment expected to support a new policy).
+* Update policy set definition Bicep template & JSON parameters as required.
+* Update policy set assignment Bicep template & JSON parameters as required (typically when a new role assignment expected to support a new policy).
 
 Consider when updating a policy set definition & assignment:
 
@@ -829,7 +870,6 @@ Consider when updating a policy set definition & assignment:
 * Ensure that any new role assignments are incorporated in the policy assignment definition.
 * Avoid changing the policy set definition name.  If this is required, remove the policy set assignment and its role assignments first.
 * Avoid changing the policy set role assignment names.  If this is required, remove the policy set assignment and its role assignments first.
-
 
 #### **Step 2: Verify policy set definition & assignment after update**
 
@@ -856,7 +896,7 @@ When there are deployment errors:
 
 * Navigate to `policy/custom/definitions/policy` and identify the custom policy definition directory to delete.
 * Identify all custom policy set definitions that reference the policy (they are referenced using the directory name) and remove the references.
-* Delete the custom policy definition folder in `policy/custom/definitions/policy` 
+* Delete the custom policy definition directory in `policy/custom/definitions/policy` 
 * Execute `Azure DevOps Policy pipeline` to deploy the updates.
 
 > Azure DevOps Pipeline does not remove the custom policy definition from Azure.  It will only remove the policy definition reference from the custom policy sets that are managed through automation.  You must manually delete the policy definition using [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) in Azure Portal.
@@ -873,11 +913,11 @@ When there are deployment errors:
 
 #### Step 1: Remove custom policy set definition
 
-* Navigate to `policy/custom/definitions/policyset` and delete the policy set definition Bicep and JSON files.
+* Navigate to `policy/custom/definitions/policyset` and delete the policy set definition Bicep template and JSON parameter files.
 
 #### Step 2: Remove custom policy set assignment
 
-* Navigate to `policy/custom/assignments` and delete the policy set assignment Bicep and JSON files.
+* Navigate to `policy/custom/assignments` and delete the policy set assignment Bicep template and JSON parameter files.
 
 
 #### Step 3: Remove custom policy set from Azure DevOps Pipeline
@@ -887,7 +927,7 @@ When there are deployment errors:
   * Navigate to the `Define Policy Set` Step definition and remove the policy definition file name from the `deployTemplates` array parameter
   * Navigate to the `Assign Policy Set` Step definition and remove the policy assignment file name from the `deployTemplates` array parameter
 
-> Automation does not remove an existing policy set assignment.  Removing the policy set assignment from the Azure DevOps pipeline ensures that the policy assignment is no longer created.  Any existing policy set assignments must be deleted manually.
+> Automation does not remove an existing policy set assignment.  Removing the policy set assignment from the Azure DevOps pipeline ensures that it's no longer created.  Any existing policy set assignments must be deleted manually.
 
 #### **Step 4: Remove custom policy set assignment's IAM assignments**
 
