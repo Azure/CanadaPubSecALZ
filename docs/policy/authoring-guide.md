@@ -5,14 +5,14 @@ This reference implementation uses Built-In and Custom Policies to provide guard
 ## Table of Contents
 
 * [Existing configuration](#existing-configuration)
-* [Built-in policies](#built-in-policies)
-  * [New built-in policy assignment](#new-built-in-policy-assignment)
+* [Built-in policy sets](#built-in-policy-sets)
+  * [New built-in policy set assignment](#new-built-in-policy-set-assignment)
     * [Step 1: Collect information](#step-1-collect-information)
     * [Step 2: Create Bicep template & parameters JSON file](#step-2-create-bicep-template--parameters-json-file)
     * [Step 3: Update Azure DevOps Pipeline](#step-3-update-azure-devops-pipeline)
     * [Step 4: Deploy built-in policy set assignment](#step-4-deploy-built-in-policy-set-assignment)
     * [Step 5: Verify policy set assignment](#step-5-verify-policy-set-assignment)
-  * [Remove built-in policy assignment](#remove-built-in-policy-assignment)
+  * [Remove built-in policy set assignment](#remove-built-in-policy-set-assignment)
     * [Step 1: Remove built-in policy set assignment from Azure DevOps Pipeline](#step-1-remove-built-in-policy-set-assignment-from-azure-devops-pipeline)
     * [Step 2: Remove built-in policy set assignment's IAM assignments](#step-2-remove-built-in-policy-set-assignments-iam-assignments)
 * [Custom policies](#custom-policies)
@@ -72,11 +72,11 @@ This reference implementation uses Built-In and Custom Policies to provide guard
 
 ---
 
-## Built-In policies
+## Built-In policy sets
 
 The built-in policy sets are used as-is to ensure future improvements from Azure Engineering teams are automatically incorporated into the Azure environment.
 
-### **New built-in policy assignment**
+### **New built-in policy set assignment**
 
 **Steps**
 
@@ -314,7 +314,7 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 ---
 
-### Remove built-in policy assignment
+### Remove built-in policy set assignment
 
 **Steps**
 
