@@ -4,30 +4,30 @@ This reference implementation uses Built-In and Custom Policies to provide guard
 
 ## Table of Contents
 
-* [Built-In Policies](#built-in-policies)
-  * [New Built-In Policy Assignment](#new-built-in-policy-assignment)
-  * [Remove Built-In Policy Assignment](#remove-built-in-policy-assignment)
-* [Custom Policies](#custom-policies)
-  * [New Custom Policy Definition](#new-custom-policy-definition)
-  * [New Custom Policy Set Definition](#new-custom-policy-set-definition)
-  * [Update Custom Policy Set Definition](#update-custom-policy-set-definition)
+* [Built-in policies](#built-in-policies)
+  * [New built-in policy assignment](#new-built-in-policy-assignment)
+  * [Remove built-in policy assignment](#remove-built-in-policy-assignment)
+* [Custom policies](#custom-policies)
+  * [New custom policy definition](#new-custom-policy-definition)
+  * [New custom policy set definition & assignment](#new-custom-policy-set-definition--assignment)
+  * [Update custom policy set definition & assignment](#update-custom-policy-set-definition--assignment)
 
 ---
 
-## Built-In Policies
+## Built-In policies
 
 The built-in policy sets are used as-is to ensure future improvements from Azure Engineering teams are automatically incorporated into the Azure environment.
 
-### **New Built-In Policy Assignment**
+### **New built-in policy assignment**
 
 **Steps**
 
-* [Step 1: Collect Information](#step-1-collect-information)
+* [Step 1: Collect information](#step-1-collect-information)
 * [Step 2: Create Bicep template & parameters JSON file](#step-2-create-bicep-template--parameters-json-file)
 * [Step 3: Update Azure DevOps Pipeline](#step-3-update-azure-devops-pipeline)
 * [Step 4: Verify policy set assignment](#step-4-verify-policy-set-assignment)
 
-#### **Step 1: Collect Information**
+#### **Step 1: Collect information**
 
 1. Navigate to [Azure Portal -> Azure Policy -> Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions)
 2. Open the Built-In Policy Set (it is also called an Initiative) that will be assigned through automation.  For example: `Canada Federal PBMM`
@@ -247,7 +247,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
       * Select Deployments
       * Review the deployment errors
 
-### Remove Built-In Policy Assignment
+### Remove built-in policy assignment
 
 **Steps:**
 
@@ -276,17 +276,22 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 ---
 
-## Custom Policies
+## Custom policies
 
-### **New Custom Policy Definition**
+### **New custom policy definition**
 
 **Steps**
 
 * Step 1: Create policy definition template
 * Step 2: Deploy policy definition template
-* Step 3: Verify deployment
+* Step 3: Verify policy definition deployment
 
-### **New Custom Policy Set Definition & Assignment**
+#### **Step 1: Create policy definition template**
+#### **Step 2: Deploy policy definition template**
+#### **Step 3: Verify policy definition deployment**
+
+
+### **New custom policy set definition & assignment**
 
 **Steps**
 
@@ -294,11 +299,31 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 * Step 2: Create policy set assignment template
 * Step 3: Configure Azure DevOps Pipeline
 * Step 4: Deploy definition & assignment
-* Step 5: Verify deployment
+* Step 5: Verify policy set definition and assignment deployment
 
-### **Update Custom Policy Set Definition**
+#### **Step 1: Create policy set definition template**
+#### **Step 2: Create policy set assignment template**
+#### **Step 3: Configure Azure DevOps Pipeline**
+#### **Step 4: Deploy definition & assignment**
+#### **Step 5: Verify policy set definition and assignment deployment**
+
+### **Update custom policy definition**
 
 **Steps**
 
-* Step 1: Update definition & assignment
-* Step 2: Verify deployment
+* Step 1: Update policy definition
+* Step 2: Verify policy definition deployment after update
+
+#### **Step 1: Update policy definition**
+#### **Step 2: Verify policy definition deployment after update**
+
+
+### **Update custom policy set definition & assignment**
+
+**Steps**
+
+* Step 1: Update policy set definition & assignment
+* Step 2: Verify policy set definition & assignment after update
+
+#### **Step 1: Update policy set definition & assignment**
+#### **Step 2: Verify policy set definition & assignment after update**
