@@ -321,7 +321,7 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 * [Step 1: Remove built-in policy set assignment from Azure DevOps Pipeline](#step-1-remove-built-in-policy-set-assignment-from-azure-devops-pipeline)
 * [Step 2: Remove built-in policy set assignment's IAM assignments](#step-2-remove-built-in-policy-set-assignments-iam-assignments)
 
-#### **Step 1:  Remove built-in policy set assignment from Azure DevOps Pipeline**
+#### **Step 1: Remove built-in policy set assignment from Azure DevOps Pipeline**
 
 * Edit `.pipelines/policy.yml`
 * Navigate to the `BuiltInPolicyJob` Job definition
