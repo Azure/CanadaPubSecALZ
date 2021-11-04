@@ -20,6 +20,13 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 ### **New Built-In Policy Assignment**
 
+**Steps**
+
+* [Step 1: Collect Information](#step-1-collect-information)
+* [Step 2: Create Bicep template & parameters JSON file](#step-2-create-bicep-template--parameters-json-file)
+* [Step 3: Update Azure DevOps Pipeline](#step-3-update-azure-devops-pipeline)
+* [Step 4: Verify policy set assignment](#step-4-verify-policy-set-assignment)
+
 #### **Step 1: Collect Information**
 
 1. Navigate to [Azure Portal -> Azure Policy -> Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions)
@@ -241,6 +248,11 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
       * Review the deployment errors
 
 ### Remove Built-In Policy Assignment
+
+**Steps:**
+
+* [Step 1: Remove policy set assignment from Azure DevOps Pipeline](#step-1--remove-policy-set-assignment-from-azure-devops-pipeline)
+* [Step 2: Delete policy set assignment's IAM assignments](#step-2-delete-policy-set-assignments-iam-assignments)
 
 #### **Step 1:  Remove policy set assignment from Azure DevOps Pipeline**
 
