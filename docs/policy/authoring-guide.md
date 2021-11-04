@@ -279,5 +279,26 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 ## Custom Policies
 
 ### **New Custom Policy Definition**
-### **New Custom Policy Set Definition**
+
+**Steps**
+
+* Step 1: Create policy definition template
+* Step 2: Deploy policy definition template
+* Step 3: Verify deployment
+
+### **New Custom Policy Set Definition & Assignment**
+
+**Steps**
+
+* Step 1: Create policy set definition template
+* Step 2: Create policy set assignment template
+* Step 3: Configure Azure DevOps Pipeline
+* Step 4: Deploy definition & assignment
+* Step 5: Verify deployment
+
 ### **Update Custom Policy Set Definition**
+
+**Steps**
+
+* Step 1: Update definition & assignment
+* Step 2: Verify deployment
