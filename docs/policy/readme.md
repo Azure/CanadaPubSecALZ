@@ -9,6 +9,14 @@
   * [Custom Policy Set Definitions](#custom-policy-set-definitions)
   * [Custom Policy Set Assignments](#custom-policy-set-assignments)
 * [Templated Parameters](#templated-parameters)
+* [Authoring Guide](#authoring-guide)
+  * [Built-In Policies](#built-in-policies)
+    * [New Built-In Policy Assignment](#new-built-in-policy-assignment)
+    * [Remove Built-In Policy Assignment](#remove-built-in-policy-assignment)
+  * [Custom Policies](#custom-policies)
+    * [New Custom Policy Definition](#new-custom-policy-definition)
+    * [New Custom Policy Set Definition](#new-custom-policy-set-definition)
+    * [Update Custom Policy Set Definition](#update-custom-policy-set-definition)
 
 ## Overview
 
@@ -19,6 +27,8 @@ Common use cases for Azure Policy include implementing governance for resource c
 ![Azure Policy Compliance](../media/architecture/policy-compliance.jpg)
 
 Azure Landing Zones for Canadian Public Sector is configured with a set of built-in Azure Policy Sets based on Regulatory Compliance.  Custom policy sets have been designed to increase compliance for logging, networking & tagging requirements.  These can be further extended or removed as required by the department through automation.
+
+---
 
 ## Built-In Policy Sets Assignments
 
@@ -54,6 +64,8 @@ All policy set assignments are at the `pubsec` top level management group.  This
 |	[FedRAMP Moderate][fedrampmPolicySet] | This initiative includes policies that address a subset of FedRAMP Moderate controls. | [fedramp-moderate.bicep](../../policy/builtin/assignments/fedramp-moderate.bicep) | [fedramp-moderate.parameters.json](../../policy/builtin/assignments/fedramp-moderate.parameters.json) |
 | [HIPAA / HITRUST 9.2][hipaaHitrustPolicySet] | This initiative includes audit and virtual machine extension deployment policies that address a subset of HITRUST/HIPAA controls. | [hitrust-hipaa.bicep](../../policy/builtin/assignments/hitrust-hipaa.bicep) | [fedramp-moderate.parameters.json](../../policy/builtin/assignments/fedramp-moderate.parameters.json)
 | Location | Restrict deployments to Canadian regions. | [location.bicep](../../policy/builtin/assignments/location.bicep) | [location.parameters.json](../../policy/builtin/assignments/location.parameters.json) |
+
+---
 
 ## Custom Policies and Policy Sets
 
@@ -138,7 +150,7 @@ Azure DevOps Pipeline ([.pipelines/policy.yml](../../.pipelines/policy.yml)) is 
 | Networking | Configures policies for network resources. | [network.bicep](../../policy/custom/assignments/network.bicep) | [network.parameters.json](../../policy/custom/assignments/network.parameters.json)
 | Tag Governance | Configures required tags and tag propagation from resource groups to resources. | [tags.bicep](../../policy/custom/assignments/tags.bicep) | [tags.parameters.json](../../policy/custom/assignments/tags.parameters.json)
 
-
+---
 
 ## Templated Parameters
 
@@ -150,9 +162,23 @@ Parameters can be templated using the syntax `{{PARAMETER_NAME}}`.  Following pa
 | {{var-logging-logAnalyticsWorkspaceResourceId}} | Resource ID is inferred using Log Analytics settings in environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml)  | `/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace`
 | {{var-logging-logAnalyticsWorkspaceId}} |  Workspace ID is inferred using Log Analytics settings in environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml) | `fcce3f30-158a-4561-a714-361623f42168`
 | {{var-logging-logAnalyticsResourceGroupName}} | Environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml)  | `pubsec-central-logging-rg`
+| {{var-logging-logAnalyticsRetentionInDays}} | Environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml) | `730`
 | {{var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix}} | Environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml)  | `pubsecnsg`
 
+---
 
+## Authoring Guide
+
+### Built-In Policies
+
+#### **New Built-In Policy Assignment**
+#### **Remove Built-In Policy Assignment**
+
+### Custom Policies
+
+#### **New Custom Policy Definition**
+#### **New Custom Policy Set Definition**
+#### **Update Custom Policy Set Definition**
 
 
 
