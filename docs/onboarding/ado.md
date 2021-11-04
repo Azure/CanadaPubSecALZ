@@ -297,7 +297,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 ## Step 6:  Configure Azure Policies
 
-1. Pipeline definition for Azure Policies. Overview of Azure Policy deployed refer to [README.md under `/docs/policy`](../../docs/policy/README.md)
+1. Pipeline definition for Azure Policies. Overview of Azure Policy deployed refer to [README.md under `/docs/policy`](../../docs/policy/readme.md)
 
     *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
