@@ -10,7 +10,8 @@ This reference implementation uses Built-In and Custom Policies to provide guard
     * [Step 1: Collect information](#step-1-collect-information)
     * [Step 2: Create Bicep template & parameters JSON file](#step-2-create-bicep-template--parameters-json-file)
     * [Step 3: Update Azure DevOps Pipeline](#step-3-update-azure-devops-pipeline)
-    * [Step 4: Verify policy set assignment](#step-4-verify-policy-set-assignment)
+    * [Step 4: Deploy built-in policy set assignment](#step-4-deploy-built-in-policy-set-assignment)
+    * [Step 5: Verify policy set assignment](#step-5-verify-policy-set-assignment)
   * [Remove built-in policy assignment](#remove-built-in-policy-assignment)
     * [Step 1: Remove policy set assignment from Azure DevOps Pipeline](#step-1--remove-policy-set-assignment-from-azure-devops-pipeline)
     * [Step 2: Delete policy set assignment's IAM assignments](#step-2-delete-policy-set-assignments-iam-assignments)
@@ -75,7 +76,8 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 * [Step 1: Collect information](#step-1-collect-information)
 * [Step 2: Create Bicep template & parameters JSON file](#step-2-create-bicep-template--parameters-json-file)
 * [Step 3: Update Azure DevOps Pipeline](#step-3-update-azure-devops-pipeline)
-* [Step 4: Verify policy set assignment](#step-4-verify-policy-set-assignment)
+* [Step 4: Deploy built-in policy set assignment](#step-4-deploy-built-in-policy-set-assignment)
+* [Step 5: Verify policy set assignment](#step-5-verify-policy-set-assignment)
 
 #### **Step 1: Collect information**
 
@@ -287,7 +289,13 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
   * Navigate to the `Assign Policy Set` Step definition
   * Add the policy assignment file name (without extension) to the `deployTemplates` array parameter
 
-#### **Step 4: Verify policy set assignment**
+#### **Step 4: Deploy built-in policy set assignment**
+
+Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment will be deployed to the `top level management group`.
+
+> It takes around 30 minutes for the assignment to be applied to the defined scope. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs.
+
+#### **Step 5: Verify policy set assignment**
 
   * You may navigate to [Azure Policy Compliance](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Compliance) to verify in Azure Portal.
   * When there are deployment errors:
