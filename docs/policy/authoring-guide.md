@@ -10,6 +10,7 @@ This reference implementation uses Built-In and Custom Policies to provide guard
 * [Custom policies](#custom-policies)
   * [New custom policy definition](#new-custom-policy-definition)
   * [New custom policy set definition & assignment](#new-custom-policy-set-definition--assignment)
+  * [Update custom policy definition](#update-custom-policy-definition)
   * [Update custom policy set definition & assignment](#update-custom-policy-set-definition--assignment)
 
 ---
@@ -47,7 +48,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
     Use [Azure Built-In Roles table](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles) to map the permission name to it's Resource ID.  Resource ID will be used when defining the role assignments. 
 
-4. Click on the **Duplicate initiatve** button.  We will not be duplicating the policy set definition, but use this step to identify the parameter names that will need to be populated during policy assignment.
+4. Click on the **Duplicate initiative** button.  We will not be duplicating the policy set definition, but use this step to identify the parameter names that will need to be populated during policy assignment.
 
     *Collect the following information from the **Initiative parameters** tab:*
 
@@ -66,7 +67,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
     * targetScope must be `managementGroup`
     * parameter `policyAssignmentManagementGroupId` must be defined.  It is used to set the policy assignment through automation.
 
-    ```c
+    ```bicep
       targetScope = 'managementGroup'
 
       @description('Management Group scope for the policy assignment.')
@@ -125,7 +126,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
     ```
 
     Example: PBMM Policy Set Assignment
-    ```c
+    ```bicep
       targetScope = 'managementGroup'
 
       @description('Management Group scope for the policy assignment.')
@@ -187,7 +188,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 3. Edit the JSON parameters file to define the input parameters for the Bicep template.  This parameters JSON file is used by Azure Resource Manager (ARM) for runtime inputs.
 
-    You may use any of the [templated parameters](#templated-parameters) listed above to set values based on environment configuration or hardcode them as needed. 
+    You may use any of the [templated parameters](#templated-parameters) listed above to set values based on environment configuration or hard code them as needed. 
 
     ```json
     {
@@ -247,6 +248,8 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
       * Select Deployments
       * Review the deployment errors
 
+---
+
 ### Remove built-in policy assignment
 
 **Steps:**
@@ -280,6 +283,8 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 ### **New custom policy definition**
 
+> We recommend custom policies are organized into a custom policy sets and assigned as a unit.  This approach will reduce the management overhead and complexity in the future.  You may have as many custom policy sets as required.
+
 **Steps**
 
 * [Step 1: Create policy definition template](#step-1-create-policy-definition-template)
@@ -287,9 +292,102 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 * [Step 3: Verify policy definition deployment](#step-3-verify-policy-definition-deployment)
 
 #### **Step 1: Create policy definition template**
+
+1. Create a subdirectory in `policy/custom/definitions/policy`  Each policy is organized into it's own folder.  The folder name must not have any spaces nor special characters.
+
+2. Create 3 files in the newly created directory:
+
+    * `azurepolicy.config.json` - metadata used by Azure DevOps Pipeline to configure the policy.
+    * `azurepolicy.parameters.json` - contains parameters used in the policy.
+    * `azurepolicy.rules.json` - the policy rule definition.
+
+3. Edit `azurepolicy.config.json`.
+
+    Information from this file is used as part of deploying Azure Policy definitions.
+
+    Example: 
+
+    ```yml
+    {
+      "name": "Audit diagnostic setting - Logs",
+      "mode": "all"
+    }
+    ```
+
+    The `mode` determines which resource types are evaluated for a policy definition. The supported modes are:
+
+    * all: evaluate resource groups, subscriptions, and all resource types
+    * indexed: only evaluate resource types that support tags and location
+
+    See [Azure Policy Reference](https://docs.microsoft.com/azure/governance/policy/concepts/definition-structure#mode) for more information.
+
+4. Edit `azurepolicy.parameters.json`.  
+
+    Define parameters that are required by the policy definition.  Using parameters enable the policy to be used with different configuration.
+
+    See [Azure Parameter Reference](https://docs.microsoft.com/azure/governance/policy/concepts/definition-structure#parameters) for more information.
+
+    Example: 
+    ```yml
+    {
+      "listOfResourceTypes": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Resource Types",
+          "description": null,
+          "strongType": "resourceTypes"
+        }
+      }
+    }
+    ```
+
+5. Edit `azurepolicy.rules.json`
+
+    Describes the policy rule that will be evaluated by Azure Policy.  The rule can have any effect such as Audit, Deny, DeployIfNotExists.
+
+    Example:
+
+    ```yml
+    {
+      "if": {
+        "field": "type",
+        "in": "[parameters('listOfResourceTypes')]"
+      },
+      "then": {
+        "effect": "AuditIfNotExists",
+        "details": {
+          "type": "Microsoft.Insights/diagnosticSettings",
+          "existenceCondition": {
+            "allOf": [
+              {
+                "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+                "equals": "true"
+              }
+            ]
+          }
+        }
+      }
+    }
+    ```
+
 #### **Step 2: Deploy policy definition template**
+
+Execute `Azure DevOps Policy pipeline` to automatically deploy the policy definition.  The policy definition will be deployed to the `top level management group`.
+
+> Deploying the policy definition does not put it in effect.  You must either [create a new policy set](#new-custom-policy-set-definition--assignment) or [update an existing policy set](#update-custom-policy-set-definition--assignment) to put it in effect.
+
 #### **Step 3: Verify policy definition deployment**
 
+Navigate to [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) to verify that the policy has been created.
+
+When there are deployment errors:
+
+  * Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+  * Select the top level management group (i.e. `pubsec`)
+  * Select Deployments
+  * Review the deployment errors
+
+---
 
 ### **New custom policy set definition & assignment**
 
@@ -307,6 +405,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 #### **Step 4: Deploy definition & assignment**
 #### **Step 5: Verify policy set definition and assignment deployment**
 
+--- 
 ### **Update custom policy definition**
 
 **Steps**
@@ -315,8 +414,25 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 * [Step 2: Verify policy definition deployment after update](#step-2-verify-policy-definition-deployment-after-update)
 
 #### **Step 1: Update policy definition**
+
+Update `azurepolicy.config.json`, `azurepolicy.parameters.json` and `azurepolicy.rules.json` as required. 
+
 #### **Step 2: Verify policy definition deployment after update**
 
+Execute `Azure DevOps Policy pipeline` to automatically deploy the policy definition update.
+
+Navigate to [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) to verify that the policy has been updated.
+
+> The policy definition will be updated immediately and takes effect within 30 minutes.  All assignments (made through Policy Sets) will reflect the changes without any additional steps.
+
+When there are deployment errors:
+
+  * Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+  * Select the top level management group (i.e. `pubsec`)
+  * Select Deployments
+  * Review the deployment errors
+
+---
 
 ### **Update custom policy set definition & assignment**
 
