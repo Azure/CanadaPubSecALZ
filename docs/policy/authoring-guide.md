@@ -290,6 +290,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 * [Step 1: Create policy definition template](#step-1-create-policy-definition-template)
 * [Step 2: Deploy policy definition template](#step-2-deploy-policy-definition-template)
 * [Step 3: Verify policy definition deployment](#step-3-verify-policy-definition-deployment)
+* Step 4: Add policy definition to a [new custom policy set](#new-custom-policy-set-definition--assignment) or [update an existing policy set](#update-custom-policy-set-definition--assignment)
 
 #### **Step 1: Create policy definition template**
 
