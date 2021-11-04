@@ -177,7 +177,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 #### **New Built-In Policy Assignment**
 
-To add a new built-in policy to the automation, gather the following information using Azure Portal:
+**Step 1:**  To add a new built-in policy to the automation, gather the following information using Azure Portal.
 
 1. Navigate to [Azure Portal -> Azure Policy -> Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions)
 2. Open the Built-In Policy Set (it is also called an Initiative) that will be assigned through automation.  For example: `Canada Federal PBMM`
@@ -204,7 +204,7 @@ To add a new built-in policy to the automation, gather the following information
     * **Parameters** (i.e. `logAnalytics`, `logAnalyticsWorkspaceId`, `listOfResourceTypesToAuditDiagnosticSettings`).  You may see zero, one or many parameters listed.  It is possible that a policy set doesn't have any parameters.
 
 
-Once the required information is gathered, you are ready to create a Bicep template with the policy assignment.
+**Step 2:** Once the required information is gathered, you are ready to create a Bicep template with the policy assignment.
 
 1. Navigate to `policy/builtin/assignments` folder and create two files.  Replace `POLICY_ASSIGNMENT` with the name of your assignment such as `pbmm`.
 
@@ -380,24 +380,26 @@ Once the required information is gathered, you are ready to create a Bicep templ
     }
     ```
 
-4. Update the Azure DevOps Policy pipeline to deploy the policy assignment.
+**Step 3:** Update the Azure DevOps Policy pipeline to deploy the policy assignment.
 
-    * Edit `.pipelines/policy.yml`
-    * Navigate to the `BuiltInPolicyJob` Job definition
-    * Navigate to the `Assign Policy Set` Step definition
-    * Add the policy assignment file name (without extension) to the `deployTemplates` array parameter
+  * Edit `.pipelines/policy.yml`
+  * Navigate to the `BuiltInPolicyJob` Job definition
+  * Navigate to the `Assign Policy Set` Step definition
+  * Add the policy assignment file name (without extension) to the `deployTemplates` array parameter
 
-5. Execute the Azure Policy pipeline and verify the policy deployment pipeline succeeds.
+**Step 4:** Execute the Azure Policy pipeline and verify the policy deployment pipeline succeeds.
 
-    * You may navigate to [Azure Policy Compliance](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Compliance) to verify in Azure Portal.
-    * When there are deployment errors:
-    
-        * Navigate [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
-        * Select the top level management group (i.e. `pubsec`)
-        * Select Deployments
-        * Review the deployment errors
+  * You may navigate to [Azure Policy Compliance](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Compliance) to verify in Azure Portal.
+  * When there are deployment errors:
+  
+      * Navigate [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+      * Select the top level management group (i.e. `pubsec`)
+      * Select Deployments
+      * Review the deployment errors
 
 #### **Remove Built-In Policy Assignment**
+
+**Step 1:** Remove policy set assignment from Azure DevOps Pipeline.
 
 * Edit `.pipelines/policy.yml`
 * Navigate to the `BuiltInPolicyJob` Job definition
@@ -406,7 +408,7 @@ Once the required information is gathered, you are ready to create a Bicep templ
 
 > Automation does not remove an existing policy set assignment.  Removing the policy set assignment from the Azure DevOps pipeline ensures that the policy assignment is no longer created.  Any existing policy set assignments must be deleted manually.
 
-To delete an existing policy set assignment:
+**Step 2:** Delete policy set assignment's role assignments.
 
 * Navigate to [Azure Policy Assignments](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Assignments) in Azure Portal
   * Find the policy set assignment
