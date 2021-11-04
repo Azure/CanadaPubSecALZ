@@ -174,18 +174,18 @@ This role assignment is used to grant users access to the logging subscription b
 
 1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
-Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
+* Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
 
 ```yml
     var-logging-subscriptionRoleAssignments: >
         []
 ```
 
-Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
+* Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
 
-Update with valid contact information for the Azure Service Health Alerts: email and phone number. 
+* Update with valid contact information for the Azure Service Health Alerts: email and phone number. 
 
-Set the values for the Azure tags that would be applied to the logging resources. 
+* Set the values for the Azure tags that would be applied to the logging resources. 
 
 **Sample environment YAML (Logging section only)**
 
