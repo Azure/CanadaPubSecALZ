@@ -321,8 +321,8 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
    Update networking section of the configuration file to deploy one of the two options: 
    
-    1. Hub Networking with Azure Firewall
-    2. Hub Networking with Fortinet Firewall (NVA)
+    1. [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
+    2. [Hub Networking with Fortinet Firewall (NVA)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
 
     Depending on the preference, you may delete/comment the configuration that is not required. For example, when deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls". 
     
