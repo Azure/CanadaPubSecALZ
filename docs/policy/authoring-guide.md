@@ -33,6 +33,8 @@ This reference implementation uses Built-In and Custom Policies to provide guard
   * [Update custom policy set definition & assignment](#update-custom-policy-set-definition--assignment)
     * [Step 1: Update policy set definition & assignment](#step-1-update-policy-set-definition--assignment)
     * [Step 2: Verify policy set definition & assignment after update](#step-2-verify-policy-set-definition--assignment-after-update)
+  * [Remove custom policy definition](#remove-custom-policy-definition)
+    * [Step 1: Remove policy definition](#step-1--remove-policy-definition)
 
 ---
 ## Existing configuration
@@ -836,6 +838,25 @@ When there are deployment errors:
   * Select the top level management group (i.e. `pubsec`)
   * Select Deployments
   * Review the deployment errors
+
+---
+
+### Remove custom policy definition
+
+**Steps**
+
+* [Step 1: Remove policy definition](#step-1--remove-policy-definition)
+
+#### **Step 1: Remove policy definition**
+
+* Navigate to `policy/custom/definitions/policy` and identify the custom policy definition directory to delete.
+* Identify all custom policy set definitions that reference the policy (they are referenced using the directory name) and remove the references.
+* Delete the custom policy definition folder in `policy/custom/definitions/policy` 
+* Execute `Azure DevOps Policy pipeline` to deploy the updates.
+
+> Azure DevOps Pipeline does not remove the custom policy definition from Azure.  It will only remove the policy definition reference from the custom policy sets that are managed through automation.  You must manually delete the policy definition using [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) in Azure Portal.
+
+---
 
 
 [nist80053r4Policyset]: https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r4
