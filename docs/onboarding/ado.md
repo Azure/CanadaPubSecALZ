@@ -326,19 +326,18 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
     Depending on the preference, you may delete/comment the configuration that is not required. For example, when deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls". 
     
+ *Note:*  **var-hubnetwork-subscriptionRoleAssignments** should include Azure AD security group's object ID responsible for managing Azure networking. If role assignments are not required, you must change the example provided with the following setting:
+
+  ```yml
+    var-hubnetwork-subscriptionRoleAssignments: >
+        []
+  ```
 
  Include the values for the following as well: 
-  * Valid contact information for the Azure Service Health Alerts: email and phone number
-  * Values for Azure resource tags 
-  * IP ranges for the virtual networks
-  * Enable/Disable Azure DDOS Standard
-
-> *Note:*  **var-hubnetwork-subscriptionRoleAssignments** should include Azure AD security group's object ID responsible for managing Azure networking. If role assignments are not required, you must change the example provided with the following setting:
->
->  ```yml
->    var-hubnetwork-subscriptionRoleAssignments: >
->        []
->   ```
+   * Valid contact information for the Azure Service Health Alerts: email and phone number
+   * Values for Azure resource tags 
+   * IP ranges for the virtual networks
+   * Enable/Disable Azure DDOS Standard
 
 
     **Sample environment YAML (Hub Networking section only)**
