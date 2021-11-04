@@ -218,11 +218,11 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
             "policyAssignmentManagementGroupId": {
                 "value": "{{var-topLevelManagementGroupName}}"
             },
-            "CUSTOM_POLICY_ASSIGNMENT_PARAMETER_NAME_1": {
-                "value": "CUSTOM_POLICY_ASSIGNMENT_PARAMETER_VALUE_1"
+            "EXTRA_POLICY_ASSIGNMENT_PARAMETER_NAME_1": {
+                "value": "EXTRA_POLICY_ASSIGNMENT_PARAMETER_VALUE_1"
             },
-            "CUSTOM_POLICY_ASSIGNMENT_PARAMETER_NAME_2": {
-                "value": "CUSTOM_POLICY_ASSIGNMENT_PARAMETER_VALUE_2"
+            "EXTRA_POLICY_ASSIGNMENT_PARAMETER_NAME_2": {
+                "value": "EXTRA_POLICY_ASSIGNMENT_PARAMETER_VALUE_2"
             }
         }
     }
@@ -677,11 +677,11 @@ When there are deployment errors:
           "policyAssignmentManagementGroupId": {
               "value": "{{var-topLevelManagementGroupName}}"
           },
-          "CUSTOM_POLICY_ASSIGNMENT_PARAMETER_NAME_1": {
-              "value": "CUSTOM_POLICY_ASSIGNMENT_PARAMETER_VALUE_1"
+          "EXTRA_POLICY_ASSIGNMENT_PARAMETER_NAME_1": {
+              "value": "EXTRA_POLICY_ASSIGNMENT_PARAMETER_VALUE_1"
           },
-          "CUSTOM_POLICY_ASSIGNMENT_PARAMETER_NAME_2": {
-              "value": "CUSTOM_POLICY_ASSIGNMENT_PARAMETER_VALUE_2"
+          "EXTRA_POLICY_ASSIGNMENT_PARAMETER_NAME_2": {
+              "value": "EXTRA_POLICY_ASSIGNMENT_PARAMETER_VALUE_2"
           }
         }
       }
