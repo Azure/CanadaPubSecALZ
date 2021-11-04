@@ -94,7 +94,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 #### **Step 1: Collect information**
 
-1. Navigate to [Azure Portal -> Azure Policy -> Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions)
+1. Navigate to [Azure Portal -> Azure Policy -> Definitions][portalAzurePolicyDefinition]
 2. Open the Built-In Policy Set (it is also called an Initiative) that will be assigned through automation.  For example: `Canada Federal PBMM`
 
     *Collect the following information:*
@@ -314,10 +314,10 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 #### **Step 5: Verify policy set assignment**
 
-  * You can navigate to [Azure Policy Compliance](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Compliance) to verify in Azure Portal.
+  * You can navigate to [Azure Policy Compliance][portalAzurePolicyCompliance] to verify in Azure Portal.
   * When there are deployment errors:
   
-      * Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+      * Navigate to [Management Groups][portalManagementGroups] in Azure Portal
       * Select the top level management group (i.e. `pubsec`)
       * Select Deployments
       * Review the deployment errors
@@ -342,10 +342,10 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 #### **Step 2: Remove built-in policy set assignment's IAM assignments**
 
-* Navigate to [Azure Policy Assignments](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Assignments) in Azure Portal
+* Navigate to [Azure Policy Assignments][portalAzurePolicyAssignment] in Azure Portal
   * Find the policy set assignment
   * Click on the `...` beside the policy set assignment and select `Delete assignment`
-* Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+* Navigate to [Management Groups][portalManagementGroups] in Azure Portal
   * Select the top level management group (i.e. `pubsec`)
   * Select Access control (IAM)
   * Select Role Assignments
@@ -355,7 +355,7 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 ## Custom policies
 
-Custom policies and policy sets enable an organization to expand their governance in Azure.  Prior to creating any custom policies, we recommend searching for a suitable built-in policy through [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions).  You can create custom policy sets that contain built-in and custom policies.
+Custom policies and policy sets enable an organization to expand their governance in Azure.  Prior to creating any custom policies, we recommend searching for a suitable built-in policy through [Azure Policy Definitions][portalAzurePolicyDefinition].  You can create custom policy sets that contain built-in and custom policies.
 
 ### **New custom policy definition**
 
@@ -457,11 +457,11 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy definition will be
 
 #### **Step 3: Verify policy definition deployment**
 
-Navigate to [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) to verify that the policy has been created.
+Navigate to [Azure Policy Definitions][portalAzurePolicyDefinition] to verify that the policy has been created.
 
 When there are deployment errors:
 
-  * Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+  * Navigate to [Management Groups][portalManagementGroups] in Azure Portal
   * Select the top level management group (i.e. `pubsec`)
   * Select Deployments
   * Review the deployment errors
@@ -813,11 +813,11 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set definition and
 
 #### **Step 5: Verify policy set definition and assignment deployment**
 
-Navigate to [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) and [Azure Policy Assignments](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Assignments) to verify that the policy set has been created.
+Navigate to [Azure Policy Definitions][portalAzurePolicyDefinition] and [Azure Policy Assignments][portalAzurePolicyAssignment] to verify that the policy set has been created.
 
 When there are deployment errors:
 
-  * Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+  * Navigate to [Management Groups][portalManagementGroups] in Azure Portal
   * Select the top level management group (i.e. `pubsec`)
   * Select Deployments
   * Review the deployment errors
@@ -838,13 +838,13 @@ Update `azurepolicy.config.json`, `azurepolicy.parameters.json` and `azurepolicy
 
 Execute `Azure DevOps Policy pipeline` to automatically deploy the policy definition update.
 
-Navigate to [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) to verify that the policy has been updated.
+Navigate to [Azure Policy Definitions][portalAzurePolicyDefinition] to verify that the policy has been updated.
 
 > It takes around 30 minutes for the update to be applied. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs. See [Azure Docs for more information](https://docs.microsoft.com/azure/governance/policy/how-to/get-compliance-data).
 
 When there are deployment errors:
 
-  * Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+  * Navigate to [Management Groups][portalManagementGroups] in Azure Portal
   * Select the top level management group (i.e. `pubsec`)
   * Select Deployments
   * Review the deployment errors
@@ -875,11 +875,11 @@ Consider when updating a policy set definition & assignment:
 
 Execute `Azure DevOps Policy pipeline` to deploy the policy set definition & assignment update.
 
-Navigate to [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) and [Azure Policy Assignments](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Assignments) to verify that the policy set has been updated.
+Navigate to [Azure Policy Definitions][portalAzurePolicyDefinition] and [Azure Policy Assignments][portalAzurePolicyAssignment] to verify that the policy set has been updated.
 
 When there are deployment errors:
 
-  * Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+  * Navigate to [Management Groups][portalManagementGroups] in Azure Portal
   * Select the top level management group (i.e. `pubsec`)
   * Select Deployments
   * Review the deployment errors
@@ -899,7 +899,7 @@ When there are deployment errors:
 * Delete the custom policy definition directory in `policy/custom/definitions/policy` 
 * Execute `Azure DevOps Policy pipeline` to deploy the updates.
 
-> Azure DevOps Pipeline does not remove the custom policy definition from Azure.  It will only remove the policy definition reference from the custom policy sets that are managed through automation.  You must manually delete the policy definition using [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) in Azure Portal.
+> Azure DevOps Pipeline does not remove the custom policy definition from Azure.  It will only remove the policy definition reference from the custom policy sets that are managed through automation.  You must manually delete the policy definition using [Azure Policy Definitions][portalAzurePolicyDefinition] in Azure Portal.
 
 ---
 
@@ -931,10 +931,10 @@ When there are deployment errors:
 
 #### **Step 4: Remove custom policy set assignment's IAM assignments**
 
-* Navigate to [Azure Policy Assignments](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Assignments) in Azure Portal
+* Navigate to [Azure Policy Assignments][portalAzurePolicyAssignment] in Azure Portal
   * Find the policy set assignment
   * Click on the `...` beside the policy set assignment and select `Delete assignment`
-* Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+* Navigate to [Management Groups][portalManagementGroups] in Azure Portal
   * Select the top level management group (i.e. `pubsec`)
   * Select Access control (IAM)
   * Select Role Assignments
@@ -948,3 +948,7 @@ When there are deployment errors:
 [cisMicrosoftAzureFoundationPolicySet]: https://docs.microsoft.com/azure/governance/policy/samples/cis-azure-1-3-0
 [fedrampmPolicySet]: https://docs.microsoft.com/azure/governance/policy/samples/fedramp-moderate
 [hipaaHitrustPolicySet]: https://docs.microsoft.com/azure/governance/policy/samples/hipaa-hitrust-9-2
+[portalAzurePolicyDefinition]: https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions
+[portalAzurePolicyAssignment]: https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Assignments
+[portalAzurePolicyCompliance]: https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Compliance
+[portalManagementGroups]: https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview
