@@ -40,6 +40,7 @@ This reference implementation uses Built-In and Custom Policies to provide guard
     * [Step 2: Remove custom policy set assignment](#step-2-remove-custom-policy-set-assignment)
     * [Step 3: Remove custom policy set from Azure DevOps Pipeline](#step-3-remove-custom-policy-set-from-azure-devops-pipeline)
     * [Step 4: Remove custom policy set assignment's IAM assignments](#step-4-remove-custom-policy-set-assignments-iam-assignments)
+  * [Auto generating custom Diagnostic Settings policies for PaaS services](#auto-generating-custom-diagnostic-settings-policies-for-paas-services)
 
 ---
 ## Existing configuration
@@ -939,6 +940,21 @@ When there are deployment errors:
   * Select Access control (IAM)
   * Select Role Assignments
   * Use the `Type` filter to find any `Unknown` role assignments and delete them.  This step is required since deleting the policy set assignment does not automatically remove any role assignments.  When the policy set assignment is removed, it's managed identity is also removed thus marking these role assignments as `Unknown`.
+
+---
+
+### Auto generating custom Diagnostic Settings policies for PaaS services
+
+Before auto generating a custom Diagnostic Settings policies, we recommend searching for a suitable built-in policy through [Azure Policy Definitions][portalAzurePolicyDefinition].
+
+The Diagnostic Settings policies in this reference implementation were created using scripts from GitHub ([JimGBritt/AzurePolicy](https://github.com/JimGBritt/AzurePolicy/tree/master/AzureMonitor/Scripts)).  The steps are:
+
+1. Deploy an instance of the Azure Service (i.e. Azure Bastion)
+2. Execute `Create-AzDiagPolicy.PS1` - Follow instructions in [GitHub](https://github.com/JimGBritt/AzurePolicy/blob/master/AzureMonitor/Scripts/README.md#overview-of-create-azdiagpolicyps1)
+3. Use the [instructions for creating new custom policy definition](#new-custom-policy-definition) to copy the generated content.
+    * Copy the contents into `azurepolicy.parameters.json` and `azurepolicy.rules.json`.
+    * Create `azurepolicy.config.json` with policy name and mode.
+5. Delete the instance created in Step 1.
 
 
 [nist80053r4Policyset]: https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r4

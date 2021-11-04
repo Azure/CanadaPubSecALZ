@@ -76,7 +76,7 @@ Each policy is organized into it's own folder.  The folder name must not have an
 2. azurepolicy.parameters.json - contains parameters used in the policy.
 3. azurepolicy.rules.json - the policy rule definition.
 
-See [instructions for creating custom policies](../../policy/custom/definitions/policy/readme.md) for more information.
+See [step-by-step instructions on Azure Policy Authoring Guide](authoring-guide.md) for more information.
 
 Azure DevOps Pipeline ([.pipelines/policy.yml](../../.pipelines/policy.yml)) is used for policy definition automation.  The automation enumerates the policy definition directory (`policy/custom/definitions/policy`) and creates/updates policies that it identifies.
 
