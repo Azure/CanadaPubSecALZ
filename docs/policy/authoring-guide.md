@@ -282,9 +282,9 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 **Steps**
 
-* Step 1: Create policy definition template
-* Step 2: Deploy policy definition template
-* Step 3: Verify policy definition deployment
+* [Step 1: Create policy definition template](#step-1-create-policy-definition-template)
+* [Step 2: Deploy policy definition template](#step-2-deploy-policy-definition-template)
+* [Step 3: Verify policy definition deployment](#step-3-verify-policy-definition-deployment)
 
 #### **Step 1: Create policy definition template**
 #### **Step 2: Deploy policy definition template**
@@ -295,11 +295,11 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 **Steps**
 
-* Step 1: Create policy set definition template
-* Step 2: Create policy set assignment template
-* Step 3: Configure Azure DevOps Pipeline
-* Step 4: Deploy definition & assignment
-* Step 5: Verify policy set definition and assignment deployment
+* [Step 1: Create policy set definition template](#step-1-create-policy-set-definition-template)
+* [Step 2: Create policy set assignment template](#step-2-create-policy-set-assignment-template)
+* [Step 3: Configure Azure DevOps Pipeline](#step-3-configure-azure-devops-pipeline)
+* [Step 4: Deploy definition & assignment](#step-4-deploy-definition--assignment)
+* [Step 5: Verify policy set definition and assignment deployment](#step-5-verify-policy-set-definition-and-assignment-deployment)
 
 #### **Step 1: Create policy set definition template**
 #### **Step 2: Create policy set assignment template**
@@ -311,8 +311,8 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 **Steps**
 
-* Step 1: Update policy definition
-* Step 2: Verify policy definition deployment after update
+* [Step 1: Update policy definition](#step-1-update-policy-definition)
+* [Step 2: Verify policy definition deployment after update](#step-2-verify-policy-definition-deployment-after-update)
 
 #### **Step 1: Update policy definition**
 #### **Step 2: Verify policy definition deployment after update**
@@ -322,8 +322,8 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 **Steps**
 
-* Step 1: Update policy set definition & assignment
-* Step 2: Verify policy set definition & assignment after update
+* [Step 1: Update policy set definition & assignment](#step-1-update-policy-set-definition--assignment)
+* [Step 2: Verify policy set definition & assignment after update](#step-2-verify-policy-set-definition--assignment-after-update)
 
 #### **Step 1: Update policy set definition & assignment**
 #### **Step 2: Verify policy set definition & assignment after update**
