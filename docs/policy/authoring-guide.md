@@ -6,12 +6,32 @@ This reference implementation uses Built-In and Custom Policies to provide guard
 
 * [Built-in policies](#built-in-policies)
   * [New built-in policy assignment](#new-built-in-policy-assignment)
+    * [Step 1: Collect information](#step-1-collect-information)
+    * [Step 2: Create Bicep template & parameters JSON file](#step-2-create-bicep-template--parameters-json-file)
+    * [Step 3: Update Azure DevOps Pipeline](#step-3-update-azure-devops-pipeline)
+    * [Step 4: Verify policy set assignment](#step-4-verify-policy-set-assignment)
   * [Remove built-in policy assignment](#remove-built-in-policy-assignment)
+    * [Step 1: Remove policy set assignment from Azure DevOps Pipeline](#step-1--remove-policy-set-assignment-from-azure-devops-pipeline)
+    * [Step 2: Delete policy set assignment's IAM assignments](#step-2-delete-policy-set-assignments-iam-assignments)
 * [Custom policies](#custom-policies)
   * [New custom policy definition](#new-custom-policy-definition)
+    * [Step 1: Create policy definition template](#step-1-create-policy-definition-template)
+    * [Step 2: Deploy policy definition template](#step-2-deploy-policy-definition-template)
+    * [Step 3: Verify policy definition deployment](#step-3-verify-policy-definition-deployment)
+    * Step 4: Add policy definition to a [new custom policy set](#new-custom-policy-set-definition--assignment) or [update an existing policy set](#update-custom-policy-set-definition--assignment)
   * [New custom policy set definition & assignment](#new-custom-policy-set-definition--assignment)
+    * [Step 1: Create policy set definition template](#step-1-create-policy-set-definition-template)
+    * [Step 2: Create policy set assignment template](#step-2-create-policy-set-assignment-template)
+    * [Step 3: Configure Azure DevOps Pipeline](#step-3-configure-azure-devops-pipeline)
+    * [Step 4: Deploy definition & assignment](#step-4-deploy-definition--assignment)
+    * [Step 5: Verify policy set definition and assignment deployment](#step-5-verify-policy-set-definition-and-assignment-deployment)
   * [Update custom policy definition](#update-custom-policy-definition)
+    * [Step 1: Update policy definition](#step-1-update-policy-definition)
+    * [Step 2: Verify policy definition deployment after update](#step-2-verify-policy-definition-deployment-after-update)
   * [Update custom policy set definition & assignment](#update-custom-policy-set-definition--assignment)
+    * [Step 1: Update policy set definition & assignment](#step-1-update-policy-set-definition--assignment)
+    * [Step 2: Verify policy set definition & assignment after update](#step-2-verify-policy-set-definition--assignment-after-update)
+
 
 ---
 
@@ -252,7 +272,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 ### Remove built-in policy assignment
 
-**Steps:**
+**Steps**
 
 * [Step 1: Remove policy set assignment from Azure DevOps Pipeline](#step-1--remove-policy-set-assignment-from-azure-devops-pipeline)
 * [Step 2: Delete policy set assignment's IAM assignments](#step-2-delete-policy-set-assignments-iam-assignments)
