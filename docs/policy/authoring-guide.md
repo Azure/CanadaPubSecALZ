@@ -242,7 +242,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
   * You may navigate to [Azure Policy Compliance](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Compliance) to verify in Azure Portal.
   * When there are deployment errors:
   
-      * Navigate [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+      * Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
       * Select the top level management group (i.e. `pubsec`)
       * Select Deployments
       * Review the deployment errors
@@ -268,7 +268,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 * Navigate to [Azure Policy Assignments](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Assignments) in Azure Portal
   * Find the policy set assignment
   * Click on the `...` beside the policy set assignment and select `Delete assignment`
-* Navigate [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+* Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
   * Select the top level management group (i.e. `pubsec`)
   * Select Access control (IAM)
   * Select Role Assignments
