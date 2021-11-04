@@ -13,8 +13,8 @@ This reference implementation uses Built-In and Custom Policies to provide guard
     * [Step 4: Deploy built-in policy set assignment](#step-4-deploy-built-in-policy-set-assignment)
     * [Step 5: Verify policy set assignment](#step-5-verify-policy-set-assignment)
   * [Remove built-in policy assignment](#remove-built-in-policy-assignment)
-    * [Step 1: Remove policy set assignment from Azure DevOps Pipeline](#step-1--remove-policy-set-assignment-from-azure-devops-pipeline)
-    * [Step 2: Delete policy set assignment's IAM assignments](#step-2-delete-policy-set-assignments-iam-assignments)
+    * [Step 1: Remove built-in policy set assignment from Azure DevOps Pipeline](#step-1-remove-built-in-policy-set-assignment-from-azure-devops-pipeline)
+    * [Step 2: Remove built-in policy set assignment's IAM assignments](#step-2-remove-built-in-policy-set-assignments-iam-assignments)
 * [Custom policies](#custom-policies)
   * [New custom policy definition](#new-custom-policy-definition)
     * [Step 1: Create policy definition template](#step-1-create-policy-definition-template)
@@ -34,7 +34,12 @@ This reference implementation uses Built-In and Custom Policies to provide guard
     * [Step 1: Update policy set definition & assignment](#step-1-update-policy-set-definition--assignment)
     * [Step 2: Verify policy set definition & assignment after update](#step-2-verify-policy-set-definition--assignment-after-update)
   * [Remove custom policy definition](#remove-custom-policy-definition)
-    * [Step 1: Remove policy definition](#step-1--remove-policy-definition)
+    * [Step 1: Remove policy definition](#step-1-remove-policy-definition)
+  * [Remove custom policy set definition and assignment](#remove-custom-policy-set-definition-and-assignment)
+    * [Step 1: Remove custom policy set definition](#step-1-remove-custom-policy-set-definition)
+    * [Step 2: Remove custom policy set assignment](#step-2-remove-custom-policy-set-assignment)
+    * [Step 3: Remove custom policy set from Azure DevOps Pipeline](#step-3-remove-custom-policy-set-from-azure-devops-pipeline)
+    * [Step 4: Remove custom policy set assignment's IAM assignments](#step-4-remove-custom-policy-set-assignments-iam-assignments)
 
 ---
 ## Existing configuration
@@ -313,10 +318,10 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 **Steps**
 
-* [Step 1: Remove policy set assignment from Azure DevOps Pipeline](#step-1--remove-policy-set-assignment-from-azure-devops-pipeline)
-* [Step 2: Delete policy set assignment's IAM assignments](#step-2-delete-policy-set-assignments-iam-assignments)
+* [Step 1: Remove built-in policy set assignment from Azure DevOps Pipeline](#step-1-remove-built-in-policy-set-assignment-from-azure-devops-pipeline)
+* [Step 2: Remove built-in policy set assignment's IAM assignments](#step-2-remove-built-in-policy-set-assignments-iam-assignments)
 
-#### **Step 1:  Remove policy set assignment from Azure DevOps Pipeline**
+#### **Step 1:  Remove built-in policy set assignment from Azure DevOps Pipeline**
 
 * Edit `.pipelines/policy.yml`
 * Navigate to the `BuiltInPolicyJob` Job definition
@@ -325,7 +330,7 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 > Automation does not remove an existing policy set assignment.  Removing the policy set assignment from the Azure DevOps pipeline ensures that the policy assignment is no longer created.  Any existing policy set assignments must be deleted manually.
 
-#### **Step 2: Delete policy set assignment's IAM assignments**
+#### **Step 2: Remove built-in policy set assignment's IAM assignments**
 
 * Navigate to [Azure Policy Assignments](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Assignments) in Azure Portal
   * Find the policy set assignment
@@ -845,7 +850,7 @@ When there are deployment errors:
 
 **Steps**
 
-* [Step 1: Remove policy definition](#step-1--remove-policy-definition)
+* [Step 1: Remove policy definition](#step-1-remove-policy-definition)
 
 #### **Step 1: Remove policy definition**
 
@@ -857,6 +862,43 @@ When there are deployment errors:
 > Azure DevOps Pipeline does not remove the custom policy definition from Azure.  It will only remove the policy definition reference from the custom policy sets that are managed through automation.  You must manually delete the policy definition using [Azure Policy Definitions](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions) in Azure Portal.
 
 ---
+
+### Remove custom policy set definition and assignment
+
+**Steps**
+  * [Step 1: Remove custom policy set definition](#step-1-remove-custom-policy-set-definition)
+  * [Step 2: Remove custom policy set assignment](#step-2-remove-custom-policy-set-assignment)
+  * [Step 3: Remove custom policy set from Azure DevOps Pipeline](#step-3-remove-custom-policy-set-from-azure-devops-pipeline)
+  * [Step 4: Remove custom policy set assignment's IAM assignments](#step-4-remove-custom-policy-set-assignments-iam-assignments)
+
+#### Step 1: Remove custom policy set definition
+
+* Navigate to `policy/custom/definitions/policyset` and delete the policy set definition Bicep and JSON files.
+
+#### Step 2: Remove custom policy set assignment
+
+* Navigate to `policy/custom/assignments` and delete the policy set assignment Bicep and JSON files.
+
+
+#### Step 3: Remove custom policy set from Azure DevOps Pipeline
+
+  * Edit `.pipelines/policy.yml`
+  * Navigate to the `CustomPolicyJob` Job definition
+  * Navigate to the `Define Policy Set` Step definition and remove the policy definition file name from the `deployTemplates` array parameter
+  * Navigate to the `Assign Policy Set` Step definition and remove the policy assignment file name from the `deployTemplates` array parameter
+
+> Automation does not remove an existing policy set assignment.  Removing the policy set assignment from the Azure DevOps pipeline ensures that the policy assignment is no longer created.  Any existing policy set assignments must be deleted manually.
+
+#### **Step 4: Remove custom policy set assignment's IAM assignments**
+
+* Navigate to [Azure Policy Assignments](https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Assignments) in Azure Portal
+  * Find the policy set assignment
+  * Click on the `...` beside the policy set assignment and select `Delete assignment`
+* Navigate to [Management Groups](https://portal.azure.com/#blade/Microsoft_Azure_ManagementGroups/ManagementGroupBrowseBlade/MGBrowse_overview) in Azure Portal
+  * Select the top level management group (i.e. `pubsec`)
+  * Select Access control (IAM)
+  * Select Role Assignments
+  * Use the `Type` filter to find any `Unknown` role assignments and delete them.  This step is required since deleting the policy set assignment does not automatically remove any role assignments.  When the policy set assignment is removed, it's managed identity is also removed thus marking these role assignments as `Unknown`.
 
 
 [nist80053r4Policyset]: https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r4
