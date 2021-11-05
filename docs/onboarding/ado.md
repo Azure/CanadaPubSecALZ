@@ -29,7 +29,7 @@ An Azure service principal is an identity created for use with applications, hos
 
     * **Scope:**  Tenant Root Group (this is a management group in the Azure environment)
 
-    * **Role:**  [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in Azure RBAC.  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
+    * **Role:**  [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in [Azure RBAC](https://docs.microsoft.com/azure/role-based-access-control/overview).  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
 
 *  **Instructions**:  [Create an Azure service principal with the Azure CLI | Microsoft Docs](https://docs.microsoft.com/cli/azure/create-an-azure-service-principal-azure-cli)
 
@@ -37,7 +37,7 @@ To create the service principal account and role assignment through Azure CLI:
 
 > To execute the Azure CLI command, the user account must be either `User Access Administrator` or `Owner` on Tenant Root Group management group.
 
-> Replace `<Azure Active Directory Tenant Id>` with your tenant id.
+> Replace `<Azure Active Directory Tenant Id>` with your AAD tenant id.
 
 ```bash
 
@@ -95,7 +95,7 @@ variables:
 
 1. Identify the parent management group and obtain its ID. 
 
-    * *Note: By default, the root management group's name is Tenant root group. Its ID is the Azure Active Directory (AAD) tenant ID.*
+    * *Note: ID of default parent management group 'Tenant Root Group' is Azure Active Directory (AAD) Tenant ID (GUID).*
 
 2. Create/edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git (i.e. CanadaESLZ-main.yml).  This file name is automatically inferred based on the Azure DevOps organization name and the branch.
 
@@ -160,7 +160,7 @@ At least one Azure AD Security Group is recommended for role assignment.  Role a
 
 This role assignment is used to grant users access to the logging subscription based on their roles & responsibilities.
 
-### Step 5.2:  Update configuration files in git repository
+### Step 5.2:  Update configuration file(s) in git repository
 
 > **When you are using an existing Log Analytics Workspace in your subscription**, set the configuration parameters of the existing Log Analytics Workspace.  These settings will be used by deployments such as Azure Policy for Log Analytics integration.
 >
@@ -174,14 +174,18 @@ This role assignment is used to grant users access to the logging subscription b
 
 1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
-Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
+* Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
 
 ```yml
     var-logging-subscriptionRoleAssignments: >
         []
 ```
 
-Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
+* Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
+
+* Update with valid contact information for the Azure Service Health Alerts: email and phone number. 
+
+* Set the values for the Azure tags that would be applied to the logging resources. 
 
 **Sample environment YAML (Logging section only)**
 
@@ -293,7 +297,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 ## Step 6:  Configure Azure Policies
 
-1. Pipeline definition for Azure Policies.
+1. Pipeline definition for Azure Policies. Overview of Azure Policy and definitions deployed refer to [readme.md under `/docs/policy`](../../docs/policy/readme.md)
 
     *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
@@ -313,14 +317,28 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 ## Step 7:  Configure Hub Networking
 
-1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
+1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3. 
 
-   Update configuration with the networking section.  There are two options for Hub Networking:
-
-    1. Hub Networking with Azure Firewall
-    2. Hub Networking with Fortinet Firewall (NVA)
+   Update networking section of the configuration file to deploy one of the two options: 
+   
+    1. [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
+    2. [Hub Networking with Fortinet Firewall (NVA)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
 
     Depending on the preference, you may delete/comment the configuration that is not required. For example, when deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls". 
+    
+ *Note:*  **var-hubnetwork-subscriptionRoleAssignments** should include Azure AD security group's object ID responsible for managing Azure networking. If role assignments are not required, you must change the example provided with the following setting:
+
+  ```yml
+    var-hubnetwork-subscriptionRoleAssignments: >
+        []
+  ```
+
+ Include the values for the following as well: 
+   * Valid contact information for the Azure Service Health Alerts: email and phone number
+   * Values for Azure resource tags 
+   * IP ranges for the virtual networks
+   * Enable/Disable Azure DDOS Standard
+
 
     **Sample environment YAML (Hub Networking section only)**
 
