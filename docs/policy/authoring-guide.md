@@ -895,7 +895,7 @@ When there are deployment errors:
 
 #### **Step 1: Remove policy definition**
 
-* Navigate to `policy/custom/definitions/policy` and identify the custom policy definition directory to delete.
+* Navigate to `/policy/custom/definitions/policy` and identify the custom policy definition directory to delete.
 * Identify all custom policy set definitions that reference the policy (they are referenced using the directory name) and remove the references.
 * Delete the custom policy definition directory in `policy/custom/definitions/policy` 
 * Execute `Azure DevOps Policy pipeline` to deploy the updates.
