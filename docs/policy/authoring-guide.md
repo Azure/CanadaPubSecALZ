@@ -914,7 +914,7 @@ When there are deployment errors:
 
 #### Step 1: Remove custom policy set definition
 
-* Navigate to `policy/custom/definitions/policyset` and delete the policy set definition Bicep template and JSON parameter files.
+* Navigate to `/policy/custom/definitions/policyset` and delete the policy set definition Bicep template and JSON parameter files.
 
 #### Step 2: Remove custom policy set assignment
 
