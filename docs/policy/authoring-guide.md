@@ -117,7 +117,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
     *Collect the following information from the **Initiative parameters** tab:*
 
-    * **Parameters** (i.e. `logAnalytics`, `logAnalyticsWorkspaceId`, `listOfResourceTypesToAuditDiagnosticSettings`).  You may see zero, one or many parameters listed.  It is possible that a policy set doesn't have any parameters.
+    * **Parameters** (e.g. `logAnalytics`, `logAnalyticsWorkspaceId`, `listOfResourceTypesToAuditDiagnosticSettings`).  You may see zero, one or many parameters listed.  It is possible that a policy set doesn't have any parameters.
 
 
 #### **Step 2: Create Bicep template & parameters JSON file**
