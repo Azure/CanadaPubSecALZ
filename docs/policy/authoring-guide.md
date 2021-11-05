@@ -334,7 +334,7 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 #### **Step 1: Remove built-in policy set assignment from Azure DevOps Pipeline**
 
-* Edit `.pipelines/policy.yml`
+* Edit `/.pipelines/policy.yml`
 * Navigate to the `BuiltInPolicyJob` Job definition
 * Navigate to the `Assign Policy Set` Step definition
 * Remove the policy set assignment from the `deployTemplates` array parameter
