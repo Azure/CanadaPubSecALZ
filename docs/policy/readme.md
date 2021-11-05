@@ -162,7 +162,7 @@ Parameters can be templated using the syntax `{{PARAMETER_NAME}}`.  Following pa
 
 ## Authoring Guide
 
-See [Azure Policy Authoring Guide](authoring-guide.md) for step by step instructions.
+See [Azure Policy Authoring Guide](authoring-guide.md) for step-by-step instructions.
 
 
 
