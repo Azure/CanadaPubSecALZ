@@ -169,6 +169,8 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
           parameters: {
             // Add any parameters identified earlier into this section
           }
+
+          // The policy assignment enforcement mode. Possible values are Default and DoNotEnforce.
           enforcementMode: 'Default'
         }
         identity: {
@@ -646,6 +648,7 @@ When there are deployment errors:
         parameters: {
           // Add any parameters identified earlier into this section
         }
+        // The policy assignment enforcement mode. Possible values are Default and DoNotEnforce.
         enforcementMode: 'Default'
       }
       identity: {
