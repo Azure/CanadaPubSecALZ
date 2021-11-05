@@ -107,7 +107,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
     *Collect the following information from the **Remediation** tab:*
 
-    * **Permissions** - required when there are auto remediation policies.  You may see zero, one (i.e. `Contributor`) or many comma-separated (i.e. `Log Analytics Contributor, Virtual Machine Contributor, Monitoring Contributor`) roles listed.  Permissions will not be listed when none are required for the policy assignment to function.
+    * **Permissions** - required when there are auto remediation policies.  You may see zero, one (e.g. `Contributor`) or many comma-separated (e.g. `Log Analytics Contributor, Virtual Machine Contributor, Monitoring Contributor`) roles listed.  Permissions will not be listed when none are required for the policy assignment to function.
 
     Once the permissions are identified, click the **Cancel** button to discard the changes.
 
