@@ -423,7 +423,7 @@ Custom policies and policy sets enable an organization to expand their governanc
 
     Describes the policy rule that will be evaluated by Azure Policy.  The rule can have any effect such as Audit, Deny, DeployIfNotExists.
 
-    See [Azure Policy docs for more information on creating custom policies](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure).
+    See [Azure Policy docs for more information on creating custom policies](https://docs.microsoft.com/azure/governance/policy/concepts/definition-structure).
 
     Example:
 
