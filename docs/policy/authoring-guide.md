@@ -923,7 +923,7 @@ When there are deployment errors:
 
 #### Step 3: Remove custom policy set from Azure DevOps Pipeline
 
-  * Edit `.pipelines/policy.yml`
+  * Edit `/.pipelines/policy.yml`
   * Navigate to the `CustomPolicyJob` Job definition
   * Navigate to the `Define Policy Set` Step definition and remove the policy definition file name from the `deployTemplates` array parameter
   * Navigate to the `Assign Policy Set` Step definition and remove the policy assignment file name from the `deployTemplates` array parameter
