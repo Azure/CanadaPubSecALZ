@@ -311,7 +311,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment will be deployed to the `top level management group` (i.e. `pubsec`).
 
-> It takes around 30 minutes for the assignment to be applied to the defined scope. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs.  See [Azure Docs for more information](https://docs.microsoft.com/azure/governance/policy/how-to/get-compliance-data).
+> It takes approximately 30 minutes for the assignment to be applied to the defined scope. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative, and depending on the effects defined by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once evaluation completes, the updated compliance results are available in the portal and to SDKs.  See [Azure Docs for more information](https://docs.microsoft.com/azure/governance/policy/how-to/get-compliance-data).
 
 #### **Step 5: Verify policy set assignment**
 
