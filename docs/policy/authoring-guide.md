@@ -918,7 +918,7 @@ When there are deployment errors:
 
 #### Step 2: Remove custom policy set assignment
 
-* Navigate to `policy/custom/assignments` and delete the policy set assignment Bicep template and JSON parameter files.
+* Navigate to `/policy/custom/assignments` and delete the policy set assignment Bicep template and JSON parameter files.
 
 
 #### Step 3: Remove custom policy set from Azure DevOps Pipeline
