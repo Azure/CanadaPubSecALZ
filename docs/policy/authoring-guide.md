@@ -302,7 +302,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 #### **Step 3: Update Azure DevOps Pipeline**
 
-  * Edit `.pipelines/policy.yml`
+  * Edit `/.pipelines/policy.yml`
   * Navigate to the `BuiltInPolicyJob` Job definition
   * Navigate to the `Assign Policy Set` Step definition
   * Add the policy assignment file name (without extension) to the `deployTemplates` array parameter
