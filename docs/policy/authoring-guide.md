@@ -68,7 +68,7 @@ Custom policy set definition templates are located in [`/policy/custom/definitio
 
 Custom policy set assignment templates are located in [`/policy/custom/assignments`](../../policy/custom/assignments) directory.
 
-| Policy Set | Description | Policy Set definition deployment template | Configuration |
+| Policy Set | Description | Policy set definition deployment template | Configuration |
 | --- | --- | --- | --- |
 | Azure Kubernetes Service | Azure Policy Add-on to Azure Kubernetes Service clusters & Pod Security. | [AKS.bicep](../../policy/custom/definitions/policyset/AKS.bicep) | [AKS.parameters.json](../../policy/custom/definitions/policyset/AKS.parameters.json)
 | Azure Security Center | Configures Azure Security Center, including Azure Defender for subscription and resources. | [EnableAzureDefender.bicep](../../policy/custom/definitions/policyset/EnableAzureDefender.bicep) | [EnableAzureDefender.parameters.json](../../policy/custom/definitions/policyset/EnableAzureDefender.parameters.json)
