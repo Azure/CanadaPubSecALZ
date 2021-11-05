@@ -47,7 +47,7 @@ This reference implementation uses Built-In and Custom Policies to provide guard
 
 ### Built-in policy assignments
 
-Built-in policy set assignment templates are located in [`policy/builtin/assignments/`](../../policy/builtin/assignments) directory.
+Built-in policy set assignment templates are located in [`/policy/builtin/assignments`](../../policy/builtin/assignments) directory.
 
 | Policy Set | Description | Deployment Template | Configuration |
 | --- | --- | --- | --- |
