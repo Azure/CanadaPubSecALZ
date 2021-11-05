@@ -100,7 +100,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
     *Collect the following information:*
 
-      * **Name** (i.e. `Canada Federal PBMM`)
+      * **Name** (e.g. `Canada Federal PBMM`)
       * **Definition ID** (i.e. `/providers/Microsoft.Authorization/policySetDefinitions/4c4a5f27-de81-430b-b4e5-9cbd50595a87`)
 
 3. Click the **Assign** button and **select a scope** for the assignment.  We will not be assigning the policy through Azure Portal, but use this step to identify the permissions required for the Policy Assignment.
