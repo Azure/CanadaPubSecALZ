@@ -50,7 +50,7 @@ This reference implementation uses Built-In and Custom Policies to provide guard
 
 Built-in policy set assignment templates are located in [`/policy/builtin/assignments`](../../policy/builtin/assignments) directory.
 
-| Policy Set | Description | Policy set assignment template | Configuration |
+| Policy Set | Description | Deployment Template | Configuration |
 | --- | --- | --- | --- |
 | [Canada Federal PBMM][pbmmPolicySet] | This initiative includes audit and virtual machine extension deployment policies that address a subset of Canada Federal PBMM controls. | [pbmm.bicep](../../policy/builtin/assignments/pbmm.bicep) | [pbmm.parameters.json](../../policy/builtin/assignments/pbmm.parameters.json) |
 | [NIST SP 800-53 Revision 4][nist80053R4policySet] | This initiative includes policies that address a subset of NIST SP 800-53 Rev. 4 controls. | [nist80053r4.bicep](../../policy/builtin/assignments/nist80053r4.bicep) | [nist80053r4.parameters.json](../../policy/builtin/assignments/nist80053r4.parameters.json) |
@@ -68,7 +68,7 @@ Custom policy set definition templates are located in [`/policy/custom/definitio
 
 Custom policy set assignment templates are located in [`/policy/custom/assignments`](../../policy/custom/assignments) directory.
 
-| Policy Set | Description | Policy set assignment template | Configuration |
+| Policy Set | Description | Deployment Template | Configuration |
 | --- | --- | --- | --- |
 | Azure Kubernetes Service | Azure Policy Add-on to Azure Kubernetes Service clusters & Pod Security. | [aks.bicep](../../policy/custom/assignments/aks.bicep) | [aks.parameters.json](../../policy/custom/assignments/aks.parameters.json)
 | Azure Security Center | Configures Azure Security Center, including Azure Defender for subscription and resources. | [asc.bicep](../../policy/custom/assignments/asc.bicep) | [asc.parameters.json](../../policy/custom/assignments/asc.parameters.json)
