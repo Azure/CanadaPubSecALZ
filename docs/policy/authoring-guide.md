@@ -599,7 +599,7 @@ When there are deployment errors:
 
 #### **Step 2: Create policy set assignment template**
 
-1. Navigate to `policy/custom/assignments` and create two files.  Replace `POLICY_SET_ASSIGNMENT` with the name of your assignment such as `loganalytics`.
+1. Navigate to `/policy/custom/assignments` and create two files.  Replace `POLICY_SET_ASSIGNMENT` with the name of your assignment such as `loganalytics`.
 
    * POLICY_SET_ASSIGNMENT.bicep (i.e. `loganalytics.bicep`) - this file defines the policy set assignment deployment
    * POLICY_SET_ASSIGNMENT.parameters.json (i.e. `loganalytics.parameters.json`) - this file defines the parameters used to deploy the policy set assignment
