@@ -104,7 +104,7 @@ Azure DevOps Pipeline ([.pipelines/policy.yml](../../.pipelines/policy.yml)) is 
         workingDir: $(System.DefaultWorkingDirectory)/policy/custom/definitions/policyset
 ```
 
-| Policy Set | Description | Deployment Template | Configuration |
+| Policy Set | Description | Policy set assignment template | Configuration |
 | --- | --- | --- | --- |
 | Azure Kubernetes Service | Azure Policy Add-on to Azure Kubernetes Service clusters & Pod Security. | [aks.bicep](../../policy/custom/assignments/aks.bicep) | [aks.parameters.json](../../policy/custom/assignments/aks.parameters.json)
 | Azure Security Center | Configures Azure Security Center, including Azure Defender for subscription and resources. | [asc.bicep](../../policy/custom/assignments/asc.bicep) | [asc.parameters.json](../../policy/custom/assignments/asc.parameters.json)
@@ -135,7 +135,7 @@ Azure DevOps Pipeline ([.pipelines/policy.yml](../../.pipelines/policy.yml)) is 
         workingDir: $(System.DefaultWorkingDirectory)/policy/custom/assignments
 ```
 
-| Policy Set | Description | Deployment Template | Configuration |
+| Policy Set | Description | Policy set assignment template | Configuration |
 | --- | --- | --- | --- |
 | Azure Kubernetes Service | Azure Policy Add-on to Azure Kubernetes Service clusters & Pod Security. | [aks.bicep](../../policy/custom/assignments/aks.bicep) | [aks.parameters.json](../../policy/custom/assignments/aks.parameters.json)
 | Azure Security Center | Configures Azure Security Center, including Azure Defender for subscription and resources. | [asc.bicep](../../policy/custom/assignments/asc.bicep) | [asc.parameters.json](../../policy/custom/assignments/asc.parameters.json)
