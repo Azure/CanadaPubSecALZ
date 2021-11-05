@@ -95,7 +95,7 @@ variables:
 
 1. Identify the parent management group and obtain its ID. 
 
-    * *Note: By default, the root management group's name is Tenant root group. And its ID is the Azure Active Directory (AAD) tenant ID.*
+    * *Note: ID of default parent management group 'Tenant Root Group' is Azure Active Directory (AAD) Tenant ID (GUID).*
 
 2. Create/edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git (i.e. CanadaESLZ-main.yml).  This file name is automatically inferred based on the Azure DevOps organization name and the branch.
 
