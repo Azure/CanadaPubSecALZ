@@ -65,7 +65,7 @@ Built-in policy set assignment templates are located in [`/policy/builtin/assign
 
 Custom policy set definition templates are located in [`/policy/custom/definitions/policyset`](../../policy/custom/definitions/policyset) directory.
 
-Custom policy set assignment templates are located in [`policy/custom/assignments`](../../policy/custom/assignments) directory.
+Custom policy set assignment templates are located in [`/policy/custom/assignments`](../../policy/custom/assignments) directory.
 
 | Policy Set | Description | Deployment Template | Configuration |
 | --- | --- | --- | --- |
