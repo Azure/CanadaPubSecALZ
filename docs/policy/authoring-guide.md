@@ -316,7 +316,7 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 #### **Step 5: Verify policy set assignment**
 
   * You can navigate to [Azure Policy Compliance][portalAzurePolicyCompliance] to verify in Azure Portal.
-  * When there are deployment errors:
+  * If there are deployment errors:
   
       * Navigate to [Management Groups][portalManagementGroups] in Azure Portal
       * Select the top level management group (i.e. `pubsec`)
