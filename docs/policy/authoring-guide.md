@@ -800,7 +800,7 @@ When there are deployment errors:
 
 #### **Step 3: Configure Azure DevOps Pipeline**
 
-  * Edit `.pipelines/policy.yml`
+  * Edit `/.pipelines/policy.yml`
   * Navigate to the `CustomPolicyJob` Job definition
   * Navigate to the `Define Policy Set` Step definition and add the policy definition file name (without extension) to the `deployTemplates` array parameter
   * Navigate to the `Assign Policy Set` Step definition and add the policy assignment file name (without extension) to the `deployTemplates` array parameter
