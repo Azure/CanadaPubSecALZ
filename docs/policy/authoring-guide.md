@@ -92,6 +92,8 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 * [Step 4: Deploy built-in policy set assignment](#step-4-deploy-built-in-policy-set-assignment)
 * [Step 5: Verify policy set assignment](#step-5-verify-policy-set-assignment)
 
+> We will not be assigning the policy through Azure Portal, but use these steps to identify the necessary info, such as name, definition ID, permissions, and parameters, which are required for the Policy Assignment.
+
 #### **Step 1: Collect information**
 
 1. Navigate to [Azure Portal -> Azure Policy -> Definitions][portalAzurePolicyDefinition]
@@ -947,7 +949,7 @@ When there are deployment errors:
 
 ### Auto generate custom Diagnostic Settings policies for PaaS services
 
-Before auto generating a custom Diagnostic Settings policies, we recommend searching for a suitable built-in policy through [Azure Policy Definitions][portalAzurePolicyDefinition].
+Before auto generating a custom Diagnostic Settings policy, we recommend searching for a suitable built-in policy through [Azure Policy Definitions][portalAzurePolicyDefinition].
 
 The Diagnostic Settings policies in this reference implementation were created using scripts from GitHub ([JimGBritt/AzurePolicy](https://github.com/JimGBritt/AzurePolicy/tree/master/AzureMonitor/Scripts)).  The steps are:
 
