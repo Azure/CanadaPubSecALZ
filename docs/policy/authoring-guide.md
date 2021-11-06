@@ -61,7 +61,6 @@ Built-in policy set assignment templates are located in [`/policy/builtin/assign
 | [HIPAA / HITRUST 9.2][hipaaHitrustPolicySet] | This initiative includes audit and virtual machine extension deployment policies that address a subset of HITRUST/HIPAA controls. | [hitrust-hipaa.bicep](../../policy/builtin/assignments/hitrust-hipaa.bicep) | [hitrust-hipaa.parameters.json](../../policy/builtin/assignments/hitrust-hipaa.parameters.json)
 | Location | Restrict deployments to Canadian regions. | [location.bicep](../../policy/builtin/assignments/location.bicep) | [location.parameters.json](../../policy/builtin/assignments/location.parameters.json) |
 
-
 ### Custom policy set definitions and assignments
 
 Custom policy set definition templates are located in [`/policy/custom/definitions/policyset`](../../policy/custom/definitions/policyset) directory.
@@ -93,6 +92,8 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 * [Step 4: Deploy built-in policy set assignment](#step-4-deploy-built-in-policy-set-assignment)
 * [Step 5: Verify policy set assignment](#step-5-verify-policy-set-assignment)
 
+> We will not be assigning the policy through Azure Portal, but use these steps to identify the necessary info, such as name, definition ID, permissions, and parameters, which are required for the Policy Assignment.
+
 #### **Step 1: Collect information**
 
 1. Navigate to [Azure Portal -> Azure Policy -> Definitions][portalAzurePolicyDefinition]
@@ -118,7 +119,6 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
     *Collect the following information from the **Initiative parameters** tab:*
 
     * **Parameters** (e.g. `logAnalytics`, `logAnalyticsWorkspaceId`, `listOfResourceTypesToAuditDiagnosticSettings`).  You may see zero, one or many parameters listed.  It is possible that a policy set doesn't have any parameters.
-
 
 #### **Step 2: Create Bicep template & parameters JSON file**
 
@@ -195,6 +195,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
     ```
 
     **Example: PBMM Policy Set Assignment**
+
     ```bicep
       targetScope = 'managementGroup'
 
@@ -304,10 +305,10 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 #### **Step 3: Update Azure DevOps Pipeline**
 
-  * Edit `/.pipelines/policy.yml`
-  * Navigate to the `BuiltInPolicyJob` Job definition
-  * Navigate to the `Assign Policy Set` Step definition
-  * Add the policy assignment file name (without extension) to the `deployTemplates` array parameter
+* Edit `/.pipelines/policy.yml`
+* Navigate to the `BuiltInPolicyJob` Job definition
+* Navigate to the `Assign Policy Set` Step definition
+* Add the policy assignment file name (without extension) to the `deployTemplates` array parameter
 
 #### **Step 4: Deploy built-in policy set assignment**
 
@@ -317,13 +318,13 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 #### **Step 5: Verify policy set assignment**
 
-  * You can navigate to [Azure Policy Compliance][portalAzurePolicyCompliance] to verify in Azure Portal.
-  * If there are deployment errors:
-  
-      * Navigate to [Management Groups][portalManagementGroups] in Azure Portal
-      * Select the top level management group (i.e. `pubsec`)
-      * Select Deployments
-      * Review the deployment errors
+* You can navigate to [Azure Policy Compliance][portalAzurePolicyCompliance] to verify in Azure Portal.
+* If there are deployment errors:
+
+  * Navigate to [Management Groups][portalManagementGroups] in Azure Portal
+  * Select the top level management group (i.e. `pubsec`)
+  * Select Deployments
+  * Review the deployment errors
 
 ---
 
@@ -385,7 +386,7 @@ Custom policies and policy sets enable an organization to expand their governanc
 
     Information from this file is used as part of deploying Azure Policy definition.
 
-    Example: 
+    **Example**
 
     ```yml
     {
@@ -407,7 +408,8 @@ Custom policies and policy sets enable an organization to expand their governanc
 
     See [Azure Parameter Reference](https://docs.microsoft.com/azure/governance/policy/concepts/definition-structure#parameters) for more information.
 
-    Example: 
+    **Example**
+
     ```yml
     {
       "listOfResourceTypes": {
@@ -427,7 +429,7 @@ Custom policies and policy sets enable an organization to expand their governanc
 
     See [Azure Policy docs for more information on creating custom policies](https://docs.microsoft.com/azure/governance/policy/concepts/definition-structure).
 
-    Example:
+    **Example**
 
     ```yml
     {
@@ -464,10 +466,10 @@ Navigate to [Azure Policy Definitions][portalAzurePolicyDefinition] to verify th
 
 When there are deployment errors:
 
-  * Navigate to [Management Groups][portalManagementGroups] in Azure Portal
-  * Select the top level management group (i.e. `pubsec`)
-  * Select Deployments
-  * Review the deployment errors
+* Navigate to [Management Groups][portalManagementGroups] in Azure Portal
+* Select the top level management group (i.e. `pubsec`)
+* Select Deployments
+* Review the deployment errors
 
 ---
 
@@ -563,7 +565,7 @@ When there are deployment errors:
 
 3. Edit the JSON parameters file to define the input parameters for the Bicep template.  This JSON parameters file is used by Azure Resource Manager (ARM) for runtime inputs.
 
-    You can use any of the [templated parameters](readme.md#templated-parameters) to set values based on environment configuration or hard code them as needed. 
+    You can use any of the [templated parameters](readme.md#templated-parameters) to set values based on environment configuration or hard code them as needed.
 
     **Sample Template**
 
@@ -674,7 +676,7 @@ When there are deployment errors:
 
     **Example: Log Analytics Policy Set Assignment**
 
-    ```
+    ```bicep
       targetScope = 'managementGroup'
 
       @description('Management Group scope for the policy definition.')
@@ -803,10 +805,10 @@ When there are deployment errors:
 
 #### **Step 3: Configure Azure DevOps Pipeline**
 
-  * Edit `/.pipelines/policy.yml`
-  * Navigate to the `CustomPolicyJob` Job definition
-  * Navigate to the `Define Policy Set` Step definition and add the policy definition file name (without extension) to the `deployTemplates` array parameter
-  * Navigate to the `Assign Policy Set` Step definition and add the policy assignment file name (without extension) to the `deployTemplates` array parameter
+* Edit `/.pipelines/policy.yml`
+* Navigate to the `CustomPolicyJob` Job definition
+* Navigate to the `Define Policy Set` Step definition and add the policy definition file name (without extension) to the `deployTemplates` array parameter
+* Navigate to the `Assign Policy Set` Step definition and add the policy assignment file name (without extension) to the `deployTemplates` array parameter
 
 #### **Step 4: Deploy definition & assignment**
 
@@ -814,19 +816,18 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set definition and
 
 > It takes around 30 minutes for the assignment to be applied to the defined scope. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs. See [Azure Docs for more information](https://docs.microsoft.com/azure/governance/policy/how-to/get-compliance-data).
 
-
 #### **Step 5: Verify policy set definition and assignment deployment**
 
 Navigate to [Azure Policy Definitions][portalAzurePolicyDefinition] and [Azure Policy Assignments][portalAzurePolicyAssignment] to verify that the policy set has been created.
 
 When there are deployment errors:
 
-  * Navigate to [Management Groups][portalManagementGroups] in Azure Portal
-  * Select the top level management group (i.e. `pubsec`)
-  * Select Deployments
-  * Review the deployment errors
+* Navigate to [Management Groups][portalManagementGroups] in Azure Portal
+* Select the top level management group (i.e. `pubsec`)
+* Select Deployments
+* Review the deployment errors
 
---- 
+---
 
 ### **Update custom policy definition**
 
@@ -849,10 +850,10 @@ Navigate to [Azure Policy Definitions][portalAzurePolicyDefinition] to verify th
 
 When there are deployment errors:
 
-  * Navigate to [Management Groups][portalManagementGroups] in Azure Portal
-  * Select the top level management group (i.e. `pubsec`)
-  * Select Deployments
-  * Review the deployment errors
+* Navigate to [Management Groups][portalManagementGroups] in Azure Portal
+* Select the top level management group (i.e. `pubsec`)
+* Select Deployments
+* Review the deployment errors
 
 ---
 
@@ -862,7 +863,6 @@ When there are deployment errors:
 
 * [Step 1: Update policy set definition & assignment](#step-1-update-policy-set-definition--assignment)
 * [Step 2: Verify policy set definition & assignment after update](#step-2-verify-policy-set-definition--assignment-after-update)
-
 
 #### **Step 1: Update policy set definition & assignment**
 
@@ -884,10 +884,10 @@ Navigate to [Azure Policy Definitions][portalAzurePolicyDefinition] and [Azure P
 
 When there are deployment errors:
 
-  * Navigate to [Management Groups][portalManagementGroups] in Azure Portal
-  * Select the top level management group (i.e. `pubsec`)
-  * Select Deployments
-  * Review the deployment errors
+* Navigate to [Management Groups][portalManagementGroups] in Azure Portal
+* Select the top level management group (i.e. `pubsec`)
+* Select Deployments
+* Review the deployment errors
 
 ---
 
@@ -911,10 +911,11 @@ When there are deployment errors:
 ### Remove custom policy set definition and assignment
 
 **Steps**
-  * [Step 1: Remove custom policy set definition](#step-1-remove-custom-policy-set-definition)
-  * [Step 2: Remove custom policy set assignment](#step-2-remove-custom-policy-set-assignment)
-  * [Step 3: Remove custom policy set from Azure DevOps Pipeline](#step-3-remove-custom-policy-set-from-azure-devops-pipeline)
-  * [Step 4: Remove custom policy set assignment's IAM assignments](#step-4-remove-custom-policy-set-assignments-iam-assignments)
+
+* [Step 1: Remove custom policy set definition](#step-1-remove-custom-policy-set-definition)
+* [Step 2: Remove custom policy set assignment](#step-2-remove-custom-policy-set-assignment)
+* [Step 3: Remove custom policy set from Azure DevOps Pipeline](#step-3-remove-custom-policy-set-from-azure-devops-pipeline)
+* [Step 4: Remove custom policy set assignment's IAM assignments](#step-4-remove-custom-policy-set-assignments-iam-assignments)
 
 #### Step 1: Remove custom policy set definition
 
@@ -926,10 +927,10 @@ When there are deployment errors:
 
 #### Step 3: Remove custom policy set from Azure DevOps Pipeline
 
-  * Edit `/.pipelines/policy.yml`
-  * Navigate to the `CustomPolicyJob` Job definition
-  * Navigate to the `Define Policy Set` Step definition and remove the policy definition file name from the `deployTemplates` array parameter
-  * Navigate to the `Assign Policy Set` Step definition and remove the policy assignment file name from the `deployTemplates` array parameter
+* Edit `/.pipelines/policy.yml`
+* Navigate to the `CustomPolicyJob` Job definition
+* Navigate to the `Define Policy Set` Step definition and remove the policy definition file name from the `deployTemplates` array parameter
+* Navigate to the `Assign Policy Set` Step definition and remove the policy assignment file name from the `deployTemplates` array parameter
 
 > Automation does not remove an existing policy set assignment.  Removing the policy set assignment from the Azure DevOps pipeline ensures that it's no longer created.  Any existing policy set assignments must be deleted manually.
 
@@ -948,7 +949,7 @@ When there are deployment errors:
 
 ### Auto generate custom Diagnostic Settings policies for PaaS services
 
-Before auto generating a custom Diagnostic Settings policies, we recommend searching for a suitable built-in policy through [Azure Policy Definitions][portalAzurePolicyDefinition].
+Before auto generating a custom Diagnostic Settings policy, we recommend searching for a suitable built-in policy through [Azure Policy Definitions][portalAzurePolicyDefinition].
 
 The Diagnostic Settings policies in this reference implementation were created using scripts from GitHub ([JimGBritt/AzurePolicy](https://github.com/JimGBritt/AzurePolicy/tree/master/AzureMonitor/Scripts)).  The steps are:
 
@@ -957,8 +958,7 @@ The Diagnostic Settings policies in this reference implementation were created u
 3. Use the [instructions for creating new custom policy definition](#new-custom-policy-definition) to copy the generated content.
     * Copy the contents into `azurepolicy.parameters.json` and `azurepolicy.rules.json`.
     * Create `azurepolicy.config.json` with policy name and mode.
-5. Delete the instance created in Step 1.
-
+4. Delete the instance created in Step 1.
 
 [nist80053r4Policyset]: https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r4
 [nist80053r5Policyset]: https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r5
