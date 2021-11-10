@@ -27,6 +27,13 @@ var assignmentName = 'Custom - Central DNS for Private Endpoints'
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
 var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${policyId}'
 
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../../../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../../../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.policy}'
+}
+
 resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
   name: 'dns-pe-${uniqueString(policyAssignmentManagementGroupId)}'
   properties: {

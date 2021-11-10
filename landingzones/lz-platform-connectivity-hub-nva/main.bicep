@@ -425,6 +425,13 @@ param fwUsername string
 @secure()
 param fwPassword string
 
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-usage-attribution-subscription.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.networking.nvaFortinet}'
+}
+
 /*
   Scaffold the subscription which includes:
     * Azure Security Center - Enable Azure Defender (all available options)
