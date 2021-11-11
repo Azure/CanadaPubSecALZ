@@ -17,6 +17,13 @@ param topLevelManagementGroupName string
 @description('Parent Management Group used to create all management groups, including Top Level Management Group.')
 param parentManagementGroupId string
 
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.managementGroups}'
+}
+
 // Level 1
 resource topLevel 'Microsoft.Management/managementGroups@2020-05-01' = {
   name: topLevelManagementGroupName

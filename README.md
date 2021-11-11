@@ -51,7 +51,17 @@ See [Contributing Reference Implementation](CONTRIBUTING.md) for information on 
 
 ## Telemetry
 
-This reference implementation does not collect any telemetry.  However, Project Bicep [collects telemetry in some scenarios](https://github.com/Azure/bicep/blob/main/README.md#telemetry) as part of improving the product.
+**November 11, 2021 onward**
+
+> Microsoft can identify the deployments of the Azure Resource Manager and Bicep templates with the deployed Azure resources. Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business.  The telemetry is collected through [customer usage attribution](https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution). The data is collected and governed by Microsoft's privacy policies, located at [https://www.microsoft.com/trustcenter](https://www.microsoft.com/trustcenter).
+>
+> If you don’t wish to send usage data to Microsoft, you can set the `customerUsageAttribution.enabled` setting to `false` in `config/telemetry.json`.  Learn more in our [onboarding guide](docs/onboarding/ado.md#telemetry).
+> 
+> Project Bicep [collects telemetry in some scenarios](https://github.com/Azure/bicep/blob/main/README.md#telemetry) as part of improving the product.
+
+**Pre-November 11, 2021**
+
+> This reference implementation does not collect any telemetry.  Project Bicep [collects telemetry in some scenarios](https://github.com/Azure/bicep/blob/main/README.md#telemetry) as part of improving the product.
 
 
 ## License

@@ -39,6 +39,13 @@ param resourceGroupName string
 @description('Azure Firewall Policy Name')
 param policyName string
 
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-usage-attribution-subscription.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.networking.azureFirewall}'
+}
+
 resource rgFirewallPolicy 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroupName
   location: deployment().location
