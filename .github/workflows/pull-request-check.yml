@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - "**.bicep"
+      - "**.json"
 env:
   SCHEMA_FOLDER: schemas/latest/landingzones
   SUBSCRIPTIONS_PATH_FROM_ROOT: config/subscriptions
