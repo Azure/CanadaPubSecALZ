@@ -41,7 +41,7 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 
 Reference implementation uses parameter files with `object` parameters to consolidate parameters based on their context.  The schemas types are:
 
-* latest
+* Schema (version: `latest`)
 
   * Common
     * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)

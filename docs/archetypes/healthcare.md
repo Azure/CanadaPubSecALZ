@@ -229,7 +229,7 @@ The scripts are:
 
 Reference implementation uses parameter files with `object` parameters to consolidate parameters based on their context.  The schemas types are:
 
-* latest
+* Schema (version: `latest`)
 
     * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-healthcare.json)
 

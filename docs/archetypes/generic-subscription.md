@@ -58,7 +58,7 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 
 Reference implementation uses parameter files with `object` parameters to consolidate parameters based on their context.  The schemas types are:
 
-* latest
+* Schema (version: `latest`)
 
     * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-generic-subscription.json)
 
