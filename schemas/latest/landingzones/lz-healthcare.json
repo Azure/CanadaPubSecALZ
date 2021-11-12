@@ -1,0 +1,274 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/HealthcareArchetypeDefinition",
+  "definitions": {
+    "HealthcareArchetypeDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": [
+            "https"
+          ],
+          "qt-uri-extensions": [
+            ".json"
+          ]
+        },
+        "contentVersion": {
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/definitions/Parameters"
+        }
+      },
+      "required": [
+        "$schema",
+        "contentVersion",
+        "parameters"
+      ],
+      "title": "HealthcareArchetypeDefinition"
+    },
+    "Parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "serviceHealthAlerts": {
+          "$ref": "types/serviceHealthAlerts.json#/definitions/ServiceHealthAlerts"
+        },
+        "securityCenter": {
+          "$ref": "types/securityCenter.json#/definitions/SecurityCenter"
+        },
+        "subscriptionRoleAssignments": {
+          "$ref": "types/subscriptionRoleAssignments.json#/definitions/SubscriptionRoleAssignments"
+        },
+        "subscriptionBudget": {
+          "$ref": "types/subscriptionBudget.json#/definitions/SubscriptionBudget"
+        },
+        "subscriptionTags": {
+          "$ref": "types/subscriptionTags.json#/definitions/SubscriptionTags"
+        },
+        "resourceTags": {
+          "$ref": "types/resourceTags.json#/definitions/ResourceTags"
+        },
+        "useCMK": {
+          "$ref": "#/definitions/UseCMK"
+        },
+        "resourceGroups": {
+          "$ref": "#/definitions/ResourceGroups"
+        },
+        "automation": {
+          "$ref": "types/automation.json#/definitions/Automation"
+        },
+        "keyVault": {
+          "$ref": "types/keyVault.json#/definitions/KeyVault"
+        },
+        "sqldb": {
+          "$ref": "types/sqldb.json#/definitions/SQLDB"
+        },
+        "synapse": {
+          "$ref": "types/synapse.json#/definitions/Synapse"
+        },
+        "hubNetwork": {
+          "$ref": "types/hubNetwork.json#/definitions/HubNetworkWithPrivateDNS"
+        },
+        "network": {
+          "$ref": "#/definitions/Network"
+        }
+      },
+      "required": [
+        "resourceTags",
+        "securityCenter",
+        "serviceHealthAlerts",
+        "subscriptionBudget",
+        "subscriptionRoleAssignments",
+        "subscriptionTags",
+        "useCMK",
+        "resourceGroups",
+        "automation",
+        "keyVault",
+        "sqldb",
+        "hubNetwork"
+      ],
+      "title": "Parameters"
+    },
+    "UseCMK": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "UseCMK"
+    },
+    "ResourceGroups": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/ResourceGroupsValue"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "ResourceGroups"
+    },
+    "ResourceGroupsValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "automation": {
+          "type": "string"
+        },
+        "compute": {
+          "type": "string"
+        },
+        "monitor": {
+          "type": "string"
+        },
+        "networking": {
+          "type": "string"
+        },
+        "networkWatcher": {
+          "type": "string"
+        },
+        "security": {
+          "type": "string"
+        },
+        "storage": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "automation",
+        "compute",
+        "monitor",
+        "networkWatcher",
+        "networking",
+        "security",
+        "storage"
+      ],
+      "title": "ResourceGroupsValue"
+    },
+    "Network": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/NetworkValue"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "Network"
+    },
+    "NetworkValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "peerToHubVirtualNetwork": {
+          "type": "boolean"
+        },
+        "useRemoteGateway": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "dnsServers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "addressPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subnets": {
+          "$ref": "#/definitions/Subnets"
+        }
+      },
+      "required": [
+        "addressPrefixes",
+        "dnsServers",
+        "name",
+        "peerToHubVirtualNetwork",
+        "subnets",
+        "useRemoteGateway"
+      ],
+      "title": "NetworkValue"
+    },
+    "Subnets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "oz": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "paz": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "rz": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "hrz": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "databricksPublic": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "databricksPrivate": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "privateEndpoints": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "web": {
+          "$ref": "#/definitions/Subnet"
+        }
+      },
+      "required": [
+        "oz",
+        "paz",
+        "rz",
+        "hrz",
+        "databricksPublic",
+        "databricksPrivate",
+        "privateEndpoints",
+        "web"
+      ],
+      "title": "Subnets"
+    },
+    "Subnet": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "comments": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "addressPrefix": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "addressPrefix",
+        "comments",
+        "name"
+      ],
+      "title": "subnet"
+    }
+  }
+}

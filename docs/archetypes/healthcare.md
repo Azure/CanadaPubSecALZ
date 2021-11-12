@@ -229,23 +229,23 @@ The scripts are:
 
 Reference implementation uses parameter files with `object` parameters to consolidate parameters based on their context.  The schemas types are:
 
-* v0.1.0
+* Schema (version: `latest`)
 
-    * [Spoke deployment parameters definition](../../schemas/v0.1.0/landingzones/lz-healthcare.json)
+    * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-healthcare.json)
 
   * Common types
-    * [Service Health Alerts](../../schemas/v0.1.0/landingzones/types/serviceHealthAlerts.json)
-    * [Azure Security Center](../../schemas/v0.1.0/landingzones/types/securityCenter.json)
-    * [Subscription Role Assignments](../../schemas/v0.1.0/landingzones/types/subscriptionRoleAssignments.json)
-    * [Subscription Budget](../../schemas/v0.1.0/landingzones/types/subscriptionBudget.json)
-    * [Subscription Tags](../../schemas/v0.1.0/landingzones/types/subscriptionTags.json)
-    * [Resource Tags](../../schemas/v0.1.0/landingzones/types/resourceTags.json)
+    * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
+    * [Azure Security Center](../../schemas/latest/landingzones/types/securityCenter.json)
+    * [Subscription Role Assignments](../../schemas/latest/landingzones/types/subscriptionRoleAssignments.json)
+    * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
+    * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
+    * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
   * Spoke types
-    * [Automation](../../schemas/v0.1.0/landingzones/types/automation.json)
-    * [Hub Network](../../schemas/v0.1.0/landingzones/types/hubNetwork.json)
-    * [Azure Key Vault](../../schemas/v0.1.0/landingzones/types/keyVault.json)
-    * [Azure SQL Database](../../schemas/v0.1.0/landingzones/types/sqldb.json)
-    * [Azure Synapse Analytics](../../schemas/v0.1.0/landingzones/types/synapse.json)
+    * [Automation](../../schemas/latest/landingzones/types/automation.json)
+    * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
+    * [Azure Key Vault](../../schemas/latest/landingzones/types/keyVault.json)
+    * [Azure SQL Database](../../schemas/latest/landingzones/types/sqldb.json)
+    * [Azure Synapse Analytics](../../schemas/latest/landingzones/types/synapse.json)
 
 ## Example Deployment Parameters
 
