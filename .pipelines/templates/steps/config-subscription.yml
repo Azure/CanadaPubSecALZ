@@ -26,7 +26,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $schemaFile="$(Build.SourcesDirectory)/schemas/v0.1.0/landingzones/lz-${{ parameters.subscriptionType}}.json"
+      $schemaFile="$(Build.SourcesDirectory)/schemas/latest/landingzones/lz-${{ parameters.subscriptionType}}.json"
       $parameterFile="${{ parameters.workingDir }}/${{ parameters.filename }}"
 
       Write-Host "Parameters File: ${parameterFile}"

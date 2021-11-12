@@ -8,7 +8,7 @@ on:
     paths:
       - "**.bicep"
 env:
-  SCHEMA_FOLDER: schemas/v0.1.0/landingzones
+  SCHEMA_FOLDER: schemas/latest/landingzones
   SUBSCRIPTIONS_PATH_FROM_ROOT: config/subscriptions
 
 jobs:
