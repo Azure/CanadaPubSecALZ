@@ -133,7 +133,30 @@ param aks object
 // "sqldb": {
 //   "value": {
 //     "enabled": true,
-//     "username": "azadmin"
+//     "sqlAuthenticationUsername": "azadmin"
+//   }
+// }
+
+// example 2
+// "sqldb":{
+//   "value":{
+//     "enabled":true,
+//     "aadAuthenticationOnly":true,
+//     "aadLoginName":"John Smith",
+//     "aadLoginObjectID":"88888-888888-888888-888888",
+//     "aadLoginType":"User"
+//   }
+// }
+
+// example 3
+// "sqldb":{
+//   "value":{
+//     "enabled":true,
+//     "aadAuthenticationOnly":false,
+//     "sqlAuthenticationUsername": "azadmin",
+//     "aadLoginName":"John Smith",
+//     "aadLoginObjectID":"88888-888888-888888-888888",
+//     "aadLoginType":"User"
 //   }
 // }
 
@@ -141,7 +164,27 @@ param aks object
 // -----------------------------
 // {
 //   enabled: true
-//   username: 'azadmin'
+//   aadAuthenticationOnly: false 
+//   sqlAuthenticationUsername: 'azadmin'
+// }
+
+// Example (Bicep) 2
+// {
+//   enabled: true
+//   aadAuthenticationOnly: true 
+//   aadLoginName:'John Smith',
+//   aadLoginObjectID:'88888-888888-888888-888888',
+//   aadLoginType:'User'
+// }
+
+// Example (Bicep) 3
+// {
+//   enabled: true
+//   aadAuthenticationOnly: false
+//   sqlAuthenticationUsername: 'azadmin' 
+//   aadLoginName:'John Smith',
+//   aadLoginObjectID:'88888-888888-888888-888888',
+//   aadLoginType:'User'
 // }
 @description('SQL Database configuration.  Includes enabled flag and username.')
 param sqldb object
@@ -336,14 +379,14 @@ param hubNetwork object
 @description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks) ')
 param network object
 
-var sqldbPassword = sqldb.enabled ? '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldb.username))}' : ''
+var sqldbPassword = sqldb.enabled && !sqldb.aadAuthenticationOnly  ? '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldb.sqlAuthenticationUsername))}' : ''
 var sqlmiPassword = sqlmi.enabled ? '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqlmi.username))}' : ''
 
 var databricksName = 'databricks'
 var databricksEgressLbName = 'egressLb'
 var datalakeStorageName = 'datalake${uniqueString(rgStorage.id)}'
-var amlMetaStorageName = 'amlmeta${uniqueString(rgCompute.id)}'
-var akvName = 'akv${uniqueString(rgSecurity.id)}'
+var amlMetaStorageName = 'amlmeta${uniqueString(rgSecurity.id)}'
+var akvName = 'akv${uniqueString(rgCompute.id)}'
 var sqlServerName = 'sqlserver${uniqueString(rgStorage.id)}'
 var adfName = 'adf${uniqueString(rgCompute.id)}'
 var aksName = 'aks${uniqueString(rgCompute.id)}'
@@ -549,8 +592,12 @@ module sqlDb '../../azresources/data/sqldb/main.bicep' = if (sqldb.enabled) {
     sqlServerName: sqlServerName
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.sqlDBPrivateDnsZoneId
-    sqldbUsername: sqldb.username
-    sqldbPassword: sqldbPassword
+    aadAuthenticationOnly:sqldb.aadAuthenticationOnly
+    aadLoginName: contains(sqldb,'aadLoginName') ? sqldb.aadLoginName : ''
+    aadLoginObjectID: contains(sqldb,'aadLoginObjectID')? sqldb.aadLoginObjectID : ''
+    aadLoginType: contains(sqldb,'aadLoginType') ? sqldb.aadLoginType : 'Group'
+    sqlAuthenticationUsername: contains(sqldb,'sqlAuthenticationUsername')? sqldb.sqlAuthenticationUsername : ''
+    sqlAuthenticationPassword: sqldbPassword
     sqlVulnerabilityLoggingStorageAccountName: storageLogging.outputs.storageName
     sqlVulnerabilityLoggingStoragePath: storageLogging.outputs.storagePath
     sqlVulnerabilitySecurityContactEmail: securityContactEmail
@@ -721,7 +768,7 @@ module machineLearning '../../azresources/analytics/aml/main.bicep' = {
 }
 
 // Adding secrets to key vault
-module akvSqlDbUsername '../../azresources/security/key-vault-secret.bicep' = if (sqldb.enabled) {
+module akvSqlDbUsername '../../azresources/security/key-vault-secret.bicep' = if (sqldb.enabled && sqldb.aadAuthenticationOnly==false) {
   dependsOn: [
     akv
   ]
@@ -730,12 +777,12 @@ module akvSqlDbUsername '../../azresources/security/key-vault-secret.bicep' = if
   params: {
     akvName: akvName
     secretName: 'sqldbUsername'
-    secretValue: sqldb.username
+    secretValue: sqldb.sqlAuthenticationUsername
     secretExpiryInDays: keyVault.secretExpiryInDays
   }
 }
 
-module akvSqlDbPassword '../../azresources/security/key-vault-secret.bicep' = if (sqldb.enabled) {
+module akvSqlDbPassword '../../azresources/security/key-vault-secret.bicep' = if (sqldb.enabled && sqldb.aadAuthenticationOnly==false) {
   dependsOn: [
     akv
   ]
@@ -749,7 +796,7 @@ module akvSqlDbPassword '../../azresources/security/key-vault-secret.bicep' = if
   }
 }
 
-module akvSqlDbConnection '../../azresources/security/key-vault-secret.bicep' = if (sqldb.enabled) {
+module akvSqlDbConnection '../../azresources/security/key-vault-secret.bicep' = if (sqldb.enabled && sqldb.aadAuthenticationOnly==false) {
   dependsOn: [
     akv
   ]
@@ -758,7 +805,7 @@ module akvSqlDbConnection '../../azresources/security/key-vault-secret.bicep' = 
   params: {
     akvName: akvName
     secretName: 'SqlDbConnectionString'
-    secretValue: 'Server=tcp:${sqldb.enabled ? sqlDb.outputs.sqlDbFqdn : ''},1433;Initial Catalog=${sqlServerName};Persist Security Info=False;User ID=${sqldb.username};Password=${sqldbPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+    secretValue: 'Server=tcp:${sqldb.enabled ? sqlDb.outputs.sqlDbFqdn : ''},1433;Initial Catalog=${sqlServerName};Persist Security Info=False;User ID=${sqldb.sqlAuthenticationUsername};Password=${sqldbPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
     secretExpiryInDays: keyVault.secretExpiryInDays
   }
 }

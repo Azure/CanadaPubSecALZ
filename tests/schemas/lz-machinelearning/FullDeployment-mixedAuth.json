@@ -5,34 +5,13 @@
     "serviceHealthAlerts": {
       "value": {
         "resourceGroupName": "pubsec-service-health",
-        "incidentTypes": [
-          "Incident",
-          "Security"
-        ],
-        "regions": [
-          "Global",
-          "Canada East",
-          "Canada Central"
-        ],
+        "incidentTypes": [ "Incident", "Security" ],
+        "regions": [ "Global", "Canada East", "Canada Central" ],
         "receivers": {
-          "app": [
-            "alzcanadapubsec@microsoft.com"
-          ],
-          "email": [
-            "alzcanadapubsec@microsoft.com"
-          ],
-          "sms": [
-            {
-              "countryCode": "1",
-              "phoneNumber": "5555555555"
-            }
-          ],
-          "voice": [
-            {
-              "countryCode": "1",
-              "phoneNumber": "5555555555"
-            }
-          ]
+          "app": [ "alzcanadapubsec@microsoft.com" ],
+          "email": [ "alzcanadapubsec@microsoft.com" ],
+          "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+          "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
         },
         "actionGroupName": "Sub3 ALZ action group",
         "actionGroupShortName": "sub3-alert",
@@ -66,7 +45,13 @@
     },
     "subscriptionBudget": {
       "value": {
-        "createBudget": false
+        "createBudget": true,
+        "name": "MonthlySubscriptionBudget",
+        "amount": 1000,
+        "timeGrain": "Monthly",
+        "contactEmails": [
+          "alzcanadapubsec@microsoft.com"
+        ]
       }
     },
     "subscriptionTags": {
@@ -117,7 +102,10 @@
       "value": {
         "enabled": true,
         "sqlAuthenticationUsername": "azadmin",
-        "aadAuthenticationOnly":false
+        "aadAuthenticationOnly":false,
+        "aadLoginName":"DBA Group",
+        "aadLoginObjectID":"4e4ea47c-ee21-4add-ad2f-a75d0d8014e0",
+        "aadLoginType":"Group"
       }
     },
     "sqlmi": {
