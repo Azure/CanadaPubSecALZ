@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "definitions": {
+    "SubscriptionTags": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/Value"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "SubscriptionTags"
+    },
+    "Value": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Key/Value pairs of tags"
+      },
+      "title": "Value"
+    }
+  }
+}
