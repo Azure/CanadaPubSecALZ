@@ -2,11 +2,9 @@
 
 ## Landing Zone Schemas
 
-* November 12, 2021
+* November 23, 2021
 
-  * Initial version based on v0.1.0 of the schema definitions.
-  
-  * change in sqldb schema to support Azure AD authentication 
+  * Change in sqldb schema to support Azure AD authentication 
   
     ​	**enabled**: Boolean | Indicate whether or not to deploy Azure SQL Database (required)
   
@@ -19,14 +17,16 @@
     ​    **aadLoginObjectID**: String | the object id of the Azure AD object whether it's a login or a group
   
     ​    **aadLoginType**: String | represent the type of the object, it can be **User**, **Group** or **Application** (in case of service principal)
-  
-  
-  
-  ​    	**Samples:**
-  
-  ​			SQL authentication only | Json (used in parameter files)
-  
-  ```json
+    
+    
+    
+
+**Samples:**
+
+
+SQL authentication only | Json (used in parameter files)
+
+  ```
   "sqldb": {
    "value": {
     "aadAuthenticationOnly":false,
@@ -35,13 +35,13 @@
   	}
   }
   ```
-  
+
   
 
-​					SQL authentication only | bicep (used when calling bicep module from another)
+SQL authentication only | bicep (used when calling bicep module from another)
 
-```json
-	{
+```
+{
  enabled: true
  aadAuthenticationOnly: false 
  sqlAuthenticationUsername: 'azadmin'
@@ -50,9 +50,9 @@
 
 
 
-​					Azure AD authentication only | Json (used in parameters files)
+Azure AD authentication only | Json (used in parameters files)
 
-```json
+```
 "sqldb":{
  "value":{
   "enabled":true,
@@ -66,9 +66,9 @@
 
 ​			
 
-​					Azure AD authentication only | bicep (used when calling bicep module from another)
+Azure AD authentication only | bicep (used when calling bicep module from another)
 
-```json
+```
 {
  enabled: true
  aadAuthenticationOnly: true 
@@ -80,9 +80,9 @@
 
 
 
-​				Mixed authentication |  Json (used in parameters files)
+Mixed authentication |  Json (used in parameters files)
 
-```json
+```
 "sqldb":{
  "value":{
   "enabled":true,
@@ -91,15 +91,15 @@
   "aadLoginName":"John Smith",
   "aadLoginObjectID":"88888-888888-888888-888888",
   "aadLoginType":"User"
- }
+ 	}
 }
 ```
 
 
 
-​				Mixed authentication | bicep (used when calling bicep module from another)
+Mixed authentication | bicep (used when calling bicep module from another)
 
-```json
+```
 {
  enabled: true
  aadAuthenticationOnly: false
@@ -110,3 +110,9 @@
 }
 ```
 
+
+
+
+* November 12, 2021
+
+  * Initial version based on v0.1.0 of the schema definitions.
