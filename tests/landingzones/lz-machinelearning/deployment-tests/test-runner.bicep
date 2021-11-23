@@ -19,7 +19,7 @@ param hubRFC6598IPRange string
 
 param logAnalyticsWorkspaceResourceId string
 
-
+param deploySQLDB bool
 param deploySQLMI bool
 param useCMK bool
 
@@ -89,11 +89,9 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
 
     sqldb: {
       value: {
-        enabled: true
-        aadAuthenticationOnly:true
-        aadLoginName:'DBA Group'
-        aadLoginObjectID:'4e4ea47c-ee21-4add-ad2f-a75d0d8014e0'
-        aadLoginType:'Group'
+        enabled: deploySQLDB
+        aadAuthenticationOnly: false 
+        sqlAuthenticationUsername: 'azadmin'
       }
     }
 

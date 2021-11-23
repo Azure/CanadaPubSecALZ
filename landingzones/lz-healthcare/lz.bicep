@@ -168,19 +168,64 @@ param keyVault object
 @description('SQL Database configuration.  Includes enabled flag and username.')
 param sqldb object
 
-// Synapse
+// SQL Database
 // -----------------------------
 // Example (JSON)
-// "synapse": {
+// "sqldb": {
 //   "value": {
-//     "username": "azadmin"
+//     "enabled": true,
+//     "sqlAuthenticationUsername": "azadmin"
+//   }
+// }
+
+// example 2
+// "sqldb":{
+//   "value":{
+//     "enabled":true,
+//     "aadAuthenticationOnly":true,
+//     "aadLoginName":"John Smith",
+//     "aadLoginObjectID":"88888-888888-888888-888888",
+//     "aadLoginType":"User"
+//   }
+// }
+
+// example 3
+// "sqldb":{
+//   "value":{
+//     "enabled":true,
+//     "aadAuthenticationOnly":false,
+//     "sqlAuthenticationUsername": "azadmin",
+//     "aadLoginName":"John Smith",
+//     "aadLoginObjectID":"88888-888888-888888-888888",
+//     "aadLoginType":"User"
 //   }
 // }
 
 // Example (Bicep)
 // -----------------------------
 // {
-//   username: 'azadmin'
+//   enabled: true
+//   aadAuthenticationOnly: false 
+//   sqlAuthenticationUsername: 'azadmin'
+// }
+
+// Example (Bicep) 2
+// {
+//   enabled: true
+//   aadAuthenticationOnly: true 
+//   aadLoginName:'John Smith',
+//   aadLoginObjectID:'88888-888888-888888-888888',
+//   aadLoginType:'User'
+// }
+
+// Example (Bicep) 3
+// {
+//   enabled: true
+//   aadAuthenticationOnly: false
+//   sqlAuthenticationUsername: 'azadmin' 
+//   aadLoginName:'John Smith',
+//   aadLoginObjectID:'88888-888888-888888-888888',
+//   aadLoginType:'User'
 // }
 @description('Synapse Analytics configuration.  Includes username.')
 param synapse object

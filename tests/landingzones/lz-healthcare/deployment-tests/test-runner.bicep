@@ -19,7 +19,7 @@ param hubRFC6598IPRange string
 
 param logAnalyticsWorkspaceResourceId string
 
-
+param deploySQLDB bool
 param useCMK bool
 
 param testRunnerCleanupAfterDeployment bool = true
@@ -84,11 +84,9 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
 
     sqldb: {
       value: {
-        enabled: true
-        aadAuthenticationOnly:true
-        aadLoginName:'DBA Group'
-        aadLoginObjectID:'4e4ea47c-ee21-4add-ad2f-a75d0d8014e0'
-        aadLoginType:'Group'
+        enabled: deploySQLDB
+        aadAuthenticationOnly: false 
+        sqlAuthenticationUsername: 'azadmin'
       }
     }
 
