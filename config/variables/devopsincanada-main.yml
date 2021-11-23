@@ -26,7 +26,7 @@ variables:
   var-topLevelManagementGroupName: pubsec
 
   # Logging
-  var-logging-managementGroupId: pubsecPlatform
+  var-logging-managementGroupId: pubsecPlatformManagement
   var-logging-subscriptionId: 1a7025c7-f492-4eb9-9cf6-12c7889e4dfd
   var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
   var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
@@ -91,7 +91,7 @@ variables:
     }
 
   # Hub Networking
-  var-hubnetwork-managementGroupId: pubsecPlatform
+  var-hubnetwork-managementGroupId: pubsecPlatformConnectivity
   var-hubnetwork-subscriptionId: 1a7025c7-f492-4eb9-9cf6-12c7889e4dfd
   var-hubnetwork-serviceHealthAlerts: >
     {
