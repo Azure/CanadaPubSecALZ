@@ -81,9 +81,13 @@
     "sqldb": {
       "value": {
         "enabled": true,
-        "username": "azadmin"
-      }
-    },
+        "aadAuthenticationOnly":false,
+        "aadLoginName":"DBA Group",
+        "aadLoginObjectID":"2c988476-cf8a-4fe7-b2c5-34ef058253be",
+        "aadLoginType":"Group",
+        "sqlAuthenticationUsername": "azadmin"
+        }
+      },
     "synapse": {
       "value": {
         "username": "azadmin"

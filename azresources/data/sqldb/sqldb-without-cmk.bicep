@@ -33,13 +33,16 @@ param sqlVulnerabilityLoggingStoragePath string
 // Credentials
 @description('SQL Database Username.')
 @secure()
-param sqldbUsername string
+param sqlAuthenticationUsername string
 
 @description('SQL Database Password.')
 @secure()
-param sqldbPassword string
+param sqlAuthenticationPassword string
 
-resource sqlserver 'Microsoft.Sql/servers@2019-06-01-preview' = {
+@description('Azure AD principal to be the admin for details about it the object details, refer to the parameter file')
+param aadAdministrator object
+
+resource sqlserver 'Microsoft.Sql/servers@2021-02-01-preview' = {
   tags: tags
   location: resourceGroup().location
   name: sqlServerName
@@ -47,8 +50,9 @@ resource sqlserver 'Microsoft.Sql/servers@2019-06-01-preview' = {
     type: 'SystemAssigned'
   }
   properties: {
-    administratorLogin: sqldbUsername
-    administratorLoginPassword: sqldbPassword
+    administratorLogin: aadAdministrator.azureADOnlyAuthentication? json('null') : sqlAuthenticationUsername 
+    administratorLoginPassword: aadAdministrator.azureADOnlyAuthentication? json('null') : sqlAuthenticationPassword
+    administrators: empty(aadAdministrator.sid)? json('null') : aadAdministrator
     minimalTlsVersion: '1.2'
     publicNetworkAccess: 'Disabled'
   }

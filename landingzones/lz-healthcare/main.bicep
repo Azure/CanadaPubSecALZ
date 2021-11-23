@@ -223,7 +223,30 @@ param keyVault object
 // "sqldb": {
 //   "value": {
 //     "enabled": true,
-//     "username": "azadmin"
+//     "sqlAuthenticationUsername": "azadmin"
+//   }
+// }
+
+// example 2
+// "sqldb":{
+//   "value":{
+//     "enabled":true,
+//     "aadAuthenticationOnly":true,
+//     "aadLoginName":"John Smith",
+//     "aadLoginObjectID":"88888-888888-888888-888888",
+//     "aadLoginType":"User"
+//   }
+// }
+
+// example 3
+// "sqldb":{
+//   "value":{
+//     "enabled":true,
+//     "aadAuthenticationOnly":false,
+//     "sqlAuthenticationUsername": "azadmin",
+//     "aadLoginName":"John Smith",
+//     "aadLoginObjectID":"88888-888888-888888-888888",
+//     "aadLoginType":"User"
 //   }
 // }
 
@@ -231,7 +254,27 @@ param keyVault object
 // -----------------------------
 // {
 //   enabled: true
-//   username: 'azadmin'
+//   aadAuthenticationOnly: false 
+//   sqlAuthenticationUsername: 'azadmin'
+// }
+
+// Example (Bicep) 2
+// {
+//   enabled: true
+//   aadAuthenticationOnly: true 
+//   aadLoginName:'John Smith',
+//   aadLoginObjectID:'88888-888888-888888-888888',
+//   aadLoginType:'User'
+// }
+
+// Example (Bicep) 3
+// {
+//   enabled: true
+//   aadAuthenticationOnly: false
+//   sqlAuthenticationUsername: 'azadmin' 
+//   aadLoginName:'John Smith',
+//   aadLoginObjectID:'88888-888888-888888-888888',
+//   aadLoginType:'User'
 // }
 @description('SQL Database configuration.  Includes enabled flag and username.')
 param sqldb object
