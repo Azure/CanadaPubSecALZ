@@ -89,10 +89,11 @@
         },
         "sqldb": {
             "value": {
-                "enabled": true,
-                "username": "azadmin"
+              "enabled": true,
+              "sqlAuthenticationUsername": "azadmin",
+              "aadAuthenticationOnly":false
             }
-        },
+          },
         "synapse": {
             "value": {
                 "username": "azadmin"
