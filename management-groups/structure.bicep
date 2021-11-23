@@ -74,6 +74,43 @@ resource sandbox 'Microsoft.Management/managementGroups@2020-05-01' = {
   }
 }
 
+// Level 3 - Platform
+resource platformConnectivity 'Microsoft.Management/managementGroups@2020-05-01' = {
+  name: '${platform.name}Connectivity'
+  scope: tenant()
+  properties: {
+    details: {
+      parent: {
+        id: platform.id
+      }
+    }
+  }
+}
+
+resource platformIdentity 'Microsoft.Management/managementGroups@2020-05-01' = {
+  name: '${platform.name}Identity'
+  scope: tenant()
+  properties: {
+    details: {
+      parent: {
+        id: platform.id
+      }
+    }
+  }
+}
+
+resource platformManagement 'Microsoft.Management/managementGroups@2020-05-01' = {
+  name: '${platform.name}Management'
+  scope: tenant()
+  properties: {
+    details: {
+      parent: {
+        id: platform.id
+      }
+    }
+  }
+}
+
 // Level 3 - Landing Zones
 
 resource devtest 'Microsoft.Management/managementGroups@2020-05-01' = {
