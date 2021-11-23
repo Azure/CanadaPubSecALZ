@@ -19,7 +19,7 @@ param hubRFC6598IPRange string
 
 param logAnalyticsWorkspaceResourceId string
 
-param deploySQLDB bool
+
 param useCMK bool
 
 param testRunnerCleanupAfterDeployment bool = true
