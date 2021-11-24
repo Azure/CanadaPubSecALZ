@@ -37,7 +37,8 @@ targetScope = 'subscription'
 // -----------------------------
 // "serviceHealthAlerts": {
 //   "value": {
-//     "incidentTypes": [ "Incident", "Security", "Maintenance", "Information", "ActionRequired" ],
+//     "resourceGroupName": "pubsec-service-health"
+//     "incidentTypes": [ "Incident", "Security", "Maintenance", "Informational", "ActionRequired" ],
 //     "regions": [ "Global", "Canada East", "Canada Central" ],
 //     "receivers": {
 //       "app": [ "email-1@company.com", "email-2@company.com" ],
