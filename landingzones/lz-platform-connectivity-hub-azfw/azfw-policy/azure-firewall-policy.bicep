@@ -462,7 +462,7 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
         {
           ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
           priority: 1000
-          name: 'Azure Security Center - Qualys'
+          name: 'Microsoft Defender for Cloud - Qualys'
           action: {
             type: 'Allow'
           }

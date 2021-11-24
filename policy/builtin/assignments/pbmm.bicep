@@ -12,7 +12,7 @@ targetScope = 'managementGroup'
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
-@description('Log Analytics Resource Id to integrate Azure Security Center.')
+@description('Log Analytics Resource Id to integrate Microsoft Defender for Cloud.')
 param logAnalyticsWorkspaceId string
 
 @description('List of members that should be excluded from Windows VM Administrator Group.')

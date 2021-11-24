@@ -27,7 +27,7 @@ Platform Logging archetype provides infrastructure for centrally managed Log Ana
 * Role-based access control for Owner, Contributor & Reader 
 * Integration between Azure Automation Account & Log Analytics Workspace
 * Integration with Azure Cost Management for Subscription-scoped budget
-* Integration with Azure Security Center
+* Integration with Microsoft Defender for Cloud
 
 */
 
@@ -55,7 +55,7 @@ targetScope = 'subscription'
 @description('Service Health alerts')
 param serviceHealthAlerts object = {}
 
-// Azure Security Center
+// Microsoft Defender for Cloud
 // Example (JSON)
 // -----------------------------
 // "securityCenter": {
@@ -71,7 +71,7 @@ param serviceHealthAlerts object = {}
 //   email: 'alzcanadapubsec@microsoft.com'
 //   phone: '5555555555'
 // }
-@description('Security Center configuration.  It includes email and phone.')
+@description('Microsoft Defender for Cloud.  It includes email and phone.')
 param securityCenter object
 
 // Subscription Role Assignments
@@ -212,9 +212,9 @@ module logAnalytics '../../azresources/monitor/log-analytics.bicep' = {
 
 /*
   Scaffold the subscription which includes:
-    * Azure Security Center - Enable Azure Defender (all available options)
-    * Azure Security Center - Configure Log Analytics Workspace (using the Log Analytics Workspace created in this deployment)
-    * Azure Security Center - Configure Security Alert Contact
+    * Microsoft Defender for Cloud - Enable Azure Defender (all available options)
+    * Microsoft Defender for Cloud - Configure Log Analytics Workspace (using the Log Analytics Workspace created in this deployment)
+    * Microsoft Defender for Cloud - Configure Security Alert Contact
     * Role Assignments to Security Groups
     * Service Health Alerts
     * Subscription Budget

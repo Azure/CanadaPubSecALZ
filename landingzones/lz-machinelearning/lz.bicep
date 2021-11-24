@@ -10,7 +10,7 @@
 targetScope = 'subscription'
 
 // Log Analytics
-@description('Log Analytics Resource Id to integrate Azure Security Center.')
+@description('Log Analytics Resource Id to integrate Microsoft Defender for Cloud.')
 param logAnalyticsWorkspaceResourceId string
 
 // Security Contact Email Address
