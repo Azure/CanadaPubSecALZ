@@ -300,7 +300,7 @@ This approach offers:
 
 The workspace will be configured as:
 
-* Workspace will be centrally managed and deployed in the **pubsecPlatform** management group.  Workspace is managed by CloudOps team.
+* Workspace will be centrally managed and deployed in the **pubsecPlatformManagement** management group.  Workspace is managed by CloudOps team.
 * Workspace will have the access mode set as use resource or workspace permissions.
 * Data Retention set to **2 years** for all data types (i.e., Security Events, syslog).
 * Log Analytics Workspace will be stored in **Canada Central**.
