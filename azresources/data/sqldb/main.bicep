@@ -31,13 +31,30 @@ param sqlVulnerabilityLoggingStorageAccountName string
 param sqlVulnerabilityLoggingStoragePath string
 
 // Credentials
+@description('use Azure AD only authentication or mix of both AAD and SQL authentication')
+param aadAuthenticationOnly bool
+
+@description('Azure AD principal name, in the format of firstname last name')
+param aadLoginName string =''
+
+@description('AAD account object id')
+param aadLoginObjectID string=''
+
+@description('AAD account type with options User, Group, Application. Default: Group')
+@allowed([
+  'User'
+  'Group'
+  'Application'
+])
+param aadLoginType string = 'Group'
+
 @description('SQL Database Username.')
 @secure()
-param sqldbUsername string
+param sqlAuthenticationUsername string=''
 
 @description('SQL Database Password.')
 @secure()
-param sqldbPassword string
+param sqlAuthenticationPassword string
 
 // Customer Managed Key
 @description('Boolean flag that determines whether to enable Customer Managed Key.')
@@ -49,6 +66,16 @@ param akvResourceGroupName string
 
 @description('Azure Key Vault Name.  Required when useCMK=true.')
 param akvName string
+
+
+var aadAdministrator = {
+    administratorType: 'activeDirectory'
+    login: aadLoginName ?? ''
+    sid: aadLoginObjectID ?? ''
+    tenantId: subscription().tenantId
+    azureADOnlyAuthentication: aadAuthenticationOnly
+    principalType: aadLoginType
+}
 
 // SQL Server without Customer Managed Key
 module sqldbWithoutCMK 'sqldb-without-cmk.bicep' = if (!useCMK) {
@@ -64,8 +91,9 @@ module sqldbWithoutCMK 'sqldb-without-cmk.bicep' = if (!useCMK) {
     sqlVulnerabilityLoggingStorageAccountName: sqlVulnerabilityLoggingStorageAccountName
     sqlVulnerabilityLoggingStoragePath: sqlVulnerabilityLoggingStoragePath
 
-    sqldbUsername: sqldbUsername
-    sqldbPassword: sqldbPassword
+    sqlAuthenticationUsername: sqlAuthenticationUsername
+    sqlAuthenticationPassword: sqlAuthenticationPassword
+    aadAdministrator: aadAdministrator
 
     tags: tags
   }
@@ -85,8 +113,9 @@ module sqldbWithCMK 'sqldb-with-cmk.bicep' = if (useCMK) {
     sqlVulnerabilityLoggingStorageAccountName: sqlVulnerabilityLoggingStorageAccountName
     sqlVulnerabilityLoggingStoragePath: sqlVulnerabilityLoggingStoragePath
 
-    sqldbUsername: sqldbUsername
-    sqldbPassword: sqldbPassword
+    sqlAuthenticationUsername: sqlAuthenticationUsername
+    sqlAuthenticationPassword: sqlAuthenticationPassword
+    aadAdministrator: aadAdministrator
 
     tags: tags
 
