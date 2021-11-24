@@ -82,13 +82,13 @@ The benefit of aligning to built-in policy sets is the Microsoft Defender for Cl
 
 The integration is based on the scope that the policy sets are assigned, and those assignments are inherited by all subscriptions within it.  There is no manual configuration required in Microsoft Defender for Cloud.
 
-![Microsoft Defender for Cloud - Security Policy](media/architecture/asc-security-policy.jpg)
+![Microsoft Defender for Cloud - Security Policy](media/architecture/defender-security-policy.jpg)
 
 The compliance reporting will outline the Azure Policies, the resource types, the # of resources, and compliance status.  Data is grouped by control groups within each regulatory standard.  The data can also be exported as PDF or CSV based on need.
 
 > It is not possible to exclude control groups.
 
-![Microsoft Defender for Cloud - Regulatory Compliance](media/architecture/asc-regulatory-compliance.jpg)
+![Microsoft Defender for Cloud - Regulatory Compliance](media/architecture/defender-regulatory-compliance.jpg)
 
 ### 2.5 Compliance Data Export
 
