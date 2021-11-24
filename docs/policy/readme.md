@@ -141,7 +141,7 @@ Azure DevOps Pipeline ([.pipelines/policy.yml](../../.pipelines/policy.yml)) is 
 | Private DNS Zones for Private Endpoints | Policies to configure DNS zone records for private endpoints.  Policy set is assigned through deployment pipeline when private endpoint DNS zones are managed in the Hub Network. | [DNSPrivateEndpoints.bicep](../../policy/custom/assignments/DNSPrivateEndpoints.bicep) | [DNSPrivateEndpoints.parameters.json](../../policy/custom/assignments/DNSPrivateEndpoints.parameters.json)
 | Log Analytics for Azure Services (IaaS and PaaS) | Configures monitoring agents for IaaS and diagnostic settings for PaaS to send logs to a central Log Analytics Workspace. | [LogAnalytics.bicep](../../policy/custom/assignments/LogAnalytics.bicep) | [LogAnalytics.parameters.json](../../policy/custom/assignments/LogAnalytics.parameters.json)
 | Networking | Configures policies for network resources. | [Network.bicep](../../policy/custom/assignments/Network.bicep) | [Network.parameters.json](../../policy/custom/assignments/Network.parameters.json)
-| Tag Governance | Configures required tags and tag propagation from resource groups to resources. | [Tags.bicep](../../policy/custom/assignments/tags.bicep) | [Tags.parameters.json](../../policy/custom/assignments/tags.parameters.json)
+| Tag Governance | Configures required tags and tag propagation from resource groups to resources. | [Tags.bicep](../../policy/custom/assignments/Tags.bicep) | [Tags.parameters.json](../../policy/custom/assignments/Tags.parameters.json)
 
 ---
 
