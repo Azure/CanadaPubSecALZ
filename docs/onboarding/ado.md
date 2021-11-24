@@ -314,7 +314,7 @@ This role assignment is used to grant users access to the logging subscription b
 
 Audit streams represent a pipeline that flows audit events from your Azure DevOps organization to a stream target. Every half hour or less, new audit events are bundled and streamed to your targets. 
 
-We recommend reviewing common [Azure Sentinel detection patterns and rules provided in GitHub](https://github.com/Azure/Azure-Sentinel/tree/master/Detections/AzureDevOpsAuditing) as part of configuring Azure Sentinel.
+We recommend reviewing common [Microsoft Sentinel detection patterns and rules provided in GitHub](https://github.com/Azure/Azure-Sentinel/tree/master/Detections/AzureDevOpsAuditing) as part of configuring Microsoft Sentinel.
 
 In order to configure audit stream for Azure Monitor, identify the following information:
 

@@ -9,7 +9,7 @@
 
 /*
 
-Platform Logging archetype provides infrastructure for centrally managed Log Analytics Workspace & Sentinel that includes:
+Platform Logging archetype provides infrastructure for centrally managed Log Analytics Workspace & Microsoft Sentinel that includes:
 
 * Azure Automation Account
 * Log Analytics Workspace
@@ -19,7 +19,7 @@ Platform Logging archetype provides infrastructure for centrally managed Log Ana
   * AzureActivity
   * ChangeTracking
   * Security
-  * SecurityInsights (Azure Sentinel)
+  * SecurityInsights (Microsoft Sentinel)
   * ServiceMap
   * SQLAssessment
   * Updates

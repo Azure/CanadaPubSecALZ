@@ -139,7 +139,7 @@ Azure Landing Zones for Canadian Public Sector assumes that Azure Active Directo
 * Conditional Access Policies - Configured based on location & devices
 * Privileged Identity Management (PIM) - Enabled for elevated access control. 
 * App Registration - Consider disabling for all users and created on-demand by CloudOps teams.
-* Sign-In Logs - Logs are exported to Log Analytics workspace & Sentinel used for threat hunting (Security Monitoring Team).
+* Sign-In Logs - Logs are exported to Log Analytics workspace & Microsoft Sentinel used for threat hunting (Security Monitoring Team).
 * Break-glass procedure - Process documented and implemented including 2 break glass accounts with different MFA devices & split up passwords.
 *	Azure Directory to Azure Active Directory synchronization - Are the identities synchronized or using cloud only account?
 
@@ -332,7 +332,7 @@ For example, when you grant access to your team responsible for infrastructure s
 
 | Scenario | Log Access Mode | Log Data Visibility |
 | --- | --- | --- |
-| Security Analyst with [Log Analytics Reader or Log Analytics Contributor](https://docs.microsoft.com/en-ca/azure/azure-monitor/logs/manage-access#manage-access-using-azure-permissions) RBAC role assignment. | Access the Log Analytics workspace directly through Azure Portal or through Azure Sentinel. | All data in the Log Analytics Workspace. |
+| Security Analyst with [Log Analytics Reader or Log Analytics Contributor](https://docs.microsoft.com/en-ca/azure/azure-monitor/logs/manage-access#manage-access-using-azure-permissions) RBAC role assignment. | Access the Log Analytics workspace directly through Azure Portal or through Microsoft Sentinel. | All data in the Log Analytics Workspace. |
 | IT Teams responsible for one or more line of business with permissions to one or more subscriptions, resource groups or resources with at least Reader role. | Access the logs through the resource's Logs menu for the Azure resource (i.e., VM or Storage Account or Database). | Only to Azure resources based on RBAC.  User can query logs for specific resources, resource groups, or subscription they have access to from any workspace but can't query logs for other resources. |
 | Application Team with permissions to one or more subscriptions, resource groups or resources with at least Reader role. | Access the logs through the resource's Logs menu for the Azure resource (i.e., VM or Storage Account or Database). | Only to Azure resources based on RBAC.  User can query logs for specific resources, resource groups, or subscription they have access to from any workspace but can't query logs for other resources. |
 
