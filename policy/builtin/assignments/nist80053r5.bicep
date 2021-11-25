@@ -21,6 +21,13 @@ var assignmentName = 'NIST SP 800-53 R5'
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
 var policyScopedId = resourceId('Microsoft.Authorization/policySetDefinitions', policyId)
 
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../../../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../../../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.policy}'
+}
+
 resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
   name: 'nistr5-${uniqueString('nist-sp-800-53-r5-',policyAssignmentManagementGroupId)}'
   properties: {

@@ -115,7 +115,9 @@
     },
     "sqldb": {
       "value": {
-        "enabled": false
+        "enabled": true,
+        "sqlAuthenticationUsername": "azadmin",
+        "aadAuthenticationOnly":false
       }
     },
     "sqlmi": {

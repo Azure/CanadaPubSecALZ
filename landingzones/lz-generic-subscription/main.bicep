@@ -16,7 +16,7 @@ Generic Subscription Landing Zone archetype provides the basic Azure subscriptio
 * Azure Virtual Network
 * Role-based access control for Owner, Contributor, Reader & Application Owner (custom role) 
 * Integration with Azure Cost Management for Subscription-scoped budget
-* Integration with Azure Security Center
+* Integration with Microsoft Defender for Cloud
 * Integration to Hub Virtual Network (optional)
 * Support for Network Virtual Appliance (i.e. Fortinet, Azure Firewall) in the Hub Network (if integrated to hub network)
 * Support for Azure Bastion in the Hub (if integrated to hub network)
@@ -37,7 +37,8 @@ targetScope = 'subscription'
 // -----------------------------
 // "serviceHealthAlerts": {
 //   "value": {
-//     "incidentTypes": [ "Incident", "Security", "Maintenance", "Information", "ActionRequired" ],
+//     "resourceGroupName": "pubsec-service-health"
+//     "incidentTypes": [ "Incident", "Security", "Maintenance", "Informational", "ActionRequired" ],
 //     "regions": [ "Global", "Canada East", "Canada Central" ],
 //     "receivers": {
 //       "app": [ "email-1@company.com", "email-2@company.com" ],
@@ -55,10 +56,10 @@ targetScope = 'subscription'
 param serviceHealthAlerts object = {}
 
 // Log Analytics
-@description('Log Analytics Resource Id to integrate Azure Security Center.')
+@description('Log Analytics Resource Id to integrate Microsoft Defender for Cloud.')
 param logAnalyticsWorkspaceResourceId string
 
-// Azure Security Center
+// Microsoft Defender for Cloud
 // Example (JSON)
 // -----------------------------
 // "securityCenter": {
@@ -74,7 +75,7 @@ param logAnalyticsWorkspaceResourceId string
 //   email: 'alzcanadapubsec@microsoft.com'
 //   phone: '5555555555'
 // }
-@description('Security Center configuration.  It includes email and phone.')
+@description('Microsoft Defender for Cloud configuration.  It includes email and phone.')
 param securityCenter object
 
 // Subscription Role Assignments
@@ -397,11 +398,18 @@ param hubNetwork object
 @description('Network configuration for the spoke virtual network.  It includes name, dnsServers, address spaces, vnet peering and subnets.')
 param network object
 
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-usage-attribution-subscription.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.archetypes.genericSubscription}'
+}
+
 /*
   Scaffold the subscription which includes:
-    * Azure Security Center - Enable Azure Defender (all available options)
-    * Azure Security Center - Configure Log Analytics Workspace
-    * Azure Security Center - Configure Security Alert Contact
+    * Microsoft Defender for Cloud - Enable Azure Defender (all available options)
+    * Microsoft Defender for Cloud - Configure Log Analytics Workspace
+    * Microsoft Defender for Cloud - Configure Security Alert Contact
     * Service Health Alerts
     * Role Assignments to Security Groups
     * Subscription Budget

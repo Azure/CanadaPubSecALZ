@@ -6,13 +6,50 @@ This document provides steps required to onboard to the Azure Landing Zones desi
 
 ---
 
+## Telemetry
+
+> Telemetry is introduced on November 11, 2021.
+
+Microsoft can identify the deployments of the Azure Resource Manager and Bicep templates with the deployed Azure resources. Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business.  The telemetry is collected through [customer usage attribution](https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution). The data is collected and governed by Microsoft's privacy policies, located at [https://www.microsoft.com/trustcenter](https://www.microsoft.com/trustcenter).
+
+The automation is instrumented to identify the modules that are being deployed.  At this time, we don't differentiate the deployments and tracked under a single GUID (`a83f6385-f514-415f-991b-2d9bd7aed658`).
+
+If you don’t wish to send usage data to Microsoft, you can set the `customerUsageAttribution.enabled` setting to `false` in `config/telemetry.json`.
+
+**Example with telemetry disabled**
+
+```json
+{
+  "customerUsageAttribution": {
+    "enabled": false,
+    "modules": {
+      "managementGroups": "a83f6385-f514-415f-991b-2d9bd7aed658",
+      "policy": "a83f6385-f514-415f-991b-2d9bd7aed658",
+      "roles": "a83f6385-f514-415f-991b-2d9bd7aed658",
+      "logging": "a83f6385-f514-415f-991b-2d9bd7aed658",
+      "networking": {
+        "nvaFortinet": "a83f6385-f514-415f-991b-2d9bd7aed658",
+        "azureFirewall": "a83f6385-f514-415f-991b-2d9bd7aed658"
+      },
+      "archetypes": {
+        "genericSubscription": "a83f6385-f514-415f-991b-2d9bd7aed658",
+        "machineLearning": "a83f6385-f514-415f-991b-2d9bd7aed658",
+        "healthcare": "a83f6385-f514-415f-991b-2d9bd7aed658"
+      }
+    }
+  }
+}
+```
+
+---
+
 ## Instructions
 
 * [Step 1: Create Service Principal Account & Assign RBAC](#step-1--create-service-principal-account--assign-rbac)
 * [Step 2: Configure Service Connection in Azure DevOps Project Configuration](#step-2--configure-service-connection-in-azure-devops-project-configuration)
-* [Step 3: Configure Management Group Deployment](#step-3--configure-management-group-deployment)
+* [Step 3: Configure Management Groups](#step-3--configure-management-groups)
 * [Step 4: Configure Custom Roles](#step-4--configure-custom-roles)
-* [Step 5: Configure Logging Landing Zone](#step-5--configure-logging-landing-zone)
+* [Step 5: Configure Logging](#step-5--configure-logging)
 * [Step 6: Configure Azure Policies](#step-6--configure-azure-policies)
 * [Step 7: Configure Hub Networking](#step-7--configure-hub-networking)
 * [Step 8: Configure Subscription Archetypes](#step-8--configure-subscription-archetypes)
@@ -29,7 +66,7 @@ An Azure service principal is an identity created for use with applications, hos
 
     * **Scope:**  Tenant Root Group (this is a management group in the Azure environment)
 
-    * **Role:**  [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in Azure RBAC.  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
+    * **Role:**  [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in [Azure RBAC](https://docs.microsoft.com/azure/role-based-access-control/overview).  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
 
 *  **Instructions**:  [Create an Azure service principal with the Azure CLI | Microsoft Docs](https://docs.microsoft.com/cli/azure/create-an-azure-service-principal-azure-cli)
 
@@ -37,7 +74,7 @@ To create the service principal account and role assignment through Azure CLI:
 
 > To execute the Azure CLI command, the user account must be either `User Access Administrator` or `Owner` on Tenant Root Group management group.
 
-> Replace `<Azure Active Directory Tenant Id>` with your tenant id.
+> Replace `<Azure Active Directory Tenant Id>` with your AAD tenant id.
 
 ```bash
 
@@ -74,7 +111,7 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 
 ---
 
-## Step 3:  Configure Management Group Deployment
+## Step 3:  Configure Management Groups
 
 ### Step: 3.1: Update common.yml in git repository
 
@@ -95,7 +132,7 @@ variables:
 
 1. Identify the parent management group and obtain its ID. 
 
-    * *Note: By default, the root management group's name is Tenant root group. Its ID is the Azure Active Directory (AAD) tenant ID.*
+    * *Note: ID of default parent management group 'Tenant Root Group' is Azure Active Directory (AAD) Tenant ID (GUID).*
 
 2. Create/edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git (i.e. CanadaESLZ-main.yml).  This file name is automatically inferred based on the Azure DevOps organization name and the branch.
 
@@ -152,7 +189,7 @@ variables:
 
 ---
 
-## Step 5:  Configure Logging Landing Zone
+## Step 5:  Configure Logging
 
 ### Step 5.1:  Setup Azure AD Security Group (Recommended)
 
@@ -160,7 +197,7 @@ At least one Azure AD Security Group is recommended for role assignment.  Role a
 
 This role assignment is used to grant users access to the logging subscription based on their roles & responsibilities.
 
-### Step 5.2:  Update configuration files in git repository
+### Step 5.2:  Update configuration file(s) in git repository
 
 > **When you are using an existing Log Analytics Workspace in your subscription**, set the configuration parameters of the existing Log Analytics Workspace.  These settings will be used by deployments such as Azure Policy for Log Analytics integration.
 >
@@ -174,24 +211,29 @@ This role assignment is used to grant users access to the logging subscription b
 
 1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
-Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
+* Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
 
 ```yml
     var-logging-subscriptionRoleAssignments: >
         []
 ```
 
-Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
+* Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
+
+* Update with valid contact information for the Azure Service Health Alerts: email and phone number. 
+
+* Set the values for the Azure tags that would be applied to the logging resources. 
 
 **Sample environment YAML (Logging section only)**
 
 ```yml
     variables:
         # Logging
-        var-logging-managementGroupId: pubsecPlatform
+        var-logging-managementGroupId: pubsecPlatformManagement
         var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
         var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
         var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
+        var-logging-logAnalyticsRetentionInDays: 730
         var-logging-logAnalyticsAutomationAccountName: automation-account
         var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
         var-logging-serviceHealthAlerts: >
@@ -272,7 +314,7 @@ Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** p
 
 Audit streams represent a pipeline that flows audit events from your Azure DevOps organization to a stream target. Every half hour or less, new audit events are bundled and streamed to your targets. 
 
-We recommend reviewing common [Azure Sentinel detection patterns and rules provided in GitHub](https://github.com/Azure/Azure-Sentinel/tree/master/Detections/AzureDevOpsAuditing) as part of configuring Azure Sentinel.
+We recommend reviewing common [Microsoft Sentinel detection patterns and rules provided in GitHub](https://github.com/Azure/Azure-Sentinel/tree/master/Detections/AzureDevOpsAuditing) as part of configuring Microsoft Sentinel.
 
 In order to configure audit stream for Azure Monitor, identify the following information:
 
@@ -292,7 +334,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 ## Step 6:  Configure Azure Policies
 
-1. Pipeline definition for Azure Policies.
+1. Pipeline definition for Azure Policies. Overview of Azure Policy and definitions deployed refer to [readme.md under `/docs/policy`](../../docs/policy/readme.md)
 
     *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
@@ -312,21 +354,35 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 ## Step 7:  Configure Hub Networking
 
-1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
+1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3. 
 
-   Update configuration with the networking section.  There are two options for Hub Networking:
-
-    1. Hub Networking with Azure Firewall
-    2. Hub Networking with Fortinet Firewall (NVA)
+   Update networking section of the configuration file to deploy one of the two options: 
+   
+    1. [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
+    2. [Hub Networking with Fortinet Firewall (NVA)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
 
     Depending on the preference, you may delete/comment the configuration that is not required. For example, when deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls". 
+    
+ *Note:*  **var-hubnetwork-subscriptionRoleAssignments** should include Azure AD security group's object ID responsible for managing Azure networking. If role assignments are not required, you must change the example provided with the following setting:
+
+  ```yml
+    var-hubnetwork-subscriptionRoleAssignments: >
+        []
+  ```
+
+ Include the values for the following as well: 
+   * Valid contact information for the Azure Service Health Alerts: email and phone number
+   * Values for Azure resource tags 
+   * IP ranges for the virtual networks
+   * Enable/Disable Azure DDOS Standard
+
 
     **Sample environment YAML (Hub Networking section only)**
 
     ```yml
         variables:
            # Hub Networking
-           var-hubnetwork-managementGroupId: pubsecPlatform
+           var-hubnetwork-managementGroupId: pubsecPlatformConnectivity
            var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
            var-hubnetwork-serviceHealthAlerts: >
              {
@@ -418,6 +474,8 @@ In order to configure audit stream for Azure Monitor, identify the following inf
            var-hubnetwork-mrzMgmtSubnetAddressPrefix: 10.18.5.128/26
 
            var-hubnetwork-bastionName: bastion
+           var-hubnetwork-bastionSku: Standard
+           var-hubnetwork-bastionScaleUnits: 2
 
            ####################################################################################
            ### Hub Networking with Azure Firewall                                           ###

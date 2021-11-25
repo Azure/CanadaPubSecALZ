@@ -28,10 +28,10 @@ targetScope = 'subscription'
 param serviceHealthAlerts object = {}
 
 // Log Analytics
-@description('Log Analytics Resource Id to integrate Azure Security Center.')
+@description('Log Analytics Resource Id to integrate Microsoft Defender for Cloud.')
 param logAnalyticsWorkspaceResourceId string
 
-// Azure Security Center
+// Microsoft Defender for Cloud
 // Example (JSON)
 // -----------------------------
 // "securityCenter": {
@@ -47,7 +47,7 @@ param logAnalyticsWorkspaceResourceId string
 //   email: 'alzcanadapubsec@microsoft.com'
 //   phone: '5555555555'
 // }
-@description('Security Center configuration.  It includes email and phone.')
+@description('Microsoft Defender for Cloud configuration.  It includes email and phone.')
 param securityCenter object
 
 // Subscription Role Assignments
@@ -218,6 +218,18 @@ param hubAzureFirewallManagementSubnetAddressPrefix string //= '10.18.3.0/26'
 @description('Azure Bastion Name.')
 param bastionName string //= 'pubsecHubBastion'
 
+@description('Hub - Azure Bastion SKU.')
+@allowed([
+  'Basic'
+  'Standard'
+])
+param bastionSku string
+
+@description('Azure Bastion Scale Units (2 to 50).  Required for Standard SKU.  Set to any number in min/max for Basic SKU as it is ignored.')
+@minValue(2)
+@maxValue(50)
+param bastionScaleUnits int
+
 @description('Azure Bastion Subnet Address Prefix.')
 param hubBastionSubnetAddressPrefix string //= '10.18.4.0/24'
 
@@ -264,6 +276,13 @@ param mrzMgmtSubnetAddressPrefix string //= '10.18.5.128/26'
 // Public Access Zone
 @description('Public Access Zone Resource Group Name.')
 param rgPazName string //= 'pubsecPazRg'
+
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-usage-attribution-subscription.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.networking.azureFirewall}'
+}
 
 module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
@@ -508,6 +527,8 @@ module bastion '../../azresources/network/bastion.bicep' = {
   scope: rgHubVnet
   params: {
     name: bastionName
+    sku: bastionSku
+    scaleUnits: bastionScaleUnits
     subnetId: hubVnet.outputs.AzureBastionSubnetId
   }
 }

@@ -12,7 +12,7 @@ targetScope = 'managementGroup'
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
-@description('Log Analytics Resource Id to integrate Azure Security Center.')
+@description('Log Analytics Resource Id to integrate Microsoft Defender for Cloud.')
 param logAnalyticsWorkspaceId string
 
 @description('List of members that should be excluded from Windows VM Administrator Group.')
@@ -26,6 +26,13 @@ var assignmentName = 'Canada Federal PBMM'
 
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
 var policyScopedId = resourceId('Microsoft.Authorization/policySetDefinitions', policyId)
+
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../../../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../../../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.policy}'
+}
 
 resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
   name: 'pbmm-${uniqueString('pbmm-',policyAssignmentManagementGroupId)}'

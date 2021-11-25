@@ -3,18 +3,22 @@
       "contentVersion": "1.0.0.0",
 
       "parameters": {
-          "serviceHealthAlerts": {
-            "value": {
-              "incidentTypes": [ "Incident", "Security", "Maintenance", "Information", "ActionRequired" ],
-              "regions": [ "Global", "Canada East", "Canada Central" ],
-              "receivers": {
-                "app": [ "email-1@company.com", "email-2@company.com" ],
-                "email": [ "email-1@company.com", "email-3@company.com", "email-4@company.com" ],
-                "sms": [ { "countryCode": "1", "phoneNumber": "1234567890" }, { "countryCode": "1",  "phoneNumber": "0987654321" } ],
-                "voice": [ { "countryCode": "1", "phoneNumber": "1234567890" } ]
-              }
-            }
+        "serviceHealthAlerts": {
+          "value": {
+            "resourceGroupName": "pubsec-service-health",
+            "incidentTypes": [ "Incident", "Security", "Maintenance", "Informational", "ActionRequired" ],
+            "regions": [ "Global", "Canada East", "Canada Central" ],
+            "receivers": {
+              "app": [ "alzcanadapubsec@microsoft.com" ],
+              "email": [ "alzcanadapubsec@microsoft.com" ],
+              "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+              "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+            },
+            "actionGroupName": "ALZ action group",
+            "actionGroupShortName": "alz-alert",
+            "alertRuleName": "ALZ alert rule",
+            "alertRuleDescription": "Alert rule for Azure Landing Zone"
           }
-
-      }
+        }
   }
+}

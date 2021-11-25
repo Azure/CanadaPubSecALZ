@@ -9,7 +9,7 @@
 
 /*
 
-Platform Logging archetype provides infrastructure for centrally managed Log Analytics Workspace & Sentinel that includes:
+Platform Logging archetype provides infrastructure for centrally managed Log Analytics Workspace & Microsoft Sentinel that includes:
 
 * Azure Automation Account
 * Log Analytics Workspace
@@ -19,7 +19,7 @@ Platform Logging archetype provides infrastructure for centrally managed Log Ana
   * AzureActivity
   * ChangeTracking
   * Security
-  * SecurityInsights (Azure Sentinel)
+  * SecurityInsights (Microsoft Sentinel)
   * ServiceMap
   * SQLAssessment
   * Updates
@@ -27,7 +27,7 @@ Platform Logging archetype provides infrastructure for centrally managed Log Ana
 * Role-based access control for Owner, Contributor & Reader 
 * Integration between Azure Automation Account & Log Analytics Workspace
 * Integration with Azure Cost Management for Subscription-scoped budget
-* Integration with Azure Security Center
+* Integration with Microsoft Defender for Cloud
 
 */
 
@@ -55,7 +55,7 @@ targetScope = 'subscription'
 @description('Service Health alerts')
 param serviceHealthAlerts object = {}
 
-// Azure Security Center
+// Microsoft Defender for Cloud
 // Example (JSON)
 // -----------------------------
 // "securityCenter": {
@@ -71,7 +71,7 @@ param serviceHealthAlerts object = {}
 //   email: 'alzcanadapubsec@microsoft.com'
 //   phone: '5555555555'
 // }
-@description('Security Center configuration.  It includes email and phone.')
+@description('Microsoft Defender for Cloud.  It includes email and phone.')
 param securityCenter object
 
 // Subscription Role Assignments
@@ -181,6 +181,16 @@ param logAnalyticsWorkspaceName string
 @description('Automation account name.')
 param logAnalyticsAutomationAccountName string
 
+@description('Log Analytics Workspace Data Retention in days.')
+param logAnalyticsRetentionInDays int
+
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-usage-attribution-subscription.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.logging}'
+}
+
 // Create Log Analytics Workspace Resource Group
 resource rgLogging 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: logAnalyticsResourceGroupName
@@ -194,6 +204,7 @@ module logAnalytics '../../azresources/monitor/log-analytics.bicep' = {
   scope: rgLogging
   params: {
     workspaceName: logAnalyticsWorkspaceName
+    workspaceRetentionInDays: logAnalyticsRetentionInDays
     automationAccountName: logAnalyticsAutomationAccountName
     tags: resourceTags
   }
@@ -201,9 +212,9 @@ module logAnalytics '../../azresources/monitor/log-analytics.bicep' = {
 
 /*
   Scaffold the subscription which includes:
-    * Azure Security Center - Enable Azure Defender (all available options)
-    * Azure Security Center - Configure Log Analytics Workspace (using the Log Analytics Workspace created in this deployment)
-    * Azure Security Center - Configure Security Alert Contact
+    * Microsoft Defender for Cloud - Enable Azure Defender (all available options)
+    * Microsoft Defender for Cloud - Configure Log Analytics Workspace (using the Log Analytics Workspace created in this deployment)
+    * Microsoft Defender for Cloud - Configure Security Alert Contact
     * Role Assignments to Security Groups
     * Service Health Alerts
     * Subscription Budget
