@@ -4,6 +4,7 @@
 
 * [Overview](#overview)
 * [Schema Definition](#schema-definition)
+* [Deployment Scenarios](#deployment-scenarios)
 * [Example Deployment Parameters](#example-deployment-parameters)
 * [Deployment Instructions](#deployment-instructions)
 
