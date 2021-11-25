@@ -44,7 +44,7 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Capability | Description |
 | --- | --- |
 | Service Health Alerts | Configures Service Health alerts such as Security, Incident, Maintenance.  Alerts are configured with email, sms and voice notifications. |
-| Azure Security Center | Configures security contact information (email and phone). |
+| Microsoft Defender for Cloud | Configures security contact information (email and phone). |
 | Subscription Role Assignments | Configures subscription scoped role assignments.  Roles can be built-in or custom. |
 | Subscription Budget | Configures monthly subscription budget with email notification. Budget is configured by default for 10 years and the amount. |
 | Subscription Tags | A set of tags that are assigned to the subscription. |
@@ -58,20 +58,20 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 
 Reference implementation uses parameter files with `object` parameters to consolidate parameters based on their context.  The schemas types are:
 
-* v0.1.0
+* Schema (version: `latest`)
 
-    * [Spoke deployment parameters definition](../../schemas/v0.1.0/landingzones/lz-generic-subscription.json)
+    * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-generic-subscription.json)
 
   * Common types
-    * [Service Health Alerts](../../schemas/v0.1.0/landingzones/types/serviceHealthAlerts.json)
-    * [Azure Security Center](../../schemas/v0.1.0/landingzones/types/securityCenter.json)
-    * [Subscription Role Assignments](../../schemas/v0.1.0/landingzones/types/subscriptionRoleAssignments.json)
-    * [Subscription Budget](../../schemas/v0.1.0/landingzones/types/subscriptionBudget.json)
-    * [Subscription Tags](../../schemas/v0.1.0/landingzones/types/subscriptionTags.json)
-    * [Resource Tags](../../schemas/v0.1.0/landingzones/types/resourceTags.json)
+    * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
+    * [Microsoft Defender for Cloud](../../schemas/latest/landingzones/types/securityCenter.json)
+    * [Subscription Role Assignments](../../schemas/latest/landingzones/types/subscriptionRoleAssignments.json)
+    * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
+    * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
+    * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
   * Spoke types
-    * [Automation](../../schemas/v0.1.0/landingzones/types/automation.json)
-    * [Hub Network](../../schemas/v0.1.0/landingzones/types/hubNetwork.json)
+    * [Automation](../../schemas/latest/landingzones/types/automation.json)
+    * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
 
 
 ## Example Deployment Parameters
@@ -79,7 +79,7 @@ Reference implementation uses parameter files with `object` parameters to consol
 This example configures:
 
 1. Service Health Alerts
-2. Azure Security Center
+2. Microsoft Defender for Cloud
 3. Subscription Role Assignments using built-in and custom roles
 4. Subscription Budget with $1000
 5. Subscription Tags

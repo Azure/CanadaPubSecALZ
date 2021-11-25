@@ -21,6 +21,13 @@ var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssi
 var rgInheritedPolicyId = 'custom-tags-inherited-from-resource-group'
 var rgInheritedAssignmentName = 'Custom - Tags inherited from resource group if missing'
 
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../../../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../../../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.policy}'
+}
+
 resource rgInheritedPolicySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
   name: 'tags-rg-${uniqueString('tags-from-rg-', policyAssignmentManagementGroupId)}'
   properties: {

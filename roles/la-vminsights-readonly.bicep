@@ -15,6 +15,13 @@ param assignableMgId string
 var scope = tenantResourceId('Microsoft.Management/managementGroups', assignableMgId)
 var roleName = 'Custom - Log Analytics - Read Only for VM Insights'
 
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.roles}'
+}
+
 resource roleDefn 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' = {
   name: guid(roleName)
   scope: managementGroup()

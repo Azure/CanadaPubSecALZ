@@ -6,7 +6,7 @@
             "value": "{{var-topLevelManagementGroupName}}"
         },
         "requiredRetentionDays": {
-            "value": "730"
+            "value": "{{var-logging-logAnalyticsRetentionInDays}}"
         },
         "approvedVMExtensions": {
             "value": [

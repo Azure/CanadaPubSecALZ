@@ -14,7 +14,8 @@ targetScope = 'subscription'
 // -----------------------------
 // "serviceHealthAlerts": {
 //   "value": {
-//     "incidentTypes": [ "Incident", "Security", "Maintenance", "Information", "ActionRequired" ],
+//     "resourceGroupName": "pubsec-service-health"
+//     "incidentTypes": [ "Incident", "Security", "Maintenance", "Informational", "ActionRequired" ],
 //     "regions": [ "Global", "Canada East", "Canada Central" ],
 //     "receivers": {
 //       "app": [ "email-1@company.com", "email-2@company.com" ],
@@ -32,10 +33,10 @@ targetScope = 'subscription'
 param serviceHealthAlerts object = {}
 
 // Log Analytics
-@description('Log Analytics Resource Id to integrate Azure Security Center.')
+@description('Log Analytics Resource Id to integrate Microsoft Defender for Cloud.')
 param logAnalyticsWorkspaceResourceId string
 
-// Azure Security Center
+// Microsoft Defender for Cloud
 // Example (JSON)
 // -----------------------------
 // "securityCenter": {
@@ -51,7 +52,7 @@ param logAnalyticsWorkspaceResourceId string
 //   email: 'alzcanadapubsec@microsoft.com'
 //   phone: '5555555555'
 // }
-@description('Security Center configuration.  It includes email and phone.')
+@description('Microsoft Defender for Cloud configuration.  It includes email and phone.')
 param securityCenter object
 
 // Subscription Role Assignments
@@ -240,7 +241,30 @@ param aks object
 // "sqldb": {
 //   "value": {
 //     "enabled": true,
-//     "username": "azadmin"
+//     "sqlAuthenticationUsername": "azadmin"
+//   }
+// }
+
+// example 2
+// "sqldb":{
+//   "value":{
+//     "enabled":true,
+//     "aadAuthenticationOnly":true,
+//     "aadLoginName":"John Smith",
+//     "aadLoginObjectID":"88888-888888-888888-888888",
+//     "aadLoginType":"User"
+//   }
+// }
+
+// example 3
+// "sqldb":{
+//   "value":{
+//     "enabled":true,
+//     "aadAuthenticationOnly":false,
+//     "sqlAuthenticationUsername": "azadmin",
+//     "aadLoginName":"John Smith",
+//     "aadLoginObjectID":"88888-888888-888888-888888",
+//     "aadLoginType":"User"
 //   }
 // }
 
@@ -248,7 +272,27 @@ param aks object
 // -----------------------------
 // {
 //   enabled: true
-//   username: 'azadmin'
+//   aadAuthenticationOnly: false 
+//   sqlAuthenticationUsername: 'azadmin'
+// }
+
+// Example (Bicep) 2
+// {
+//   enabled: true
+//   aadAuthenticationOnly: true 
+//   aadLoginName:'John Smith',
+//   aadLoginObjectID:'88888-888888-888888-888888',
+//   aadLoginType:'User'
+// }
+
+// Example (Bicep) 3
+// {
+//   enabled: true
+//   aadAuthenticationOnly: false
+//   sqlAuthenticationUsername: 'azadmin' 
+//   aadLoginName:'John Smith',
+//   aadLoginObjectID:'88888-888888-888888-888888',
+//   aadLoginType:'User'
 // }
 @description('SQL Database configuration.  Includes enabled flag and username.')
 param sqldb object
@@ -443,11 +487,18 @@ param hubNetwork object
 @description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks) ')
 param network object
 
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-usage-attribution-subscription.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.archetypes.machineLearning}'
+}
+
 /*
   Scaffold the subscription which includes:
-    * Azure Security Center - Enable Azure Defender (all available options)
-    * Azure Security Center - Configure Log Analytics Workspace
-    * Azure Security Center - Configure Security Alert Contact
+    * Microsoft Defender for Cloud - Enable Azure Defender (all available options)
+    * Microsoft Defender for Cloud - Configure Log Analytics Workspace
+    * Microsoft Defender for Cloud - Configure Security Alert Contact
     * Role Assignments to Security Groups
     * Service Health Alerts
     * Subscription Budget

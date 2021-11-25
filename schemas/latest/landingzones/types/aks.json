@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "definitions": {
+      "AKS": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+              "value": {
+                  "$ref": "#/definitions/Value"
+              }
+          },
+          "required": [
+              "value"
+          ],
+          "title": "AKS"
+      },
+      "Value": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+              "version": {
+                  "type": "string"
+              }
+          },
+          "required": [
+              "version"
+          ],
+          "title": "Value"
+      }
+  }
+}

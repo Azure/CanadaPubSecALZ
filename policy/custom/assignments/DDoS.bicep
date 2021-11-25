@@ -15,21 +15,33 @@ param policyDefinitionManagementGroupId string
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
-var policyId = 'custom-enable-azure-defender'
-var assignmentName = 'Custom - Azure Defender for Azure Services'
+@description('Azure DDOS Standard Plan Resource Id.')
+param ddosStandardPlanId string
+
+var policyId = 'Network-Deploy-DDoS-Standard'
+var assignmentName = 'Custom - Enable DDoS Standard on Virtual Networks'
 
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
-var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${policyId}'
+var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policyDefinitions/${policyId}'
+
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../../../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../../../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.policy}'
+}
 
 resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
-  name: 'asc-${uniqueString('asc-',policyAssignmentManagementGroupId)}'
+  name: 'ddos-${uniqueString(policyAssignmentManagementGroupId)}'
   properties: {
     displayName: assignmentName
     policyDefinitionId: policyScopedId
     scope: scope
-    notScopes: [
-    ]
+    notScopes: []
     parameters: {
+      planId: {
+        value: ddosStandardPlanId
+      }
     }
     enforcementMode: 'Default'
   }
@@ -40,21 +52,11 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
 }
 
 // These role assignments are required to allow Policy Assignment to remediate.
-resource policySetRoleAssignmentSecurityAdmin 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(policyAssignmentManagementGroupId, 'asc', 'Security Admin')
+resource policySetRoleAssignmentNetworkContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(policyAssignmentManagementGroupId, 'ddos-standard', 'Network Contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/fb1c8493-542b-48eb-b624-b4c8fea62acd'
-    principalId: policySetAssignment.identity.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource policySetRoleAssignmentVirtualMachineContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(policyAssignmentManagementGroupId, 'asc', 'Virtual Machine Contributor')
-  scope: managementGroup()
-  properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }

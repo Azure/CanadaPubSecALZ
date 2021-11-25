@@ -9,15 +9,10 @@
 
 targetScope = 'managementGroup'
 
-@description('Management Group scope for the policy definition.')
-param policyDefinitionManagementGroupId string
-
-var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)
-
 resource ascAzureDefender 'Microsoft.Authorization/policySetDefinitions@2020-03-01' = {
   name: 'custom-enable-azure-defender'
   properties: {
-    displayName: 'Custom - Azure Defender for Azure Services'
+    displayName: 'Custom - Microsoft Defender for Cloud'
     policyDefinitionGroups: [
       {
         name: 'EXTRA'
@@ -141,8 +136,8 @@ resource ascAzureDefender 'Microsoft.Authorization/policySetDefinitions@2020-03-
         groupNames: [
           'EXTRA'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'ASC-Deploy-Defender-OSSDB')
-        policyDefinitionReferenceId: toLower(replace('Deploy Azure Defender for Open-source relational databases', ' ', '-'))
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/44433aa3-7ec2-4002-93ea-65c65ff0310a'
+        policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for open-source relational databases to be enabled', ' ', '-'))
         parameters: {}
       }
       {
