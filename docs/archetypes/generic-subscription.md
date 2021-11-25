@@ -3,10 +3,11 @@
 ## Table of Contents
 
 * [Overview](#overview)
-* [Schema Definition](#schema-definition)
-* [Deployment Scenarios](#deployment-scenarios)
-* [Example Deployment Parameters](#example-deployment-parameters)
-* [Deployment Instructions](#deployment-instructions)
+* [Azure Deployment](#azure-deployment)
+  * [Schema Definition](#schema-definition)
+  * [Deployment Scenarios](#deployment-scenarios)
+  * [Example Deployment Parameters](#example-deployment-parameters)
+  * [Deployment Instructions](#deployment-instructions)
 
 ## Overview
 
@@ -24,14 +25,13 @@ Azure Policies are used to provide governance, compliance and protection while e
 
 **CloudOps team will be required for**
 
-1.	Establishing connectivity to Hub virtual network (required for egress traffic flow & Azure Bastion).
-2.	Creating App Registrations (required for service principal accounts).  This is optional based on whether App Registrations are disabled for all users or not.
-
+1. Establishing connectivity to Hub virtual network (required for egress traffic flow & Azure Bastion).
+2. Creating App Registrations (required for service principal accounts).  This is optional based on whether App Registrations are disabled for all users or not.
 
 **Workflow**
 
-*	A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
-*	The subscription will automatically be assigned to the **pubsecSandbox** management group.
+* A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
+* The subscription will automatically be assigned to the **pubsecSandbox** management group.
 * CloudOps will create a Service Principal Account (via App Registration) that will be used for future DevOps automation.
 * CloudOps will scaffold the subscription with baseline configuration.
 * CloudOps will hand over the subscription to requesting team.
@@ -54,14 +54,15 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Hub Networking | Configures virtual network peering to Hub Network which is required for egress traffic flow and hub-managed DNS resolution (on-premises or other spokes, private endpoints).
 | Networking | A spoke virtual network with minimum 4 zones: oz (Operational Zone), paz (Public Access Zone), rz (Restricted Zone), hrz (Highly Restricted Zone).  Additional subnets can be configured at deployment time using configuration (see below). |
 
+## Azure Deployment
 
-## Schema Definition
+### Schema Definition
 
 Reference implementation uses parameter files with `object` parameters to consolidate parameters based on their context.  The schemas types are:
 
 * Schema (version: `latest`)
 
-    * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-generic-subscription.json)
+  * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-generic-subscription.json)
 
   * Common types
     * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
@@ -70,12 +71,12 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
     * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
     * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
+
   * Spoke types
     * [Automation](../../schemas/latest/landingzones/types/automation.json)
     * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
 
-
-## Deployment Scenarios
+### Deployment Scenarios
 
 | Scenario | Example JSON Parameters | Notes |
 |:-------- |:----------------------- |:----- |
@@ -89,8 +90,7 @@ Reference implementation uses parameter files with `object` parameters to consol
 | Deployment without optional subnets | [tests/schemas/lz-generic-subscription/WithoutOptionalSubnets.json](../../tests/schemas/lz-generic-subscription/WithoutOptionalSubnets.json) | `parameters.network.value.subnets.optional` array is empty. |
 | Deployment without custom DNS | [tests/schemas/lz-generic-subscription/WithoutCustomDNS.json](../../tests/schemas/lz-generic-subscription/WithoutCustomDNS.json) | `parameters.network.value.dnsServers` array is empty.  Defaults to Azure managed DNS when array is empty. |
 
-
-## Example Deployment Parameters
+### Example Deployment Parameters
 
 This example configures:
 
@@ -102,7 +102,6 @@ This example configures:
 6. Resource Tags (aligned to the default tags defined in [Policies](../../policy/custom/definitions/policyset/Tags.parameters.json))
 7. Automation Account
 8. Spoke Virtual Network with Hub-managed DNS, Virtual Network Peering, 4 required subnets (zones) and 1 additional subnet `web`.
-
 
 ```json
 {
@@ -276,7 +275,7 @@ This example configures:
 }
 ```
 
-## Deployment Instructions
+### Deployment Instructions
 
 > Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Generic Subscription.
 
@@ -300,7 +299,6 @@ The JSON config file name is in one of the following two formats:
 
 - [AzureSubscriptionGUID]\_[TemplateName].json
 - [AzureSubscriptionGUID]\_[TemplateName]\_[DeploymentLocation].json
-
 
 The subscription GUID is needed by the pipeline; since it's not available in the file contents, it is specified in the config file name.
 
