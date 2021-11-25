@@ -4,7 +4,7 @@
 
 ### November 23, 2021
 
-* Change in `sqldb` schema object to support Azure AD authentication.
+Change in `sqldb` schema object to support Azure AD authentication.
 
     | Setting | Type | Description |
     | ------- | ---- | ----------- |
@@ -15,16 +15,16 @@
     | aadLoginObjectID | String | The object id of the Azure AD object whether it's a login or a group |
     | aadLoginType | String | Represent the type of the object, it can be **User**, **Group** or **Application** (in case of service principal) |
 
-#### Samples
+**Examples**
 
 SQL authentication only | Json (used in parameter files)
 
 ```json
 "sqldb": {
   "value": {
-  "aadAuthenticationOnly":false,
-  "enabled": true,
-  "sqlAuthenticationUsername": "azadmin"
+    "aadAuthenticationOnly":false,
+    "enabled": true,
+    "sqlAuthenticationUsername": "azadmin"
   }
 }
 ```
@@ -42,13 +42,13 @@ SQL authentication only | bicep (used when calling bicep module from another)
 Azure AD authentication only | Json (used in parameters files)
   
 ```json
-"sqldb":{
-  "value":{
-  "enabled":true,
-  "aadAuthenticationOnly":true,
-  "aadLoginName":"John Smith",
-  "aadLoginObjectID":"88888-888888-888888-888888",
-  "aadLoginType":"User"
+"sqldb": {
+  "value": {
+    "enabled":true,
+    "aadAuthenticationOnly":true,
+    "aadLoginName":"John Smith",
+    "aadLoginObjectID":"88888-888888-888888-888888",
+    "aadLoginType":"User"
   }
 }
 ```
@@ -68,14 +68,14 @@ Azure AD authentication only | bicep (used when calling bicep module from anothe
 Mixed authentication |  Json (used in parameters files)
 
 ```json
-  "sqldb":{
-    "value":{
-    "enabled":true,
-    "aadAuthenticationOnly":false,
-    "sqlAuthenticationUsername": "azadmin",
-    "aadLoginName":"John Smith",
-    "aadLoginObjectID":"88888-888888-888888-888888",
-    "aadLoginType":"User"
+  "sqldb": {
+    "value": {
+      "enabled":true,
+      "aadAuthenticationOnly":false,
+      "sqlAuthenticationUsername": "azadmin",
+      "aadLoginName":"John Smith",
+      "aadLoginObjectID":"88888-888888-888888-888888",
+      "aadLoginType":"User"
     }
   }
  ```
