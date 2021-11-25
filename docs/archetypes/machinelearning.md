@@ -11,6 +11,7 @@
 * [Logging](#logging)
 * [Testing](#testing)
 * [Schema Definition](#schema-definition)
+* [Deployment Scenarios](#deployment-scenarios)
 * [Example Deployment Parameters](#example-deployment-parameters)
 * [Deployment Instructions](#deployment-instructions)
 
@@ -156,10 +157,10 @@ The test scripts are located in [tests/landingzones/lz-machinelearning/e2e-flow-
 
 The scripts are:
 
-1.	Azure ML SQL connection and Key Vault integration test
-2.	Azure ML terminal connection to ACR test
-3.	Databricks integration with Key Vault, SQL MI, SQL Database, Data Lake test
-4.	Azure ML deployment through ACR to AKS test
+1. Azure ML SQL connection and Key Vault integration test
+2. Azure ML terminal connection to ACR test
+3. Databricks integration with Key Vault, SQL MI, SQL Database, Data Lake test
+4. Azure ML deployment through ACR to AKS test
 
 ### Test Scenarios
 
@@ -191,15 +192,13 @@ The scripts are:
 2. Set up a compute instance and import the provided tests to the workspace
 3. Run the test script, which will build a Docker Azure ML model image, push it to ACR, and then AKS to pull and run the ML model
 
-
-
 ## Schema Definition
 
 Reference implementation uses parameter files with `object` parameters to consolidate parameters based on their context.  The schemas types are:
 
 * Schema (version: `latest`)
 
-    * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-machinelearning.json)
+  * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-machinelearning.json)
 
   * Common types
     * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
@@ -208,6 +207,7 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
     * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
     * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
+
   * Spoke types
     * [Automation](../../schemas/latest/landingzones/types/automation.json)
     * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
@@ -215,7 +215,24 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Azure Machine Learning](../../schemas/latest/landingzones/types/aml.json)
     * [Azure Key Vault](../../schemas/latest/landingzones/types/keyVault.json)
     * [Azure SQL Database](../../schemas/latest/landingzones/types/sqldb.json)
-    * [Azure SQL Managed Instances](../../schemas/latest/landingzones/types/sqlmi.json)    
+    * [Azure SQL Managed Instances](../../schemas/latest/landingzones/types/sqlmi.json)
+
+## Deployment Scenarios
+
+| Scenario | Example JSON Parameters | Notes |
+|:-------- |:----------------------- |:----- |
+| Deployment with Hub Virtual Network | [tests/schemas/lz-machinelearning/FullDeployment-With-Hub.json](../../tests/schemas/lz-machinelearning/FullDeployment-With-Hub.json) | - |
+| Deployment without Hub Virtual Network | [tests/schemas/lz-machinelearning/FullDeployment-Without-Hub.json](../../tests/schemas/lz-machinelearning/FullDeployment-Without-Hub.json) | `parameters.hubNetwork.value.*` fields are empty & `parameters.network.value.peerToHubVirtualNetwork` is false. |
+| Deployment with subscription budget | [tests/schemas/lz-machinelearning/BudgetIsTrue.json](../../tests/schemas/lz-machinelearning/BudgetIsTrue.json) | `parameters.subscriptionBudget.value.createBudget` is set to `true` and budget information filled in. |
+| Deployment without subscription budget | [tests/schemas/lz-machinelearning/BudgetIsFalse.json](../../tests/schemas/lz-machinelearning/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
+| Deployment without resource tags | [tests/schemas/lz-machinelearning/EmptyResourceTags.json](../../tests/schemas/lz-machinelearning/EmptyResourceTags.json) | `parameters.resourceTags.value` is an empty object. |
+| Deployment without subscription tags | [tests/schemas/lz-machinelearning/EmptySubscriptionTags.json](../../tests/schemas/lz-machinelearning/EmptySubscriptionTags.json) | `parameters.subscriptionTags.value` is an empty object. |
+| Deployment without SQL DB | [tests/schemas/lz-machinelearning/SQLDBIsFalse.json](../../tests/schemas/lz-machinelearning/SQLDBIsFalse.json) | `parameters.sqldb.value.enabled` is false. |
+| Deployment without SQL Managed Instances | [tests/schemas/lz-machinelearning/SQLMIIsFalse.json](../../tests/schemas/lz-machinelearning/SQLMIIsFalse.json) | `parameters.sqlmi.value.enabled` is false. |
+| Deployment with SQL DB using AAD only authentication | [tests/schemas/lz-machinelearning/SQLDB-aadAuthOnly.json](../../tests/schemas/lz-machinelearning/SQLDB-aadAuthOnly.json) | `parameters.sqldb.value.aadAuthenticationOnly` is true, `parameters.sqldb.value.aad*` fields filled in. |
+| Deployment with SQL DB using SQL authentication | [tests/schemas/lz-machinelearning/SQLDB-sqlAuth.json](../../tests/schemas/lz-machinelearning/SQLDB-sqlAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
+| Deployment with SQL DB using mixed mode authentication | [tests/schemas/lz-machinelearning/SQLDB-mixedAuth.json](../../tests/schemas/lz-machinelearning/SQLDB-mixedAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false,  `parameters.sqldb.value.aad*` fields filled in & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
+| Deployment without customer managed keys | [tests/schemas/lz-machinelearning/WithoutCMK.json](../../tests/schemas/lz-machinelearning/WithoutCMK.json) | `parameters.useCMK.value` is false. |
 
 ## Example Deployment Parameters
 
