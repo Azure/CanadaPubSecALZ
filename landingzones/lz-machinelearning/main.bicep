@@ -33,10 +33,10 @@ targetScope = 'subscription'
 param serviceHealthAlerts object = {}
 
 // Log Analytics
-@description('Log Analytics Resource Id to integrate Azure Security Center.')
+@description('Log Analytics Resource Id to integrate Microsoft Defender for Cloud.')
 param logAnalyticsWorkspaceResourceId string
 
-// Azure Security Center
+// Microsoft Defender for Cloud
 // Example (JSON)
 // -----------------------------
 // "securityCenter": {
@@ -52,7 +52,7 @@ param logAnalyticsWorkspaceResourceId string
 //   email: 'alzcanadapubsec@microsoft.com'
 //   phone: '5555555555'
 // }
-@description('Security Center configuration.  It includes email and phone.')
+@description('Microsoft Defender for Cloud configuration.  It includes email and phone.')
 param securityCenter object
 
 // Subscription Role Assignments
@@ -496,9 +496,9 @@ module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-u
 
 /*
   Scaffold the subscription which includes:
-    * Azure Security Center - Enable Azure Defender (all available options)
-    * Azure Security Center - Configure Log Analytics Workspace
-    * Azure Security Center - Configure Security Alert Contact
+    * Microsoft Defender for Cloud - Enable Azure Defender (all available options)
+    * Microsoft Defender for Cloud - Configure Log Analytics Workspace
+    * Microsoft Defender for Cloud - Configure Security Alert Contact
     * Role Assignments to Security Groups
     * Service Health Alerts
     * Subscription Budget

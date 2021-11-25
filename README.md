@@ -43,7 +43,7 @@ multiple types of workloads including App Dev and Data & AI.
 
 * Automatic approval for Canada Federal PBMM nor Authority to Operate (ATO).  Customers must collect evidence, customize to meet their departmental requirements and submit for Authority to Operate based on their risk profile, requirements and process.
 
-* Compliant on all Azure Policies when the reference implementation is deployed.  This is due to the shared responsibility of cloud and customers can choose the Azure Policies to exclude.  For example, using Azure Firewall is an Azure Policy that will be non-compliant since majority of the Public Sector customers use Network Virtual Appliances such as Fortinet.  Customers must review [Azure Security Center Regulatory Compliance dashboard](https://docs.microsoft.com/azure/security-center/update-regulatory-compliance-packages) and apply appropriate exemptions.
+* Compliant on all Azure Policies when the reference implementation is deployed.  This is due to the shared responsibility of cloud and customers can choose the Azure Policies to exclude.  For example, using Azure Firewall is an Azure Policy that will be non-compliant since majority of the Public Sector customers use Network Virtual Appliances such as Fortinet.  Customers must review [Microsoft Defender for Cloud Regulatory Compliance dashboard](https://docs.microsoft.com/azure/defender-for-cloud/update-regulatory-compliance-packages) and apply appropriate exemptions.
 
 ## Contributing
 

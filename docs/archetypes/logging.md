@@ -30,10 +30,10 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Capability | Description |
 | --- | --- |
 | Service Health Alerts | Configures Service Health alerts such as Security, Incident, Maintenance.  Alerts are configured with email, sms and voice notifications. |
-| Azure Security Center | Configures security contact information (email and phone). |
+| Microsoft Defender for Cloud | Configures security contact information (email and phone). |
 | Subscription Role Assignments | Configures subscription scoped role assignments.  Roles can be built-in or custom. |
 | Subscription Budget | Configures monthly subscription budget with email notification. Budget is configured by default for 10 years and the amount. |
-| Log Analytics | Configures Automation Account, Log Analytics Workspace and Log Analytics Solutions (AgentHealthAssessment, AntiMalware, AzureActivity, ChangeTracking, Security, SecurityInsights, ServiceMap, SQLAssessment, Updates, VMInsights).  **SecurityInsights** solution pack will enable Azure Sentinel.  |
+| Log Analytics | Configures Automation Account, Log Analytics Workspace and Log Analytics Solutions (AgentHealthAssessment, AntiMalware, AzureActivity, ChangeTracking, Security, SecurityInsights, ServiceMap, SQLAssessment, Updates, VMInsights).  **SecurityInsights** solution pack will enable Microsoft Sentinel.  |
 | Subscription Tags | A set of tags that are assigned to the subscription. |
 | Resource Tags | A set of tags that are assigned to the resource group and resources.  These tags must include all required tags as defined the Tag Governance policy. |
 
@@ -45,7 +45,7 @@ Reference implementation uses parameter files with `object` parameters to consol
 
   * Common
     * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
-    * [Azure Security Center](../../schemas/latest/landingzones/types/securityCenter.json)
+    * [Microsoft Defender for Cloud](../../schemas/latest/landingzones/types/securityCenter.json)
     * [Subscription Role Assignments](../../schemas/latest/landingzones/types/subscriptionRoleAssignments.json)
     * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
     * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)

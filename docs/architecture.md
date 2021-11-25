@@ -74,21 +74,21 @@ Resources that are non-compliant can be put into a compliant state through [Reme
 **Remediation history**
 ![Azure Policy Remediation](media/architecture/policy-remediation-status.jpg)
 
+### 2.4 Microsoft Defender for Cloud Integration
 
-### 2.4 Azure Security Center Integration
-The benefit of aligning to built-in policy sets is the Azure Security Center integration.  Azure Security Center can infer the built-in policy sets and build a Regulatory Compliance dashboard across each regulatory standard.  This compliance view is applicable to SP NIST 800-53 R4, SP NIST 800-53 R5, Canada Federal PBMM, Azure Security Benchmark, Azure CIS 1.3.0, HIPAA/HITRUST and FedRAMP Moderate.
+The benefit of aligning to built-in policy sets is the Microsoft Defender for Cloud integration.  Microsoft Defender for Cloud can infer the built-in policy sets and build a Regulatory Compliance dashboard across each regulatory standard.  This compliance view is applicable to SP NIST 800-53 R4, SP NIST 800-53 R5, Canada Federal PBMM, Azure Security Benchmark, Azure CIS 1.3.0, HIPAA/HITRUST and FedRAMP Moderate.
 
 **Compliance View**
 
-The integration is based on the scope that the policy sets are assigned, and those assignments are inherited by all subscriptions within it.  There is no manual configuration required in Azure Security Center.
+The integration is based on the scope that the policy sets are assigned, and those assignments are inherited by all subscriptions within it.  There is no manual configuration required in Microsoft Defender for Cloud.
 
-![Azure Security Center - Security Policy](media/architecture/asc-security-policy.jpg)
+![Microsoft Defender for Cloud - Security Policy](media/architecture/defender-security-policy.jpg)
 
 The compliance reporting will outline the Azure Policies, the resource types, the # of resources, and compliance status.  Data is grouped by control groups within each regulatory standard.  The data can also be exported as PDF or CSV based on need.
 
 > It is not possible to exclude control groups.
 
-![Azure Security Center - Regulatory Compliance](media/architecture/asc-regulatory-compliance.jpg)
+![Microsoft Defender for Cloud - Regulatory Compliance](media/architecture/defender-regulatory-compliance.jpg)
 
 ### 2.5 Compliance Data Export
 
@@ -139,7 +139,7 @@ Azure Landing Zones for Canadian Public Sector assumes that Azure Active Directo
 * Conditional Access Policies - Configured based on location & devices
 * Privileged Identity Management (PIM) - Enabled for elevated access control. 
 * App Registration - Consider disabling for all users and created on-demand by CloudOps teams.
-* Sign-In Logs - Logs are exported to Log Analytics workspace & Sentinel used for threat hunting (Security Monitoring Team).
+* Sign-In Logs - Logs are exported to Log Analytics workspace & Microsoft Sentinel used for threat hunting (Security Monitoring Team).
 * Break-glass procedure - Process documented and implemented including 2 break glass accounts with different MFA devices & split up passwords.
 *	Azure Directory to Azure Active Directory synchronization - Are the identities synchronized or using cloud only account?
 
@@ -292,7 +292,7 @@ This approach offers:
 * Streamlined log correlation across multiple environments (Dev, QA, Prod) & line of businesses.
 * Avoids log analytics workspace sprawl and streamlines tenant-wide governance through Azure Policy.
 * Integration with compliance standards such as NIST 800-53 R4 and Protected B built-in Policy Sets to verify log collection compliance.
-* Integration with Azure Security Center.
+* Integration with Microsoft Defender for Cloud.
 * Data access to logs are controlled through RBAC where Security Monitoring teams will access all data, while line of business teams access logs of the resources they manage.
 * Cost optimization and better pricing at larger volume through capacity reservations.
 * Tunable based on the types of logs and data retention as data ingestion grows.
@@ -332,7 +332,7 @@ For example, when you grant access to your team responsible for infrastructure s
 
 | Scenario | Log Access Mode | Log Data Visibility |
 | --- | --- | --- |
-| Security Analyst with [Log Analytics Reader or Log Analytics Contributor](https://docs.microsoft.com/en-ca/azure/azure-monitor/logs/manage-access#manage-access-using-azure-permissions) RBAC role assignment. | Access the Log Analytics workspace directly through Azure Portal or through Azure Sentinel. | All data in the Log Analytics Workspace. |
+| Security Analyst with [Log Analytics Reader or Log Analytics Contributor](https://docs.microsoft.com/en-ca/azure/azure-monitor/logs/manage-access#manage-access-using-azure-permissions) RBAC role assignment. | Access the Log Analytics workspace directly through Azure Portal or through Microsoft Sentinel. | All data in the Log Analytics Workspace. |
 | IT Teams responsible for one or more line of business with permissions to one or more subscriptions, resource groups or resources with at least Reader role. | Access the logs through the resource's Logs menu for the Azure resource (i.e., VM or Storage Account or Database). | Only to Azure resources based on RBAC.  User can query logs for specific resources, resource groups, or subscription they have access to from any workspace but can't query logs for other resources. |
 | Application Team with permissions to one or more subscriptions, resource groups or resources with at least Reader role. | Access the logs through the resource's Logs menu for the Azure resource (i.e., VM or Storage Account or Database). | Only to Azure resources based on RBAC.  User can query logs for specific resources, resource groups, or subscription they have access to from any workspace but can't query logs for other resources. |
 
