@@ -36,7 +36,7 @@ targetScope = 'subscription'
 
 For accepted parameter values, see:
 
-  * JSON Parameter Examples:    docs/archetypes/generic-subscriptions.md
+  * Documentation:              docs/archetypes/generic-subscriptions.md
   * JSON Schema Definition:     schemas/latest/landingzones/lz-generic-subscription.json
   * JSON Test Cases/Scenarios:  tests/schemas/lz-generic-subscription
 
