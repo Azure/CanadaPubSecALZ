@@ -4,4 +4,4 @@ References:
 
 * [Documentation](../../docs/archetypes/generic-subscription.md)
 * [JSON Schema](../../schemas/latest/landingzones/lz-generic-subscription.json)
-* [Deployment Scenarios](../../tests/schemas/lz-generic-subscription) (defined as unit tests)
+* [Deployment Scenarios](../../docs/archetypes/generic-subscription.md#deployment-scenarios) (defined as unit tests)
