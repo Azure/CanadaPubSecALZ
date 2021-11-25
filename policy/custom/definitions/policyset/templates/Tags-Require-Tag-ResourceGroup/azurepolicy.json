@@ -16,13 +16,13 @@
         "type": "String",
         "metadata": {
           "displayName": "Policy Enforcement",
-          "description": "Whether to enforce policy through deny or audit when tag is missing.",
-          "allowedValues": [
-            "Allow",
-            "Deny"
-          ],
-          "defaultValue": "Deny"
-        }
+          "description": "Whether to enforce policy through deny or audit when tag is missing."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny"
+        ],
+        "defaultValue": "Deny"
       }
     },
     "policyRule": {
