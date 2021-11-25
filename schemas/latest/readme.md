@@ -2,6 +2,10 @@
 
 ## Landing Zone Schemas
 
+### November 25, 2021
+
+* Remove `uuid` format check on `privateDnsManagedByHubSubscriptionId` for type `schemas/latest/landingzones/types/hubNetwork.json`
+
 ### November 23, 2021
 
 Change in `sqldb` schema object to support Azure AD authentication.
