@@ -252,6 +252,7 @@ This example configures:
 9. Deploys Azure resources with Customer Managed Keys.
 
 > **Note 1:**  Azure Automation Account is not deployed with Customer Managed Key as it requires an Azure Key Vault instance with public network access.
+
 > **Note 2:** All secrets stored in Azure Key Vault will have 10 year expiration (configurable) & all RSA Keys (used for CMK) will not have an expiration.
 
 ```json
