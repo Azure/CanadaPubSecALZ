@@ -16,7 +16,7 @@
             ]
         },
         "policyEnforcement": {
-            "value": "Audit"
+            "value": "Deny"
         }
     }
 }
