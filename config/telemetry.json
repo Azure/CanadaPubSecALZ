@@ -1,6 +1,6 @@
 {
   "customerUsageAttribution": {
-    "enabled": true,
+    "enabled":false,
     "modules": {
       "managementGroups": "a83f6385-f514-415f-991b-2d9bd7aed658",
       "policy": "a83f6385-f514-415f-991b-2d9bd7aed658",
