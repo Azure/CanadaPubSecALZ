@@ -1,4 +1,4 @@
-# Generic Subscription
+# Archetype: Generic Subscription
 
 References:
 
