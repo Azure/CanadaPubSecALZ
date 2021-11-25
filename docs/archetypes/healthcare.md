@@ -11,6 +11,7 @@
 * [Logging](#logging)
 * [Testing](#testing)
 * [Schema Definition](#schema-definition)
+* [Deployment Scenarios](#deployment-scenarios)
 * [Example Deployment Parameters](#example-deployment-parameters)
 * [Deployment Instructions](#deployment-instructions)
 
@@ -223,15 +224,13 @@ The scripts are:
 2. Set up a compute instance and import the provided tests to the workspace
 3. Run the test script, which will build a Docker Azure ML model image, push it to ACR, and then AKS to pull and run the ML model
 
-
-
 ## Schema Definition
 
 Reference implementation uses parameter files with `object` parameters to consolidate parameters based on their context.  The schemas types are:
 
 * Schema (version: `latest`)
 
-    * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-healthcare.json)
+  * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-healthcare.json)
 
   * Common types
     * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
@@ -246,6 +245,22 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Azure Key Vault](../../schemas/latest/landingzones/types/keyVault.json)
     * [Azure SQL Database](../../schemas/latest/landingzones/types/sqldb.json)
     * [Azure Synapse Analytics](../../schemas/latest/landingzones/types/synapse.json)
+
+## Deployment Scenarios
+
+| Scenario | Example JSON Parameters | Notes |
+|:-------- |:----------------------- |:----- |
+| Deployment with Hub Virtual Network | [tests/schemas/lz-healthcare/FullDeployment-With-Hub.json](../../tests/schemas/lz-healthcare/FullDeployment-With-Hub.json) | - |
+| Deployment without Hub Virtual Network | [tests/schemas/lz-healthcare/FullDeployment-Without-Hub.json](../../tests/schemas/lz-healthcare/FullDeployment-Without-Hub.json) | `parameters.hubNetwork.value.*` fields are empty & `parameters.network.value.peerToHubVirtualNetwork` is false. |
+| Deployment with subscription budget | [tests/schemas/lz-healthcare/BudgetIsTrue.json](../../tests/schemas/lz-healthcare/BudgetIsTrue.json) | `parameters.subscriptionBudget.value.createBudget` is set to `true` and budget information filled in. |
+| Deployment without subscription budget | [tests/schemas/lz-healthcare/BudgetIsFalse.json](../../tests/schemas/lz-healthcare/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
+| Deployment without resource tags | [tests/schemas/lz-healthcare/EmptyResourceTags.json](../../tests/schemas/lz-healthcare/EmptyResourceTags.json) | `parameters.resourceTags.value` is an empty object. |
+| Deployment without subscription tags | [tests/schemas/lz-healthcare/EmptySubscriptionTags.json](../../tests/schemas/lz-healthcare/EmptySubscriptionTags.json) | `parameters.subscriptionTags.value` is an empty object. |
+| Deployment without SQL DB | [tests/schemas/lz-healthcare/SQLDBIsFalse.json](../../tests/schemas/lz-healthcare/SQLDBIsFalse.json) | `parameters.sqldb.value.enabled` is false. |
+| Deployment with SQL DB using AAD only authentication | [tests/schemas/lz-healthcare/SQLDB-aadAuthOnly.json](../../tests/schemas/lz-healthcare/SQLDB-aadAuthOnly.json) | `parameters.sqldb.value.aadAuthenticationOnly` is true, `parameters.sqldb.value.aad*` fields filled in. |
+| Deployment with SQL DB using SQL authentication | [tests/schemas/lz-healthcare/SQLDB-sqlAuth.json](../../tests/schemas/lz-healthcare/SQLDB-sqlAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
+| Deployment with SQL DB using mixed mode authentication | [tests/schemas/lz-healthcare/SQLDB-mixedAuth.json](../../tests/schemas/lz-healthcare/SQLDB-mixedAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false,  `parameters.sqldb.value.aad*` fields filled in & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
+| Deployment without customer managed keys | [tests/schemas/lz-healthcare/WithoutCMK.json](../../tests/schemas/lz-healthcare/WithoutCMK.json) | `parameters.useCMK.value` is false. |
 
 ## Example Deployment Parameters
 
