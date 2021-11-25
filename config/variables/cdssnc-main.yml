@@ -30,6 +30,7 @@ variables:
   var-logging-subscriptionId: f27b081a-aa54-4ab4-9f26-a4c5375dc8fa
   var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
   var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
+  var-logging-logAnalyticsRetentionInDays: 730
   var-logging-logAnalyticsAutomationAccountName: automation-account
   var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
   var-logging-serviceHealthAlerts: >
@@ -71,7 +72,7 @@ variables:
     {
       "ClientOrganization": "cds-snc",
       "CostCenter": "sentinel",
-      "DataSensitivity": "PB",
+      "DataSensitivity": "U",
       "ProjectContact": "Security@CDS",
       "ProjectName": "Sentinel",
       "TechnicalContact": "security@cds-snc.ca"
