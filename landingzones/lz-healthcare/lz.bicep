@@ -472,20 +472,6 @@ module akvSqlDbPassword '../../azresources/security/key-vault-secret.bicep' = if
   }
 }
 
-module akvSqlDbConnection '../../azresources/security/key-vault-secret.bicep' = if (sqldb.enabled && sqldb.aadAuthenticationOnly==false) {
-  dependsOn: [
-    akv
-  ]
-  name: 'add-akv-secret-SqlDbConnectionString'
-  scope: rgSecurity
-  params: {
-    akvName: akvName
-    secretName: 'SqlDbConnectionString'
-    secretValue: 'Server=tcp:${sqldb.enabled ? sqlDb.outputs.sqlDbFqdn : ''},1433;Initial Catalog=${sqlServerName};Persist Security Info=False;User ID=${sqldb.sqlAuthenticationUsername};Password=${sqldbPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
-    secretExpiryInDays: keyVault.secretExpiryInDays
-  }
-}
-
 module akvsynapsePassword '../../azresources/security/key-vault-secret.bicep' = {
   dependsOn: [
     akv
