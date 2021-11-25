@@ -18,6 +18,8 @@ trigger: none
   #     - .pipelines/platform-connectivity-hub-azfw.yml  
   #     - .pipelines/templates/steps/deploy-platform-connectivity-hub-azfw.yml
 
+pr: none
+
 variables:
 - name: devops-org-name
   value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
