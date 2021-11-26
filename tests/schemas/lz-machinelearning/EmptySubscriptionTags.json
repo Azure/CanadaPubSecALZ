@@ -5,13 +5,34 @@
     "serviceHealthAlerts": {
       "value": {
         "resourceGroupName": "pubsec-service-health",
-        "incidentTypes": [ "Incident", "Security" ],
-        "regions": [ "Global", "Canada East", "Canada Central" ],
+        "incidentTypes": [
+          "Incident",
+          "Security"
+        ],
+        "regions": [
+          "Global",
+          "Canada East",
+          "Canada Central"
+        ],
         "receivers": {
-          "app": [ "alzcanadapubsec@microsoft.com" ],
-          "email": [ "alzcanadapubsec@microsoft.com" ],
-          "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-          "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+          "app": [
+            "alzcanadapubsec@microsoft.com"
+          ],
+          "email": [
+            "alzcanadapubsec@microsoft.com"
+          ],
+          "sms": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "5555555555"
+            }
+          ],
+          "voice": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "5555555555"
+            }
+          ]
         },
         "actionGroupName": "Sub3 ALZ action group",
         "actionGroupShortName": "sub3-alert",
@@ -55,9 +76,7 @@
       }
     },
     "subscriptionTags": {
-      "value": {
-        "ISSO": "isso-tag"
-      }
+      "value": {}
     },
     "resourceTags": {
       "value": {
@@ -102,7 +121,7 @@
       "value": {
         "enabled": true,
         "sqlAuthenticationUsername": "azadmin",
-        "aadAuthenticationOnly":false
+        "aadAuthenticationOnly": false
       }
     },
     "sqlmi": {
