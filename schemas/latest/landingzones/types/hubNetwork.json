@@ -72,8 +72,7 @@
           "type": "boolean"
         },
         "privateDnsManagedByHubSubscriptionId": {
-          "type": "string",
-          "format": "uuid"
+          "type": "string"
         },
         "privateDnsManagedByHubResourceGroupName": {
           "type": "string"

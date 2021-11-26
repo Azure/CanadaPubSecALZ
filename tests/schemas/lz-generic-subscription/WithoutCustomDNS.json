@@ -2,16 +2,37 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-    "serviceHealthAlerts": {
+        "serviceHealthAlerts": {
             "value": {
                 "resourceGroupName": "pubsec-service-health",
-                "incidentTypes": [ "Incident", "Security" ],
-                "regions": [ "Global", "Canada East", "Canada Central" ],
+                "incidentTypes": [
+                    "Incident",
+                    "Security"
+                ],
+                "regions": [
+                    "Global",
+                    "Canada East",
+                    "Canada Central"
+                ],
                 "receivers": {
-                    "app": [ "alzcanadapubsec@microsoft.com" ],
-                    "email": [ "alzcanadapubsec@microsoft.com" ],
-                    "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-                    "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                    "app": [
+                        "alzcanadapubsec@microsoft.com"
+                    ],
+                    "email": [
+                        "alzcanadapubsec@microsoft.com"
+                    ],
+                    "sms": [
+                        {
+                            "countryCode": "1",
+                            "phoneNumber": "5555555555"
+                        }
+                    ],
+                    "voice": [
+                        {
+                            "countryCode": "1",
+                            "phoneNumber": "5555555555"
+                        }
+                    ]
                 },
                 "actionGroupName": "Sub1 ALZ action group",
                 "actionGroupShortName": "sub1-alert",
