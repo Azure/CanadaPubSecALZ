@@ -6,7 +6,17 @@
             "value": "{{var-topLevelManagementGroupName}}"
         },
         "requiredResourceTags": {
-            "value": [ ]
+            "value": [
+                "ClientOrganization",
+                "CostCenter",
+                "DataSensitivity",
+                "ProjectContact",
+                "ProjectName",
+                "TechnicalContact"
+            ]
+        },
+        "policyEnforcement": {
+            "value": "Audit"
         }
     }
 }

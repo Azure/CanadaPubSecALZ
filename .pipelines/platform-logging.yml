@@ -18,6 +18,8 @@ trigger:
       - .pipelines/platform-logging.yml
       - .pipelines/templates/steps/deploy-platform-logging.yml
 
+pr: none
+
 resources:
   pipelines:
     # Trigger this pipeline when management-groups-ci pipeline completes

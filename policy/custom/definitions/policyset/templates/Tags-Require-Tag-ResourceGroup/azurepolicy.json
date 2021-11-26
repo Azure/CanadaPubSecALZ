@@ -11,6 +11,19 @@
           "displayName": "Tag Name",
           "description": "Name of the tag, such as 'environment'"
         }
+      },
+      "policyEnforcement": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Policy Enforcement",
+          "description": "Whether to enforce policy through deny or audit when tag is missing."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
       }
     },
     "policyRule": {
@@ -27,7 +40,7 @@
         ]
       },
       "then": {
-        "effect": "deny"
+        "effect": "[parameters('policyEnforcement')]"
       }
     }
   },
