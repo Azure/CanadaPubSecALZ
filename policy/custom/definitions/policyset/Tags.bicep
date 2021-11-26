@@ -19,6 +19,7 @@ param requiredResourceTags array = []
 @allowed([
   'Audit'
   'Deny'
+  'Disabled'
 ])
 param policyEnforcement string = 'Deny'
 
