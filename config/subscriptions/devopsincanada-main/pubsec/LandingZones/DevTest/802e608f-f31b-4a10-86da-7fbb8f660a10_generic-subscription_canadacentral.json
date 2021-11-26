@@ -67,7 +67,8 @@
             "value": {
                 "automation": "rgAutomation",
                 "networking": "rgVnet",
-                "networkWatcher": "NetworkWatcherRG"
+                "networkWatcher": "NetworkWatcherRG",
+                "backupRecoveryVault":"rgRecovervyVault102021W1"
             }
         },
         "automation": {
@@ -75,6 +76,13 @@
                 "name": "automation"
             }
         },
+        "backupRecoveryVault":{
+            "value": {
+                "deployRecoveryVault":true,
+                "name":"bkupvault"
+            }
+        },
+
         "hubNetwork": {
             "value": {
                 "virtualNetworkId": "/subscriptions/1a7025c7-f492-4eb9-9cf6-12c7889e4dfd/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
