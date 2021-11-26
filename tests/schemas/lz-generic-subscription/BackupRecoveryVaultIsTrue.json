@@ -99,7 +99,7 @@
         },
         "backupRecoveryVault":{
             "value": {
-                "deployRecoveryVault":true,
+                "enableBackUpRecoveryVault":true,
                 "name":"bkupvault"
             }
         },

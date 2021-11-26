@@ -59,7 +59,7 @@
           "$ref": "types/automation.json#/definitions/Automation"
         },
         "backupRecoveryVault": {
-          "$ref": "types/recoveryVault.json#/definitions/Recoveryvault"
+          "$ref": "types/backupRecoveryVault.json#/definitions/RecoveryVault"
         },
         "hubNetwork": {
           "$ref": "types/hubNetwork.json#/definitions/HubNetworkWithoutPrivateDNS"

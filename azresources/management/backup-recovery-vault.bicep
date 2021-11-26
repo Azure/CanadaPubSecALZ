@@ -5,7 +5,7 @@ param vaultName string
 @description('Key/Value pair of tags.')
 param tags object = {}
 
-@description('Enable CRR (Works if vault has not registered any backup instance)')
+@description('Enable Cross Region Restoration (Works if vault has not registered any backup instance)')
 param enableCRR bool = true
 
 @description('Change Vault Storage Type (Works if vault has not registered any backup instance)')
@@ -16,8 +16,6 @@ param enableCRR bool = true
 param vaultStorageType string = 'GeoRedundant'
 
 
-@description('Location for all resources.')
-param location string = resourceGroup().location
 var skuName = 'RS0'
 var skuTier = 'Standard'
 
@@ -26,7 +24,7 @@ var skuTier = 'Standard'
 
 resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2020-02-02' = {
   name: vaultName
-  location: location
+  location: resourceGroup().location
   tags: tags
   sku: {
     name: skuName
@@ -40,7 +38,7 @@ resource vaultName_vaultstorageconfig 'Microsoft.RecoveryServices/vaults/backups
   name: 'vaultstorageconfig'
   properties: {
    
-    storageModelType:vaultStorageType
-    crossRegionRestoreFlag:enableCRR
+    storageModelType: vaultStorageType
+    crossRegionRestoreFlag: enableCRR
   }
 }
