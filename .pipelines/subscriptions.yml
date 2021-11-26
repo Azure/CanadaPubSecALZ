@@ -25,6 +25,8 @@ trigger: none
   #   include:
   #     - config/subscriptions/*
 
+pr: none
+
 variables:
 - name: devops-org-name
   value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
