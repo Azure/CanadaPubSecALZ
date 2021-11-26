@@ -18,6 +18,8 @@ trigger:
       - .pipelines/policy.yml
       - .pipelines/templates/steps/deploy-policy.yml
 
+pr: none
+
 resources:
   pipelines:
     # Trigger this pipeline when platform-logging-ci pipeline completes
