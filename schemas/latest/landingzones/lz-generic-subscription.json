@@ -58,6 +58,9 @@
         "automation": {
           "$ref": "types/automation.json#/definitions/Automation"
         },
+        "backupRecoveryVault": {
+          "$ref": "types/recoveryVault.json#/definitions/Recoveryvault"
+        },
         "hubNetwork": {
           "$ref": "types/hubNetwork.json#/definitions/HubNetworkWithoutPrivateDNS"
         },
@@ -75,7 +78,8 @@
         "resourceGroups",
         "automation",
         "hubNetwork",
-        "network"
+        "network",
+        "backupRecoveryVault"
       ],
       "title": "Parameters"
     },
@@ -99,6 +103,9 @@
         "automation": {
           "type": "string"
         },
+        "backupRecoveryVault": {
+          "type": "string"
+        },
         "networking": {
           "type": "string"
         },
@@ -109,7 +116,8 @@
       "required": [
         "automation",
         "networkWatcher",
-        "networking"
+        "networking",
+        "backupRecoveryVault"
       ],
       "title": "ResourceGroupsValue"
     },
