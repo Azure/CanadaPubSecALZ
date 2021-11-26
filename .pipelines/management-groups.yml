@@ -18,6 +18,8 @@ trigger:
       - .pipelines/management-groups.yml
       - .pipelines/templates/steps/deploy-management-groups.yml
 
+pr: none
+
 variables:
 - name: devops-org-name
   value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
