@@ -15,17 +15,26 @@
           "title": "AKS"
       },
       "Value": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-              "version": {
-                  "type": "string"
-              }
-          },
-          "required": [
-              "version"
-          ],
-          "title": "Value"
-      }
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "version": {
+                    "type": "string"
+            },
+            "networkPlugin": {
+                "type": "string"
+            },
+            "networkPolicy": {
+                "type": "string"
+            },  
+        },      
+        "required": [
+            "version",
+            "networkPlugin",
+            "networkPolicy"
+        ],
+        "title": "Value"
+    }
   }
 }
+  

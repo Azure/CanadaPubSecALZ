@@ -89,13 +89,19 @@
     },
     "aks": {
       "value": {
-        "version": "1.21.2"
+        "version": "1.21.2",
+        "networkPlugin": "kubenet" ,
+        "networkPolicy": "calico"
       }
     },
     "sqldb": {
       "value": {
         "enabled": true,
-        "username": "azadmin"
+        "sqlAuthenticationUsername": "azadmin",
+        "aadAuthenticationOnly": false,
+        "aadLoginName":"DBA Security Group",
+        "aadLoginObjectID":"c3961323-5d5a-4ce0-9b86-023bccf59a32",
+        "aadLoginType":"Group"
       }
     },
     "sqlmi": {

@@ -13,6 +13,12 @@ param name string
 @description('Azure Kubernetes Service Version.')
 param version string
 
+@description('Azure Kubernetes Service Network Plugin; Kubenet (kubenet) | Azure CNI (azure) .')
+param networkPlugin string
+
+@description('Azure Kubernetes Service Network Policy; for Kubenet: calico | For Azure CNI: azure or calico .')
+param networkPolicy string 
+
 @description('Key/Value pair of tags.')
 param tags object = {}
 
@@ -79,7 +85,20 @@ param containerInsightsLogAnalyticsResourceId string = ''
 @description('Enable encryption at host (double encryption).  Default: true')
 param enableEncryptionAtHost bool = true
 
-resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
+
+var podCidra = contains(networkPlugin, 'azure') ? null : podCidr
+
+var networkProfile =  {
+  networkPlugin: networkPlugin
+  podCidr: podCidra
+  serviceCidr: serviceCidr
+  dnsServiceIP: dnsServiceIP
+  dockerBridgeCidr: dockerBridgeCidr
+  networkPolicy: networkPolicy
+  outboundType: 'userDefinedRouting' 
+}
+
+resource aks 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
   name: name
   location: resourceGroup().location
   tags: tags
@@ -88,13 +107,7 @@ resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
     kubernetesVersion: version
     dnsPrefix: dnsPrefix
     enableRBAC: true
-    networkProfile: {
-      networkPlugin: 'kubenet'
-      podCidr: podCidr
-      serviceCidr: serviceCidr
-      dnsServiceIP: dnsServiceIP
-      dockerBridgeCidr: dockerBridgeCidr
-    }
+    networkProfile: networkProfile
     agentPoolProfiles: [
       {
         count: systemNodePoolMinNodeCount

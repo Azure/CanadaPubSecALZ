@@ -13,6 +13,12 @@ param name string
 @description('Azure Kubernetes Service Version.')
 param version string
 
+@description('Azure Kubernetes Service Network Plugin; Kubenet (kubenet) | Azure CNI (azure) .')
+param networkPlugin string
+
+@description('Azure Kubernetes Service Network Policy; for Kubenet: calico | For Azure CNI: azure or calico .')
+param networkPolicy string 
+
 @description('Key/Value pair of tags.')
 param tags object = {}
 
@@ -126,7 +132,7 @@ module rbacNetworkContributor '../../iam/resource/virtual-network-role-assignmen
   }
 }
 
-module aksWithoutCMK 'aks-azurecni-without-cmk.bicep' = if (!useCMK) {
+module aksWithoutCMK 'aks-without-cmk.bicep' = if (!useCMK) {
   dependsOn: [
     rbacPrivateDnsZoneContributor
     rbacNetworkContributor
@@ -162,6 +168,9 @@ module aksWithoutCMK 'aks-azurecni-without-cmk.bicep' = if (!useCMK) {
     dnsServiceIP: dnsServiceIP
     dockerBridgeCidr: dockerBridgeCidr
 
+    networkPlugin: networkPlugin
+    networkPolicy: networkPolicy
+
     privateDNSZoneId: privateDNSZoneId
 
     containerInsightsLogAnalyticsResourceId: containerInsightsLogAnalyticsResourceId
@@ -170,7 +179,7 @@ module aksWithoutCMK 'aks-azurecni-without-cmk.bicep' = if (!useCMK) {
   }
 }
 
-module aksWithCMK 'aks-azurecni-with-cmk.bicep' = if (useCMK) {
+module aksWithCMK 'aks-with-cmk.bicep' = if (useCMK) {
   dependsOn: [
     rbacPrivateDnsZoneContributor
     rbacNetworkContributor
