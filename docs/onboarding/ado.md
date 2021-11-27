@@ -229,7 +229,7 @@ This role assignment is used to grant users access to the logging subscription b
 ```yml
     variables:
         # Logging
-        var-logging-managementGroupId: pubsecPlatform
+        var-logging-managementGroupId: pubsecPlatformManagement
         var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
         var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
         var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
@@ -314,7 +314,7 @@ This role assignment is used to grant users access to the logging subscription b
 
 Audit streams represent a pipeline that flows audit events from your Azure DevOps organization to a stream target. Every half hour or less, new audit events are bundled and streamed to your targets. 
 
-We recommend reviewing common [Azure Sentinel detection patterns and rules provided in GitHub](https://github.com/Azure/Azure-Sentinel/tree/master/Detections/AzureDevOpsAuditing) as part of configuring Azure Sentinel.
+We recommend reviewing common [Microsoft Sentinel detection patterns and rules provided in GitHub](https://github.com/Azure/Azure-Sentinel/tree/master/Detections/AzureDevOpsAuditing) as part of configuring Microsoft Sentinel.
 
 In order to configure audit stream for Azure Monitor, identify the following information:
 
@@ -382,7 +382,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     ```yml
         variables:
            # Hub Networking
-           var-hubnetwork-managementGroupId: pubsecPlatform
+           var-hubnetwork-managementGroupId: pubsecPlatformConnectivity
            var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
            var-hubnetwork-serviceHealthAlerts: >
              {

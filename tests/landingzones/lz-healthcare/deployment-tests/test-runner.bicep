@@ -83,8 +83,11 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
     }
 
     sqldb: {
-      enabled: deploySQLDB
-      username: 'azadmin'
+      value: {
+        enabled: deploySQLDB
+        aadAuthenticationOnly: false 
+        sqlAuthenticationUsername: 'azadmin'
+      }
     }
 
     synapse: {

@@ -16,7 +16,7 @@ param policyDefinitionManagementGroupId string
 param policyAssignmentManagementGroupId string
 
 var policyId = 'custom-enable-azure-defender'
-var assignmentName = 'Custom - Azure Defender for Azure Services'
+var assignmentName = 'Custom - Microsoft Defender for Cloud'
 
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
 var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${policyId}'

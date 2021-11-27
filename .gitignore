@@ -3,3 +3,5 @@ experiments/*
 .vscode/*
 /*.sh
 /*.ps1
+packages-microsoft-prod.deb
+*parameters.secret.json

@@ -17,6 +17,8 @@ trigger:
       - roles
       - .pipelines/roles.yml
 
+pr: none
+
 resources:
   pipelines:
     - pipeline: ManagementGroups
