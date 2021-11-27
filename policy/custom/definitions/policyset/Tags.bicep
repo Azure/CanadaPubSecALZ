@@ -15,6 +15,14 @@ param policyDefinitionManagementGroupId string
 @description('Required set of tags that must exist on resource groups and resources.')
 param requiredResourceTags array = []
 
+@description('Policy effect to whether deny or audit when tag is missing.  Default:  Deny')
+@allowed([
+  'Audit'
+  'Deny'
+  'Disabled'
+])
+param policyEnforcement string = 'Deny'
+
 var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)
 
 // Retrieve the templated azure policies as json object
@@ -76,6 +84,9 @@ resource tagsRequiredOnResourceGroupPolicySet 'Microsoft.Authorization/policySet
       parameters: {
         tagName: {
           value: tag
+        }
+        policyEnforcement: {
+          value: policyEnforcement
         }
       }
     }]
