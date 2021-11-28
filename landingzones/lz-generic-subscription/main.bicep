@@ -74,7 +74,13 @@ param resourceTags object
 @description('Resource groups required for the achetype.  It includes automation, networking and networkWatcher.')
 param resourceGroups object
 
+// RecoveryVault
+
+@description('Azure recovery vault configuration containing enabled flag, and name')
+param backupRecoveryVault object
+
 // Azure Automation Account
+
 @description('Azure Automation Account configuration.  Includes name.')
 param automation object
 
@@ -144,6 +150,23 @@ module automationAccount '../../azresources/automation/automation-account.bicep'
   scope: rgAutomation
   params: {
     automationAccountName: automation.name
+    tags: resourceTags
+  }
+}
+
+// Create Azure backup RecoveryVault Resource Group
+resource backupRgVault 'Microsoft.Resources/resourceGroups@2020-06-01' =if(backupRecoveryVault.enabled) {
+  name: resourceGroups.backupRecoveryVault
+  location: deployment().location
+  tags: resourceTags
+}
+
+//create recovery vault for backup of vms
+module backupVault '../../azresources/management/backup-recovery-vault.bicep'= if(backupRecoveryVault.enabled){
+  name:'deploy-backup-recoveryvault'
+  scope: backupRgVault
+  params:{
+    vaultName: backupRecoveryVault.name
     tags: resourceTags
   }
 }
