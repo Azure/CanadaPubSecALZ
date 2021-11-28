@@ -157,7 +157,7 @@ variables:
   ## Hub Networking - DDOS
   var-hubnetwork-deployDdosStandard: true
   var-hubnetwork-rgDdosName: pubsec-ddos-rg
-  var-hubnetwork-ddosPlanName: ddos-plan
+  var-hubnetwork-ddosPlanName: ddos-plan2
 
   ## Hub Networking - Public Zone
   var-hubnetwork-rgPazName: pubsec-public-access-zone-rg
