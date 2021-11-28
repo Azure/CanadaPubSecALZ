@@ -13,6 +13,12 @@ param name string
 @description('Azure Kubernetes Service Version.')
 param version string
 
+@description('Azure Kubernetes Service Network Plugin; Kubenet (kubenet) | Azure CNI (azure) .')
+param networkPlugin string
+
+@description('Azure Kubernetes Service Network Policy; for Kubenet: calico | For Azure CNI: azure or calico .')
+param networkPolicy string 
+
 @description('Key/Value pair of tags.')
 param tags object = {}
 
@@ -86,6 +92,17 @@ param akvResourceGroupName string
 @description('Azure Key Vault Name.  Required when useCMK=true.')
 param akvName string
 
+var podCidra = contains(networkPlugin, 'azure') ? null : podCidr
+
+var networkProfile =  {
+  networkPlugin: networkPlugin
+  podCidr: podCidra
+  serviceCidr: serviceCidr
+  dnsServiceIP: dnsServiceIP
+  dockerBridgeCidr: dockerBridgeCidr
+  networkPolicy: networkPolicy
+}
+
 resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
   scope: resourceGroup(akvResourceGroupName)
   name: akvName
@@ -126,7 +143,7 @@ module diskEncryptionSetRoleAssignmentForCMK '../../iam/resource/key-vault-role-
   }
 }
 
-resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
+resource aks 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
   dependsOn: [
     diskEncryptionSetRoleAssignmentForCMK
   ]
@@ -139,13 +156,7 @@ resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
     kubernetesVersion: version
     dnsPrefix: dnsPrefix
     enableRBAC: true
-    networkProfile: {
-      networkPlugin: 'kubenet'
-      podCidr: podCidr
-      serviceCidr: serviceCidr
-      dnsServiceIP: dnsServiceIP
-      dockerBridgeCidr: dockerBridgeCidr
-    }
+    networkProfile: networkProfile
     agentPoolProfiles: [
       {
         count: systemNodePoolMinNodeCount

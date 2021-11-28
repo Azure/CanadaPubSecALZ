@@ -215,6 +215,9 @@ module aksWithCMK 'aks-with-cmk.bicep' = if (useCMK) {
     dnsServiceIP: dnsServiceIP
     dockerBridgeCidr: dockerBridgeCidr
 
+    networkPlugin: networkPlugin
+    networkPolicy: networkPolicy
+    
     privateDNSZoneId: privateDNSZoneId
 
     containerInsightsLogAnalyticsResourceId: containerInsightsLogAnalyticsResourceId

@@ -342,14 +342,16 @@ module databricks '../../azresources/analytics/databricks/main.bicep' = {
   }
 }
 
-module aksKubnet '../../azresources/containers/aks-kubenet/main.bicep' = {
-  name: 'deploy-aksKubnet'
+module aksCluster '../../azresources/containers/aks/main.bicep' = {
+  name: 'deploy-aks-${aks.networkPlugin}'
   scope: rgCompute
   params: {
     tags: resourceTags
 
     name: aksName
     version: aks.version
+    networkPlugin: aks.networkPlugin
+    networkPolicy: aks.networkPolicy
 
     systemNodePoolEnableAutoScaling: true
     systemNodePoolMinNodeCount: 1
