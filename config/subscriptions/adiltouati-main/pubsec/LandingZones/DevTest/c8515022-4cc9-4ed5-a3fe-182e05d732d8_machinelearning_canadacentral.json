@@ -91,7 +91,7 @@
       "value": {
         "version": "1.21.2",
         "networkPlugin": "azure" ,
-        "networkPolicy": "calico"
+        "networkPolicy": "azure"
       }
     },
     "sqldb": {
