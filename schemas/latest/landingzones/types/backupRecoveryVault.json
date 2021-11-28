@@ -11,7 +11,7 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "enableBackUpRecoveryVault": {
+                  "enabled": {
                     "type": "boolean",
                     "enum": [
                       true
@@ -22,7 +22,7 @@
                   }
                 },
                 "required": [
-                "enableBackUpRecoveryVault",
+                "enabled",
                   "name"
                 ]
               },
@@ -30,7 +30,7 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "enableBackUpRecoveryVault": {
+                  "enabled": {
                     "type": "boolean",
                     "enum": [
                       false
@@ -38,7 +38,7 @@
                   }
                 },
                 "required": [
-                  "enableBackUpRecoveryVault"
+                  "enabled"
                 ]
               }
             ]

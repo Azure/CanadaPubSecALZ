@@ -103,7 +103,7 @@
         },
         "backupRecoveryVault":{
             "value": {
-                "enableBackUpRecoveryVault":true,
+                "enabled":true,
                 "name":"bkupvault"
             }
         },

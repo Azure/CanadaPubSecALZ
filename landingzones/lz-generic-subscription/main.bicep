@@ -76,7 +76,7 @@ param resourceGroups object
 
 // RecoveryVault
 
-@description('Azure recovery vault configuration containing enableBackUpRecoveryVault flag, and name')
+@description('Azure recovery vault configuration containing enabled flag, and name')
 param backupRecoveryVault object
 
 // Azure Automation Account
@@ -155,14 +155,14 @@ module automationAccount '../../azresources/automation/automation-account.bicep'
 }
 
 // Create Azure backup RecoveryVault Resource Group
-resource backupRgVault 'Microsoft.Resources/resourceGroups@2020-06-01' =if(backupRecoveryVault.enableBackUpRecoveryVault) {
+resource backupRgVault 'Microsoft.Resources/resourceGroups@2020-06-01' =if(backupRecoveryVault.enabled) {
   name: resourceGroups.backupRecoveryVault
   location: deployment().location
   tags: resourceTags
 }
 
 //create recovery vault for backup of vms
-module backupVault '../../azresources/management/backup-recovery-vault.bicep'= if(backupRecoveryVault.enableBackUpRecoveryVault){
+module backupVault '../../azresources/management/backup-recovery-vault.bicep'= if(backupRecoveryVault.enabled){
   name:'deploy-backup-recoveryvault'
   scope: backupRgVault
   params:{

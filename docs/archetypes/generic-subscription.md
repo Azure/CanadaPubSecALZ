@@ -51,9 +51,10 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Subscription Tags | A set of tags that are assigned to the subscription. |
 | Resource Tags | A set of tags that are assigned to the resource group and resources.  These tags must include all required tags as defined the Tag Governance policy. |
 | Automation | Deploys an Azure Automation Account in each subscription. |
-| Hub Networking | Configures virtual network peering to Hub Network which is required for egress traffic flow and hub-managed DNS resolution (on-premises or other spokes, private endpoints).
-| Networking | A spoke virtual network with minimum 4 zones: oz (Operational Zone), paz (Public Access Zone), rz (Restricted Zone), hrz (Highly Restricted Zone).  Additional subnets can be configured at deployment time using configuration (see below). |
 | Backup Recovery Vault | Configures a backup recovery vault . |
+| Hub Networking | Configures virtual network peering to Hub Network which is required for egress traffic flow and hub-managed DNS resolution (on-premises or other spokes, private endpoints).
+| Networking | A spoke virtual network with minimum 4 zones: oz (Operational Zone), paz (Public Access Zone), rz (Restricted Zone), hrz (Highly Restricted Zone).  Additional subnets can be configured at deployment time using configuration (see below). 
+
 ## Azure Deployment
 
 ### Schema Definition
@@ -74,8 +75,8 @@ Reference implementation uses parameter files with `object` parameters to consol
 
   * Spoke types
     * [Automation](../../schemas/latest/landingzones/types/automation.json)
-    * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
     * [Backup Recovery Vault](../../schemas/latest/landingzones/types/backupRecoveryVault.json)
+    * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
 
 ### Deployment Scenarios
 
@@ -90,8 +91,8 @@ Reference implementation uses parameter files with `object` parameters to consol
 | Deployment with optional subnets | [tests/schemas/lz-generic-subscription/WithOptionalSubnets.json](../../tests/schemas/lz-generic-subscription/WithOptionalSubnets.json) | `parameters.network.value.subnets.optional` array has one subnet.  Many others can be added following the same syntax. |
 | Deployment without optional subnets | [tests/schemas/lz-generic-subscription/WithoutOptionalSubnets.json](../../tests/schemas/lz-generic-subscription/WithoutOptionalSubnets.json) | `parameters.network.value.subnets.optional` array is empty. |
 | Deployment without custom DNS | [tests/schemas/lz-generic-subscription/WithoutCustomDNS.json](../../tests/schemas/lz-generic-subscription/WithoutCustomDNS.json) | `parameters.network.value.dnsServers` array is empty.  Defaults to Azure managed DNS when array is empty. |
-| Deployment with Backup RecoveryVault | [tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsTrue.json](../../tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsTrue.json) | `parameters.backupRecoveryVault.value.enableBackUpRecoveryVault` is set to `true and vault name is filled in. |
-| Deployment without Backup RecoveryVault | [tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsFalse.json](../../tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsFalse.json) | `parameters.backupRecoveryVault.value.enableBackUpRecoveryVault` is set to `false` and vault name is removed. |
+| Deployment with Backup Recovery Vault | [tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsTrue.json](../../tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsTrue.json) | `parameters.backupRecoveryVault.value.enabled` is set to `true and vault name is filled in. |
+| Deployment without Backup Recovery Vault | [tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsFalse.json](../../tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsFalse.json) | `parameters.backupRecoveryVault.value.enabled` is set to `false` and vault name is removed. |
 
 ### Example Deployment Parameters
 
@@ -104,8 +105,9 @@ This example configures:
 5. Subscription Tags
 6. Resource Tags (aligned to the default tags defined in [Policies](../../policy/custom/definitions/policyset/Tags.parameters.json))
 7. Automation Account
-8. Spoke Virtual Network with Hub-managed DNS, Virtual Network Peering, 4 required subnets (zones) and 1 additional subnet `web`.
-9. Backup Recovery Vault
+8. Backup Recovery Vault
+9. Spoke Virtual Network with Hub-managed DNS, Virtual Network Peering, 4 required subnets (zones) and 1 additional subnet `web`.
+
 
 ```json
 {
