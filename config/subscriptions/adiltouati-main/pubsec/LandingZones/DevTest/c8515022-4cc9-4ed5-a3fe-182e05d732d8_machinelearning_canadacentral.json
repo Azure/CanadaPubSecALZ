@@ -90,7 +90,7 @@
     "aks": {
       "value": {
         "version": "1.21.2",
-        "networkPlugin": "kubenet" ,
+        "networkPlugin": "azure" ,
         "networkPolicy": "calico"
       }
     },
