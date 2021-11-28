@@ -274,6 +274,13 @@ resource udrHRZ 'Microsoft.Network/routeTables@2021-02-01' = {
     routes: network.peerToHubVirtualNetwork ? routesToHub : null
   }
 }
+resource udrAKS 'Microsoft.Network/routeTables@2021-02-01' = {
+  name: '${network.subnets.aks.name}Udr'
+  location: resourceGroup().location
+  properties: {
+    routes: network.peerToHubVirtualNetwork ? routesToHub : null
+  }
+}
 
 module udrSqlMi '../../azresources/network/udr/udr-sqlmi.bicep' = {
   name: 'deploy-route-table-sqlmi'
@@ -360,6 +367,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         name: network.subnets.privateEndpoints.name
         properties: {
           addressPrefix: network.subnets.privateEndpoints.addressPrefix
+          routeTable: {
+            id: udrAKS.id
+          }
           privateEndpointNetworkPolicies: 'Disabled'
         }
       }
