@@ -2,6 +2,27 @@
 
 ## Landing Zone Schemas
 
+### November 26, 2021
+
+Added Azure Recovery Vault schema to enable the creation of a Recovery Vault in the generic Archtetype subscription
+| Setting | Type | Description |
+| ------- | ---- | ----------- |
+| enabled | Boolean | Indicate whether or not to deploy Azure Recovery Vault (required) |
+| name | String | The name of the Recovery Vault |
+
+
+**Examples**
+
+Enable recovery vault | Json (used in parameter files)
+```json
+    "backupRecoveryVault":{
+            "value": {
+                "enabled":true,
+                "name":"bkupvault"
+            }
+        }
+```
+
 ### November 25, 2021
 
 * Remove `uuid` format check on `privateDnsManagedByHubSubscriptionId` for type `schemas/latest/landingzones/types/hubNetwork.json`

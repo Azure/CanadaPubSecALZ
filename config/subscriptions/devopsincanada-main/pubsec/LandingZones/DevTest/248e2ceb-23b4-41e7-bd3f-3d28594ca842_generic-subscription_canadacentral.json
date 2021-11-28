@@ -67,12 +67,19 @@
             "value": {
                 "automation": "rgAutomation",
                 "networking": "rgVnet",
-                "networkWatcher": "NetworkWatcherRG"
+                "networkWatcher": "NetworkWatcherRG",
+                "backupRecoveryVault":"rgRecovervyVault102021W1"
             }
         },
         "automation": {
             "value": {
                 "name": "automation"
+            }
+        },
+        "backupRecoveryVault":{
+            "value": {
+                "enabled":true,
+                "name":"bkupvault"
             }
         },
         "hubNetwork": {
