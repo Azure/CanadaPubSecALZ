@@ -110,9 +110,11 @@
     },
     "aks": {
       "value": {
-        "version": "1.21.2"
+        "version": "1.21.2",
+        "networkPlugin": "kubenet",
+        "networkPolicy": "calico"
       }
-    },
+    },s
     "sqldb": {
       "value": {
         "enabled": true,
