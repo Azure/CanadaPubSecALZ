@@ -342,6 +342,7 @@ module databricks '../../azresources/analytics/databricks/main.bicep' = {
   }
 }
 
+var podCidrexist = (!empty(aks.podCidr)) ? aks.podCidr : null
 module aksCluster '../../azresources/containers/aks/main.bicep' = {
   name: 'deploy-aks-${aks.networkPlugin}'
   scope: rgCompute
@@ -355,7 +356,7 @@ module aksCluster '../../azresources/containers/aks/main.bicep' = {
 
     dnsServiceIP: aks.dnsServiceIP
     dockerBridgeCidr: aks.dockerBridgeCidr
-    podCidr: aks.podCidr
+    podCidr: podCidrexist
     serviceCidr: aks.serviceCidr
 
     systemNodePoolEnableAutoScaling: true
