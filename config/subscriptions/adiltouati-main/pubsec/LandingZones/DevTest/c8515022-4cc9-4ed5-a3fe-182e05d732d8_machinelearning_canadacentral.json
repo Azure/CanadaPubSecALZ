@@ -91,7 +91,7 @@
       "value": {
         "version": "1.21.2",
         "networkPlugin": "kubenet" ,
-        "networkPolicy": "azure",
+        "networkPolicy": "calico",
         "podCidr": "11.0.0.0/16",
         "serviceCidr": "20.0.0.0/16" ,
         "dnsServiceIP": "20.0.0.10",
