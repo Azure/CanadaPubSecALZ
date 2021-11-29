@@ -22,7 +22,7 @@ var skuTier = 'Standard'
 
 
 
-resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2020-02-02' = {
+resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2021-08-01' = {
   name: vaultName
   location: resourceGroup().location
   tags: tags
