@@ -84,7 +84,11 @@
       "value": {
         "version": "1.21.2",
         "networkPlugin": "kubenet" ,
-        "networkPolicy": "calico"
+        "networkPolicy": "calico",
+        "podCidr": "11.0.0.0/16",
+        "serviceCidr": "20.0.0.0/16" ,
+        "dnsServiceIP": "20.0.0.10",
+        "dockerBridgeCidr": "30.0.0.1/16"
       }
     },
     "sqldb": {
