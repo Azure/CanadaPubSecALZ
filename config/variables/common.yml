@@ -10,7 +10,7 @@
 variables:
 
   deploymentRegion: canadacentral
-  serviceConnection: sp-eslz-bcamp
+  serviceConnection: spn-azure-platform-ops
   vmImage: ubuntu-latest
   deployOperation: create  # valid options: 'create', 'what-if'
   subscriptionsPathFromRoot: 'config/subscriptions'
