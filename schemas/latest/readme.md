@@ -16,6 +16,9 @@ Change in `aks` schema object to support Options for the creation of AKS Cluster
 | networkPlugin | String | Network Plugin to use: `kubenet` (for Kubenet) **or** `azure` (for Azure CNI) (required) |
 | networkPolicy | String | Network Policy to use: `calico` (for Calico); which can be used with either **kubenet** or **Azure** Network Plugins **or** `azure` (for Azure NP); which can only be used with **Azure CNI**  |
 
+**Note**
+
+`podCidr` value shoud be set to ( **''** ) when Azure CNI is used
 
 **Examples**
 
@@ -26,7 +29,11 @@ Change in `aks` schema object to support Options for the creation of AKS Cluster
   "value": {
     "version": "1.21.2",
     "networkPlugin": "kubenet" ,
-    "networkPolicy": "calico"
+    "networkPolicy": "calico",
+    "podCidr": "11.0.0.0/16",
+    "serviceCidr": "20.0.0.0/16" ,
+    "dnsServiceIP": "20.0.0.10",
+    "dockerBridgeCidr": "30.0.0.1/16"
   }
 }
 ```
@@ -38,7 +45,11 @@ Change in `aks` schema object to support Options for the creation of AKS Cluster
   "value": {
     "version": "1.21.2",
     "networkPlugin": "azure" ,
-    "networkPolicy": "calico"
+    "networkPolicy": "calico",
+    "podCidr": "",
+    "serviceCidr": "20.0.0.0/16" ,
+    "dnsServiceIP": "20.0.0.10",
+    "dockerBridgeCidr": "30.0.0.1/16"
   }
 }
 ```
@@ -50,7 +61,11 @@ Change in `aks` schema object to support Options for the creation of AKS Cluster
   "value": {
     "version": "1.21.2",
     "networkPlugin": "azure" ,
-    "networkPolicy": "azure"
+    "networkPolicy": "azure",
+    "podCidr": "",
+    "serviceCidr": "20.0.0.0/16" ,
+    "dnsServiceIP": "20.0.0.10",
+    "dockerBridgeCidr": "30.0.0.1/16"
   }
 }
 ```
