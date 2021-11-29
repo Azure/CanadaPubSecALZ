@@ -360,9 +360,6 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         name: network.subnets.privateEndpoints.name
         properties: {
           addressPrefix: network.subnets.privateEndpoints.addressPrefix
-          routeTable: {
-            id: udrAKS.id
-          }
           privateEndpointNetworkPolicies: 'Disabled'
         }
       }
