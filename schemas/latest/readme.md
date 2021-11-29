@@ -2,6 +2,58 @@
 
 ## Landing Zone Schemas
 
+### November 27, 2021
+
+Change in `aks` schema object to support Options for the creation of AKS Cluster with one of the following three scenarios:
+
+* Network Plugin: Kubenet + Network Policy: Calico (Network Policy)
+* Network Plugin: Azure CNI + Network Policy: Calico (Network Policy)
+* Network Plugin: Azure CNI + Network Policy: Azure (Network Policy).
+
+| Setting | Type | Description |
+| ------- | ---- | ----------- |
+| version | String | Kubernetes version to use for the AKS Cluster (required) |
+| networkPlugin | String | Network Plugin to use: `kubenet` (for Kubenet) **or** `azure` (for Azure CNI) (required) |
+| networkPolicy | String | Network Policy to use: `calico` (for Calico); which can be used with either **kubenet** or **Azure** Network Plugins **or** `azure` (for Azure NP); which can only be used with **Azure CNI**  |
+
+
+**Examples**
+
+* Network Plugin: Kubenet + Network Policy: Calico (Network Policy)
+
+```json
+"aks": {
+  "value": {
+    "version": "1.21.2",
+    "networkPlugin": "kubenet" ,
+    "networkPolicy": "calico"
+  }
+}
+```
+
+* Network Plugin: Azure CNI + Network Policy: Calico (Network Policy)
+
+```json
+"aks": {
+  "value": {
+    "version": "1.21.2",
+    "networkPlugin": "azure" ,
+    "networkPolicy": "calico"
+  }
+}
+```
+
+* Network Plugin: Azure CNI + Network Policy: Azure (Network Policy).
+
+```json
+"aks": {
+  "value": {
+    "version": "1.21.2",
+    "networkPlugin": "azure" ,
+    "networkPolicy": "azure"
+  }
+}
+```
 ### November 26, 2021
 
 Added Azure Recovery Vault schema to enable the creation of a Recovery Vault in the generic Archtetype subscription
