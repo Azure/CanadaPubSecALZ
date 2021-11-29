@@ -92,8 +92,6 @@ param akvResourceGroupName string
 @description('Azure Key Vault Name.  Required when useCMK=true.')
 param akvName string
 
-var podCidrAzureCNI = contains(networkPlugin, 'azure') ? null : podCidr
-
 var networkProfile =  {
   networkPlugin: networkPlugin
   podCidr: podCidrAzureCNI

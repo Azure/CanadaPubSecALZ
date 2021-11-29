@@ -353,6 +353,11 @@ module aksCluster '../../azresources/containers/aks/main.bicep' = {
     networkPlugin: aks.networkPlugin
     networkPolicy: aks.networkPolicy
 
+    dnsServiceIP: aks.dnsServiceIP
+    dockerBridgeCidr: aks.dockerBridgeCidr
+    podCidr: aks.podCidr
+    serviceCidr: aks.serviceCidr
+
     systemNodePoolEnableAutoScaling: true
     systemNodePoolMinNodeCount: 1
     systemNodePoolMaxNodeCount: 3

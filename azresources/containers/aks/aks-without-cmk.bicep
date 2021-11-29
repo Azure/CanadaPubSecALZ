@@ -85,8 +85,6 @@ param containerInsightsLogAnalyticsResourceId string = ''
 @description('Enable encryption at host (double encryption).  Default: true')
 param enableEncryptionAtHost bool = true
 
-var podCidrAzureCNI = contains(networkPlugin, 'azure') ? null : podCidr
-
 var networkProfile =  {
   networkPlugin: networkPlugin
   podCidr: podCidrAzureCNI
