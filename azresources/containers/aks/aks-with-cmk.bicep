@@ -94,7 +94,7 @@ param akvName string
 
 var networkProfile =  {
   networkPlugin: networkPlugin
-  podCidr: podCidrAzureCNI
+  podCidr: podCidr
   serviceCidr: serviceCidr
   dnsServiceIP: dnsServiceIP
   dockerBridgeCidr: dockerBridgeCidr
