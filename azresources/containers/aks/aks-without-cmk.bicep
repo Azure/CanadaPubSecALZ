@@ -94,7 +94,6 @@ var networkProfile =  {
   dnsServiceIP: dnsServiceIP
   dockerBridgeCidr: dockerBridgeCidr
   networkPolicy: networkPolicy
-  outboundType: 'userDefinedRouting'
 }
 
 resource aks 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
