@@ -101,6 +101,7 @@ var networkProfile =  {
   dnsServiceIP: dnsServiceIP
   dockerBridgeCidr: dockerBridgeCidr
   networkPolicy: networkPolicy
+  outboundType: 'userDefinedRouting'
 }
 
 resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
