@@ -64,18 +64,18 @@ param dnsPrefix string
 @description('Private DNS Zone Resource Id.')
 param privateDNSZoneId string
 
-// Kubernetes Networking
-@description('Pod CIDR.  Default: 11.0.0.0/16')
-param podCidr string = '11.0.0.0/16'
+// Kubernetes Networking 
+@description('Pod CIDR.')
+param podCidr string 
 
-@description('Service CIDR.  Default: 20.0.0.0/16')
-param serviceCidr string = '20.0.0.0/16'
+@description('Service CIDR.')
+param serviceCidr string
 
-@description('DNS Service IP. Default: 20.0.0.10')
-param dnsServiceIP string = '20.0.0.10'
+@description('DNS Service IP.')
+param dnsServiceIP string
 
-@description('Docker Bridge CIDR.  Default: 30.0.0.1/16')
-param dockerBridgeCidr string = '30.0.0.1/16'
+@description('Docker Bridge CIDR.')
+param dockerBridgeCidr string 
 
 // Container Insights
 @description('Log Analytics Workspace Resource Id.  Default: blank')
@@ -92,11 +92,11 @@ param akvResourceGroupName string
 @description('Azure Key Vault Name.  Required when useCMK=true.')
 param akvName string
 
-var podCidra = contains(networkPlugin, 'azure') ? null : podCidr
+var podCidrAzureCNI = contains(networkPlugin, 'azure') ? null : podCidr
 
 var networkProfile =  {
   networkPlugin: networkPlugin
-  podCidr: podCidra
+  podCidr: podCidrAzureCNI
   serviceCidr: serviceCidr
   dnsServiceIP: dnsServiceIP
   dockerBridgeCidr: dockerBridgeCidr
