@@ -27,6 +27,12 @@
                                     "calico"
                                 ]
                             },
+                            "podCidr": {
+                                "type": "string",
+                                "enum": [
+                                    ""
+                                ]                                
+                            },
                             "serviceCidr": {
                                 "type": "string"
                             },  
@@ -41,6 +47,7 @@
                             "version",
                             "networkPlugin",
                             "networkPolicy",
+                            "podCidr",
                             "serviceCidr",
                             "dockerBridgeCidr"
                         ]   
