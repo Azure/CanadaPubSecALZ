@@ -30,7 +30,7 @@
                             "podCidr": {
                                 "type": "string",
                                 "enum": [
-                                    null
+                                    ""
                                 ]                                
                             },
                             "serviceCidr": {
