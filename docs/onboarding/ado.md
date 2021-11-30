@@ -100,10 +100,31 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 
 ## Step 2:  Configure Service Connection in Azure DevOps Project Configuration
 
+* New Service connection 
+	* Azure Resource Manager
+  
+![image](https://user-images.githubusercontent.com/367922/144120989-fe0109a8-d822-41df-8947-985fb758a05c.png)
+
+* Authentication Method
+	* Service principal (manual)
+
+![image](https://user-images.githubusercontent.com/367922/144122706-6fd05086-44db-486c-a484-0fc09d1a4167.png)
+
+
+
+
 * Settings
     * **Scope Level**:  Management Group
-
+    * **Management Group ID**:  Management Group id
+    * **Management Group Name**:  Management Group Name
+    * **Service Principal ID**:  appID(see previous step)
+    * **Service Principal key**:  password(see previous step)
+    * **Tenant ID**:  tenant ID(see previous step)
     * **Service Connection Name**:  spn-azure-platform-ops
+
+![image](https://user-images.githubusercontent.com/367922/144122532-a90778c3-7a17-4fd6-925b-e8be657beb49.png)
+
+* Verify connection before saving.
 
         *Service Connection Name is referenced in the Azure DevOps Pipelines for Azure authentication and authorization.*
 
