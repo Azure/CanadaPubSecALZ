@@ -2,19 +2,22 @@
 
 ## Table of Contents
 
-* [Overview](#overview)
-* [Data Flow](#data-flow)
-* [Access Control](#access-control)
-* [Networking and Security Configuration](#networking-and-security-configuration)
-* [Customer Managed Keys](#customer-managed-keys)
-* [Secrets](#secrets)
-* [Logging](#logging)
-* [Testing](#testing)
-* [Azure Deployment](#azure-deployment)
-  * [Schema Definition](#schema-definition)
-  * [Deployment Scenarios](#deployment-scenarios)
-  * [Example Deployment Parameters](#example-deployment-parameters)
-  * [Deployment Instructions](#deployment-instructions)
+- [Archetype: Machine Learning](#archetype-machine-learning)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Data Flow](#data-flow)
+  - [Access Control](#access-control)
+  - [Networking and Security Configuration](#networking-and-security-configuration)
+  - [Customer Managed Keys](#customer-managed-keys)
+  - [Secrets](#secrets)
+  - [Logging](#logging)
+  - [Testing](#testing)
+    - [Test Scenarios](#test-scenarios)
+  - [Azure Deployment](#azure-deployment)
+    - [Schema Definition](#schema-definition)
+    - [Deployment Scenarios](#deployment-scenarios)
+    - [Example Deployment Parameters](#example-deployment-parameters)
+    - [Deployment Instructions](#deployment-instructions)
 
 ## Overview
 
@@ -61,8 +64,8 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Azure Machine Learning | Deploys Azure Machine Learning Service. | 
 | Azure Databricks | Deploys an Azure Databricks instance.  *There aren't any parameters for customization.* |
 | Azure Data Factory | Deploys an Azure Data Factory instance with Managed Virtual Network and Managed Integrated Runtime.  *There aren't any parameters for customization.* |
-| Azure Kubernetes Services | Deploys an AKS with Kubenet network policy that will be used for deploying machine learning models. |
-| Azure Container Registry | Deploys an Azure Container Registry to store machine learning models as container images.  ACR is used when deploying pods to AKS. *There aren't any parameters for customization.* |
+| Azure Kubernetes Services | Deploys an AKS Cluster that will be used for deploying machine learning models, with option to choose either: Network Plugin: Kubenet + Network Policy: Calico **OR** Network Plugin: Azure CNI + Network Policy: Calico (Network Policy) **OR** Network Plugin: Azure CNI + Network Policy: Azure (Network Policy) .|
+| Azure Container Registry | Deploys an Azure Container Registry to store machine learning models as container images.  ACR is used when deploying pods to AKS. *There aren't any parameters for customization. |
 | Application Insights | Deploys an Application Insights instance that is used by Azure Machine Learning instance.  *There aren't any parameters for customization.* |
 
 ## Data Flow
@@ -121,7 +124,7 @@ Once the machine learning archetype is deployed and available to use, access con
 | Azure Machine Learning | No public workspace access | Private endpoint on `amlWorkspace` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Storage Account for Azure ML | Network ACL deny | Private endpoint on `blob`, `file` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Data Factory | Public network access disabled, Azure integration runtime with managed virtual network | Private endpoint on `dataFactory` + DNS registration to either hub or spoke | `privateEndpoints`|
-| Azure Kubernetes Service | Private cluster, network profile with kubenet | N/A | `aks`|
+| Azure Kubernetes Service | Private cluster, network profile set with either kubenet or Azure CNI | N/A | `aks`|
 | Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Application Insights | N/A | N/A | N/A |
 
@@ -236,6 +239,9 @@ Reference implementation uses parameter files with `object` parameters to consol
 | Deployment with SQL DB using SQL authentication | [tests/schemas/lz-machinelearning/SQLDB-sqlAuth.json](../../tests/schemas/lz-machinelearning/SQLDB-sqlAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
 | Deployment with SQL DB using mixed mode authentication | [tests/schemas/lz-machinelearning/SQLDB-mixedAuth.json](../../tests/schemas/lz-machinelearning/SQLDB-mixedAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false,  `parameters.sqldb.value.aad*` fields filled in & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
 | Deployment without customer managed keys | [tests/schemas/lz-machinelearning/WithoutCMK.json](../../tests/schemas/lz-machinelearning/WithoutCMK.json) | `parameters.useCMK.value` is false. |
+| Deployment with AKS using Network Plugin: Kubenet + Network Policy: Calico | [tests/schemas/lz-machinelearning/AKS-Kubenet-Calico.json](../../tests/schemas/lz-machinelearning/AKS-Kubenet-Calico.json) | `parameters.aks.value.networkPlugin`  equals ***kubenet***, `parameters.aks.value.networkPlugin`  equals ***calico***, `parameters.aks.value.podCidr` is filled, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
+| Deployment with AKS using Network Plugin: Azure CNI + Network Policy: Calico | [tests/schemas/lz-machinelearning/AKS-AzureCNI-Calico.json](../../tests/schemas/lz-machinelearning/AKS-AzureCNI-Calico.json) | `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.networkPlugin`  equals ***calico***, `parameters.aks.value.podCidr` is ***empty***, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
+| Deployment with AKS using Network Plugin: Azure CNI + Network Policy: Azure | [tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json](../../tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json) | `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.podCidr` is ***empty***, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
 
 ### Example Deployment Parameters
 
@@ -353,7 +359,13 @@ This example configures:
     },
     "aks": {
       "value": {
-        "version": "1.21.2"
+        "version": "1.21.2",
+        "networkPlugin": "kubenet" ,
+        "networkPolicy": "calico",
+        "podCidr": "11.0.0.0/16",
+        "serviceCidr": "20.0.0.0/16" ,
+        "dnsServiceIP": "20.0.0.10",
+        "dockerBridgeCidr": "30.0.0.1/16"
       }
     },
     "sqldb": {

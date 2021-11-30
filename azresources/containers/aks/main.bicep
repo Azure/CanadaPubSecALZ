@@ -13,6 +13,12 @@ param name string
 @description('Azure Kubernetes Service Version.')
 param version string
 
+@description('Azure Kubernetes Service Network Plugin; Kubenet (kubenet) | Azure CNI (azure) .')
+param networkPlugin string
+
+@description('Azure Kubernetes Service Network Policy; for Kubenet: calico | For Azure CNI: azure or calico .')
+param networkPolicy string 
+
 @description('Key/Value pair of tags.')
 param tags object = {}
 
@@ -55,18 +61,18 @@ param dnsPrefix string
 @description('Private DNS Zone Resource Id.')
 param privateDNSZoneId string
 
-// Kubernetes Networking
-@description('Pod CIDR.  Default: 11.0.0.0/16')
-param podCidr string = '11.0.0.0/16'
+// Kubernetes Networking 
+@description('Pod CIDR.')
+param podCidr string 
 
-@description('Service CIDR.  Default: 20.0.0.0/16')
-param serviceCidr string = '20.0.0.0/16'
+@description('Service CIDR.')
+param serviceCidr string
 
-@description('DNS Service IP. Default: 20.0.0.10')
-param dnsServiceIP string = '20.0.0.10'
+@description('DNS Service IP.')
+param dnsServiceIP string
 
-@description('Docker Bridge CIDR.  Default: 30.0.0.1/16')
-param dockerBridgeCidr string = '30.0.0.1/16'
+@description('Docker Bridge CIDR.')
+param dockerBridgeCidr string 
 
 // Container Insights
 @description('Log Analytics Workspace Resource Id.  Default: blank')
@@ -126,7 +132,7 @@ module rbacNetworkContributor '../../iam/resource/virtual-network-role-assignmen
   }
 }
 
-module aksWithoutCMK 'aks-kubenet-without-cmk.bicep' = if (!useCMK) {
+module aksWithoutCMK 'aks-without-cmk.bicep' = if (!useCMK) {
   dependsOn: [
     rbacPrivateDnsZoneContributor
     rbacNetworkContributor
@@ -162,6 +168,9 @@ module aksWithoutCMK 'aks-kubenet-without-cmk.bicep' = if (!useCMK) {
     dnsServiceIP: dnsServiceIP
     dockerBridgeCidr: dockerBridgeCidr
 
+    networkPlugin: networkPlugin
+    networkPolicy: networkPolicy
+
     privateDNSZoneId: privateDNSZoneId
 
     containerInsightsLogAnalyticsResourceId: containerInsightsLogAnalyticsResourceId
@@ -170,7 +179,7 @@ module aksWithoutCMK 'aks-kubenet-without-cmk.bicep' = if (!useCMK) {
   }
 }
 
-module aksWithCMK 'aks-kubenet-with-cmk.bicep' = if (useCMK) {
+module aksWithCMK 'aks-with-cmk.bicep' = if (useCMK) {
   dependsOn: [
     rbacPrivateDnsZoneContributor
     rbacNetworkContributor
@@ -206,6 +215,9 @@ module aksWithCMK 'aks-kubenet-with-cmk.bicep' = if (useCMK) {
     dnsServiceIP: dnsServiceIP
     dockerBridgeCidr: dockerBridgeCidr
 
+    networkPlugin: networkPlugin
+    networkPolicy: networkPolicy
+    
     privateDNSZoneId: privateDNSZoneId
 
     containerInsightsLogAnalyticsResourceId: containerInsightsLogAnalyticsResourceId
