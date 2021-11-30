@@ -239,6 +239,9 @@ Reference implementation uses parameter files with `object` parameters to consol
 | Deployment with SQL DB using SQL authentication | [tests/schemas/lz-machinelearning/SQLDB-sqlAuth.json](../../tests/schemas/lz-machinelearning/SQLDB-sqlAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
 | Deployment with SQL DB using mixed mode authentication | [tests/schemas/lz-machinelearning/SQLDB-mixedAuth.json](../../tests/schemas/lz-machinelearning/SQLDB-mixedAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false,  `parameters.sqldb.value.aad*` fields filled in & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
 | Deployment without customer managed keys | [tests/schemas/lz-machinelearning/WithoutCMK.json](../../tests/schemas/lz-machinelearning/WithoutCMK.json) | `parameters.useCMK.value` is false. |
+| Deployment with AKS using Network Plugin: Kubenet + Network Policy: Calico | [tests/schemas/lz-machinelearning/AKS-Kubenet-Calico.json](../../tests/schemas/lz-machinelearning/AKS-Kubenet-Calico.json) | `parameters.aks.value.networkPlugin`  equals ***kubenet***, `parameters.aks.value.networkPlugin`  equals ***calico***, `parameters.aks.value.podCidr` is filled, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
+| Deployment with AKS using Network Plugin: Azure CNI + Network Policy: Calico | [tests/schemas/lz-machinelearning/AKS-AzureCNI-Calico.json](../../tests/schemas/lz-machinelearning/AKS-AzureCNI-Calico.json) | `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.networkPlugin`  equals ***calico***, `parameters.aks.value.podCidr` is ***empty***, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
+| Deployment with AKS using Network Plugin: Azure CNI + Network Policy: Azure | [tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json](../../tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json) | `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.podCidr` is ***empty***, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
 
 ### Example Deployment Parameters
 
@@ -356,7 +359,13 @@ This example configures:
     },
     "aks": {
       "value": {
-        "version": "1.21.2"
+        "version": "1.21.2",
+        "networkPlugin": "kubenet" ,
+        "networkPolicy": "calico",
+        "podCidr": "11.0.0.0/16",
+        "serviceCidr": "20.0.0.0/16" ,
+        "dnsServiceIP": "20.0.0.10",
+        "dockerBridgeCidr": "30.0.0.1/16"
       }
     },
     "sqldb": {
