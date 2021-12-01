@@ -127,6 +127,10 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
     * **Service principal key**: < Service Principal Password >
     * **Tenant ID**: < Azure AD Tenant ID >
     * **Service connection name**: spn-azure-platform-ops
+    * **Grant access permission to all pipelines**:  Unchecked
+
+        > When unchecked, each pipeline that references the service connection will require explicit approval to execute.  This is a one-time approval.  The approval request will be prompted during the first pipeline run.
+
   * Verify and save
 
 * **Reference**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml).  Use the settings described above when following the instructions.
