@@ -115,7 +115,7 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 
   * Navigate to **Project settings** (bottom left corner)
   * Under Pipelines, select **Service connections**
-  * Select **New service connection**
+  * Select **New service connection** or **Create service connection** (if this is the first service connection in the project)
   * Select **Azure Resource Manager** from the connection type list
   * Select **Service Principal (manual)** from Authentication method list
   * Enter the following information for **New Azure service connection**
