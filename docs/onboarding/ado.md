@@ -64,11 +64,11 @@ An Azure service principal is an identity created for use with applications, hos
 
 * **RBAC Assignment Settings**
 
-    * **Scope:**  Tenant Root Group (this is a management group in the Azure environment)
+  * **Scope:**  Tenant Root Group (this is a management group in the Azure environment)
 
-    * **Role:**  [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in [Azure RBAC](https://docs.microsoft.com/azure/role-based-access-control/overview).  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
+  * **Role:**  [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in [Azure RBAC](https://docs.microsoft.com/azure/role-based-access-control/overview).  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
 
-*  **Instructions**:  [Create an Azure service principal with the Azure CLI | Microsoft Docs](https://docs.microsoft.com/cli/azure/create-an-azure-service-principal-azure-cli)
+  * **Instructions**:  [Create an Azure service principal with the Azure CLI | Microsoft Docs](https://docs.microsoft.com/cli/azure/create-an-azure-service-principal-azure-cli)
 
 To create the service principal account and role assignment through Azure CLI:
 
@@ -101,13 +101,35 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 ## Step 2:  Configure Service Connection in Azure DevOps Project Configuration
 
 * Settings
-    * **Scope Level**:  Management Group
+  * **Connection Type**:  Azure Resource Manager
 
-    * **Service Connection Name**:  spn-azure-platform-ops
+  * **Authentication method**:  Service Principal (manual)
 
-        *Service Connection Name is referenced in the Azure DevOps Pipelines for Azure authentication and authorization.*
+  * **Scope Level**:  Management Group
 
-*  **Instructions**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml).  Use the settings described above when following the instructions.
+  * **Service Connection Name**:  spn-azure-platform-ops
+
+    *Service Connection Name is referenced in the Azure DevOps Pipelines for Azure authentication and authorization.*
+
+* Instructions
+
+  * Navigate to **Project settings** (bottom left corner)
+  * Under Pipelines, select **Service connections**
+  * Select **New service connection**
+  * Select **Azure Resource Manager** from the connection type list
+  * Select **Service Principal (manual)** from Authentication method list
+  * Enter the following information for **New Azure service connection**
+    * **Environment**:  Azure Cloud
+    * **Scope Level**: Management Group
+    * **Management Group ID**: < Management group Id, it is also the Azure AD Tenant ID >
+    * **Management Group Name**: Tenant Root Group
+    * **Service Principal Id**: < Service Principal App Id >
+    * **Service principal key**: < Service Principal Password >
+    * **Tenant ID**: < Azure AD Tenant ID >
+    * **Service connection name**: spn-azure-platform-ops
+  * Verify and save
+
+* **Reference**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml).  Use the settings described above when following the instructions.
 
 ---
 
