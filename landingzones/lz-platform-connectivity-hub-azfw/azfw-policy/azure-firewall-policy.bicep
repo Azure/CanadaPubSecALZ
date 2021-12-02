@@ -764,7 +764,7 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
   // https://docs.microsoft.com/en-us/azure/aks/limit-egress-traffic
   resource AKSCollectionGroup 'ruleCollectionGroups@2021-02-01' = {
     dependsOn: [
-      azureCollectionGroup
+      windowsCollectionGroup
     ]
     name: 'Aks'
     properties: {
@@ -835,7 +835,7 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
   // RedHat / Priority: 2000
   resource redhatCollectionGroup 'ruleCollectionGroups@2021-02-01' = {
     dependsOn: [
-      windowsCollectionGroup
+      AKSCollectionGroup
     ]
 
     name: 'RedHat'
