@@ -163,7 +163,7 @@ All user accounts should be assigned to Security Groups and access should be gra
 
 ### 4.3 Recommendations for Management Groups
 
-Access Control at Management Group scope enables management and oversight at scale. Permissions assigned at Management Group scopes will automatically be inherited by all child resources including child management groups, subscriptions, resource groups and resources. Therefore, it is an ideal scope for the following 4 scenarios.
+Access Control at Management Group scope enables management and oversight at scale. Permissions assigned at Management Group scopes will automatically be inherited by all child resources including child management groups, subscriptions, resource groups and resources. Therefore, it is an ideal scope for the following 6 scenarios.
 
 | Scenario | Permanent Assignment | On-Demand Assignment (through Azure AD PIM) |
 | --- | --- | --- |
