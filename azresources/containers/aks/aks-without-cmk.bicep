@@ -85,6 +85,7 @@ param containerInsightsLogAnalyticsResourceId string = ''
 @description('Enable encryption at host (double encryption).  Default: true')
 param enableEncryptionAtHost bool = true
 
+
 var networkProfile =  {
   networkPlugin: networkPlugin
   podCidr: podCidr
