@@ -4,7 +4,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-param sshkey string
 param subnetID string
 
 @description('Size of VMs in the VM Scale Set.')
@@ -25,7 +24,7 @@ param authenticationType string = 'sshPublicKey'
 
 @description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
 @secure()
-param adminPasswordOrKey string
+param sshkey string
 var storageAccountType = 'Premium_LRS'
 
 var nicName = '${vmName}nic'
@@ -98,7 +97,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-07-01' = {
         computerName: vmName
         allowExtensionOperations: true
         adminUsername: adminUsername
-        adminPassword: adminPasswordOrKey
+        adminPassword: sshkey
         linuxConfiguration: ((authenticationType == 'password') ? json('null') : linuxConfiguration)
       }
     }

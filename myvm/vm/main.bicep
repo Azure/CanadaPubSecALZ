@@ -27,7 +27,7 @@ module vm './vm-ubuntu1804.bicep' =  {
   params: {
     vmName: vmName
     subnetID: subnetID
-    adminPasswordOrKey: sshkey
+    sshkey: sshkey
   }
 }
 
