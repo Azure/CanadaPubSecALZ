@@ -117,7 +117,7 @@ resource vmextnesion 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' =
     typeHandlerVersion: '2.0'
     autoUpgradeMinorVersion: true
     settings: {
-      commandToExecute: 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo -u ${adminUsername} bash"'
+      commandToExecute: 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo -u ${adminUsername} bash'
     }
   }
 }
