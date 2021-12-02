@@ -9,6 +9,7 @@ targetScope = 'subscription'
 var location = 'canadacentral' 
 param vmName string = 'adeel-testvm'
 param sshkey string
+var subnetID = '/subscriptions/c8515022-4cc9-4ed5-a3fe-182e05d732d8/resourceGroups/azmlnocmk102021W1Network/providers/Microsoft.Network/virtualNetworks/azmlnocmk102021W1vnet/subnets/aks'
 
 // RGs
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -25,6 +26,7 @@ module vm './vm-ubuntu1804.bicep' =  {
   scope: rg
   params: {
     vmName: vmName
+    subnetID: subnetID
     adminPasswordOrKey: sshkey
   }
 }
