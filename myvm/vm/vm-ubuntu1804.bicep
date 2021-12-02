@@ -15,6 +15,8 @@ param vmName string
 @description('Admin username on all VMs.')
 param adminUsername string = 'azuser'
 
+param resourceTags object 
+
 @allowed([
   'sshPublicKey'
   'password'
@@ -71,6 +73,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
 resource vm 'Microsoft.Compute/virtualMachines@2021-07-01' = {
   name: vmName
   location: resourceGroup().location
+  tags: resourceTags
   properties: {
       hardwareProfile: {
           vmSize: vmSku
