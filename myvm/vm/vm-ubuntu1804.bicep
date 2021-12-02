@@ -51,8 +51,9 @@ var linuxConfiguration = {
 
 resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
   name: nicName
-   location: resourceGroup().location
-   properties: {
+  location: resourceGroup().location
+  tags: resourceTags
+  properties: {
       enableAcceleratedNetworking: true
       ipConfigurations: [
           {

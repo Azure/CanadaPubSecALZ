@@ -23,6 +23,7 @@ var resourceTags = {
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name:'adeel-testvm-rg'
   location: location
+  tags: resourceTags
 }
 
 module vm './vm-ubuntu1804.bicep' =  {
