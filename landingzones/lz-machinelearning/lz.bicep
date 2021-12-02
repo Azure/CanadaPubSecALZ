@@ -370,6 +370,7 @@ module aksCluster '../../azresources/containers/aks/main.bicep' = {
     
     dnsPrefix: toLower(aksName)
     subnetId: networking.outputs.aksSubnetId
+    udrName: networking.outputs.aksUdrNAme
     nodeResourceGroupName: '${rgCompute.name}-${aksName}-${uniqueString(rgCompute.id)}'
 
     privateDNSZoneId: networking.outputs.aksPrivateDnsZoneId

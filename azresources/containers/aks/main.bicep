@@ -10,6 +10,9 @@
 @description('Azure Kubernetes Service Name.')
 param name string
 
+@description('Azure Kubernetes Service UDR Name.')
+param udrName string
+
 @description('Azure Kubernetes Service Version.')
 param version string
 
@@ -132,12 +135,11 @@ module rbacNetworkContributor '../../iam/resource/virtual-network-role-assignmen
   }
 }
 
-
 module rbacUdrContributor '../../iam/resource/route-table-role-assignment-to-sp.bicep' = {
   name: 'rbac-udr-contributor-${name}'
   scope: resourceGroup(virtualNetworkResourceGroup)
   params: {
-    vnetName: virtualNetworkName
+    udrName: udrName
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7') // Network Contributor
     resourceSPObjectIds: array(identity.outputs.identityPrincipalId)
   }

@@ -651,3 +651,5 @@ output sqlDBPrivateDnsZoneId string = privatezone_sqldb.outputs.privateDnsZoneId
 output amlApiPrivateDnsZoneId string = privatezone_azureml_api.outputs.privateDnsZoneId
 output amlNotebooksPrivateDnsZoneId string = privatezone_azureml_notebook.outputs.privateDnsZoneId
 output aksPrivateDnsZoneId string = privatezone_aks.outputs.privateDnsZoneId
+
+output aksUdrNAme string = udrAKS.name
