@@ -90,7 +90,7 @@
     "aks": {
       "value": {
         "version": "1.21.2",
-        "networkPlugin": "azure" ,
+        "networkPlugin": "kubenet" ,
         "networkPolicy": "calico",
         "podCidr": "11.0.0.0/16",
         "serviceCidr": "20.0.0.0/16" ,
