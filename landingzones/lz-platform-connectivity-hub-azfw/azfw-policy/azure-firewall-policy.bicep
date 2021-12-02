@@ -760,6 +760,78 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
     }
   }
 
+  // AKS required FQDNs 
+  // https://docs.microsoft.com/en-us/azure/aks/limit-egress-traffic
+  resource AKSCollectionGroup 'ruleCollectionGroups@2021-02-01' = {
+    dependsOn: [
+      azureCollectionGroup
+    ]
+    name: 'Aks'
+    properties: {
+      priority: 1200
+      ruleCollections: [
+        {
+          ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+          name: 'Ubuntu NTP'
+          action: {
+            type: 'Allow'
+          }
+          priority: 100
+          rules: [
+            {
+              ruleType: 'NetworkRule'
+              name: 'Ubuntu NTP - FQDN'
+              destinationAddresses: [
+                'ntp.ubuntu.com'
+              ]
+              destinationPorts: [
+                '123'
+              ]
+              ipProtocols: [
+                'UDP'
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+            }
+          ]
+        }
+        {
+          ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+          name: 'AKS Azure Global required FQDNs'
+          action: {
+            type: 'Allow'
+          }
+          priority: 200
+          rules: [
+            {
+              ruleType: 'ApplicationRule'
+              name: 'AKS reuqired FQDNs'
+              targetFqdns: [
+                '*.hcp.canadacentral.azmk8s.io'
+                'mcr.microsoft.com'
+                '*.data.mcr.microsoft.com'
+                'management.azure.com'
+                'login.microsoftonline.com'
+                'packages.microsoft.com'
+                'acs-mirror.azureedge.net'
+              ]
+              protocols: [
+                {
+                  port: 443
+                  protocolType: 'Https'
+                }
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+            }
+          ]
+        }
+      ]        
+    }
+  }  
+
   // RedHat / Priority: 2000
   resource redhatCollectionGroup 'ruleCollectionGroups@2021-02-01' = {
     dependsOn: [
