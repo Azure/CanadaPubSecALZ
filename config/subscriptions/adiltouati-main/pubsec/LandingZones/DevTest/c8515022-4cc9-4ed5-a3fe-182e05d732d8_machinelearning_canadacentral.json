@@ -1,0 +1,193 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serviceHealthAlerts": {
+      "value": {
+        "resourceGroupName": "pubsec-service-health",
+        "incidentTypes": [ "Incident", "Security" ],
+        "regions": [ "Global", "Canada East", "Canada Central" ],
+        "receivers": {
+          "app": [ "alzcanadapubsec@microsoft.com" ],
+          "email": [ "alzcanadapubsec@microsoft.com" ],
+          "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+          "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+        },
+        "actionGroupName": "Sub4 ALZ action group",
+        "actionGroupShortName": "sub4-alert",
+        "alertRuleName": "Sub4 ALZ alert rule",
+        "alertRuleDescription": "Alert rule for Azure Landing Zone"
+      }
+    },
+    "securityCenter": {
+      "value": {
+        "email": "alzcanadapubsec@microsoft.com",
+        "phone": "5555555555"
+      }
+    },
+    "subscriptionRoleAssignments": {
+      "value": [
+        {
+          "comments": "Built-in Role: Contributor",
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+          "securityGroupObjectIds": [
+            "dd48cbc5-6df2-47f7-94a4-62dc9353fd0d"
+          ]
+        },
+        {
+          "comments": "Custom Role: Landing Zone Application Owner",
+          "roleDefinitionId": "b4c87314-c1a1-5320-9c43-779585186bcc",
+          "securityGroupObjectIds": [
+            "dd48cbc5-6df2-47f7-94a4-62dc9353fd0d"
+          ]
+        }
+      ]
+    },
+    "subscriptionBudget": {
+      "value": {
+        "createBudget": false
+      }
+    },
+    "subscriptionTags": {
+      "value": {
+        "ISSO": "isso-tag"
+      }
+    },
+    "resourceTags": {
+      "value": {
+        "ClientOrganization": "client-organization-tag",
+        "CostCenter": "cost-center-tag",
+        "DataSensitivity": "data-sensitivity-tag",
+        "ProjectContact": "project-contact-tag",
+        "ProjectName": "project-name-tag",
+        "TechnicalContact": "technical-contact-tag"
+      }
+    },
+    "resourceGroups": {
+      "value": {
+        "automation": "azmlnocmk102021W1Automation",
+        "compute": "azmlnocmk102021W1Compute",
+        "monitor": "azmlnocmk102021W1Monitor",
+        "networking": "azmlnocmk102021W1Network",
+        "networkWatcher": "NetworkWatcherRG",
+        "security": "azmlnocmk102021W1Security",
+        "storage": "azmlnocmk102021W1Storage"
+      }
+    },
+    "useCMK": {
+      "value": false
+    },
+    "automation": {
+      "value": {
+        "name": "azmlnocmk102021W1automation"
+      }
+    },
+    "keyVault": {
+      "value": {
+        "secretExpiryInDays": 3650
+      }
+    },
+    "aks": {
+      "value": {
+        "version": "1.21.2",
+        "networkPlugin": "azure" ,
+        "networkPolicy": "calico",
+        "podCidr": "",
+        "serviceCidr": "20.0.0.0/16" ,
+        "dnsServiceIP": "20.0.0.10",
+        "dockerBridgeCidr": "30.0.0.1/16"
+      }
+    },
+    "sqldb": {
+      "value": {
+        "enabled": true,
+        "sqlAuthenticationUsername": "azadmin",
+        "aadAuthenticationOnly": false,
+        "aadLoginName":"DBA Security Group",
+        "aadLoginObjectID":"c3961323-5d5a-4ce0-9b86-023bccf59a32",
+        "aadLoginType":"Group"
+      }
+    },
+    "sqlmi": {
+      "value": {
+        "enabled": false
+      }
+    },
+    "aml": {
+      "value": {
+        "enableHbiWorkspace": false
+      }
+    },
+    "hubNetwork": {
+      "value": {
+        "virtualNetworkId": "/subscriptions/c8515022-4cc9-4ed5-a3fe-182e05d732d8/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+        "rfc1918IPRange": "10.18.0.0/22",
+        "rfc6598IPRange": "100.60.0.0/16",
+        "egressVirtualApplianceIp": "10.18.1.4",
+        "privateDnsManagedByHub": true,
+        "privateDnsManagedByHubSubscriptionId": "c8515022-4cc9-4ed5-a3fe-182e05d732d8",
+        "privateDnsManagedByHubResourceGroupName": "pubsec-dns-rg"
+      }
+    },
+    "network": {
+      "value": {
+        "peerToHubVirtualNetwork": true,
+        "useRemoteGateway": false,
+        "name": "azmlnocmk102021W1vnet",
+        "dnsServers": [
+          "10.18.1.4"
+        ],
+        "addressPrefixes": [
+          "10.3.0.0/16"
+        ],
+        "subnets": {
+          "oz": {
+            "comments": "Foundational Elements Zone (OZ)",
+            "name": "oz",
+            "addressPrefix": "10.3.1.0/25"
+          },
+          "paz": {
+            "comments": "Presentation Zone (PAZ)",
+            "name": "paz",
+            "addressPrefix": "10.3.2.0/25"
+          },
+          "rz": {
+            "comments": "Application Zone (RZ)",
+            "name": "rz",
+            "addressPrefix": "10.3.3.0/25"
+          },
+          "hrz": {
+            "comments": "Data Zone (HRZ)",
+            "name": "hrz",
+            "addressPrefix": "10.3.4.0/25"
+          },
+          "sqlmi": {
+            "comments": "SQL Managed Instances Delegated Subnet",
+            "name": "sqlmi",
+            "addressPrefix": "10.3.5.0/25"
+          },
+          "databricksPublic": {
+            "comments": "Databricks Public Delegated Subnet",
+            "name": "databrickspublic",
+            "addressPrefix": "10.3.6.0/25"
+          },
+          "databricksPrivate": {
+            "comments": "Databricks Private Delegated Subnet",
+            "name": "databricksprivate",
+            "addressPrefix": "10.3.7.0/25"
+          },
+          "privateEndpoints": {
+            "comments": "Private Endpoints Subnet",
+            "name": "privateendpoints",
+            "addressPrefix": "10.3.8.0/25"
+          },
+          "aks": {
+            "comments": "AKS Subnet",
+            "name": "aks",
+            "addressPrefix": "10.3.9.0/25"
+          }
+        }
+      }
+    }
+  }
+}

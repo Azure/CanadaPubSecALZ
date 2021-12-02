@@ -96,7 +96,7 @@ var networkProfile =  {
   outboundType: 'userDefinedRouting'
 }
 
-resource aks 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
+resource aks 'Microsoft.ContainerService/managedClusters@2021-09-01' = {
   name: name
   location: resourceGroup().location
   tags: tags
