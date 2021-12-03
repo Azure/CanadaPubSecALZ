@@ -163,7 +163,7 @@ Following changes are required when updating:
 Parameter files for archetype deployment are configured in [config/subscription](../../config/subscriptions) folder.  The folder hierarchy is comprised of the following elements, from this folder downward:
 
 1. A environment folder named for the Azure DevOps Org and Git Repo branch name, e.g. 'CanadaESLZ-main'.
-2. The management group hierarchy defined for your environment, e.g. `pubsec/LandingZone/Prod`. The location of the config file represents which Management Group the subscription is a member of.
+2. The management group hierarchy defined for your environment, e.g. `pubsec/LandingZones/Prod`. The location of the config file represents which Management Group the subscription is a member of.
 
 For example, if your Azure DevOps organization name is 'CanadaESLZ', you have two Git Repo branches named 'main' and 'dev', and you have top level management group named 'pubsec' with the standard structure, then your path structure would look like this:
 
@@ -173,7 +173,8 @@ For example, if your Azure DevOps organization name is 'CanadaESLZ', you have tw
         /pubsec                <- Your top level management root group name
             /LandingZones
                 /Prod
-                    /xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx_healthcare.json
+                    /xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx_machinelearning.json
+                    /yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy_machinelearning_canadacentral.json
 ```
 
 The JSON config file name is in one of the following two formats:
