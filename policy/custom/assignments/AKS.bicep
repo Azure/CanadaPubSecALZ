@@ -76,7 +76,7 @@ resource podSecurityBaselineStandardsPolicySetAssignment 'Microsoft.Authorizatio
   location: deployment().location
 }
 
-resource ClustersShouldUuseInternalLoadBalancers 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
+resource ClustersShouldUseInternalLoadBalancers 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
   name: 'aks-ilb-${uniqueString(policyAssignmentManagementGroupId)}'
   properties: {
     displayName: 'Kubernetes clusters should use internal load balancers'
