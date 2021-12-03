@@ -76,21 +76,21 @@ resource podSecurityBaselineStandardsPolicySetAssignment 'Microsoft.Authorizatio
   location: deployment().location
 }
 
-resource ClustersShouldUuseInternalLoadBalancers 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
-  name: 'aks-ilb-${uniqueString(policyAssignmentManagementGroupId)}'
-  properties: {
-    displayName: 'Kubernetes clusters should use internal load balancers'
-    policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/3fc4dc25-5baf-40d8-9b05-7fe74c1bc64e'
-    scope: scope
-    notScopes: []
-    parameters: {}
-    enforcementMode: 'Default'
-  }
-  identity: {
-    type: 'SystemAssigned'
-  }
-  location: deployment().location
-}
+// resource ClustersShouldUuseInternalLoadBalancers 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
+//   name: 'aks-ilb-${uniqueString(policyAssignmentManagementGroupId)}'
+//   properties: {
+//     displayName: 'Kubernetes clusters should use internal load balancers'
+//     policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/3fc4dc25-5baf-40d8-9b05-7fe74c1bc64e'
+//     scope: scope
+//     notScopes: []
+//     parameters: {}
+//     enforcementMode: 'Default'
+//   }
+//   identity: {
+//     type: 'SystemAssigned'
+//   }
+//   location: deployment().location
+// }
 
 // These role assignments are required to allow Policy Assignment to remediate.
 // Contributor role is required to support customer-managed keys for AKS.  Permission: Microsoft.Compute/diskEncryptionSets/read

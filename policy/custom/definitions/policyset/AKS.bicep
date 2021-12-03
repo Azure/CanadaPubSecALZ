@@ -28,6 +28,14 @@ resource aksPolicySet 'Microsoft.Authorization/policySetDefinitions@2020-03-01' 
         policyDefinitionReferenceId: toLower(replace('Deploy Azure Policy Add-on to Azure Kubernetes Service clusters', ' ', '-'))
         parameters: {}
       }
+      {
+        groupNames: [
+          'AKS'
+        ]
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/3fc4dc25-5baf-40d8-9b05-7fe74c1bc64e'
+        policyDefinitionReferenceId: toLower(replace('Kubernetes clusters should use internal load balancers', ' ', '-'))
+        parameters: {}
+      }
     ]
   }
 }
