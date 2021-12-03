@@ -51,7 +51,6 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
     * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
 
-
 ## Deployment Instructions
 
 Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure this archetype.

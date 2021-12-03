@@ -11,30 +11,31 @@ The goal of this authoring guide is to provide step-by-step instructions to crea
 
 ## Table of Contents
 
-- [Directory Structure](#directory-structure)
+- [Folder Structure](#folder-structure)
 - [Common Features](#common-features)
 - [JSON Schema](#json-schema)
 - [Update a spoke archetype](#update-a-spoke-archetype)
+- [Deployment instructions](#deployment-instructions)
 
 ---
 
-## Directory Structure
+## Folder Structure
 
-Archetypes are located in `landingzones` folder and organized as directory per archetype.  For example:
+Archetypes are located in `landingzones` folder and organized as folder per archetype.  For example:
 
 - Platform archetypes
-  - `lz-platform-connectivity-hub-azfw` - configures a Hub Virtual Network with Azure Firewall.
-  - `lz-platform-connectivity-hub-nva` - configures a Hub Virtual Network with Fortinet Firewall.
-  - `lz-platform-logging` - configures central logging infrastructure using Log Analytics Workspace and Microsoft Sentinel.
+  - [`lz-platform-connectivity-hub-azfw`](hubnetwork-azfw.md) - configures a Hub Virtual Network with Azure Firewall.
+  - [`lz-platform-connectivity-hub-nva`](hubnetwork-nva-fortigate.md) - configures a Hub Virtual Network with Fortinet Firewall.
+  - [`lz-platform-logging`](logging.md) - configures central logging infrastructure using Log Analytics Workspace and Microsoft Sentinel.
 - Spoke archetypes
-  - `lz-generic-subscription` - configures a subscription for general purpose use.
-  - `lz-healthcare` - configures a subscription for healthcare scenarios.
-  - `lz-machinelearning` - configures a subscription for machine learning .scenarios.
+  - [`lz-generic-subscription`](generic-subscription.md) - configures a subscription for general purpose use.
+  - [`lz-healthcare`](healthcare.md) - configures a subscription for healthcare scenarios.
+  - [`lz-machinelearning`](machinelearning.md) - configures a subscription for machine learning .scenarios.
 
 Each archetype is intended to be self-contained and provides all deployment templates required to configure a subscription.  Key requirements for each archetype:
 
-- Directory must start with `lz-` followed by the archetype name.  For example `lz-machinelearning`.
-- Entrypoint for an archetype is `main.bicep`. Every archetype must provide `main.bicep` in it's respective directory.
+- Folder must start with `lz-` followed by the archetype name.  For example `lz-machinelearning`.
+- Entrypoint for an archetype is `main.bicep`. Every archetype must provide `main.bicep` in it's respective folder.
 
 ---
 
@@ -120,7 +121,7 @@ As a result, we could either
 
 - attempt to detect invalid inputs as a pre-check in our `subscription-ci` pipeline.
 
-We chose to check the input parameters prior to deployment to identify misconfigurations faster.  Validations are performed using JSON Schema definitions.  These definitions are located in [schemas/latest/landingzones](../../schemas/latest/landingzones) directory.
+We chose to check the input parameters prior to deployment to identify misconfigurations faster.  Validations are performed using JSON Schema definitions.  These definitions are located in [schemas/latest/landingzones](../../schemas/latest/landingzones) folder.
 
 > JSON Schema definitions increases the learning curve but it is necessary to preserve consistency of the archetypes and the parameters they depend on for deployment.
 
@@ -133,7 +134,7 @@ It is common to update existing archetypes to evolve and adapt the implementatio
 Following changes are required when updating:
 
 - Update archetype deployment template(s) through `main.bicep` or one of it's dependent Bicep template(s).
-- Update Visio diagrams in `docs\visio` (if required)
+- Update Visio diagrams in `docs\visio` (if required).
 - Update documentation in `docs\archetypes` and revise Visio diagram images.
 - When parameters are added, updated or removed:
   - Modify JSON Schema
@@ -152,3 +153,36 @@ Following changes are required when updating:
 
   - Documentation
     - Unit tests are treated as deployment scenarios.  Therefore, reference these in the appropriate archetype document in `docs\archetypes` under the **Deployment Scenarios** section.
+
+---
+
+## Deployment Instructions
+
+> Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Healthcare.
+
+Parameter files for archetype deployment are configured in [config/subscription](../../config/subscriptions) folder.  The folder hierarchy is comprised of the following elements, from this folder downward:
+
+1. A environment folder named for the Azure DevOps Org and Git Repo branch name, e.g. 'CanadaESLZ-main'.
+2. The management group hierarchy defined for your environment, e.g. `pubsec/LandingZone/Prod`. The location of the config file represents which Management Group the subscription is a member of.
+
+For example, if your Azure DevOps organization name is 'CanadaESLZ', you have two Git Repo branches named 'main' and 'dev', and you have top level management group named 'pubsec' with the standard structure, then your path structure would look like this:
+
+```none
+/config/subscriptions
+    /CanadaESLZ-main           <- Your environment, e.g. CanadaESLZ-main, CanadaESLZ-dev, etc.
+        /pubsec                <- Your top level management root group name
+            /LandingZones
+                /Prod
+                    /xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx_healthcare.json
+```
+
+The JSON config file name is in one of the following two formats:
+
+- [AzureSubscriptionGUID]\_[TemplateName].json
+- [AzureSubscriptionGUID]\_[TemplateName]\_[DeploymentLocation].json
+
+The subscription GUID is needed by the pipeline; since it's not available in the file contents, it is specified in the config file name.
+
+The template name/type is a text fragment corresponding to a path name (or part of a path name) under the '/landingzones' top level path. It indicates which Bicep templates to run on the subscription. For example, the machine learning path is `/landingzones/lz-machinelearning`, so we remove the `lz-` prefix and use `machinelearning` to specify this type of landing zone.
+
+The deployment location is the short name of an Azure deployment location, which may be used to override the `deploymentRegion` YAML variable. The allowable values for this value can be determined by looking at the `Name` column output of the command: `az account list-locations -o table`.
