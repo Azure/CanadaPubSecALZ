@@ -13,12 +13,13 @@ The goal of this authoring guide is to provide step-by-step instructions to crea
 
 - [Folder structure](#folder-structure)
 - [Create a new spoke archetype](#create-a-spoke-archetype)
-  - [Build new or reuse existing archetypes](#build-new-or-reuse-existing-archetypes)
+  - [Build new or reuse existing archetypes?](#build-new-or-reuse-existing-archetypes)
   - [Requirements for archetypes](#requirements-for-archetypes)
   - [Approach](#approach)
 - [Update a spoke archetype](#update-a-spoke-archetype)
 - [Common features](#common-features)
 - [JSON Schema for deployment parameters](#json-schema-for-deployment-parameters)
+- [Telemetry](#telemetry)
 - [Deployment instructions](#deployment-instructions)
 
 ---
@@ -86,6 +87,7 @@ Each archetype is intended to be self-contained and provides all deployment temp
 - Implements [JSON Schema for pre-deployment JSON parameters file validation](#json-schema-for-deployment-parameters).
 - Implements spoke virtual network with support for virtual network peering to Hub Virtual Network.
 - Implements Private DNS Zones for private endpoints with support for spoke-managed and hub-managed Private DNS Zones.
+- Implements [telemetry tracking](#telemetry).
 - Validated with Azure Firewall for routing & traffic filtering.  Additional Firewall rules may need to be implemented to support control plane & data plane integration.
 
 ### Approach
@@ -107,11 +109,13 @@ Each archetype is intended to be self-contained and provides all deployment temp
 
           This is a validation that the archetype scaffolding is in-place.
 
-4. Add archetype specific deployment instructions and incrementally verify through test deployment.
+4. Add [telemetry tracking](#telemetry).
 
-5. Create a JSON Schema definition for the archetype.  Consider using a tool such as [JSON to Jsonschema](https://jsonformatter.org/json-to-jsonschema) to generate the initial schema definition that you customize.  For all common features, you must reference the existing definitions for the types. See example: [schemas/latest/landingzones/lz-generic-subscription.json](../../schemas/latest/landingzones/lz-generic-subscription.json)
+5. Add archetype specific deployment instructions and incrementally verify through test deployment.
 
-6. Verify archetype deployment through `subscription-ci` Azure DevOps Pipeline.
+6. Create a JSON Schema definition for the archetype.  Consider using a tool such as [JSON to Jsonschema](https://jsonformatter.org/json-to-jsonschema) to generate the initial schema definition that you customize.  For all common features, you must reference the existing definitions for the types. See example: [schemas/latest/landingzones/lz-generic-subscription.json](../../schemas/latest/landingzones/lz-generic-subscription.json)
+
+7. Verify archetype deployment through `subscription-ci` Azure DevOps Pipeline.
 
       - Create a subscription JSON Parameters file per [deployment instructions](#deployment-instructions).
       - Run the pipeline by providing the subscription guid
@@ -120,13 +124,13 @@ Each archetype is intended to be self-contained and provides all deployment temp
 
     Once verifications are complete, the pipeline will move the subscription to the target management group (based on the folder structure) and execute `main.bicep`.
 
-7. Debug deployment failures.
+8. Debug deployment failures.
 
     - Navigate to the subscription in Azure Portal
     - Navigate to **Deployments** under **Settings**
     - Identify the failed deployment step & troubleshoot
 
-8. Update documentation.
+9. Update documentation.
 
 ---
 
@@ -276,6 +280,53 @@ As a result, we could either
 We chose to check the input parameters prior to deployment to identify misconfigurations faster.  Validations are performed using JSON Schema definitions.  These definitions are located in [schemas/latest/landingzones](../../schemas/latest/landingzones) folder.
 
 > JSON Schema definitions increases the learning curve but it is necessary to preserve consistency of the archetypes and the parameters they depend on for deployment.
+
+---
+
+## Telemetry
+
+This reference implementation is instrumented to track deployment telemetry per module through [customer usage attribution](https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution).  When a new archetype is developed, the telemetry settings must be updated to reference the tracking id.  Telemetry configuration is located at [`config/telemetry.json`](../../config/telemetry.json).
+
+To support per-module tracking, we've split each archetype to be tracked independently.  At the moment, a single tracking id is used for all modules and can be modified in the future when required.
+
+### Instructions
+
+1. Add new archetype name & value in `customerUsageAttribution.modules.archetypes` object.  The name represents the new archetype and the value is the tracking id.
+
+    ```json
+    {
+      "customerUsageAttribution": {
+        "enabled": true,
+        "modules": {
+          "managementGroups": "a83f6385-f514-415f-991b-2d9bd7aed658",
+          "policy": "a83f6385-f514-415f-991b-2d9bd7aed658",
+          "roles": "a83f6385-f514-415f-991b-2d9bd7aed658",
+          "logging": "a83f6385-f514-415f-991b-2d9bd7aed658",
+          "networking": {
+            "nvaFortinet": "a83f6385-f514-415f-991b-2d9bd7aed658",
+            "azureFirewall": "a83f6385-f514-415f-991b-2d9bd7aed658"
+          },
+          "archetypes": {
+            "genericSubscription": "a83f6385-f514-415f-991b-2d9bd7aed658",
+            "machineLearning": "a83f6385-f514-415f-991b-2d9bd7aed658",
+            "healthcare": "a83f6385-f514-415f-991b-2d9bd7aed658"
+          }
+        }
+      }
+    }
+    ```
+
+2. Include telemetry tracking deployment in `main.bicep`.  Replace `NEW_ARCHETYPE_NAME` with the name defined in step 1.
+
+```bicep
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+
+var telemetry = json(loadTextContent('../../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-usage-attribution-subscription.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.archetypes.NEW_ARCHETYPE_NAME}'
+}
+```
 
 ---
 
