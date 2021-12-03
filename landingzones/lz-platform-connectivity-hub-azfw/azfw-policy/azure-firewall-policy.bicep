@@ -802,11 +802,11 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
           action: {
             type: 'Allow'
           }
-          priority: 200
+          priority: 150
           rules: [
             {
               ruleType: 'ApplicationRule'
-              name: 'AKS reuqired FQDNs'
+              name: 'AKS required FQDNs'
               targetFqdns: [
                 '*.hcp.canadacentral.azmk8s.io'
                 'mcr.microsoft.com'
@@ -815,11 +815,61 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
                 'login.microsoftonline.com'
                 'packages.microsoft.com'
                 'acs-mirror.azureedge.net'
+                'canadacenral.dp.kubernetesconfiguration.azure.com'
               ]
               protocols: [
                 {
                   port: 443
                   protocolType: 'Https'
+                }
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+            }
+            {
+              ruleType: 'ApplicationRule'
+              name: 'AKS Addons required FQDNs'
+              targetFqdns: [
+                'dc.services.visualstudio.com'
+                '*.ods.opinsights.azure.com'
+                '*.oms.opinsights.azure.com'
+                '*.monitoring.azure.com'
+                'data.policy.core.windows.net'
+                'store.policy.core.windows.net'
+              ]
+              protocols: [
+                {
+                  port: 443
+                  protocolType: 'Https'
+                }
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+            }
+          ]
+        }
+        {
+          ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+          name: 'AKS Optional recommended FQDNs'
+          action: {
+            type: 'Allow'
+          }
+          priority: 200
+          rules: [
+            {
+              ruleType: 'ApplicationRule'
+              name: 'AKS Optional recommended FQDNs'
+              targetFqdns: [
+                'security.ubuntu.com'
+                'azure.archive.ubuntu.com'
+                'changelogs.ubuntu.com'
+              ]
+              protocols: [
+                {
+                  port: 80
+                  protocolType: 'Http'
                 }
               ]
               sourceAddresses: [
