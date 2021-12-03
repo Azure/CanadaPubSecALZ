@@ -1,8 +1,8 @@
 # Archetype Authoring Guide
 
-This reference implementation provides 6 archetypes that can be used as-is or customized further to suit business needs.  This implementation provides two types of archetypes:  Spoke archetypes & Platform archetypes.
+This reference implementation provides 6 archetypes that can be used as-is or customized further to suit business needs.  Archetypes are self-contained Bicep deployment templates that are used to configure multiple subscriptions.  Archetypes provide the `File -> New -> Configure subscription from template` capability.
 
-Spoke archetypes are used to configure subscriptions for line of business use cases and Platform archetypes are used to configure shared infrastructure such as Logging, Hub Networking and Firewalls.  Intent of the archetypes is to **provide a repeatable method** for configuring subscriptions.  It offers **consistent deployment experience and supports common scenarios** required by your organization.
+This implementation provides two types of archetypes:  Spoke archetypes & Platform archetypes.  Spoke archetypes are used to configure subscriptions for line of business use cases such as Machine Learning & Healthcare.  Platform archetypes are used to configure shared infrastructure such as Logging, Hub Networking and Firewalls.  Intent of the archetypes is to **provide a repeatable method** for configuring subscriptions.  It offers **consistent deployment experience and supports common scenarios** required by your organization.
 
 To avoid archetype sprawl, we recommend a **maximum of 3-5 spoke archetypes**.  When there are new capabilities or Azure services to add, consider evolving an existing archetypes through **feature flags**.
 Once an archetype is deployed, the application teams can further modify the deployment for scale or new capabilities using their preferred deployment tools.
@@ -12,9 +12,13 @@ The goal of this authoring guide is to provide step-by-step instructions to crea
 ## Table of Contents
 
 - [Folder structure](#folder-structure)
+- [Create a new spoke archetype](#create-a-spoke-archetype)
+  - [Build new or reuse existing archetypes](#build-new-or-reuse-existing-archetypes)
+  - [Requirements for archetypes](#requirements-for-archetypes)
+  - [Approach](#approach)
+- [Update a spoke archetype](#update-a-spoke-archetype)
 - [Common features](#common-features)
 - [JSON Schema for deployment parameters](#json-schema-for-deployment-parameters)
-- [Update a spoke archetype](#update-a-spoke-archetype)
 - [Deployment instructions](#deployment-instructions)
 
 ---
@@ -32,10 +36,126 @@ Archetypes are located in `landingzones` folder and organized as folder per arch
   - [`lz-healthcare`](healthcare.md) - configures a subscription for healthcare scenarios.
   - [`lz-machinelearning`](machinelearning.md) - configures a subscription for machine learning .scenarios.
 
-Each archetype is intended to be self-contained and provides all deployment templates required to configure a subscription.  Key requirements for each archetype:
+---
 
-- Folder must start with `lz-` followed by the archetype name.  For example `lz-machinelearning`.
+## Create a new spoke archetype
+
+Archetypes are self-contained Bicep deployment templates that are used to configure multiple subscriptions.  Archetypes provide the `File -> New -> Configure subscription from template` capability.
+
+### Build new or reuse existing archetypes?
+
+You should develop new archetypes when a common deployment architecture or pattern emerges within your organization.  There's limited value when an archetype is created for 1 or 2 deployments.  The return on investment increases when the archetype is deployed to 10s or 100s of subscriptions.
+
+You should start by evaluating the [existing archetypes for enhancement opportunities](#update-a-spoke-archetype).  New features can be placed behind feature flags to provide customization/choices of Azure services to configure at deployment time.  For example, we use feature flags to control SQL Database and SQL Managed Instance deployment in the Machine Learning archetype.
+
+The `sqldb.enabled` feature flag for SQL Database deployment:
+
+```json
+"sqldb": {
+  "value": {
+    "enabled": true,
+    "sqlAuthenticationUsername": "azadmin",
+    "aadAuthenticationOnly": false
+  }
+}
+```
+
+The `sqlmi.enabled` feature flag for SQL Managed Instance deployment:
+
+```json
+"sqlmi": {
+  "value": {
+    "enabled": false
+  }
+}
+```
+
+### Requirements for archetypes
+
+Each archetype is intended to be self-contained and provides all deployment templates required to configure a subscription.  Key requirements for each archetype are:
+
+- Archetype folder must start with `lz-` followed by the archetype name.  For example `lz-machinelearning`.
 - Entrypoint for an archetype is `main.bicep`. Every archetype must provide `main.bicep` in it's respective folder.
+- Deployment must be scoped to `subscription`.  Scope is set in `main.bicep` using `targetScope` declaration.
+
+    ```bicep
+    targetScope = 'subscription'
+    ```
+
+- Implements [common features](#common-features).
+- Implements [JSON Schema for pre-deployment JSON parameters file validation](#json-schema-for-deployment-parameters).
+- Implements spoke virtual network with support for virtual network peering to Hub Virtual Network.
+- Implements Private DNS Zones for private endpoints with support for spoke-managed and hub-managed Private DNS Zones.
+- Validated with Azure Firewall for routing & traffic filtering.  Additional Firewall rules may need to be implemented to support control plane & data plane integration.
+
+### Approach
+
+1. Identify at least 5 use cases that can benefit from an archetype and label all common features.  This is the MVP for the archetype.  An application team would receive the implementation of the MVP features deployed in their subscription. Use case specific features can be added to a deployment by the application team as they adapt their environment.
+
+2. Design the spoke virtual network to support the archetype.  You must consider Hub & Spoke network topology, Private Endpoints, Private DNS Zones, Network egress from the spoke virtual network (i.e. to Azure, to on-premises, to Internet)
+
+3. Scaffold the archetype:
+
+      - Create a new folder under `landingzones` prefixed with `lz-`.  For example, `lz-cloudnative`.
+      - Create `main.bicep`, set the `targetScope` as `subscription`
+      - Create required parameters for [common features](#common-features)
+      - Create a test parameters.json and run a subscription scoped deployment through Azure CLI
+
+        ```bash
+        az deployment sub create --template-file <path to archetype main.bicep> --parameters @<path to archetype test parameters file> --subscription-id <subscription id> --location canadacentral
+        ```
+
+          This is a validation that the archetype scaffolding is in-place.
+
+4. Add archetype specific deployment instructions and incrementally verify through test deployment.
+
+5. Create a JSON Schema definition for the archetype.  Consider using a tool such as [JSON to Jsonschema](https://jsonformatter.org/json-to-jsonschema) to generate the initial schema definition that you customize.  For all common features, you must reference the existing definitions for the types. See example: [schemas/latest/landingzones/lz-generic-subscription.json](../../schemas/latest/landingzones/lz-generic-subscription.json)
+
+6. Verify archetype deployment through `subscription-ci` Azure DevOps Pipeline.
+
+      - Create a subscription JSON Parameters file per [deployment instructions](#deployment-instructions).
+      - Run the pipeline by providing the subscription guid
+
+    `subscription-ci` pipeline will automatically identify the archetype, the subscription and region based on the file name.  The JSON Schema is located by the archetype name and used for pre-deployment verification.  
+
+    Once verifications are complete, the pipeline will move the subscription to the target management group (based on the folder structure) and execute `main.bicep`.
+
+7. Debug deployment failures.
+
+    - Navigate to the subscription in Azure Portal
+    - Navigate to **Deployments** under **Settings**
+    - Identify the failed deployment step & troubleshoot
+
+8. Update documentation.
+
+---
+
+## Update a spoke archetype
+
+It is common to update existing archetypes to evolve and adapt the implementation based on your organization's requirements.
+
+Following changes are required when updating:
+
+- Update archetype deployment template(s) through `main.bicep` or one of it's dependent Bicep template(s).
+- Update Visio diagrams in `docs\visio` (if required).
+- Update documentation in `docs\archetypes` and revise Visio diagram images.
+- When parameters are added, updated or removed:
+  - Modify JSON Schema
+    - Update definitions in `schemas\latest\landingzones`
+    - Update changelog in `schemas\latest\readme.md`
+    - Update existing unit tests in `tests\schemas`
+    - Update existing deployment JSON parameter files to match new schema definition in `config\subscriptions\*.json`.  This is required for compatibility for subscriptions that have already been configured.
+  - Unit test
+    - Unit tests are based on the scenarios.  Provide only valid scenarios.  These should be added to the appropriate landingzone folder in `tests\schemas`
+    - Verify JSON parameter files conform to the updated schema
+
+      ```bash
+        cd tests/schemas
+        ./run-tests.sh
+      ```
+
+  - Documentation
+    - Unit tests are treated as deployment scenarios.  Therefore, reference these in the appropriate archetype document in `docs\archetypes` under the **Deployment Scenarios** section.
 
 ---
 
@@ -51,6 +171,38 @@ An archetype can deploy & configure any number of Azure services.  For consisten
 - **Resource Tags** - configures tags on resource groups
 
 > **Log Analytics Workspace integration**: `main.bicep` must accept an input parameter named `logAnalyticsWorkspaceResourceId`.  This parameter is automatically set by `subscription-ci` Pipeline based on the environment configuration.  This parameter is used to link Microsoft Defender for Cloud to Log Analytics Workspace.
+
+Input parameters for common features are:
+
+```bicep
+  // Service Health
+  @description('Service Health alerts')
+  param serviceHealthAlerts object = {}
+  
+  // Log Analytics
+  @description('Log Analytics Resource Id to integrate Microsoft Defender for Cloud.')
+  param logAnalyticsWorkspaceResourceId string
+  
+  // Microsoft Defender for Cloud
+  @description('Microsoft Defender for Cloud configuration.  It includes email and phone.')
+  param securityCenter object
+  
+  // Subscription Role Assignments
+  @description('Array of role assignments at subscription scope.  The array will contain an object with comments, roleDefinitionId and array of securityGroupObjectIds.')
+  param subscriptionRoleAssignments array = []
+  
+  // Subscription Budget
+  @description('Subscription budget configuration containing createBudget flag, name, amount, timeGrain and array of contactEmails')
+  param subscriptionBudget object
+  
+  // Tags
+  @description('A set of key/value pairs of tags assigned to the subscription.')
+  param subscriptionTags object
+  
+  // Example (JSON)
+  @description('A set of key/value pairs of tags assigned to the resource group and resources.')
+  param resourceTags object
+```
 
 These features are packaged into a Bicep module and can be invoked by the archetype (i.e. by `main.bicep`).  This module is located in `landingzones\scaffold-subscription.bicep`.
 
@@ -124,35 +276,6 @@ As a result, we could either
 We chose to check the input parameters prior to deployment to identify misconfigurations faster.  Validations are performed using JSON Schema definitions.  These definitions are located in [schemas/latest/landingzones](../../schemas/latest/landingzones) folder.
 
 > JSON Schema definitions increases the learning curve but it is necessary to preserve consistency of the archetypes and the parameters they depend on for deployment.
-
----
-
-## Update a spoke archetype
-
-It is common to update existing archetypes to evolve and adapt the implementation based on your organization's requirements.
-
-Following changes are required when updating:
-
-- Update archetype deployment template(s) through `main.bicep` or one of it's dependent Bicep template(s).
-- Update Visio diagrams in `docs\visio` (if required).
-- Update documentation in `docs\archetypes` and revise Visio diagram images.
-- When parameters are added, updated or removed:
-  - Modify JSON Schema
-    - Update definitions in `schemas\latest\landingzones`
-    - Update changelog in `schemas\latest\readme.md`
-    - Update existing unit tests in `tests\schemas`
-    - Update existing deployment JSON parameter files to match new schema definition in `config\subscriptions\*.json`.  This is required for compatibility for subscriptions that have already been configured.
-  - Unit test
-    - Unit tests are based on the scenarios.  Provide only valid scenarios.  These should be added to the appropriate landingzone folder in `tests\schemas`
-    - Verify JSON parameter files conform to the updated schema
-
-      ```bash
-        cd tests/schemas
-        ./run-tests.sh
-      ```
-
-  - Documentation
-    - Unit tests are treated as deployment scenarios.  Therefore, reference these in the appropriate archetype document in `docs\archetypes` under the **Deployment Scenarios** section.
 
 ---
 
