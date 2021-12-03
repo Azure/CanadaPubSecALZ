@@ -11,15 +11,15 @@ The goal of this authoring guide is to provide step-by-step instructions to crea
 
 ## Table of Contents
 
-- [Folder Structure](#folder-structure)
-- [Common Features](#common-features)
-- [JSON Schema](#json-schema)
+- [Folder structure](#folder-structure)
+- [Common features](#common-features)
+- [JSON Schema for deployment parameters](#json-schema-for-deployment-parameters)
 - [Update a spoke archetype](#update-a-spoke-archetype)
 - [Deployment instructions](#deployment-instructions)
 
 ---
 
-## Folder Structure
+## Folder structure
 
 Archetypes are located in `landingzones` folder and organized as folder per archetype.  For example:
 
@@ -39,7 +39,7 @@ Each archetype is intended to be self-contained and provides all deployment temp
 
 ---
 
-## Common Features
+## Common features
 
 An archetype can deploy & configure any number of Azure services.  For consistency across all archetypes, We recommend the following common features:
 
@@ -74,7 +74,7 @@ module subScaffold '../scaffold-subscription.bicep' = {
 
 ---
 
-## JSON Schema
+## JSON Schema for deployment parameters
 
 Spoke archetypes are deployed to a subscription using a JSON parameters file.  This parameters file defines all configuration expected by the archetype in order to deploy and configure a subscription.  An archetype can have an arbitrary number of parameters (up to a [maximum of 256 parameters](https://docs.microsoft.com/azure/azure-resource-manager/templates/best-practices#template-limits)).  
 
@@ -158,7 +158,7 @@ Following changes are required when updating:
 
 ## Deployment Instructions
 
-> Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Healthcare.
+> Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Machine Learning.
 
 Parameter files for archetype deployment are configured in [config/subscription](../../config/subscriptions) folder.  The folder hierarchy is comprised of the following elements, from this folder downward:
 
