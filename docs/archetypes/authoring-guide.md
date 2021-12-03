@@ -134,12 +134,12 @@ Following changes are required when updating:
 
 - Update archetype deployment template(s) through `main.bicep` or one of it's dependent Bicep template(s).
 - Update documentation in `docs\archetypes`
-- When parameters are added or updated:
+- When parameters are added, updated or removed:
   - Modify JSON Schema
     - Update definitions in `schemas\latest\landingzones`
     - Update changelog in `schemas\latest\readme.md`
     - Update existing unit tests in `tests\schemas`
-    - Update existing deployment JSON parameter files to match new schema definition in `config\subscriptions\*.json`.  This is required for backward compatibility for subscriptions that have already been configured.
+    - Update existing deployment JSON parameter files to match new schema definition in `config\subscriptions\*.json`.  This is required for compatibility for subscriptions that have already been configured.
   - Unit test
     - Unit tests are based on the scenarios.  Provide only valid scenarios.  These should be added to the appropriate landingzone folder in `tests\schemas`
     - Verify JSON parameter files conform to the updated schema
