@@ -133,7 +133,8 @@ It is common to update existing archetypes to evolve and adapt the implementatio
 Following changes are required when updating:
 
 - Update archetype deployment template(s) through `main.bicep` or one of it's dependent Bicep template(s).
-- Update documentation in `docs\archetypes`
+- Update Visio diagrams in `docs\visio` (if required)
+- Update documentation in `docs\archetypes` and revise Visio diagram images.
 - When parameters are added, updated or removed:
   - Modify JSON Schema
     - Update definitions in `schemas\latest\landingzones`
