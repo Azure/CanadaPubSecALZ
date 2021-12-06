@@ -334,7 +334,7 @@ module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-u
 
 > Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Machine Learning.
 
-Parameter files for archetype deployment are configured in [config/subscription](../../config/subscriptions) folder.  The folder hierarchy is comprised of the following elements, from this folder downward:
+Parameter files for archetype deployment are configured in [config/subscription](../../config/subscriptions) folder.  This folder contains JSON parameter configurations for configuring subscriptions based on an archetype.  The folder hierarchy is comprised of the following elements, from this folder downward:
 
 1. A environment folder named for the Azure DevOps Org and Git Repo branch name, e.g. 'CanadaESLZ-main'.
 2. The management group hierarchy defined for your environment, e.g. `pubsec/LandingZones/Prod`. The location of the config file represents which Management Group the subscription is a member of.
