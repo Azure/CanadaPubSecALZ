@@ -115,7 +115,7 @@ Each archetype is intended to be self-contained and provides all deployment temp
 
 6. Create a JSON Schema definition for the archetype.  Consider using a tool such as [JSON to Jsonschema](https://jsonformatter.org/json-to-jsonschema) to generate the initial schema definition that you customize.  For all common features, you must reference the existing definitions for the types. See example: [schemas/latest/landingzones/lz-generic-subscription.json](../../schemas/latest/landingzones/lz-generic-subscription.json)
 
-7. Verify archetype deployment through `subscription-ci` Azure DevOps Pipeline.
+7. Verify archetype deployment through `subscription-ci` Azure DevOps Pipeline.  More information on the pipeline can be found in [Azure DevOps Onboarding Guide](../onboarding/ado.md#step-8--configure-subscription-archetypes).
 
       - Create a subscription JSON Parameters file per [deployment instructions](#deployment-instructions).
       - Run the pipeline by providing the subscription guid
