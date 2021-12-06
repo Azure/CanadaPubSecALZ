@@ -10,9 +10,11 @@
 * [Secrets](#secrets)
 * [Logging](#logging)
 * [Testing](#testing)
-* [Schema Definition](#schema-definition)
-* [Example Deployment Parameters](#example-deployment-parameters)
-* [Deployment Instructions](#deployment-instructions)
+* [Azure Deployment](#azure-deployment)
+  * [Schema Definition](#schema-definition)
+  * [Deployment Scenarios](#deployment-scenarios)
+  * [Example Deployment Parameters](#example-deployment-parameters)
+  * [Deployment Instructions](#deployment-instructions)
 
 ## Overview
 
@@ -44,7 +46,7 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Capability | Description |
 | --- | --- |
 | Service Health Alerts | Configures Service Health alerts such as Security, Incident, Maintenance.  Alerts are configured with email, sms and voice notifications. |
-| Azure Security Center | Configures security contact information (email and phone). |
+| Microsoft Defender for Cloud | Configures security contact information (email and phone). |
 | Subscription Role Assignments | Configures subscription scoped role assignments.  Roles can be built-in or custom. |
 | Subscription Budget | Configures monthly subscription budget with email notification. Budget is configured by default for 10 years and the amount. |
 | Subscription Tags | A set of tags that are assigned to the subscription. |
@@ -99,8 +101,8 @@ The intended cloud service workflows and data movements for this archetype inclu
 7.	Machine learning would be done using Azure Machine Learning.
 8.	Monitoring and logging would be through Application Insights.
 
-
 ## Access Control
+
 Once the machine learning archetype is deployed and available to use, access control best practices should be applied. Below is the recommend set of security groups & their respective Azure role assignments.  This is not an inclusive list and could be updated as required.
 
 **Replace `PROJECT_NAME` placeholder in the security group names with the appropriate project name for the workload**.
@@ -112,25 +114,24 @@ Once the machine learning archetype is deployed and available to use, access con
 | SG_PROJECT_NAME_DATA_PROVIDER | Data Lake (main storage account) service with `Storage Blob Data Contributor` role.  Key Vault service with `Key Vault Secrets User`. | Data group with access to data as well as key vault secrets usage.
 | SG_PROJECT_NAME_DATA_SCIENCE | Azure ML service with `Contributor` role.  Azure Databricks service with `Contributor` role.  Key Vault service with `Key Vault Secrets User`. | Data science group with compute access as well as key vault secrets usage. |
 
-
 ## Networking and Security Configuration
 
 ![Networking](../media/architecture/archetype-healthcare-networking.jpg)
 
-| Service Name | Settings | Private Endpoints / DNS | Subnet(s)
+| Service Name | Settings | Private Endpoints / DNS | Subnet(s)|
 | --- | --- | --- | --- |
-| Azure Key Vault | Network ACL Deny | Private endpoint on `vault` + DNS registration to either hub or spoke | `privateEndpoints`
-| SQL Database | N/A | Private endpoint on `sqlserver` + DNS registration to either hub or spoke | `privateEndpoints`
-| Azure Data Lake Gen 2 | Network ACL deny | Private endpoint on `blob`, `dfs` + DNS registration to either hub or spoke | `privateEndpoints`
+| Azure Key Vault | Network ACL Deny | Private endpoint on `vault` + DNS registration to either hub or spoke | `privateEndpoints`|
+| SQL Database | Deny public network access | Private endpoint on `sqlserver` + DNS registration to either hub or spoke | `privateEndpoints`|
+| Azure Data Lake Gen 2 | Network ACL deny | Private endpoint on `blob`, `dfs` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Synapse | Disabled public network access; managed virtual network | *	Managed Private Endpoints & Synapse Studio Private Link Hub. Private endpoint DNS registration. | `privateEndpoints` |
-| Azure Databricks | No public IP enabled (secure cluster connectivity), load balancer for egress with IP and outbound rules, virtual network ibjection | N/A |  `databricksPrivate`, `databricksPublic`
-| Azure Machine Learning | No public workspace access | Private endpoint on `amlWorkspace` + DNS registration to either hub or spoke | `privateEndpoints`
-| Azure Storage Account for Azure ML | Network ACL deny | Private endpoint on `blob`, `file` + DNS registration to either hub or spoke | `privateEndpoints`
-| Azure Data Factory | Public network access disabled, Azure integration runtime with managed virtual network | Private endpoint on `dataFactory` + DNS registration to either hub or spoke | `privateEndpoints`
-| FHIR API | N/A | Private endpoint on `fhir` + DNS registration to either hub or spoke | `privateEndpoints`
-| Event Hub | N/A | Private endpoint on `namespace` + DNS registration to either hub or spoke | `privateEndpoints`
+| Azure Databricks | No public IP enabled (secure cluster connectivity), load balancer for egress with IP and outbound rules, virtual network ibjection | N/A |  `databricksPrivate`, `databricksPublic`|
+| Azure Machine Learning | No public workspace access | Private endpoint on `amlWorkspace` + DNS registration to either hub or spoke | `privateEndpoints`|
+| Azure Storage Account for Azure ML | Network ACL deny | Private endpoint on `blob`, `file` + DNS registration to either hub or spoke | `privateEndpoints`|
+| Azure Data Factory | Public network access disabled, Azure integration runtime with managed virtual network | Private endpoint on `dataFactory` + DNS registration to either hub or spoke | `privateEndpoints`|
+| FHIR API | N/A | Private endpoint on `fhir` + DNS registration to either hub or spoke | `privateEndpoints`|
+| Event Hub | N/A | Private endpoint on `namespace` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Function App | Virtual Network Integration | N/A | `web` |
-| Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`
+| Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Application Insights | N/A | N/A | N/A |
 
 This archetype also has the following security features as options for deployment:
@@ -149,12 +150,11 @@ If customer-managed key is required for the FHIR API, a separate Key Vault with 
 
 The artifacts created by the deployment script such as Azure Container Instance and Storage accounts will be automatically deleted 1 hour after completion.
 
-
 ## Secrets
 Temporary passwords are autogenerated, and connection strings are automatically stored as secrets in Key Vault. They include:
 
-*	SQL Database username, password, and connection string
-*	Synapse username and password
+* SQL Database username, password, and connection string In the case of choosing SQL Authentication, if choosing Azure AD authentication, no secrets needed.
+* Synapse username and password
 
 ## Logging
 
@@ -192,7 +192,6 @@ The scripts are:
     *	Upload some data to the default ADLS Gen 2 of Synapse
     *	Run the integration tests for Synapse SQL Dedicated Pool (DW)
 
-
 ### Test Scenarios
 
 **Azure ML SQL / Key vault test**
@@ -223,36 +222,52 @@ The scripts are:
 2. Set up a compute instance and import the provided tests to the workspace
 3. Run the test script, which will build a Docker Azure ML model image, push it to ACR, and then AKS to pull and run the ML model
 
+### Azure Deployment
 
-
-## Schema Definition
+### Schema Definition
 
 Reference implementation uses parameter files with `object` parameters to consolidate parameters based on their context.  The schemas types are:
 
-* v0.1.0
+* Schema (version: `latest`)
 
-    * [Spoke deployment parameters definition](../../schemas/v0.1.0/landingzones/lz-healthcare.json)
+  * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-healthcare.json)
 
   * Common types
-    * [Service Health Alerts](../../schemas/v0.1.0/landingzones/types/serviceHealthAlerts.json)
-    * [Azure Security Center](../../schemas/v0.1.0/landingzones/types/securityCenter.json)
-    * [Subscription Role Assignments](../../schemas/v0.1.0/landingzones/types/subscriptionRoleAssignments.json)
-    * [Subscription Budget](../../schemas/v0.1.0/landingzones/types/subscriptionBudget.json)
-    * [Subscription Tags](../../schemas/v0.1.0/landingzones/types/subscriptionTags.json)
-    * [Resource Tags](../../schemas/v0.1.0/landingzones/types/resourceTags.json)
+    * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
+    * [Microsoft Defender for Cloud](../../schemas/latest/landingzones/types/securityCenter.json)
+    * [Subscription Role Assignments](../../schemas/latest/landingzones/types/subscriptionRoleAssignments.json)
+    * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
+    * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
+    * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
   * Spoke types
-    * [Automation](../../schemas/v0.1.0/landingzones/types/automation.json)
-    * [Hub Network](../../schemas/v0.1.0/landingzones/types/hubNetwork.json)
-    * [Azure Key Vault](../../schemas/v0.1.0/landingzones/types/keyVault.json)
-    * [Azure SQL Database](../../schemas/v0.1.0/landingzones/types/sqldb.json)
-    * [Azure Synapse Analytics](../../schemas/v0.1.0/landingzones/types/synapse.json)
+    * [Automation](../../schemas/latest/landingzones/types/automation.json)
+    * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
+    * [Azure Key Vault](../../schemas/latest/landingzones/types/keyVault.json)
+    * [Azure SQL Database](../../schemas/latest/landingzones/types/sqldb.json)
+    * [Azure Synapse Analytics](../../schemas/latest/landingzones/types/synapse.json)
 
-## Example Deployment Parameters
+### Deployment Scenarios
+
+| Scenario | Example JSON Parameters | Notes |
+|:-------- |:----------------------- |:----- |
+| Deployment with Hub Virtual Network | [tests/schemas/lz-healthcare/FullDeployment-With-Hub.json](../../tests/schemas/lz-healthcare/FullDeployment-With-Hub.json) | - |
+| Deployment without Hub Virtual Network | [tests/schemas/lz-healthcare/FullDeployment-Without-Hub.json](../../tests/schemas/lz-healthcare/FullDeployment-Without-Hub.json) | `parameters.hubNetwork.value.*` fields are empty & `parameters.network.value.peerToHubVirtualNetwork` is false. |
+| Deployment with subscription budget | [tests/schemas/lz-healthcare/BudgetIsTrue.json](../../tests/schemas/lz-healthcare/BudgetIsTrue.json) | `parameters.subscriptionBudget.value.createBudget` is set to `true` and budget information filled in. |
+| Deployment without subscription budget | [tests/schemas/lz-healthcare/BudgetIsFalse.json](../../tests/schemas/lz-healthcare/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
+| Deployment without resource tags | [tests/schemas/lz-healthcare/EmptyResourceTags.json](../../tests/schemas/lz-healthcare/EmptyResourceTags.json) | `parameters.resourceTags.value` is an empty object. |
+| Deployment without subscription tags | [tests/schemas/lz-healthcare/EmptySubscriptionTags.json](../../tests/schemas/lz-healthcare/EmptySubscriptionTags.json) | `parameters.subscriptionTags.value` is an empty object. |
+| Deployment without SQL DB | [tests/schemas/lz-healthcare/SQLDBIsFalse.json](../../tests/schemas/lz-healthcare/SQLDBIsFalse.json) | `parameters.sqldb.value.enabled` is false. |
+| Deployment with SQL DB using AAD only authentication | [tests/schemas/lz-healthcare/SQLDB-aadAuthOnly.json](../../tests/schemas/lz-healthcare/SQLDB-aadAuthOnly.json) | `parameters.sqldb.value.aadAuthenticationOnly` is true, `parameters.sqldb.value.aad*` fields filled in. |
+| Deployment with SQL DB using SQL authentication | [tests/schemas/lz-healthcare/SQLDB-sqlAuth.json](../../tests/schemas/lz-healthcare/SQLDB-sqlAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
+| Deployment with SQL DB using mixed mode authentication | [tests/schemas/lz-healthcare/SQLDB-mixedAuth.json](../../tests/schemas/lz-healthcare/SQLDB-mixedAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false,  `parameters.sqldb.value.aad*` fields filled in & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
+| Deployment without customer managed keys | [tests/schemas/lz-healthcare/WithoutCMK.json](../../tests/schemas/lz-healthcare/WithoutCMK.json) | `parameters.useCMK.value` is false. |
+
+### Example Deployment Parameters
 
 This example configures:
 
 1. Service Health Alerts
-2. Azure Security Center
+2. Microsoft Defender for Cloud
 3. Subscription Role Assignments using built-in and custom roles
 4. Subscription Budget with $1000
 5. Subscription Tags
@@ -363,9 +378,12 @@ This example configures:
         },
         "sqldb": {
             "value": {
-                "enabled": true,
-                "username": "azadmin"
-            }
+              "enabled": true,
+              "aadAuthenticationOnly":true,
+              "aadLoginName":"DBA Group",
+              "aadLoginObjectID":"4e4ea47c-ee21-4add-ad2f-a75d0d8014e0",
+              "aadLoginType":"Group"
+        	}
         },
         "synapse": {
             "value": {
@@ -442,7 +460,7 @@ This example configures:
 }
 ```
 
-## Deployment Instructions
+### Deployment Instructions
 
 > Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Healthcare.
 
@@ -466,7 +484,6 @@ The JSON config file name is in one of the following two formats:
 
 - [AzureSubscriptionGUID]\_[TemplateName].json
 - [AzureSubscriptionGUID]\_[TemplateName]\_[DeploymentLocation].json
-
 
 The subscription GUID is needed by the pipeline; since it's not available in the file contents, it is specified in the config file name.
 

@@ -6,6 +6,43 @@ This document provides steps required to onboard to the Azure Landing Zones desi
 
 ---
 
+## Telemetry
+
+> Telemetry is introduced on November 11, 2021.
+
+Microsoft can identify the deployments of the Azure Resource Manager and Bicep templates with the deployed Azure resources. Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business.  The telemetry is collected through [customer usage attribution](https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution). The data is collected and governed by Microsoft's privacy policies, located at [https://www.microsoft.com/trustcenter](https://www.microsoft.com/trustcenter).
+
+The automation is instrumented to identify the modules that are being deployed.  At this time, we don't differentiate the deployments and tracked under a single GUID (`a83f6385-f514-415f-991b-2d9bd7aed658`).
+
+If you don’t wish to send usage data to Microsoft, you can set the `customerUsageAttribution.enabled` setting to `false` in `config/telemetry.json`.
+
+**Example with telemetry disabled**
+
+```json
+{
+  "customerUsageAttribution": {
+    "enabled": false,
+    "modules": {
+      "managementGroups": "a83f6385-f514-415f-991b-2d9bd7aed658",
+      "policy": "a83f6385-f514-415f-991b-2d9bd7aed658",
+      "roles": "a83f6385-f514-415f-991b-2d9bd7aed658",
+      "logging": "a83f6385-f514-415f-991b-2d9bd7aed658",
+      "networking": {
+        "nvaFortinet": "a83f6385-f514-415f-991b-2d9bd7aed658",
+        "azureFirewall": "a83f6385-f514-415f-991b-2d9bd7aed658"
+      },
+      "archetypes": {
+        "genericSubscription": "a83f6385-f514-415f-991b-2d9bd7aed658",
+        "machineLearning": "a83f6385-f514-415f-991b-2d9bd7aed658",
+        "healthcare": "a83f6385-f514-415f-991b-2d9bd7aed658"
+      }
+    }
+  }
+}
+```
+
+---
+
 ## Instructions
 
 * [Step 1: Create Service Principal Account & Assign RBAC](#step-1--create-service-principal-account--assign-rbac)
@@ -27,11 +64,11 @@ An Azure service principal is an identity created for use with applications, hos
 
 * **RBAC Assignment Settings**
 
-    * **Scope:**  Tenant Root Group (this is a management group in the Azure environment)
+  * **Scope:**  Tenant Root Group (this is a management group in the Azure environment)
 
-    * **Role:**  [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in [Azure RBAC](https://docs.microsoft.com/azure/role-based-access-control/overview).  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
+  * **Role:**  [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in [Azure RBAC](https://docs.microsoft.com/azure/role-based-access-control/overview).  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
 
-*  **Instructions**:  [Create an Azure service principal with the Azure CLI | Microsoft Docs](https://docs.microsoft.com/cli/azure/create-an-azure-service-principal-azure-cli)
+  * **Instructions**:  [Create an Azure service principal with the Azure CLI | Microsoft Docs](https://docs.microsoft.com/cli/azure/create-an-azure-service-principal-azure-cli)
 
 To create the service principal account and role assignment through Azure CLI:
 
@@ -64,13 +101,39 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 ## Step 2:  Configure Service Connection in Azure DevOps Project Configuration
 
 * Settings
-    * **Scope Level**:  Management Group
+  * **Connection Type**:  Azure Resource Manager
 
-    * **Service Connection Name**:  spn-azure-platform-ops
+  * **Authentication method**:  Service Principal (manual)
 
-        *Service Connection Name is referenced in the Azure DevOps Pipelines for Azure authentication and authorization.*
+  * **Scope Level**:  Management Group
 
-*  **Instructions**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml).  Use the settings described above when following the instructions.
+  * **Service Connection Name**:  spn-azure-platform-ops
+
+    *Service Connection Name is referenced in the Azure DevOps Pipelines for Azure authentication and authorization.*
+
+* Instructions
+
+  * Navigate to **Project settings** (bottom left corner)
+  * Under Pipelines, select **Service connections**
+  * Select **New service connection** or **Create service connection** (if this is the first service connection in the project)
+  * Select **Azure Resource Manager** from the connection type list
+  * Select **Service Principal (manual)** from Authentication method list
+  * Enter the following information for **New Azure service connection**
+    * **Environment**:  Azure Cloud
+    * **Scope Level**: Management Group
+    * **Management Group ID**: < Management group Id, it is also the Azure AD Tenant ID >
+    * **Management Group Name**: Tenant Root Group
+    * **Service Principal Id**: < Service Principal App Id >
+    * **Service principal key**: < Service Principal Password >
+    * **Tenant ID**: < Azure AD Tenant ID >
+    * **Service connection name**: spn-azure-platform-ops
+    * **Grant access permission to all pipelines**:  Unchecked
+
+        > When unchecked, each pipeline that references the service connection will require explicit approval to execute.  This is a one-time approval.  The approval request will be prompted during the first pipeline run.
+
+  * Verify and save
+
+* **Reference**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml).  Use the settings described above when following the instructions.
 
 ---
 
@@ -192,7 +255,7 @@ This role assignment is used to grant users access to the logging subscription b
 ```yml
     variables:
         # Logging
-        var-logging-managementGroupId: pubsecPlatform
+        var-logging-managementGroupId: pubsecPlatformManagement
         var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
         var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
         var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
@@ -277,7 +340,7 @@ This role assignment is used to grant users access to the logging subscription b
 
 Audit streams represent a pipeline that flows audit events from your Azure DevOps organization to a stream target. Every half hour or less, new audit events are bundled and streamed to your targets. 
 
-We recommend reviewing common [Azure Sentinel detection patterns and rules provided in GitHub](https://github.com/Azure/Azure-Sentinel/tree/master/Detections/AzureDevOpsAuditing) as part of configuring Azure Sentinel.
+We recommend reviewing common [Microsoft Sentinel detection patterns and rules provided in GitHub](https://github.com/Azure/Azure-Sentinel/tree/master/Detections/AzureDevOpsAuditing) as part of configuring Microsoft Sentinel.
 
 In order to configure audit stream for Azure Monitor, identify the following information:
 
@@ -345,7 +408,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     ```yml
         variables:
            # Hub Networking
-           var-hubnetwork-managementGroupId: pubsecPlatform
+           var-hubnetwork-managementGroupId: pubsecPlatformConnectivity
            var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
            var-hubnetwork-serviceHealthAlerts: >
              {

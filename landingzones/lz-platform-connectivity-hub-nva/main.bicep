@@ -19,7 +19,7 @@ Hub Networking with Fortigate Virtual Network Appliance archetype infrastructure
 * Enables Azure Private DNS Zones (optional)
 * Role-based access control for Owner, Contributor & Reader
 * Integration with Azure Cost Management for Subscription-scoped budget
-* Integration with Azure Security Center
+* Integration with Microsoft Defender for Cloud
 
 */
 
@@ -48,10 +48,10 @@ targetScope = 'subscription'
 param serviceHealthAlerts object = {}
 
 // Log Analytics
-@description('Log Analytics Resource Id to integrate Azure Security Center.')
+@description('Log Analytics Resource Id to integrate Microsoft Defender for Cloud.')
 param logAnalyticsWorkspaceResourceId string
 
-// Azure Security Center
+// Microsoft Defender for Cloud
 // Example (JSON)
 // -----------------------------
 // "securityCenter": {
@@ -67,7 +67,7 @@ param logAnalyticsWorkspaceResourceId string
 //   email: 'alzcanadapubsec@microsoft.com'
 //   phone: '5555555555'
 // }
-@description('Security Center configuration.  It includes email and phone.')
+@description('Microsoft Defender for Cloud configuration.  It includes email and phone.')
 param securityCenter object
 
 // Subscription Role Assignments
@@ -425,11 +425,18 @@ param fwUsername string
 @secure()
 param fwPassword string
 
+// Telemetry - Azure customer usage attribution
+// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+var telemetry = json(loadTextContent('../../config/telemetry.json'))
+module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-usage-attribution-subscription.bicep' = if (telemetry.customerUsageAttribution.enabled) {
+  name: 'pid-${telemetry.customerUsageAttribution.modules.networking.nvaFortinet}'
+}
+
 /*
   Scaffold the subscription which includes:
-    * Azure Security Center - Enable Azure Defender (all available options)
-    * Azure Security Center - Configure Log Analytics Workspace
-    * Azure Security Center - Configure Security Alert Contact
+    * Microsoft Defender for Cloud - Enable Azure Defender (all available options)
+    * Microsoft Defender for Cloud - Configure Log Analytics Workspace
+    * Microsoft Defender for Cloud - Configure Security Alert Contact
     * Role Assignments to Security Groups
     * Service Health Alerts
     * Subscription Budget

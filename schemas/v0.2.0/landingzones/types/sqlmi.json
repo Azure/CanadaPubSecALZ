@@ -1,0 +1,53 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "definitions": {
+        "SQLMI": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "value": {
+                    "oneOf": [
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "enum": [
+                                        true
+                                    ]
+                                },
+                                "username": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "enabled",
+                                "username"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "enum": [
+                                        false
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "enabled"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "value"
+            ],
+            "title": "Sqlmi"
+        }
+    }
+}

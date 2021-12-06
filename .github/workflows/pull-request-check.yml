@@ -7,8 +7,9 @@ on:
       - main
     paths:
       - "**.bicep"
+      - "**.json"
 env:
-  SCHEMA_FOLDER: schemas/v0.1.0/landingzones
+  SCHEMA_FOLDER: schemas/latest/landingzones
   SUBSCRIPTIONS_PATH_FROM_ROOT: config/subscriptions
 
 jobs:
@@ -43,12 +44,12 @@ jobs:
             }
           }
 
-      - name: Validate exising subscription archetype parameter files
+      - name: Validate existing subscription archetype parameter files
         shell: pwsh
         working-directory: ${{env.working-directory}}
         run: |
-          # Validate exising subscription archetype parameter files
-          Write-Host "Validate exising subscription archetype parameter files..."
+          # Validate existing subscription archetype parameter files
+          Write-Host "Validate existing subscription archetype parameter files..."
 
           $GenericSubscriptionFileFilter="*generic-subscription*.json"
           $GenericSubscriptionSchemaFile="${{env.SCHEMA_FOLDER}}/lz-generic-subscription.json"

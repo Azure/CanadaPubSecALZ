@@ -17,6 +17,8 @@ variables:
 - template: ../config/variables/common.yml
 - template: ../config/variables/${{ variables['variable-template-file'] }}
 
+pr: none
+
 pool:
   vmImage: $[ variables.vmImage ]
   

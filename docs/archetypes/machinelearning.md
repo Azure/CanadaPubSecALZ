@@ -2,17 +2,22 @@
 
 ## Table of Contents
 
-* [Overview](#overview)
-* [Data Flow](#data-flow)
-* [Access Control](#access-control)
-* [Networking and Security Configuration](#networking-and-security-configuration)
-* [Customer Managed Keys](#customer-managed-keys)
-* [Secrets](#secrets)
-* [Logging](#logging)
-* [Testing](#testing)
-* [Schema Definition](#schema-definition)
-* [Example Deployment Parameters](#example-deployment-parameters)
-* [Deployment Instructions](#deployment-instructions)
+- [Archetype: Machine Learning](#archetype-machine-learning)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Data Flow](#data-flow)
+  - [Access Control](#access-control)
+  - [Networking and Security Configuration](#networking-and-security-configuration)
+  - [Customer Managed Keys](#customer-managed-keys)
+  - [Secrets](#secrets)
+  - [Logging](#logging)
+  - [Testing](#testing)
+    - [Test Scenarios](#test-scenarios)
+  - [Azure Deployment](#azure-deployment)
+    - [Schema Definition](#schema-definition)
+    - [Deployment Scenarios](#deployment-scenarios)
+    - [Example Deployment Parameters](#example-deployment-parameters)
+    - [Deployment Instructions](#deployment-instructions)
 
 ## Overview
 
@@ -24,8 +29,8 @@ Azure Policies are used to provide governance, compliance and protection while e
 
 **CloudOps team will be required for**
 
-1.	Establishing connectivity to Hub virtual network (required for egress traffic flow & Azure Bastion).
-2.	Creating App Registrations (required for service principal accounts).  This is optional based on whether App Registrations are disabled for all users or not.
+1. Establishing connectivity to Hub virtual network (required for egress traffic flow & Azure Bastion).
+2. Creating App Registrations (required for service principal accounts).  This is optional based on whether App Registrations are disabled for all users or not.
 
 **Workflow**
 
@@ -44,7 +49,7 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Capability | Description |
 | --- | --- |
 | Service Health Alerts | Configures Service Health alerts such as Security, Incident, Maintenance.  Alerts are configured with email, sms and voice notifications. |
-| Azure Security Center | Configures security contact information (email and phone). |
+| Microsoft Defender for Cloud | Configures security contact information (email and phone). |
 | Subscription Role Assignments | Configures subscription scoped role assignments.  Roles can be built-in or custom. |
 | Subscription Budget | Configures monthly subscription budget with email notification. Budget is configured by default for 10 years and the amount. |
 | Subscription Tags | A set of tags that are assigned to the subscription. |
@@ -59,8 +64,8 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Azure Machine Learning | Deploys Azure Machine Learning Service. | 
 | Azure Databricks | Deploys an Azure Databricks instance.  *There aren't any parameters for customization.* |
 | Azure Data Factory | Deploys an Azure Data Factory instance with Managed Virtual Network and Managed Integrated Runtime.  *There aren't any parameters for customization.* |
-| Azure Kubernetes Services | Deploys an AKS with Kubenet network policy that will be used for deploying machine learning models. |
-| Azure Container Registry | Deploys an Azure Container Registry to store machine learning models as container images.  ACR is used when deploying pods to AKS. *There aren't any parameters for customization.* |
+| Azure Kubernetes Services | Deploys an AKS Cluster that will be used for deploying machine learning models, with option to choose either: Network Plugin: Kubenet + Network Policy: Calico **OR** Network Plugin: Azure CNI + Network Policy: Calico (Network Policy) **OR** Network Plugin: Azure CNI + Network Policy: Azure (Network Policy) .|
+| Azure Container Registry | Deploys an Azure Container Registry to store machine learning models as container images.  ACR is used when deploying pods to AKS. *There aren't any parameters for customization. |
 | Application Insights | Deploys an Application Insights instance that is used by Azure Machine Learning instance.  *There aren't any parameters for customization.* |
 
 ## Data Flow
@@ -82,17 +87,18 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 
 The intended cloud service workflows and data movements for this archetype include:
 
-1.	Data can be ingested from various sources using Data Factory, which uses managed virtual network for its Azure hosted integration runtime.
-2.	The data would be stored in Azure Data Lake Gen 2.
-3.	Structured data can be stored in SQL Database, or SQL Managed Instance.
-4.	Data engineering and transformation tasks can be done with Spark using Azure Databricks. Transformed data would be stored back in the data lake.
-5.	Machine learning would be done using Azure Machine Learning.
-6.	Models would be containerized and pushed to Azure Container Registry from Azure ML.
-7.	Models would be the deployed as services to Azure Kubernetes Service from Container Registry.
-8.	Secrets and keys would be stored safely in Azure Key Vault.
-9.	Monitoring and logging would be through Application Insights.
+1. Data can be ingested from various sources using Data Factory, which uses managed virtual network for its Azure hosted integration runtime.
+2. The data would be stored in Azure Data Lake Gen 2.
+3. Structured data can be stored in SQL Database, or SQL Managed Instance.
+4. Data engineering and transformation tasks can be done with Spark using Azure Databricks. Transformed data would be stored back in the data lake.
+5. Machine learning would be done using Azure Machine Learning.
+6. Models would be containerized and pushed to Azure Container Registry from Azure ML.
+7. Models would be the deployed as services to Azure Kubernetes Service from Container Registry.
+8. Secrets and keys would be stored safely in Azure Key Vault.
+9. Monitoring and logging would be through Application Insights.
 
 ## Access Control
+
 Once the machine learning archetype is deployed and available to use, access control best practices should be applied. Below is the recommend set of security groups & their respective Azure role assignments.  This is not an inclusive list and could be updated as required.
 
 **Replace `PROJECT_NAME` placeholder in the security group names with the appropriate project name for the workload**.
@@ -104,23 +110,22 @@ Once the machine learning archetype is deployed and available to use, access con
 | SG_PROJECT_NAME_DATA_PROVIDER | Data Lake (main storage account) service with `Storage Blob Data Contributor` role.  Key Vault service with `Key Vault Secrets User`. | Data group with access to data as well as key vault secrets usage.
 | SG_PROJECT_NAME_DATA_SCIENCE | Azure ML service with `Contributor` role.  Azure Databricks service with `Contributor` role.  Key Vault service with `Key Vault Secrets User`. | Data science group with compute access as well as key vault secrets usage. |
 
-
 ## Networking and Security Configuration
 
 ![Networking](../media/architecture/archetype-machinelearning-networking.jpg)
 
-| Service Name | Settings | Private Endpoints / DNS | Subnet(s)
+| Service Name | Settings | Private Endpoints / DNS | Subnet(s)|
 | --- | --- | --- | --- |
-| Azure Key Vault | Network ACL Deny | Private endpoint on `vault` + DNS registration to either hub or spoke | `privateEndpoints`
-| SQL Mananged Instance | N/A | N/A | `sqlmi`
-| SQL Database | N/A | Private endpoint on `sqlserver` + DNS registration to either hub or spoke | `privateEndpoints`
-| Azure Data Lake Gen 2 | Network ACL deny | Private endpoint on `blob`, `dfs` + DNS registration to either hub or spoke | `privateEndpoints`
-| Azure Databricks | No public IP enabled (secure cluster connectivity), load balancer for egress with IP and outbound rules, virtual network ibjection | N/A |  `databricksPrivate`, `databricksPublic`
-| Azure Machine Learning | No public workspace access | Private endpoint on `amlWorkspace` + DNS registration to either hub or spoke | `privateEndpoints`
-| Azure Storage Account for Azure ML | Network ACL deny | Private endpoint on `blob`, `file` + DNS registration to either hub or spoke | `privateEndpoints`
-| Azure Data Factory | Public network access disabled, Azure integration runtime with managed virtual network | Private endpoint on `dataFactory` + DNS registration to either hub or spoke | `privateEndpoints`
-| Azure Kubernetes Service | Private cluster, network profile with kubenet | N/A | `aks`
-| Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`
+| Azure Key Vault | Network ACL Deny | Private endpoint on `vault` + DNS registration to either hub or spoke | `privateEndpoints`|
+| SQL Mananged Instance | N/A | N/A | `sqlmi`|
+| SQL Database | Deny public network access | Private endpoint on `sqlserver` + DNS registration to either hub or spoke | `privateEndpoints`|
+| Azure Data Lake Gen 2 | Network ACL deny | Private endpoint on `blob`, `dfs` + DNS registration to either hub or spoke | `privateEndpoints`|
+| Azure Databricks | No public IP enabled (secure cluster connectivity), load balancer for egress with IP and outbound rules, virtual network ibjection | N/A |  `databricksPrivate`, `databricksPublic`|
+| Azure Machine Learning | No public workspace access | Private endpoint on `amlWorkspace` + DNS registration to either hub or spoke | `privateEndpoints`|
+| Azure Storage Account for Azure ML | Network ACL deny | Private endpoint on `blob`, `file` + DNS registration to either hub or spoke | `privateEndpoints`|
+| Azure Data Factory | Public network access disabled, Azure integration runtime with managed virtual network | Private endpoint on `dataFactory` + DNS registration to either hub or spoke | `privateEndpoints`|
+| Azure Kubernetes Service | Private cluster, network profile set with either kubenet or Azure CNI | N/A | `aks`|
+| Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Application Insights | N/A | N/A | N/A |
 
 This archetype also has the following security features as options for deployment:
@@ -137,12 +142,12 @@ Therefore, when the `useCMK` parameter is `true`, a deployment identity is creat
 
 The artifacts created by the deployment script such as Azure Container Instance and Storage accounts will be automatically deleted 1 hour after completion.
 
-
 ## Secrets
+
 Temporary passwords are autogenerated, and connection strings are automatically stored as secrets in Key Vault. They include:
 
-*	SQL Database username, password, and connection string
-*	SQL Managed Instance username, password, and connection string
+* SQL Database username, password, and connection string In the case of choosing SQL Authentication, if choosing Azure AD authentication, no secrets needed.
+* SQL Managed Instance username, password, and connection string
 
 ## Logging
 
@@ -156,10 +161,10 @@ The test scripts are located in [tests/landingzones/lz-machinelearning/e2e-flow-
 
 The scripts are:
 
-1.	Azure ML SQL connection and Key Vault integration test
-2.	Azure ML terminal connection to ACR test
-3.	Databricks integration with Key Vault, SQL MI, SQL Database, Data Lake test
-4.	Azure ML deployment through ACR to AKS test
+1. Azure ML SQL connection and Key Vault integration test
+2. Azure ML terminal connection to ACR test
+3. Databricks integration with Key Vault, SQL MI, SQL Database, Data Lake test
+4. Azure ML deployment through ACR to AKS test
 
 ### Test Scenarios
 
@@ -191,38 +196,59 @@ The scripts are:
 2. Set up a compute instance and import the provided tests to the workspace
 3. Run the test script, which will build a Docker Azure ML model image, push it to ACR, and then AKS to pull and run the ML model
 
+## Azure Deployment
 
-
-## Schema Definition
+### Schema Definition
 
 Reference implementation uses parameter files with `object` parameters to consolidate parameters based on their context.  The schemas types are:
 
-* v0.1.0
+* Schema (version: `latest`)
 
-    * [Spoke deployment parameters definition](../../schemas/v0.1.0/landingzones/lz-machinelearning.json)
+  * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-machinelearning.json)
 
   * Common types
-    * [Service Health Alerts](../../schemas/v0.1.0/landingzones/types/serviceHealthAlerts.json)
-    * [Azure Security Center](../../schemas/v0.1.0/landingzones/types/securityCenter.json)
-    * [Subscription Role Assignments](../../schemas/v0.1.0/landingzones/types/subscriptionRoleAssignments.json)
-    * [Subscription Budget](../../schemas/v0.1.0/landingzones/types/subscriptionBudget.json)
-    * [Subscription Tags](../../schemas/v0.1.0/landingzones/types/subscriptionTags.json)
-    * [Resource Tags](../../schemas/v0.1.0/landingzones/types/resourceTags.json)
-  * Spoke types
-    * [Automation](../../schemas/v0.1.0/landingzones/types/automation.json)
-    * [Hub Network](../../schemas/v0.1.0/landingzones/types/hubNetwork.json)
-    * [Azure Kubernetes Service](../../schemas/v0.1.0/landingzones/types/aks.json)
-    * [Azure Machine Learning](../../schemas/v0.1.0/landingzones/types/aml.json)
-    * [Azure Key Vault](../../schemas/v0.1.0/landingzones/types/keyVault.json)
-    * [Azure SQL Database](../../schemas/v0.1.0/landingzones/types/sqldb.json)
-    * [Azure SQL Managed Instances](../../schemas/v0.1.0/landingzones/types/sqlmi.json)    
+    * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
+    * [Microsoft Defender for Cloud](../../schemas/latest/landingzones/types/securityCenter.json)
+    * [Subscription Role Assignments](../../schemas/latest/landingzones/types/subscriptionRoleAssignments.json)
+    * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
+    * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
+    * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
 
-## Example Deployment Parameters
+  * Spoke types
+    * [Automation](../../schemas/latest/landingzones/types/automation.json)
+    * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
+    * [Azure Kubernetes Service](../../schemas/latest/landingzones/types/aks.json)
+    * [Azure Machine Learning](../../schemas/latest/landingzones/types/aml.json)
+    * [Azure Key Vault](../../schemas/latest/landingzones/types/keyVault.json)
+    * [Azure SQL Database](../../schemas/latest/landingzones/types/sqldb.json)
+    * [Azure SQL Managed Instances](../../schemas/latest/landingzones/types/sqlmi.json)
+
+### Deployment Scenarios
+
+| Scenario | Example JSON Parameters | Notes |
+|:-------- |:----------------------- |:----- |
+| Deployment with Hub Virtual Network | [tests/schemas/lz-machinelearning/FullDeployment-With-Hub.json](../../tests/schemas/lz-machinelearning/FullDeployment-With-Hub.json) | - |
+| Deployment without Hub Virtual Network | [tests/schemas/lz-machinelearning/FullDeployment-Without-Hub.json](../../tests/schemas/lz-machinelearning/FullDeployment-Without-Hub.json) | `parameters.hubNetwork.value.*` fields are empty & `parameters.network.value.peerToHubVirtualNetwork` is false. |
+| Deployment with subscription budget | [tests/schemas/lz-machinelearning/BudgetIsTrue.json](../../tests/schemas/lz-machinelearning/BudgetIsTrue.json) | `parameters.subscriptionBudget.value.createBudget` is set to `true` and budget information filled in. |
+| Deployment without subscription budget | [tests/schemas/lz-machinelearning/BudgetIsFalse.json](../../tests/schemas/lz-machinelearning/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
+| Deployment without resource tags | [tests/schemas/lz-machinelearning/EmptyResourceTags.json](../../tests/schemas/lz-machinelearning/EmptyResourceTags.json) | `parameters.resourceTags.value` is an empty object. |
+| Deployment without subscription tags | [tests/schemas/lz-machinelearning/EmptySubscriptionTags.json](../../tests/schemas/lz-machinelearning/EmptySubscriptionTags.json) | `parameters.subscriptionTags.value` is an empty object. |
+| Deployment without SQL DB | [tests/schemas/lz-machinelearning/SQLDBIsFalse.json](../../tests/schemas/lz-machinelearning/SQLDBIsFalse.json) | `parameters.sqldb.value.enabled` is false. |
+| Deployment without SQL Managed Instances | [tests/schemas/lz-machinelearning/SQLMIIsFalse.json](../../tests/schemas/lz-machinelearning/SQLMIIsFalse.json) | `parameters.sqlmi.value.enabled` is false. |
+| Deployment with SQL DB using AAD only authentication | [tests/schemas/lz-machinelearning/SQLDB-aadAuthOnly.json](../../tests/schemas/lz-machinelearning/SQLDB-aadAuthOnly.json) | `parameters.sqldb.value.aadAuthenticationOnly` is true, `parameters.sqldb.value.aad*` fields filled in. |
+| Deployment with SQL DB using SQL authentication | [tests/schemas/lz-machinelearning/SQLDB-sqlAuth.json](../../tests/schemas/lz-machinelearning/SQLDB-sqlAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
+| Deployment with SQL DB using mixed mode authentication | [tests/schemas/lz-machinelearning/SQLDB-mixedAuth.json](../../tests/schemas/lz-machinelearning/SQLDB-mixedAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false,  `parameters.sqldb.value.aad*` fields filled in & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
+| Deployment without customer managed keys | [tests/schemas/lz-machinelearning/WithoutCMK.json](../../tests/schemas/lz-machinelearning/WithoutCMK.json) | `parameters.useCMK.value` is false. |
+| Deployment with AKS using Network Plugin: Kubenet + Network Policy: Calico | [tests/schemas/lz-machinelearning/AKS-Kubenet-Calico.json](../../tests/schemas/lz-machinelearning/AKS-Kubenet-Calico.json) | `parameters.aks.value.networkPlugin`  equals ***kubenet***, `parameters.aks.value.networkPlugin`  equals ***calico***, `parameters.aks.value.podCidr` is filled, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
+| Deployment with AKS using Network Plugin: Azure CNI + Network Policy: Calico | [tests/schemas/lz-machinelearning/AKS-AzureCNI-Calico.json](../../tests/schemas/lz-machinelearning/AKS-AzureCNI-Calico.json) | `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.networkPlugin`  equals ***calico***, `parameters.aks.value.podCidr` is ***empty***, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
+| Deployment with AKS using Network Plugin: Azure CNI + Network Policy: Azure | [tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json](../../tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json) | `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.podCidr` is ***empty***, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
+
+### Example Deployment Parameters
 
 This example configures:
 
 1. Service Health Alerts
-2. Azure Security Center
+2. Microsoft Defender for Cloud
 3. Subscription Role Assignments using built-in and custom roles
 4. Subscription Budget with $1000
 5. Subscription Tags
@@ -333,14 +359,23 @@ This example configures:
     },
     "aks": {
       "value": {
-        "version": "1.21.2"
+        "version": "1.21.2",
+        "networkPlugin": "kubenet" ,
+        "networkPolicy": "calico",
+        "podCidr": "11.0.0.0/16",
+        "serviceCidr": "20.0.0.0/16" ,
+        "dnsServiceIP": "20.0.0.10",
+        "dockerBridgeCidr": "30.0.0.1/16"
       }
     },
     "sqldb": {
       "value": {
-        "enabled": true,
-        "username": "azadmin"
-      }
+          "enabled": true,
+          "aadAuthenticationOnly":true,
+          "aadLoginName":"DBA Group",
+          "aadLoginObjectID":"4e4ea47c-ee21-4add-ad2f-a75d0d8014e0",
+          "aadLoginType":"Group"
+        }
     },
     "sqlmi": {
       "value": {
@@ -428,7 +463,7 @@ This example configures:
 }
 ```
 
-## Deployment Instructions
+### Deployment Instructions
 
 > Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Machine Learning.
 
@@ -452,7 +487,6 @@ The JSON config file name is in one of the following two formats:
 
 - [AzureSubscriptionGUID]\_[TemplateName].json
 - [AzureSubscriptionGUID]\_[TemplateName]\_[DeploymentLocation].json
-
 
 The subscription GUID is needed by the pipeline; since it's not available in the file contents, it is specified in the config file name.
 

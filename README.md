@@ -43,7 +43,7 @@ multiple types of workloads including App Dev and Data & AI.
 
 * Automatic approval for Canada Federal PBMM nor Authority to Operate (ATO).  Customers must collect evidence, customize to meet their departmental requirements and submit for Authority to Operate based on their risk profile, requirements and process.
 
-* Compliant on all Azure Policies when the reference implementation is deployed.  This is due to the shared responsibility of cloud and customers can choose the Azure Policies to exclude.  For example, using Azure Firewall is an Azure Policy that will be non-compliant since majority of the Public Sector customers use Network Virtual Appliances such as Fortinet.  Customers must review [Azure Security Center Regulatory Compliance dashboard](https://docs.microsoft.com/azure/security-center/update-regulatory-compliance-packages) and apply appropriate exemptions.
+* Compliant on all Azure Policies when the reference implementation is deployed.  This is due to the shared responsibility of cloud and customers can choose the Azure Policies to exclude.  For example, using Azure Firewall is an Azure Policy that will be non-compliant since majority of the Public Sector customers use Network Virtual Appliances such as Fortinet.  Customers must review [Microsoft Defender for Cloud Regulatory Compliance dashboard](https://docs.microsoft.com/azure/defender-for-cloud/update-regulatory-compliance-packages) and apply appropriate exemptions.
 
 ## Contributing
 
@@ -51,7 +51,17 @@ See [Contributing Reference Implementation](CONTRIBUTING.md) for information on 
 
 ## Telemetry
 
-This reference implementation does not collect any telemetry.  However, Project Bicep [collects telemetry in some scenarios](https://github.com/Azure/bicep/blob/main/README.md#telemetry) as part of improving the product.
+**November 11, 2021 onward**
+
+> Microsoft can identify the deployments of the Azure Resource Manager and Bicep templates with the deployed Azure resources. Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business.  The telemetry is collected through [customer usage attribution](https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution). The data is collected and governed by Microsoft's privacy policies, located at [https://www.microsoft.com/trustcenter](https://www.microsoft.com/trustcenter).
+>
+> If you don’t wish to send usage data to Microsoft, you can set the `customerUsageAttribution.enabled` setting to `false` in `config/telemetry.json`.  Learn more in our [onboarding guide](docs/onboarding/ado.md#telemetry).
+> 
+> Project Bicep [collects telemetry in some scenarios](https://github.com/Azure/bicep/blob/main/README.md#telemetry) as part of improving the product.
+
+**Pre-November 11, 2021**
+
+> This reference implementation does not collect any telemetry.  Project Bicep [collects telemetry in some scenarios](https://github.com/Azure/bicep/blob/main/README.md#telemetry) as part of improving the product.
 
 
 ## License

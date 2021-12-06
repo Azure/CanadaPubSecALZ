@@ -3,9 +3,11 @@
 ## Table of Contents
 
 * [Overview](#overview)
-* [Schema Definition](#schema-definition)
-* [Example Deployment Parameters](#example-deployment-parameters)
-* [Deployment Instructions](#deployment-instructions)
+* [Azure Deployment](#azure-deployment)
+  * [Schema Definition](#schema-definition)
+  * [Deployment Scenarios](#deployment-scenarios)
+  * [Example Deployment Parameters](#example-deployment-parameters)
+  * [Deployment Instructions](#deployment-instructions)
 
 ## Overview
 
@@ -23,14 +25,13 @@ Azure Policies are used to provide governance, compliance and protection while e
 
 **CloudOps team will be required for**
 
-1.	Establishing connectivity to Hub virtual network (required for egress traffic flow & Azure Bastion).
-2.	Creating App Registrations (required for service principal accounts).  This is optional based on whether App Registrations are disabled for all users or not.
-
+1. Establishing connectivity to Hub virtual network (required for egress traffic flow & Azure Bastion).
+2. Creating App Registrations (required for service principal accounts).  This is optional based on whether App Registrations are disabled for all users or not.
 
 **Workflow**
 
-*	A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
-*	The subscription will automatically be assigned to the **pubsecSandbox** management group.
+* A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
+* The subscription will automatically be assigned to the **pubsecSandbox** management group.
 * CloudOps will create a Service Principal Account (via App Registration) that will be used for future DevOps automation.
 * CloudOps will scaffold the subscription with baseline configuration.
 * CloudOps will hand over the subscription to requesting team.
@@ -44,48 +45,68 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Capability | Description |
 | --- | --- |
 | Service Health Alerts | Configures Service Health alerts such as Security, Incident, Maintenance.  Alerts are configured with email, sms and voice notifications. |
-| Azure Security Center | Configures security contact information (email and phone). |
+| Microsoft Defender for Cloud | Configures security contact information (email and phone). |
 | Subscription Role Assignments | Configures subscription scoped role assignments.  Roles can be built-in or custom. |
 | Subscription Budget | Configures monthly subscription budget with email notification. Budget is configured by default for 10 years and the amount. |
 | Subscription Tags | A set of tags that are assigned to the subscription. |
 | Resource Tags | A set of tags that are assigned to the resource group and resources.  These tags must include all required tags as defined the Tag Governance policy. |
 | Automation | Deploys an Azure Automation Account in each subscription. |
+| Backup Recovery Vault | Configures a backup recovery vault . |
 | Hub Networking | Configures virtual network peering to Hub Network which is required for egress traffic flow and hub-managed DNS resolution (on-premises or other spokes, private endpoints).
-| Networking | A spoke virtual network with minimum 4 zones: oz (Operational Zone), paz (Public Access Zone), rz (Restricted Zone), hrz (Highly Restricted Zone).  Additional subnets can be configured at deployment time using configuration (see below). |
+| Networking | A spoke virtual network with minimum 4 zones: oz (Operational Zone), paz (Public Access Zone), rz (Restricted Zone), hrz (Highly Restricted Zone).  Additional subnets can be configured at deployment time using configuration (see below). 
 
+## Azure Deployment
 
-## Schema Definition
+### Schema Definition
 
 Reference implementation uses parameter files with `object` parameters to consolidate parameters based on their context.  The schemas types are:
 
-* v0.1.0
+* Schema (version: `latest`)
 
-    * [Spoke deployment parameters definition](../../schemas/v0.1.0/landingzones/lz-generic-subscription.json)
+  * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-generic-subscription.json)
 
   * Common types
-    * [Service Health Alerts](../../schemas/v0.1.0/landingzones/types/serviceHealthAlerts.json)
-    * [Azure Security Center](../../schemas/v0.1.0/landingzones/types/securityCenter.json)
-    * [Subscription Role Assignments](../../schemas/v0.1.0/landingzones/types/subscriptionRoleAssignments.json)
-    * [Subscription Budget](../../schemas/v0.1.0/landingzones/types/subscriptionBudget.json)
-    * [Subscription Tags](../../schemas/v0.1.0/landingzones/types/subscriptionTags.json)
-    * [Resource Tags](../../schemas/v0.1.0/landingzones/types/resourceTags.json)
+    * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
+    * [Microsoft Defender for Cloud](../../schemas/latest/landingzones/types/securityCenter.json)
+    * [Subscription Role Assignments](../../schemas/latest/landingzones/types/subscriptionRoleAssignments.json)
+    * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
+    * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
+    * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
+
   * Spoke types
-    * [Automation](../../schemas/v0.1.0/landingzones/types/automation.json)
-    * [Hub Network](../../schemas/v0.1.0/landingzones/types/hubNetwork.json)
+    * [Automation](../../schemas/latest/landingzones/types/automation.json)
+    * [Backup Recovery Vault](../../schemas/latest/landingzones/types/backupRecoveryVault.json)
+    * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
 
+### Deployment Scenarios
 
-## Example Deployment Parameters
+| Scenario | Example JSON Parameters | Notes |
+|:-------- |:----------------------- |:----- |
+| Deployment with Hub Virtual Network | [tests/schemas/lz-generic-subscription/FullDeployment-With-Hub.json](../../tests/schemas/lz-generic-subscription/FullDeployment-With-Hub.json) | - |
+| Deployment without Hub Virtual Network | [tests/schemas/lz-generic-subscription/FullDeployment-Without-Hub.json](../../tests/schemas/lz-generic-subscription/FullDeployment-Without-Hub.json) | `parameters.hubNetwork.value.*` fields are empty & `parameters.network.value.peerToHubVirtualNetwork` is false. |
+| Deployment with subscription budget | [tests/schemas/lz-generic-subscription/BudgetIsTrue.json](../../tests/schemas/lz-generic-subscription/BudgetIsTrue.json) | `parameters.subscriptionBudget.value.createBudget` is set to `true` and budget information filled in. |
+| Deployment without subscription budget | [tests/schemas/lz-generic-subscription/BudgetIsFalse.json](../../tests/schemas/lz-generic-subscription/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
+| Deployment without resource tags | [tests/schemas/lz-generic-subscription/EmptyResourceTags.json](../../tests/schemas/lz-generic-subscription/EmptyResourceTags.json) | `parameters.resourceTags.value` is an empty object. |
+| Deployment without subscription tags | [tests/schemas/lz-generic-subscription/EmptySubscriptionTags.json](../../tests/schemas/lz-generic-subscription/EmptySubscriptionTags.json) | `parameters.subscriptionTags.value` is an empty object. |
+| Deployment with optional subnets | [tests/schemas/lz-generic-subscription/WithOptionalSubnets.json](../../tests/schemas/lz-generic-subscription/WithOptionalSubnets.json) | `parameters.network.value.subnets.optional` array has one subnet.  Many others can be added following the same syntax. |
+| Deployment without optional subnets | [tests/schemas/lz-generic-subscription/WithoutOptionalSubnets.json](../../tests/schemas/lz-generic-subscription/WithoutOptionalSubnets.json) | `parameters.network.value.subnets.optional` array is empty. |
+| Deployment without custom DNS | [tests/schemas/lz-generic-subscription/WithoutCustomDNS.json](../../tests/schemas/lz-generic-subscription/WithoutCustomDNS.json) | `parameters.network.value.dnsServers` array is empty.  Defaults to Azure managed DNS when array is empty. |
+| Deployment with Backup Recovery Vault | [tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsTrue.json](../../tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsTrue.json) | `parameters.backupRecoveryVault.value.enabled` is set to `true and vault name is filled in. |
+| Deployment without Backup Recovery Vault | [tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsFalse.json](../../tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsFalse.json) | `parameters.backupRecoveryVault.value.enabled` is set to `false` and vault name is removed. |
+
+### Example Deployment Parameters
 
 This example configures:
 
 1. Service Health Alerts
-2. Azure Security Center
+2. Microsoft Defender for Cloud
 3. Subscription Role Assignments using built-in and custom roles
 4. Subscription Budget with $1000
 5. Subscription Tags
 6. Resource Tags (aligned to the default tags defined in [Policies](../../policy/custom/definitions/policyset/Tags.parameters.json))
 7. Automation Account
-8. Spoke Virtual Network with Hub-managed DNS, Virtual Network Peering, 4 required subnets (zones) and 1 additional subnet `web`.
+8. Backup Recovery Vault
+9. Spoke Virtual Network with Hub-managed DNS, Virtual Network Peering, 4 required subnets (zones) and 1 additional subnet `web`.
 
 
 ```json
@@ -93,16 +114,37 @@ This example configures:
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-    "serviceHealthAlerts": {
+        "serviceHealthAlerts": {
             "value": {
                 "resourceGroupName": "pubsec-service-health",
-                "incidentTypes": [ "Incident", "Security" ],
-                "regions": [ "Global", "Canada East", "Canada Central" ],
+                "incidentTypes": [
+                    "Incident",
+                    "Security"
+                ],
+                "regions": [
+                    "Global",
+                    "Canada East",
+                    "Canada Central"
+                ],
                 "receivers": {
-                    "app": [ "alzcanadapubsec@microsoft.com" ],
-                    "email": [ "alzcanadapubsec@microsoft.com" ],
-                    "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-                    "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                    "app": [
+                        "alzcanadapubsec@microsoft.com"
+                    ],
+                    "email": [
+                        "alzcanadapubsec@microsoft.com"
+                    ],
+                    "sms": [
+                        {
+                            "countryCode": "1",
+                            "phoneNumber": "5555555555"
+                        }
+                    ],
+                    "voice": [
+                        {
+                            "countryCode": "1",
+                            "phoneNumber": "5555555555"
+                        }
+                    ]
                 },
                 "actionGroupName": "Sub1 ALZ action group",
                 "actionGroupShortName": "sub1-alert",
@@ -162,14 +204,21 @@ This example configures:
         },
         "resourceGroups": {
             "value": {
-                "automation": "automation-rg",
-                "networking": "vnet-rg",
-                "networkWatcher": "NetworkWatcherRG"
+                "automation": "rgAutomation092021W3",
+                "networking": "rgVnet092021W3",
+                "networkWatcher": "NetworkWatcherRG",
+                "backupRecoveryVault":"rgRecovervyVault102021W1"
             }
         },
         "automation": {
             "value": {
                 "name": "automation"
+            }
+        },
+        "backupRecoveryVault":{
+            "value": {
+                "enableBackUpRecoveryVault":true,
+                "name":"bkupvault"
             }
         },
         "hubNetwork": {
@@ -260,7 +309,7 @@ This example configures:
 }
 ```
 
-## Deployment Instructions
+### Deployment Instructions
 
 > Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Generic Subscription.
 
@@ -284,7 +333,6 @@ The JSON config file name is in one of the following two formats:
 
 - [AzureSubscriptionGUID]\_[TemplateName].json
 - [AzureSubscriptionGUID]\_[TemplateName]\_[DeploymentLocation].json
-
 
 The subscription GUID is needed by the pipeline; since it's not available in the file contents, it is specified in the config file name.
 

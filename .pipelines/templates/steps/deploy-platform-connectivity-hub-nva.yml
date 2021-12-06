@@ -165,12 +165,12 @@ steps:
           echo "Hub Network will manage private dns zones, creating Azure Policy assignment to automatically create Private Endpoint DNS Zones"
 
           # Apply the policy assignment
-          echo "Deploying policy assignment using policy/custom/assignments/dns-private-endpoints.bicep"
+          echo "Deploying policy assignment using policy/custom/assignments/DNSPrivateEndpoints.bicep"
 
           az deployment mg ${{ parameters.deployOperation }} \
             --location $(deploymentRegion) \
             --management-group-id $(var-topLevelManagementGroupName) \
-            --template-file dns-private-endpoints.bicep \
+            --template-file DNSPrivateEndpoints.bicep \
             --parameters \
                 policyAssignmentManagementGroupId='$(var-topLevelManagementGroupName)' \
                 policyDefinitionManagementGroupId='$(var-topLevelManagementGroupName)' \
@@ -203,12 +203,12 @@ steps:
           echo "DDoS Standard Plan Id: $DDOS_PLAN_ID"
 
           # Apply the policy assignment
-          echo "Deploying policy assignment using policy/custom/assignments/ddos.bicep"
+          echo "Deploying policy assignment using policy/custom/assignments/DDoS.bicep"
 
           az deployment mg ${{ parameters.deployOperation }} \
             --location $(deploymentRegion) \
             --management-group-id $(var-topLevelManagementGroupName) \
-            --template-file ddos.bicep \
+            --template-file DDoS.bicep \
             --parameters \
                 policyAssignmentManagementGroupId='$(var-topLevelManagementGroupName)' \
                 policyDefinitionManagementGroupId=$(var-topLevelManagementGroupName) \

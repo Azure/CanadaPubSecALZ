@@ -88,8 +88,11 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
     }
 
     sqldb: {
-      enabled: deploySQLDB
-      username: 'azadmin'
+      value: {
+        enabled: deploySQLDB
+        aadAuthenticationOnly: false 
+        sqlAuthenticationUsername: 'azadmin'
+      }
     }
 
     sqlmi: {

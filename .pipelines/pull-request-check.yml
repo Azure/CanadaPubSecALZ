@@ -38,7 +38,7 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                $SchemaFolder="schemas/v0.1.0/landingzones"
+                $SchemaFolder="schemas/latest/landingzones"
 
                 # Validate schema test cases
                 $SchemaTestsFolder="tests/schemas"
@@ -67,7 +67,7 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                $SchemaFolder="schemas/v0.1.0/landingzones"
+                $SchemaFolder="schemas/latest/landingzones"
 
                 # Validate exising subscription archetype parameter files
                 Write-Host "Validate exising subscription archetype parameter files..."
