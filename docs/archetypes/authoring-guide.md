@@ -101,7 +101,7 @@ Each archetype is intended to be self-contained and provides all deployment temp
       - Create a new folder under `landingzones` prefixed with `lz-`.  For example, `lz-cloudnative`.
       - Create `main.bicep`, set the `targetScope` as `subscription`
       - Create required parameters for [common features](#common-features)
-      - Create a test parameters.json and run a subscription scoped deployment through Azure CLI
+      - Create a test parameters.json and run a subscription scoped deployment through Azure CLI.  You may place the test parameters.json in `/tests/schemas/` based on the archetype.
 
         ```bash
         az deployment sub create --template-file <path to archetype main.bicep> --parameters @<path to archetype test parameters file> --subscription-id <subscription id> --location canadacentral
