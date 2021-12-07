@@ -330,6 +330,9 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 ### Remove built-in policy set assignment
 
+> **Automation does not remove an existing policy set assignment.  Removing the policy set assignment from the Azure DevOps pipeline ensures that it's no longer created.  Any existing policy set assignments must be deleted manually.**
+
+
 **Steps**
 
 * [Step 1: Remove built-in policy set assignment from Azure DevOps Pipeline](#step-1-remove-built-in-policy-set-assignment-from-azure-devops-pipeline)
@@ -341,8 +344,6 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 * Navigate to the `BuiltInPolicyJob` Job definition
 * Navigate to the `Assign Policy Set` Step definition
 * Remove the policy set assignment from the `deployTemplates` array parameter
-
-> Automation does not remove an existing policy set assignment.  Removing the policy set assignment from the Azure DevOps pipeline ensures that it's no longer created.  Any existing policy set assignments must be deleted manually.
 
 #### **Step 2: Remove built-in policy set assignment's IAM assignments**
 
@@ -893,6 +894,9 @@ When there are deployment errors:
 
 ### Remove custom policy definition
 
+> **Azure DevOps Pipeline does not remove the custom policy definition from Azure.  It will only remove the policy definition reference from the custom policy sets that are managed through automation.  You must manually delete the policy definition using [Azure Policy Definitions][portalAzurePolicyDefinition] in Azure Portal.**
+
+
 **Steps**
 
 * [Step 1: Remove policy definition](#step-1-remove-policy-definition)
@@ -904,11 +908,13 @@ When there are deployment errors:
 * Delete the custom policy definition directory in `policy/custom/definitions/policy` 
 * Execute `Azure DevOps Policy pipeline` to deploy the updates.
 
-> Azure DevOps Pipeline does not remove the custom policy definition from Azure.  It will only remove the policy definition reference from the custom policy sets that are managed through automation.  You must manually delete the policy definition using [Azure Policy Definitions][portalAzurePolicyDefinition] in Azure Portal.
 
 ---
 
 ### Remove custom policy set definition and assignment
+
+> **Automation does not remove an existing policy set assignment.  Removing the policy set assignment from the Azure DevOps pipeline ensures that it's no longer created.  Any existing policy set assignments must be deleted manually.**
+
 
 **Steps**
 
@@ -932,7 +938,6 @@ When there are deployment errors:
 * Navigate to the `Define Policy Set` Step definition and remove the policy definition file name from the `deployTemplates` array parameter
 * Navigate to the `Assign Policy Set` Step definition and remove the policy assignment file name from the `deployTemplates` array parameter
 
-> Automation does not remove an existing policy set assignment.  Removing the policy set assignment from the Azure DevOps pipeline ensures that it's no longer created.  Any existing policy set assignments must be deleted manually.
 
 #### **Step 4: Remove custom policy set assignment's IAM assignments**
 
