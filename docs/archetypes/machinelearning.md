@@ -161,7 +161,7 @@ Since all traffic is redirected through the NVA / Firewall, the following destin
 | Destination Endpoint | Protocol | Port | Use |
 |:-------------------- |:-------- |:---- |:--- |
 | `ntp.ubuntu.com` | UDP | 123 | Ubuntu NTP |
- `*.hcp.canadacentral.azmk8s.io` ; `mcr.microsoft.com` ; `*.data.mcr.microsoft.com` ; `management.azure.com` ;    `login.microsoftonline.com` ; `packages.microsoft.com` ; `acs-mirror.azureedge.net` ; `canadacentral.dp.kubernetesconfiguration.azure.com` | HTTPS | 443 | AKS required FQDNs |
+ `*.hcp.canadacentral.azmk8s.io` ; `mcr.microsoft.com` ; `*.data.mcr.microsoft.com` ; `management.azure.com` ;    `login.microsoftonline.com` ; `packages.microsoft.com` ; `acs-mirror.azureedge.net` ; `canadacentral.dp.kubernetesconfiguration.azure.com` ; `canadaeast.dp.kubernetesconfiguration.azure.com` | HTTPS | 443 | AKS required FQDNs |
  | `dc.services.visualstudio.com` ; `*.ods.opinsights.azure.com` ; `*.oms.opinsights.azure.com` ; `*.monitoring.azure.com` ; `data.policy.core.windows.net` ; `store.policy.core.windows.net` | HTTPS | 443 | AKS Addons required FQDNs|
  | `security.ubuntu.com` ; `azure.archive.ubuntu.com` ; `changelogs.ubuntu.com` | HTTP | 80 | AKS Optional recommended FQDNs |
 
