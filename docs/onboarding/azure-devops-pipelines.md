@@ -1,4 +1,4 @@
-# Azure DevOps Pipelines
+# Azure DevOps Pipelines Onboarding Guide
 
 This document provides steps required to onboard to the Azure Landing Zones design using Azure DevOps Pipelines.
 
