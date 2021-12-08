@@ -275,6 +275,13 @@ resource udrHRZ 'Microsoft.Network/routeTables@2021-02-01' = {
   }
 }
 
+resource udrAKS 'Microsoft.Network/routeTables@2021-02-01' = {
+  name: '${network.subnets.aks.name}Udr'
+  location: resourceGroup().location
+  properties: {
+    routes: network.peerToHubVirtualNetwork ? routesToHub : null
+  }
+}
 module udrSqlMi '../../azresources/network/udr/udr-sqlmi.bicep' = {
   name: 'deploy-route-table-sqlmi'
   params: {
@@ -367,6 +374,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         name: network.subnets.aks.name
         properties: {
           addressPrefix: network.subnets.aks.addressPrefix
+          routeTable: {
+            id: udrAKS.id
+          }
           privateEndpointNetworkPolicies: 'Disabled'
         }
       }
@@ -641,3 +651,5 @@ output sqlDBPrivateDnsZoneId string = privatezone_sqldb.outputs.privateDnsZoneId
 output amlApiPrivateDnsZoneId string = privatezone_azureml_api.outputs.privateDnsZoneId
 output amlNotebooksPrivateDnsZoneId string = privatezone_azureml_notebook.outputs.privateDnsZoneId
 output aksPrivateDnsZoneId string = privatezone_aks.outputs.privateDnsZoneId
+
+output aksUdrNAme string = udrAKS.name
