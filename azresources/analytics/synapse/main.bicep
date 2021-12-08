@@ -27,13 +27,30 @@ param adlsName string
 param adlsFSName string
 
 // Credentials
+@description('use Azure AD only authentication or mix of both AAD and SQL authentication')
+param aadAuthenticationOnly bool
+
+@description('Azure AD principal name, in the format of firstname last name')
+param aadLoginName string =''
+
+@description('AAD account object id')
+param aadLoginObjectID string=''
+
+@description('AAD account type with options User, Group, Application. Default: Group')
+@allowed([
+  'User'
+  'Group'
+  'Application'
+])
+param aadLoginType string = 'Group'
+
 @description('Synapse Analytics Username.')
 @secure()
-param synapseUsername string
+param sqlAdministratorLogin string
 
 @description('Synapse Analytics Password.')
 @secure()
-param synapsePassword string
+param sqlAdministratorLoginPassword string
 
 // Networking
 @description('Private Endpoint Subnet Resource Id.')
@@ -89,8 +106,9 @@ module synapseWithoutCMK 'synapse-without-cmk.bicep' = if (!useCMK) {
     
     managedResourceGroupName: managedResourceGroupName 
     
-    synapseUsername: synapseUsername 
-    synapsePassword: synapsePassword 
+    aadAuthenticationOnly: aadAuthenticationOnly
+    sqlAdministratorLogin: sqlAdministratorLogin 
+    sqlAdministratorLoginPassword: sqlAdministratorLoginPassword 
     
     privateEndpointSubnetId: privateEndpointSubnetId 
     synapsePrivateZoneId: synapsePrivateZoneId 
@@ -120,8 +138,9 @@ module synapseWithCMK 'synapse-with-cmk.bicep' = if (useCMK) {
     
     managedResourceGroupName: managedResourceGroupName 
     
-    synapseUsername: synapseUsername 
-    synapsePassword: synapsePassword 
+    aadAuthenticationOnly: aadAuthenticationOnly
+    sqlAdministratorLogin: sqlAdministratorLogin 
+    sqlAdministratorLoginPassword: sqlAdministratorLoginPassword 
     
     privateEndpointSubnetId: privateEndpointSubnetId 
     synapsePrivateZoneId: synapsePrivateZoneId 

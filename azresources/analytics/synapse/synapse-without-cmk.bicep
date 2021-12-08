@@ -27,13 +27,30 @@ param adlsName string
 param adlsFSName string
 
 // Credentials
+@description('use Azure AD only authentication or mix of both AAD and SQL authentication')
+param aadAuthenticationOnly bool
+
+@description('Azure AD principal name, in the format of firstname last name')
+param aadLoginName string =''
+
+@description('AAD account object id')
+param aadLoginObjectID string=''
+
+@description('AAD account type with options User, Group, Application. Default: Group')
+@allowed([
+  'User'
+  'Group'
+  'Application'
+])
+param aadLoginType string = 'Group'
+
 @description('Synapse Analytics Username.')
 @secure()
-param synapseUsername string
+param sqlAdministratorLogin string
 
 @description('Synapse Analytics Password.')
 @secure()
-param synapsePassword string
+param sqlAdministratorLoginPassword string
 
 // Networking
 @description('Private Endpoint Subnet Resource Id.')
@@ -85,7 +102,7 @@ resource synapsePrivateLinkHub 'Microsoft.Synapse/privateLinkHubs@2021-03-01' = 
   location: resourceGroup().location
 }
 
-resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
+resource synapse 'Microsoft.Synapse/workspaces@2021-06-01' = {
   dependsOn: [
     dataLakeSynapseFS
   ]
@@ -94,9 +111,10 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
   tags: tags
   location: resourceGroup().location
   properties: {
-    sqlAdministratorLoginPassword: synapsePassword
+    azureADOnlyAuthentication: aadAuthenticationOnly
+    sqlAdministratorLoginPassword: sqlAdministratorLoginPassword
     managedResourceGroupName: managedResourceGroupName
-    sqlAdministratorLogin: synapseUsername
+    sqlAdministratorLogin: sqlAdministratorLogin
 
     managedVirtualNetwork: 'default'
     managedVirtualNetworkSettings: {
