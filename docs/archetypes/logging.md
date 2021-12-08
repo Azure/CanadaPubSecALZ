@@ -14,12 +14,12 @@ Centralized logging landing zone allows a common subscription for managing Log A
 
 **Workflow**
 
-*	A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
-*	The subscription will automatically be assigned to the **pubsecSandbox** management group.
-*	Update configuration in Azure DevOps Git repo.
-*	Execute the **Platform – Logging** Azure DevOps Pipeline.  The pipeline will:
+*  A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
+*  The subscription will automatically be assigned to the **pubsecSandbox** management group.
+*  Update configuration in Azure DevOps Git repo.
+*  Execute the **Platform – Logging** Azure DevOps Pipeline.  The pipeline will:
   * Move it to the target management group.
-  *	Scaffold the subscription with baseline configuration.
+  *  Scaffold the subscription with baseline configuration.
 
 **Subscription Move**
 
@@ -53,4 +53,4 @@ Reference implementation uses parameter files with `object` parameters to consol
 
 ## Deployment Instructions
 
-Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure this archetype.
+Use the [Azure DevOps Pipelines](../onboarding/azure-devops-pipelines.md) onboarding guide to configure this archetype.
