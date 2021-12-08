@@ -815,7 +815,8 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
                 'login.microsoftonline.com'
                 'packages.microsoft.com'
                 'acs-mirror.azureedge.net'
-                'canadacenral.dp.kubernetesconfiguration.azure.com'
+                'canadacentral.dp.kubernetesconfiguration.azure.com'
+                'canadaeast.dp.kubernetesconfiguration.azure.com'
               ]
               protocols: [
                 {

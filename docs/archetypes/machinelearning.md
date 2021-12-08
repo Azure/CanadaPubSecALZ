@@ -35,8 +35,8 @@ Azure Policies are used to provide governance, compliance and protection while e
 
 **Workflow**
 
-*	A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
-*	The subscription will automatically be assigned to the **pubsecSandbox** management group.
+*  A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
+*  The subscription will automatically be assigned to the **pubsecSandbox** management group.
 * CloudOps will create a Service Principal Account (via App Registration) that will be used for future DevOps automation.
 * CloudOps will scaffold the subscription with baseline configuration.
 * CloudOps will hand over the subscription to requesting team.
@@ -156,12 +156,12 @@ Azure Policy will enable diagnostic settings for all PaaS components in the mach
 
 ## AKS Egress/Firewall configuration
 
-Since all traffic is redirected through the NVA / Frirewall, the following destination endpoints should be allowed on it for the AKS cluster to be properly provisionned and operational
+Since all traffic is redirected through the NVA / Firewall, the following destination endpoints should be allowed on it for the AKS cluster to be properly provisioned and operational
 
 | Destination Endpoint | Protocol | Port | Use |
 |:-------------------- |:-------- |:---- |:--- |
 | `ntp.ubuntu.com` | UDP | 123 | Ubuntu NTP |
- `*.hcp.canadacentral.azmk8s.io` ; `mcr.microsoft.com` ; `*.data.mcr.microsoft.com` ; `management.azure.com` ;    `login.microsoftonline.com` ; `packages.microsoft.com` ; `acs-mirror.azureedge.net` ; `canadacenral.dp.kubernetesconfiguration.azure.com` | HTTPS | 443 | AKS required FQDNs |
+ `*.hcp.canadacentral.azmk8s.io` ; `mcr.microsoft.com` ; `*.data.mcr.microsoft.com` ; `management.azure.com` ;    `login.microsoftonline.com` ; `packages.microsoft.com` ; `acs-mirror.azureedge.net` ; `canadacentral.dp.kubernetesconfiguration.azure.com` | HTTPS | 443 | AKS required FQDNs |
  | `dc.services.visualstudio.com` ; `*.ods.opinsights.azure.com` ; `*.oms.opinsights.azure.com` ; `*.monitoring.azure.com` ; `data.policy.core.windows.net` ; `store.policy.core.windows.net` | HTTPS | 443 | AKS Addons required FQDNs|
  | `security.ubuntu.com` ; `azure.archive.ubuntu.com` ; `changelogs.ubuntu.com` | HTTP | 80 | AKS Optional recommended FQDNs |
 
@@ -478,7 +478,7 @@ This example configures:
 
 ### Deployment Instructions
 
-> Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Machine Learning.
+> Use the [Azure DevOps Pipelines](../onboarding/azure-devops-pipelines.md) onboarding guide to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Machine Learning.
 
 Parameter files for archetype deployment are configured in [config/subscription folder](../../config/subscriptions).  The directory hierarchy is comprised of the following elements, from this directory downward:
 
