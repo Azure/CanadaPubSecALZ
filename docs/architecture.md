@@ -30,7 +30,7 @@ This document describes the architecture and design decisions for building a **[
 
 The table below outlines the key decisions each department must consider as part of adopting Azure.  This list is provided to help guide and is not meant to be exhaustive.
 
-| Topic |	Scenario | Ownership | Complexity to change | Decision |
+| Topic |  Scenario | Ownership | Complexity to change | Decision |
 | --- | --- | --- | --- | --- |
 | Private IP range for Cloud | Based on [RFC 1918][rfc1918] and [RFC 6598][rfc6598], to allow seamless routing for hybrid connectivity. | | | |
 | Ground to Cloud Network Connectivity | Use either: Express Route; or SCED for hybrid connectivity. | | | |
@@ -141,7 +141,7 @@ Azure Landing Zones for Canadian Public Sector assumes that Azure Active Directo
 * App Registration - Consider disabling for all users and created on-demand by CloudOps teams.
 * Sign-In Logs - Logs are exported to Log Analytics workspace & Microsoft Sentinel used for threat hunting (Security Monitoring Team).
 * Break-glass procedure - Process documented and implemented including 2 break glass accounts with different MFA devices & split up passwords.
-*	Azure Directory to Azure Active Directory synchronization - Are the identities synchronized or using cloud only account?
+*  Azure Directory to Azure Active Directory synchronization - Are the identities synchronized or using cloud only account?
 
 ### 4.1 Service Principal Accounts
 
@@ -447,14 +447,14 @@ All pipelines are in **.pipelines/** folder.
 
 Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.  To import a pipeline:
 
-1.	Go to Pipelines
-2.	New Pipeline
-3.	Choose Azure Repos Git
-4.	Select Repository
-5.	Select Existing Azure Pipeline YAML file
-6.	Identify the pipeline using the table below and add.
+1.  Go to Pipelines
+2.  New Pipeline
+3.  Choose Azure Repos Git
+4.  Select Repository
+5.  Select Existing Azure Pipeline YAML file
+6.  Identify the pipeline using the table below and add.
 
-Use the [onboarding guide for Azure DevOps](onboarding/ado.md) to configure each pipeline.
+Use the [Azure DevOps Pipelines](onboarding/azure-devops-pipelines.md) onboarding guide to configure each pipeline.
 
 > Imported pipelines should be renamed to match the names in the table.
 
@@ -492,9 +492,9 @@ You can combine all three techniques within a release pipeline to fully achieve 
 
 Manual validation can be done in one of two ways:
 
-1.	Add an agentless (server) job before the existing pipeline job(s) where you want to enforce pre-deployment user validation.
+1.  Add an agentless (server) job before the existing pipeline job(s) where you want to enforce pre-deployment user validation.
 
-2.	Create an Environment (or multiple environments) in your Azure DevOps project where you can specify pre-deployment user validations via “Approvals and checks”.
+2.  Create an Environment (or multiple environments) in your Azure DevOps project where you can specify pre-deployment user validations via "Approvals and checks".
 
 We will focus on the second option, as it allows for the following additional types of approvals and checks:
 
@@ -502,17 +502,17 @@ We will focus on the second option, as it allows for the following additional ty
 
 Steps to implement user validation (approval) check:
 
-1.	Create an Environment named after the branch (e.g. “main”, “sandbox”) you want to protect. You can do this manually through the web UI or by running the pipeline (if the environment does not exist, it will be created).
+1.  Create an Environment named after the branch (e.g. "main", "sandbox") you want to protect. You can do this manually through the web UI or by running the pipeline (if the environment does not exist, it will be created).
 
-2.	In the web UI, navigate to Pipelines | Environments, select the environment corresponding to the branch you want to protect, and select “Approvals and checks” from the context menu.
+2.  In the web UI, navigate to Pipelines | Environments, select the environment corresponding to the branch you want to protect, and select "Approvals and checks" from the context menu.
 
-3.	Select the “Approval” option to add a new user validation approval.
+3.  Select the "Approval" option to add a new user validation approval.
 
-4.	Add user(s)/group(s) to the “Approvers” field. Approval check will require approval from all listed users/groups. For a group approval, any one member of the group is sufficient for approval. Note that you may use Azure DevOps and Azure Active Directory groups and may want to do this to minimize administrative overhead associated with managing individual users roles and responsibilities.
+4.  Add user(s)/group(s) to the "Approvers" field. Approval check will require approval from all listed users/groups. For a group approval, any one member of the group is sufficient for approval. Note that you may use Azure DevOps and Azure Active Directory groups and may want to do this to minimize administrative overhead associated with managing individual users roles and responsibilities.
 
-5.	Under “Advanced” options, decide if you want to allow users in the Approvers list to approve their own pipeline runs.
+5.  Under "Advanced" options, decide if you want to allow users in the Approvers list to approve their own pipeline runs.
 
-6.	Under “Control options”, set an appropriate “Timeout” after which approval requests will expire. The default is 30 days, however you may wish to reduce this time window. 
+6.  Under "Control options", set an appropriate "Timeout" after which approval requests will expire. The default is 30 days, however you may wish to reduce this time window. 
 
 [itsg33]: https://www.cyber.gc.ca/en/guidance/it-security-risk-management-lifecycle-approach-itsg-33
 [itsg22]: https://www.cyber.gc.ca/sites/default/files/publications/itsg-22-eng.pdf
