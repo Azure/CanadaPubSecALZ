@@ -26,13 +26,13 @@ Azure Policies are used to provide governance, compliance and protection while e
 
 **CloudOps team will be required for**
 
-1.	Establishing connectivity to Hub virtual network (required for egress traffic flow & Azure Bastion).
-2.	Creating App Registrations (required for service principal accounts).  This is optional based on whether App Registrations are disabled for all users or not.
+1.  Establishing connectivity to Hub virtual network (required for egress traffic flow & Azure Bastion).
+2.  Creating App Registrations (required for service principal accounts).  This is optional based on whether App Registrations are disabled for all users or not.
 
 **Workflow**
 
-*	A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
-*	The subscription will automatically be assigned to the **pubsecSandbox** management group.
+*  A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
+*  The subscription will automatically be assigned to the **pubsecSandbox** management group.
 * CloudOps will create a Service Principal Account (via App Registration) that will be used for future DevOps automation.
 * CloudOps will scaffold the subscription with baseline configuration.
 * CloudOps will hand over the subscription to requesting team.
@@ -92,14 +92,14 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 
 The intended cloud service workflows and data movements for this archetype include:
 
-1.	Data can be ingested from data sources using Data Factory with managed virtual network for its Azure hosted integration runtime
-2.	Streaming data can be ingested using Event Hub and Stream Analytics
-3.	The data would be stored in Azure Data Lake Gen 2.
-4.	Healthcare providers can connect to existing data sources with FHIR API.
-5.	Data engineering and transformation tasks can be done with Spark using Azure Databricks. Transformed data would be stored back in the data lake.
-6.	End to end analytics and data warehousing can be done with Azure Synapse Analytics.
-7.	Machine learning would be done using Azure Machine Learning.
-8.	Monitoring and logging would be through Application Insights.
+1.  Data can be ingested from data sources using Data Factory with managed virtual network for its Azure hosted integration runtime
+2.  Streaming data can be ingested using Event Hub and Stream Analytics
+3.  The data would be stored in Azure Data Lake Gen 2.
+4.  Healthcare providers can connect to existing data sources with FHIR API.
+5.  Data engineering and transformation tasks can be done with Spark using Azure Databricks. Transformed data would be stored back in the data lake.
+6.  End to end analytics and data warehousing can be done with Azure Synapse Analytics.
+7.  Machine learning would be done using Azure Machine Learning.
+8.  Monitoring and logging would be through Application Insights.
 
 ## Access Control
 
@@ -123,7 +123,7 @@ Once the machine learning archetype is deployed and available to use, access con
 | Azure Key Vault | Network ACL Deny | Private endpoint on `vault` + DNS registration to either hub or spoke | `privateEndpoints`|
 | SQL Database | Deny public network access | Private endpoint on `sqlserver` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Data Lake Gen 2 | Network ACL deny | Private endpoint on `blob`, `dfs` + DNS registration to either hub or spoke | `privateEndpoints`|
-| Synapse | Disabled public network access; managed virtual network | *	Managed Private Endpoints & Synapse Studio Private Link Hub. Private endpoint DNS registration. | `privateEndpoints` |
+| Synapse | Disabled public network access; managed virtual network | *  Managed Private Endpoints & Synapse Studio Private Link Hub. Private endpoint DNS registration. | `privateEndpoints` |
 | Azure Databricks | No public IP enabled (secure cluster connectivity), load balancer for egress with IP and outbound rules, virtual network ibjection | N/A |  `databricksPrivate`, `databricksPublic`|
 | Azure Machine Learning | No public workspace access | Private endpoint on `amlWorkspace` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Storage Account for Azure ML | Network ACL deny | Private endpoint on `blob`, `file` + DNS registration to either hub or spoke | `privateEndpoints`|
@@ -184,13 +184,13 @@ The scripts are:
     * Upload some data to the default ADLS Gen 2 of Synapse
     * Run the integration tests for Synapse SQL Serverless Pool
   * Spark pool connectivity to data lake
-    *	Ensure the user has storage blob data contributor role for the data lake
-    *	Upload some data to the default ADLS Gen 2 of Synapse
-    *	Run the integration tests for Synapse Spark Pool
+    *  Ensure the user has storage blob data contributor role for the data lake
+    *  Upload some data to the default ADLS Gen 2 of Synapse
+    *  Run the integration tests for Synapse Spark Pool
   * Dedicated SQL (SQL Data warehouse)
-    *	Ensure the user identity has a SQL Login (e.g. the admin user could be assigned the SQL AD admin)
-    *	Upload some data to the default ADLS Gen 2 of Synapse
-    *	Run the integration tests for Synapse SQL Dedicated Pool (DW)
+    *  Ensure the user identity has a SQL Login (e.g. the admin user could be assigned the SQL AD admin)
+    *  Upload some data to the default ADLS Gen 2 of Synapse
+    *  Run the integration tests for Synapse SQL Dedicated Pool (DW)
 
 ### Test Scenarios
 
@@ -383,7 +383,7 @@ This example configures:
               "aadLoginName":"DBA Group",
               "aadLoginObjectID":"4e4ea47c-ee21-4add-ad2f-a75d0d8014e0",
               "aadLoginType":"Group"
-        	}
+          }
         },
         "synapse": {
             "value": {
@@ -462,7 +462,7 @@ This example configures:
 
 ### Deployment Instructions
 
-> Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Healthcare.
+> Use the [Azure DevOps Pipelines](../onboarding/azure-devops-pipelines.md) onboarding guide to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Healthcare.
 
 Parameter files for archetype deployment are configured in [config/subscription folder](../../config/subscriptions).  The directory hierarchy is comprised of the following elements, from this directory downward:
 

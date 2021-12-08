@@ -34,8 +34,8 @@ Azure Policies are used to provide governance, compliance and protection while e
 
 **Workflow**
 
-*	A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
-*	The subscription will automatically be assigned to the **pubsecSandbox** management group.
+*  A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
+*  The subscription will automatically be assigned to the **pubsecSandbox** management group.
 * CloudOps will create a Service Principal Account (via App Registration) that will be used for future DevOps automation.
 * CloudOps will scaffold the subscription with baseline configuration.
 * CloudOps will hand over the subscription to requesting team.
@@ -465,7 +465,7 @@ This example configures:
 
 ### Deployment Instructions
 
-> Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Machine Learning.
+> Use the [Azure DevOps Pipelines](../onboarding/azure-devops-pipelines.md) onboarding guide to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Machine Learning.
 
 Parameter files for archetype deployment are configured in [config/subscription folder](../../config/subscriptions).  The directory hierarchy is comprised of the following elements, from this directory downward:
 

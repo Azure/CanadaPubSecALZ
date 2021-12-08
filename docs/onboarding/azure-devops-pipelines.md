@@ -1,6 +1,6 @@
-# Onboarding Guide for Azure DevOps
+# Azure DevOps Pipelines
 
-This document provides steps required to onboard to the Azure Landing Zones design based on Azure DevOps Pipelines.
+This document provides steps required to onboard to the Azure Landing Zones design using Azure DevOps Pipelines.
 
 **All steps will need to be repeated per Azure AD tenant.**
 
@@ -14,7 +14,7 @@ Microsoft can identify the deployments of the Azure Resource Manager and Bicep t
 
 The automation is instrumented to identify the modules that are being deployed.  At this time, we don't differentiate the deployments and tracked under a single GUID (`a83f6385-f514-415f-991b-2d9bd7aed658`).
 
-If you don’t wish to send usage data to Microsoft, you can set the `customerUsageAttribution.enabled` setting to `false` in `config/telemetry.json`.
+If you don't wish to send usage data to Microsoft, you can set the `customerUsageAttribution.enabled` setting to `false` in `config/telemetry.json`.
 
 **Example with telemetry disabled**
 
