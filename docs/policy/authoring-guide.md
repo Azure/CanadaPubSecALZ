@@ -15,6 +15,7 @@ This reference implementation uses Built-In and Custom Policies to provide guard
   * [Remove built-in policy set assignment](#remove-built-in-policy-set-assignment)
     * [Step 1: Remove built-in policy set assignment from Azure DevOps Pipeline](#step-1-remove-built-in-policy-set-assignment-from-azure-devops-pipeline)
     * [Step 2: Remove built-in policy set assignment's IAM assignments](#step-2-remove-built-in-policy-set-assignments-iam-assignments)
+  * [Disable built-in policy set enforcement](#disable-built-in-policy-set-enforcement)
 * [Custom policies](#custom-policies)
   * [New custom policy definition](#new-custom-policy-definition)
     * [Step 1: Create policy definition template](#step-1-create-policy-definition-template)
@@ -40,6 +41,7 @@ This reference implementation uses Built-In and Custom Policies to provide guard
     * [Step 2: Remove custom policy set assignment](#step-2-remove-custom-policy-set-assignment)
     * [Step 3: Remove custom policy set from Azure DevOps Pipeline](#step-3-remove-custom-policy-set-from-azure-devops-pipeline)
     * [Step 4: Remove custom policy set assignment's IAM assignments](#step-4-remove-custom-policy-set-assignments-iam-assignments)
+  * [Disable custom policy set enforcement](#disable-custom-policy-set-enforcement)
   * [Auto generate custom Diagnostic Settings policies for PaaS services](#auto-generate-custom-diagnostic-settings-policies-for-paas-services)
 
 ---
@@ -352,7 +354,6 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 > **Automation does not remove an existing policy set assignment.  Removing the policy set assignment from the Azure DevOps pipeline ensures that it's no longer created.  Any existing policy set assignments must be deleted manually.**
 
-
 **Steps**
 
 * [Step 1: Remove built-in policy set assignment from Azure DevOps Pipeline](#step-1-remove-built-in-policy-set-assignment-from-azure-devops-pipeline)
@@ -375,6 +376,29 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
   * Select Access control (IAM)
   * Select Role Assignments
   * Use the `Type` filter to find any `Unknown` role assignments and delete them.  This step is required since deleting the policy set assignment does not automatically remove any role assignments.  When the policy set assignment is removed, it's managed identity is also removed thus marking these role assignments as `Unknown`.
+
+---
+
+### Disable built-in policy set enforcement
+
+You may want to evaluate the compliance in your environment without any automatic remediation, either through `DeployIfNotExists` or `modify` policies.  To support this scenario, all policy set assignments support an `enforcementMode` setting.  This can be set to either: `Default` or `DoNotEnforce`:
+
+* `Default` = enable policy set enforcement
+* `DoNotEnforce` = disable policy set enforcement
+
+Please review guidance and expected behaviour of these settings prior to making any modification:
+
+* [Cloud Adoption Framework - Adopting policy driven guardrails](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/dine-guidance)
+* [Azure Policy Enforcement Mode](https://aka.ms/enforcementMode)
+
+You can switch between these modes per-policy set based on your Azure Policy adoption strategy.
+
+To manage this setting:
+
+* Navigate to [policy/builtin/assignments](../../policy/builtin/assignments)
+* Open `*.parameters.json`.  There is 1 parameters file per policy set assignment
+* Modify `enforcementMode` parameter with either `Default` or `DoNotEnforce`
+* Re-run the `policy-ci` Azure DevOps pipeline to update Azure
 
 ---
 
@@ -989,6 +1013,29 @@ When there are deployment errors:
   * Select Access control (IAM)
   * Select Role Assignments
   * Use the `Type` filter to find any `Unknown` role assignments and delete them.  This step is required since deleting the policy set assignment does not automatically remove any role assignments.  When the policy set assignment is removed, it's managed identity is also removed thus marking these role assignments as `Unknown`.
+
+---
+
+### Disable custom policy set enforcement
+
+You may want to evaluate the compliance in your environment without any automatic remediation, either through `DeployIfNotExists` or `modify` policies.  To support this scenario, all policy set assignments support an `enforcementMode` setting.  This can be set to either: `Default` or `DoNotEnforce`:
+
+* `Default` = enable policy set enforcement
+* `DoNotEnforce` = disable policy set enforcement
+
+Please review guidance and expected behaviour of these settings prior to making any modification:
+
+* [Cloud Adoption Framework - Adopting policy driven guardrails](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/dine-guidance)
+* [Azure Policy Enforcement Mode](https://aka.ms/enforcementMode)
+
+You can switch between these modes per-policy set based on your Azure Policy adoption strategy.
+
+To manage this setting:
+
+* Navigate to [policy/custom/assignments](../../policy/custom/assignments)
+* Open `*.parameters.json`.  There is 1 parameters file per policy set assignment
+* Modify `enforcementMode` parameter with either `Default` or `DoNotEnforce`
+* Re-run the `policy-ci` Azure DevOps pipeline to update Azure
 
 ---
 
