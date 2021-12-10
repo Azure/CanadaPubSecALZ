@@ -9,7 +9,7 @@
             "value": "{{var-topLevelManagementGroupName}}"
         },
         "enforcementMode": {
-            "value": "Default"
+            "value": "DoNotEnforce"
         }
     }
 }
