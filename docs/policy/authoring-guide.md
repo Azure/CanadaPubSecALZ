@@ -140,6 +140,13 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
       @description('Management Group scope for the policy assignment.')
       param policyAssignmentManagementGroupId string
 
+      @allowed([
+        'Default'
+        'DoNotEnforce'
+      ])
+      @description('Policy set assignment enforcement mode.  Possible values are { Default, DoNotEnforce }.  Default value:  Default')
+      param enforcementMode string = 'Default'
+
       // Start - Any custom parameters required for your policy assignment
       param ...
       // End - Any custom parameters required for your policy assignment
@@ -171,7 +178,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
           }
 
           // The policy assignment enforcement mode. Possible values are Default and DoNotEnforce.
-          enforcementMode: 'Default'
+          enforcementMode: enforcementMode
         }
         identity: {
           type: 'SystemAssigned'
@@ -201,6 +208,13 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
       @description('Management Group scope for the policy assignment.')
       param policyAssignmentManagementGroupId string
+
+      @allowed([
+        'Default'
+        'DoNotEnforce'
+      ])
+      @description('Policy set assignment enforcement mode.  Possible values are { Default, DoNotEnforce }.  Default value:  Default')
+      param enforcementMode string = 'Default'
 
       @description('Log Analytics Resource Id to integrate Microsoft Defender for Cloud.')
       param logAnalyticsWorkspaceId string
@@ -236,7 +250,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
               value: listOfMembersToIncludeInWindowsVMAdministratorsGroup
             }
           }
-          enforcementMode: 'Default'
+          enforcementMode: enforcementMode
         }
         identity: {
           type: 'SystemAssigned'
@@ -270,6 +284,9 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
             "policyAssignmentManagementGroupId": {
                 "value": "{{var-topLevelManagementGroupName}}"
             },
+            "enforcementMode": {
+                "value": "Default"
+            },
             "EXTRA_POLICY_ASSIGNMENT_PARAMETER_NAME_1": {
                 "value": "EXTRA_POLICY_ASSIGNMENT_PARAMETER_VALUE_1"
             },
@@ -289,6 +306,9 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
         "parameters": {
             "policyAssignmentManagementGroupId": {
                 "value": "{{var-topLevelManagementGroupName}}"
+            },
+            "enforcementMode": {
+                "value": "Default"
             },
             "logAnalyticsWorkspaceId": {
                 "value": "{{var-logging-logAnalyticsWorkspaceId}}"
@@ -626,6 +646,13 @@ When there are deployment errors:
     @description('Management Group scope for the policy assignment.')
     param policyAssignmentManagementGroupId string
 
+    @allowed([
+      'Default'
+      'DoNotEnforce'
+    ])
+    @description('Policy set assignment enforcement mode.  Possible values are { Default, DoNotEnforce }.  Default value:  Default')
+    param enforcementMode string = 'Default'
+
     // Start - Any custom parameters required for your policy set assignment
     param ...
     // End - Any custom parameters required for your policy set assignment
@@ -652,7 +679,7 @@ When there are deployment errors:
           // Add any parameters identified earlier into this section
         }
         // The policy assignment enforcement mode. Possible values are Default and DoNotEnforce.
-        enforcementMode: 'Default'
+        enforcementMode: enforcementMode
       }
       identity: {
         type: 'SystemAssigned'
@@ -686,6 +713,13 @@ When there are deployment errors:
       @description('Management Group scope for the policy assignment.')
       param policyAssignmentManagementGroupId string
 
+      @allowed([
+        'Default'
+        'DoNotEnforce'
+      ])
+      @description('Policy set assignment enforcement mode.  Possible values are { Default, DoNotEnforce }.  Default value:  Default')
+      param enforcementMode string = 'Default'
+
       @description('Log Analytics Workspace Resource Id')
       param logAnalyticsResourceId string
 
@@ -714,7 +748,7 @@ When there are deployment errors:
               value: logAnalyticsWorkspaceId
             }
           }
-          enforcementMode: 'Default'
+          enforcementMode: enforcementMode
         }
         identity: {
           type: 'SystemAssigned'
@@ -771,6 +805,9 @@ When there are deployment errors:
           "policyAssignmentManagementGroupId": {
               "value": "{{var-topLevelManagementGroupName}}"
           },
+          "enforcementMode": {
+              "value": "Default"
+          },
           "EXTRA_POLICY_ASSIGNMENT_PARAMETER_NAME_1": {
               "value": "EXTRA_POLICY_ASSIGNMENT_PARAMETER_VALUE_1"
           },
@@ -793,6 +830,9 @@ When there are deployment errors:
             },
             "policyAssignmentManagementGroupId": {
                 "value": "{{var-topLevelManagementGroupName}}"
+            },
+            "enforcementMode": {
+                "value": "Default"
             },
             "logAnalyticsWorkspaceId": {
                 "value": "{{var-logging-logAnalyticsWorkspaceId}}"
