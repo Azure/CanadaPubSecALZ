@@ -9,7 +9,7 @@
             "value": "{{var-topLevelManagementGroupName}}"
         },
         "enforcementMode": {
-            "value": "DoNotEnforce"
+            "value": "Default"
         },
         "ddosStandardPlanId": {
             "value": "{{var-hubnetworking-ddosStandardPlanId}}"

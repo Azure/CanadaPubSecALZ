@@ -6,7 +6,7 @@
             "value": "{{var-topLevelManagementGroupName}}"
         },
         "enforcementMode": {
-            "value": "DoNotEnforce"
+            "value": "Default"
         },
         "allowedLocations": {
             "value": [
