@@ -15,6 +15,13 @@ param policyDefinitionManagementGroupId string
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
+@allowed([
+  'Default'
+  'DoNotEnforce'
+])
+@description('Policy set assignment enforcement mode.  Possible values are { Default, DoNotEnforce }.  Default value:  Default')
+param enforcementMode string = 'Default'
+
 @description('Private DNS Zone Subscription Id')
 param privateDNSZoneSubscriptionId string
 
@@ -53,7 +60,7 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
         value: privateDNSZoneResourceGroupName
       }
     }
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'

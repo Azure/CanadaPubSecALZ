@@ -8,6 +8,9 @@
         "policyAssignmentManagementGroupId": {
             "value": "{{var-topLevelManagementGroupName}}"
         },
+        "enforcementMode": {
+            "value": "Default"
+        },
         "ddosStandardPlanId": {
             "value": "{{var-hubnetworking-ddosStandardPlanId}}"
         }
