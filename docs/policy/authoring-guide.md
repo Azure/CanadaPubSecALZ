@@ -15,7 +15,7 @@ This reference implementation uses Built-In and Custom Policies to provide guard
   * [Remove built-in policy set assignment](#remove-built-in-policy-set-assignment)
     * [Step 1: Remove built-in policy set assignment from Azure DevOps Pipeline](#step-1-remove-built-in-policy-set-assignment-from-azure-devops-pipeline)
     * [Step 2: Remove built-in policy set assignment's IAM assignments](#step-2-remove-built-in-policy-set-assignments-iam-assignments)
-  * [Disable built-in policy set enforcement](#disable-built-in-policy-set-enforcement)
+  * [Enable or disable built-in policy set enforcement](#enable-or-disable-built-in-policy-set-enforcement)
 * [Custom policies](#custom-policies)
   * [New custom policy definition](#new-custom-policy-definition)
     * [Step 1: Create policy definition template](#step-1-create-policy-definition-template)
@@ -41,7 +41,7 @@ This reference implementation uses Built-In and Custom Policies to provide guard
     * [Step 2: Remove custom policy set assignment](#step-2-remove-custom-policy-set-assignment)
     * [Step 3: Remove custom policy set from Azure DevOps Pipeline](#step-3-remove-custom-policy-set-from-azure-devops-pipeline)
     * [Step 4: Remove custom policy set assignment's IAM assignments](#step-4-remove-custom-policy-set-assignments-iam-assignments)
-  * [Disable custom policy set enforcement](#disable-custom-policy-set-enforcement)
+  * [Enable or disable custom policy set enforcement](#enable-or-disable-custom-policy-set-enforcement)
   * [Auto generate custom Diagnostic Settings policies for PaaS services](#auto-generate-custom-diagnostic-settings-policies-for-paas-services)
 
 ---
@@ -379,7 +379,7 @@ Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment wil
 
 ---
 
-### Disable built-in policy set enforcement
+### Enable or disable built-in policy set enforcement
 
 You may want to evaluate the compliance in your environment without any automatic remediation, either through `DeployIfNotExists` or `modify` policies.  To support this scenario, all policy set assignments support an `enforcementMode` setting.  This can be set to either: `Default` or `DoNotEnforce`:
 
@@ -1016,7 +1016,7 @@ When there are deployment errors:
 
 ---
 
-### Disable custom policy set enforcement
+### Enable or disable custom policy set enforcement
 
 You may want to evaluate the compliance in your environment without any automatic remediation, either through `DeployIfNotExists` or `modify` policies.  To support this scenario, all policy set assignments support an `enforcementMode` setting.  This can be set to either: `Default` or `DoNotEnforce`:
 
