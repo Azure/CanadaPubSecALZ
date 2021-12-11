@@ -5,6 +5,9 @@
         "policyAssignmentManagementGroupId": {
             "value": "{{var-topLevelManagementGroupName}}"
         },
+        "enforcementMode": {
+            "value": "Default"
+        },
         "logAnalyticsWorkspaceId": {
             "value": "{{var-logging-logAnalyticsWorkspaceId}}"
         },
