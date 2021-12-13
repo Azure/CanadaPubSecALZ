@@ -76,7 +76,7 @@ The `sqlmi.enabled` feature flag for SQL Managed Instance deployment:
 Each archetype is intended to be self-contained and provides all deployment templates required to configure a subscription.  Key requirements for each archetype are:
 
 - Archetype folder must start with `lz-` followed by the archetype name.  For example `lz-machinelearning`.
-- Entrypoint for an archetype is `main.bicep`. Every archetype must provide `main.bicep` in it's respective folder.
+- Entrypoint for an archetype is `main.bicep`. Every archetype must provide `main.bicep` in its respective folder.
 - Deployment must be scoped to `subscription`.  Scope is set in `main.bicep` using `targetScope` declaration.
 
     ```bicep
