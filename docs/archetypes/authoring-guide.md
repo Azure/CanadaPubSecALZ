@@ -26,7 +26,7 @@ The goal of this authoring guide is to provide step-by-step instructions to crea
 
 ## Folder structure
 
-Archetypes are located in `landingzones` folder and organized as folder per archetype.  For example:
+Archetypes are located in [`landingzones`](../../landingzones) folder and organized as folder per archetype.  Here are the current archetypes with links to documentation:
 
 - Platform archetypes
   - [`lz-platform-connectivity-hub-azfw`](hubnetwork-azfw.md) - configures a Hub Virtual Network with Azure Firewall.
