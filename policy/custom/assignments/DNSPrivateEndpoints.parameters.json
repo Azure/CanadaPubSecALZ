@@ -8,6 +8,9 @@
         "policyAssignmentManagementGroupId": {
             "value": "{{var-topLevelManagementGroupName}}"
         },
+        "enforcementMode": {
+            "value": "Default"
+        },
         "privateDNSZoneSubscriptionId": {
             "value": "{{var-hubnetwork-subscriptionId}}"
         },
