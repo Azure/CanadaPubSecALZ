@@ -35,7 +35,7 @@ Archetypes are located in [`landingzones`](../../landingzones) folder and organi
 - Spoke archetypes
   - [`lz-generic-subscription`](generic-subscription.md) - configures a subscription for general purpose use.
   - [`lz-healthcare`](healthcare.md) - configures a subscription for healthcare scenarios.
-  - [`lz-machinelearning`](machinelearning.md) - configures a subscription for machine learning .scenarios.
+  - [`lz-machinelearning`](machinelearning.md) - configures a subscription for machine learning scenarios.
 
 ---
 
