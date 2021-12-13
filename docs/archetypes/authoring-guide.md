@@ -1,6 +1,6 @@
 # Archetype Authoring Guide
 
-This reference implementation provides 6 archetypes that can be used as-is or customized further to suit business needs.  Archetypes are self-contained Bicep deployment templates that are used to configure multiple subscriptions.  Archetypes provide the ability to configure new subscriptions with use case specific architecture in a repeatable method. One archetype can be used to configure many subscriptions.
+This reference implementation provides a number of archetypes that can be used as-is or customized further to suit business needs.  Archetypes are self-contained Bicep deployment templates that are used to configure multiple subscriptions.  Archetypes provide the ability to configure new subscriptions with use case specific architecture in a repeatable method. One archetype can be used to configure many subscriptions.
 
 This implementation provides two types of archetypes:  Spoke archetypes & Platform archetypes.  Spoke archetypes are used to configure subscriptions for line of business use cases such as Machine Learning & Healthcare.  Platform archetypes are used to configure shared infrastructure such as Logging, Hub Networking and Firewalls.  Intent of the archetypes is to **provide a repeatable method** for configuring subscriptions.  It offers **consistent deployment experience and supports common scenarios** required by your organization.
 
