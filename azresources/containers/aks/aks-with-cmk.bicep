@@ -13,6 +13,12 @@ param name string
 @description('Azure Kubernetes Service Version.')
 param version string
 
+@description('Azure Kubernetes Service Network Plugin; Kubenet (kubenet) | Azure CNI (azure) .')
+param networkPlugin string
+
+@description('Azure Kubernetes Service Network Policy; for Kubenet: calico | For Azure CNI: azure or calico .')
+param networkPolicy string 
+
 @description('Key/Value pair of tags.')
 param tags object = {}
 
@@ -58,18 +64,18 @@ param dnsPrefix string
 @description('Private DNS Zone Resource Id.')
 param privateDNSZoneId string
 
-// Kubernetes Networking
-@description('Pod CIDR.  Default: 11.0.0.0/16')
-param podCidr string = '11.0.0.0/16'
+// Kubernetes Networking 
+@description('Pod CIDR.')
+param podCidr string 
 
-@description('Service CIDR.  Default: 20.0.0.0/16')
-param serviceCidr string = '20.0.0.0/16'
+@description('Service CIDR.')
+param serviceCidr string
 
-@description('DNS Service IP. Default: 20.0.0.10')
-param dnsServiceIP string = '20.0.0.10'
+@description('DNS Service IP.')
+param dnsServiceIP string
 
-@description('Docker Bridge CIDR.  Default: 30.0.0.1/16')
-param dockerBridgeCidr string = '30.0.0.1/16'
+@description('Docker Bridge CIDR.')
+param dockerBridgeCidr string 
 
 // Container Insights
 @description('Log Analytics Workspace Resource Id.  Default: blank')
@@ -79,7 +85,68 @@ param containerInsightsLogAnalyticsResourceId string = ''
 @description('Enable encryption at host (double encryption).  Default: true')
 param enableEncryptionAtHost bool = true
 
-resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
+// Azure Key Vault
+@description('Azure Key Vault Resource Group Name.  Required when useCMK=true.')
+param akvResourceGroupName string
+
+@description('Azure Key Vault Name.  Required when useCMK=true.')
+param akvName string
+
+var networkProfile =  {
+  networkPlugin: networkPlugin
+  podCidr: podCidr
+  serviceCidr: serviceCidr
+  dnsServiceIP: dnsServiceIP
+  dockerBridgeCidr: dockerBridgeCidr
+  networkPolicy: networkPolicy
+  outboundType: 'userDefinedRouting'
+}
+
+resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
+  scope: resourceGroup(akvResourceGroupName)
+  name: akvName
+}
+
+module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
+  name: 'add-cmk-${name}'
+  scope: resourceGroup(akvResourceGroupName)
+  params: {
+      akvName: akvName
+      keyName: 'cmk-aks-${name}'
+  }
+}
+
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2020-12-01' = {
+  name: '${name}-disk-encryption-set'
+  location: resourceGroup().location
+  identity: {
+      type: 'SystemAssigned'
+  }
+
+  properties: {
+      rotationToLatestKeyVersionEnabled: true
+      encryptionType: 'EncryptionAtRestWithPlatformAndCustomerKeys'
+      activeKey: {
+          keyUrl: akvKey.outputs.keyUriWithVersion
+      }
+  }
+}
+
+module diskEncryptionSetRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-sp.bicep' = {
+  name: 'rbac-${diskEncryptionSet.name}-key-vault'
+  scope: resourceGroup(akvResourceGroupName)
+  params: {
+      keyVaultName: akv.name
+      roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6') // Key Vault Crypto Service Encryption User
+      resourceSPObjectIds: array(diskEncryptionSet.identity.principalId)
+  }
+}
+
+resource aks 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
+  dependsOn: [
+    diskEncryptionSetRoleAssignmentForCMK
+  ]
+
   name: name
   location: resourceGroup().location
   tags: tags
@@ -88,13 +155,7 @@ resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
     kubernetesVersion: version
     dnsPrefix: dnsPrefix
     enableRBAC: true
-    networkProfile: {
-      networkPlugin: 'kubenet'
-      podCidr: podCidr
-      serviceCidr: serviceCidr
-      dnsServiceIP: dnsServiceIP
-      dockerBridgeCidr: dockerBridgeCidr
-    }
+    networkProfile: networkProfile
     agentPoolProfiles: [
       {
         count: systemNodePoolMinNodeCount
@@ -151,6 +212,7 @@ resource akskubenet 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
           enabled: false
       }
     }
+    diskEncryptionSetID: diskEncryptionSet.id
   }
   identity: {
     type: 'UserAssigned'

@@ -32,26 +32,17 @@ This landing is typically used for:
 
 targetScope = 'subscription'
 
+/*
+
+For accepted parameter values, see:
+
+  * Documentation:              docs/archetypes/generic-subscriptions.md
+  * JSON Schema Definition:     schemas/latest/landingzones/lz-generic-subscription.json
+  * JSON Test Cases/Scenarios:  tests/schemas/lz-generic-subscription
+
+*/
+
 // Service Health
-// Example (JSON)
-// -----------------------------
-// "serviceHealthAlerts": {
-//   "value": {
-//     "resourceGroupName": "pubsec-service-health"
-//     "incidentTypes": [ "Incident", "Security", "Maintenance", "Informational", "ActionRequired" ],
-//     "regions": [ "Global", "Canada East", "Canada Central" ],
-//     "receivers": {
-//       "app": [ "email-1@company.com", "email-2@company.com" ],
-//       "email": [ "email-1@company.com", "email-3@company.com", "email-4@company.com" ],
-//       "sms": [ { "countryCode": "1", "phoneNumber": "1234567890" }, { "countryCode": "1",  "phoneNumber": "0987654321" } ],
-//       "voice": [ { "countryCode": "1", "phoneNumber": "1234567890" } ]
-//     },
-//     "actionGroupName": "ALZ action group",
-//     "actionGroupShortName": "alz-alert",
-//     "alertRuleName": "ALZ alert rule",
-//     "alertRuleDescription": "Alert rule for Azure Landing Zone"
-//   }
-// }
 @description('Service Health alerts')
 param serviceHealthAlerts object = {}
 
@@ -60,341 +51,43 @@ param serviceHealthAlerts object = {}
 param logAnalyticsWorkspaceResourceId string
 
 // Microsoft Defender for Cloud
-// Example (JSON)
-// -----------------------------
-// "securityCenter": {
-//   "value": {
-//       "email": "alzcanadapubsec@microsoft.com",
-//       "phone": "5555555555"
-//   }
-// }
-
-// Example (Bicep)
-// -----------------------------
-// {
-//   email: 'alzcanadapubsec@microsoft.com'
-//   phone: '5555555555'
-// }
 @description('Microsoft Defender for Cloud configuration.  It includes email and phone.')
 param securityCenter object
 
 // Subscription Role Assignments
-// Example (JSON)
-// -----------------------------
-// [
-//   {
-//       "comments": "Built-in Contributor Role",
-//       "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-//       "securityGroupObjectIds": [
-//           "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-//       ]
-//   }
-// ]
-
-// Example (Bicep)
-// -----------------------------
-// [
-//   {
-//     comments: 'Built-In Contributor Role'
-//     roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-//     securityGroupObjectIds: [
-//       '38f33f7e-a471-4630-8ce9-c6653495a2ee'
-//     ]
-//   }
-// ]
 @description('Array of role assignments at subscription scope.  The array will contain an object with comments, roleDefinitionId and array of securityGroupObjectIds.')
 param subscriptionRoleAssignments array = []
 
 // Subscription Budget
-// Example (JSON)
-// ---------------------------
-// "subscriptionBudget": {
-//   "value": {
-//       "createBudget": false,
-//       "name": "MonthlySubscriptionBudget",
-//       "amount": 1000,
-//       "timeGrain": "Monthly",
-//       "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
-//   }
-// }
-
-// Example (Bicep)
-// ---------------------------
-// {
-//   createBudget: true
-//   name: 'MonthlySubscriptionBudget'
-//   amount: 1000
-//   timeGrain: 'Monthly'
-//   contactEmails: [
-//     'alzcanadapubsec@microsoft.com'
-//   ]
-// }
 @description('Subscription budget configuration containing createBudget flag, name, amount, timeGrain and array of contactEmails')
 param subscriptionBudget object
 
 // Tags
-// Example (JSON)
-// -----------------------------
-// "subscriptionTags": {
-//   "value": {
-//       "ISSO": "isso-tag"
-//   }
-// }
-
-// Example (Bicep)
-// ---------------------------
-// {
-//   ISSO: 'isso-tag'
-// }
 @description('A set of key/value pairs of tags assigned to the subscription.')
 param subscriptionTags object
 
 // Example (JSON)
-// -----------------------------
-// "resourceTags": {
-//   "value": {
-//       "ClientOrganization": "client-organization-tag",
-//       "CostCenter": "cost-center-tag",
-//       "DataSensitivity": "data-sensitivity-tag",
-//       "ProjectContact": "project-contact-tag",
-//       "ProjectName": "project-name-tag",
-//       "TechnicalContact": "technical-contact-tag"
-//   }
-// }
-
-// Example (Bicep)
-// -----------------------------
-// {
-//   ClientOrganization: 'client-organization-tag'
-//   CostCenter: 'cost-center-tag'
-//   DataSensitivity: 'data-sensitivity-tag'
-//   ProjectContact: 'project-contact-tag'
-//   ProjectName: 'project-name-tag'
-//   TechnicalContact: 'technical-contact-tag'
-// }
 @description('A set of key/value pairs of tags assigned to the resource group and resources.')
 param resourceTags object
 
 // Resource Groups
-// Example (JSON)
-// -----------------------------
-// "resourceGroups": {
-//   "value": {
-//       "automation": "rgAutomation",
-//       "networking": "rgVnet",
-//       "networkWatcher": "NetworkWatcherRG"
-//   }
-// }
-
-// Example (Bicep)
-// -----------------------------
-// {
-//   automation: 'rgAutomation092021W3'
-//   networking: 'rgVnet092021W3'
-//   networkWatcher: 'NetworkWatcherRG'
-// }
 @description('Resource groups required for the achetype.  It includes automation, networking and networkWatcher.')
 param resourceGroups object
 
-// Azure Automation Account
-// Example (JSON)
-// -----------------------------
-// "automation": {
-//   "value": {
-//     "name": "healthAutomation"
-//   }
-// }
+// RecoveryVault
 
-// Example (Bicep)
-// -----------------------------
-// {
-//   name: 'healthAutomation'
-// }
+@description('Azure recovery vault configuration containing enabled flag, and name')
+param backupRecoveryVault object
+
+// Azure Automation Account
+
 @description('Azure Automation Account configuration.  Includes name.')
 param automation object
 
 // Networking
-// Example (JSON)
-// -----------------------------
-// "hubNetwork": {
-//   "value": {
-//       "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
-//       "rfc1918IPRange": "10.18.0.0/22",
-//       "rfc6598IPRange": "100.60.0.0/16",
-//       "egressVirtualApplianceIp": "10.18.0.36"
-//   }
-// }
-
-// Example (Bicep)
-// -----------------------------
-// {
-//   virtualNetworkId: '/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet'
-//   rfc1918IPRange: '10.18.0.0/22'
-//   rfc6598IPRange: '100.60.0.0/16'
-//   egressVirtualApplianceIp: '10.18.0.36'
-// }
 @description('Hub Network configuration that includes virtualNetworkId, rfc1918IPRange, rfc6598IPRange and egressVirtualApplianceIp.')
 param hubNetwork object
 
-// Example (JSON)
-// -----------------------------
-// "network": {
-//   "value": {
-//       "deployVnet": true,
-//
-//       "peerToHubVirtualNetwork": true,
-//       "useRemoteGateway": false,
-//
-//       "name": "vnet",
-//       "dnsServers": [
-//          "10.18.1.4"
-//       ],
-//       "addressPrefixes": [
-//           "10.2.0.0/16"
-//       ],
-//       "subnets": {
-//           "oz": {
-//               "comments": "Foundational Elements Zone (OZ)",
-//               "name": "oz",
-//               "addressPrefix": "10.2.1.0/25",
-//               "nsg": {
-//                   "enabled": true
-//               },
-//               "udr": {
-//                   "enabled": true
-//               }
-//           },
-//           "paz": {
-//               "comments": "Presentation Zone (PAZ)",
-//               "name": "paz",
-//               "addressPrefix": "10.2.2.0/25",
-//               "nsg": {
-//                   "enabled": true
-//               },
-//               "udr": {
-//                   "enabled": true
-//               }
-//           },
-//           "rz": {
-//               "comments": "Application Zone (RZ)",
-//               "name": "rz",
-//               "addressPrefix": "10.2.3.0/25",
-//               "nsg": {
-//                   "enabled": true
-//               },
-//               "udr": {
-//                   "enabled": true
-//               }
-//           },
-//           "hrz": {
-//               "comments": "Data Zone (HRZ)",
-//               "name": "hrz",
-//               "addressPrefix": "10.2.4.0/25",
-//               "nsg": {
-//                   "enabled": true
-//               },
-//               "udr": {
-//                   "enabled": true
-//               }
-//           },
-//           "optional": [
-//               {
-//                   "comments": "App Service",
-//                   "name": "appservice",
-//                   "addressPrefix": "10.2.5.0/25",
-//                   "nsg": {
-//                       "enabled": false
-//                   },
-//                   "udr": {
-//                       "enabled": false
-//                   },
-//                   "delegations": {
-//                       "serviceName": "Microsoft.Web/serverFarms"
-//                   }
-//               }
-//           ]
-//       }
-//   }
-// }
-
-// Example (Bicep)
-// -----------------------------
-// {
-//   deployVnet: true
-//
-//   peerToHubVirtualNetwork: true
-//   useRemoteGateway: false
-//
-//   name: 'vnet'
-//   dnsServers: [
-//     '10.18.1.4'
-//   ]
-//   addressPrefixes: [
-//     '10.2.0.0/16'
-//   ]
-//   subnets: {
-//     oz: {
-//       comments: 'Foundational Elements Zone (OZ)'
-//       name: 'oz'
-//       addressPrefix: '10.2.1.0/25'
-//       nsg: {
-//         enabled: true
-//       }
-//       udr: {
-//         enabled: true
-//       }
-//     }
-//     paz: {
-//       comments: 'Presentation Zone (PAZ)'
-//       name: 'paz'
-//       addressPrefix: '10.2.2.0/25'
-//       nsg: {
-//         enabled: true
-//       }
-//       udr: {
-//         enabled: true
-//       }
-//     }
-//     rz: {
-//       comments: 'Application Zone (RZ)'
-//       name: 'rz'
-//       addressPrefix: '10.2.3.0/25'
-//       nsg: {
-//         enabled: true
-//       }
-//       udr: {
-//         enabled: true
-//       }
-//     }
-//     hrz: {
-//       comments: 'Data Zone (HRZ)'
-//       name: 'hrz'
-//       addressPrefix: '10.2.4.0/25'
-//       nsg: {
-//         enabled: true
-//       }
-//       udr: {
-//         enabled: true
-//       }
-//     }
-//     optional: [
-//       {
-//         comments: 'App Service'
-//         name: 'appservice'
-//         addressPrefix: '10.2.5.0/25'
-//         nsg: {
-//           enabled: false
-//         }
-//         udr: {
-//           enabled: false
-//         }
-//         delegations: {
-//           'serviceName: 'Microsoft.Web/serverFarms'
-//         }
-//       }
-//     ]
-//   }
-// }
 @description('Network configuration for the spoke virtual network.  It includes name, dnsServers, address spaces, vnet peering and subnets.')
 param network object
 
@@ -457,6 +150,23 @@ module automationAccount '../../azresources/automation/automation-account.bicep'
   scope: rgAutomation
   params: {
     automationAccountName: automation.name
+    tags: resourceTags
+  }
+}
+
+// Create Azure backup RecoveryVault Resource Group
+resource backupRgVault 'Microsoft.Resources/resourceGroups@2020-06-01' =if(backupRecoveryVault.enabled) {
+  name: resourceGroups.backupRecoveryVault
+  location: deployment().location
+  tags: resourceTags
+}
+
+//create recovery vault for backup of vms
+module backupVault '../../azresources/management/backup-recovery-vault.bicep'= if(backupRecoveryVault.enabled){
+  name:'deploy-backup-recoveryvault'
+  scope: backupRgVault
+  params:{
+    vaultName: backupRecoveryVault.name
     tags: resourceTags
   }
 }

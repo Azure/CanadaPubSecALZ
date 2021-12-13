@@ -12,6 +12,13 @@ targetScope = 'managementGroup'
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
+@allowed([
+  'Default'
+  'DoNotEnforce'
+])
+@description('Policy set assignment enforcement mode.  Possible values are { Default, DoNotEnforce }.  Default value:  Default')
+param enforcementMode string = 'Default'
+
 @description('A semicolon-separated list of the names of the applications that should be installed. e.g. \'Microsoft SQL Server 2014 (64-bit); Microsoft Visual Studio Code\' or \'Microsoft SQL Server 2014*\' (to match any application starting with \'Microsoft SQL Server 2014\')')
 param installedApplicationsOnWindowsVM string
 
@@ -68,7 +75,7 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
         value: certificateThumbprints
       }
     }
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'

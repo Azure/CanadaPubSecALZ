@@ -12,6 +12,13 @@ targetScope = 'managementGroup'
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
+@allowed([
+  'Default'
+  'DoNotEnforce'
+])
+@description('Policy set assignment enforcement mode.  Possible values are { Default, DoNotEnforce }.  Default value:  Default')
+param enforcementMode string = 'Default'
+
 var policyId = '1f3afdf9-d0c9-4c3d-847f-89da613e70a8' // Azure Security Benchmark
 var assignmentName = 'Azure Security Benchmark'
 
@@ -35,7 +42,7 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
     ]
     parameters: {
     }
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'

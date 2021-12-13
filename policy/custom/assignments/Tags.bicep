@@ -15,6 +15,13 @@ param policyDefinitionManagementGroupId string
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
+@allowed([
+  'Default'
+  'DoNotEnforce'
+])
+@description('Policy set assignment enforcement mode.  Possible values are { Default, DoNotEnforce }.  Default value:  Default')
+param enforcementMode string = 'Default'
+
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
 
 // Tags Inherited from Resource Groups
@@ -36,7 +43,7 @@ resource rgInheritedPolicySetAssignment 'Microsoft.Authorization/policyAssignmen
     scope: scope
     notScopes: []
     parameters: {}
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'
@@ -66,7 +73,7 @@ resource rgRequiredPolicySetAssignment 'Microsoft.Authorization/policyAssignment
     scope: scope
     notScopes: []
     parameters: {}
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'
@@ -86,7 +93,7 @@ resource resourcesAuditPolicySetAssignment 'Microsoft.Authorization/policyAssign
     scope: scope
     notScopes: []
     parameters: {}
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'

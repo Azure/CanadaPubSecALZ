@@ -15,6 +15,13 @@ param policyDefinitionManagementGroupId string
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
+@allowed([
+  'Default'
+  'DoNotEnforce'
+])
+@description('Policy set assignment enforcement mode.  Possible values are { Default, DoNotEnforce }.  Default value:  Default')
+param enforcementMode string = 'Default'
+
 @description('Azure DDOS Standard Plan Resource Id.')
 param ddosStandardPlanId string
 
@@ -43,7 +50,7 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
         value: ddosStandardPlanId
       }
     }
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'

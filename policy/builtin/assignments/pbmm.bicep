@@ -12,6 +12,13 @@ targetScope = 'managementGroup'
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
+@allowed([
+  'Default'
+  'DoNotEnforce'
+])
+@description('Policy set assignment enforcement mode.  Possible values are { Default, DoNotEnforce }.  Default value:  Default')
+param enforcementMode string = 'Default'
+
 @description('Log Analytics Resource Id to integrate Microsoft Defender for Cloud.')
 param logAnalyticsWorkspaceId string
 
@@ -53,7 +60,7 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
         value: listOfMembersToIncludeInWindowsVMAdministratorsGroup
        }
     }
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'
