@@ -4,6 +4,9 @@
     "parameters": {
         "policyAssignmentManagementGroupId": {
             "value": "{{var-topLevelManagementGroupName}}"
+        },
+        "enforcementMode": {
+            "value": "Default"
         }
     }
 }

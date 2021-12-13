@@ -44,7 +44,7 @@ Azure DevOps Pipeline ([.pipelines/policy.yml](../../.pipelines/policy.yml)) is 
         workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
 ```
 
-All policy set assignments are at the `pubsec` top level management group.  This top level management group is retrieved from configuration parameter `var-topLevelManagementGroupName`.  See [Onboarding Guide for Azure DevOps](../onboarding/ado.md) for instructions to setting up management groups & policy pipeline.
+All policy set assignments are at the `pubsec` top level management group.  This top level management group is retrieved from configuration parameter `var-topLevelManagementGroupName`.  See the [Azure DevOps Pipelines](../onboarding/azure-devops-pipelines.md) onboarding guide for instructions to setting up management groups & policy pipeline.
 
 | Policy Set | Description | Deployment Template | Configuration |
 | --- | --- | --- | --- |
@@ -53,7 +53,7 @@ All policy set assignments are at the `pubsec` top level management group.  This
 | [NIST SP 800-53 Revision 5][nist80053R5policySet] | This initiative includes policies that address a subset of NIST SP 800-53 Rev. 5 controls. | [nist80053r5.bicep](../../policy/builtin/assignments/nist80053r5.bicep) | [nist80053r5.parameters.json](../../policy/builtin/assignments/nist80053r5.parameters.json) |
 | [Azure Security Benchmark][asbPolicySet] | The Azure Security Benchmark initiative represents the policies and controls implementing security recommendations defined in Azure Security Benchmark, see https://aka.ms/azsecbm. This also serves as the Microsoft Defender for Cloud default policy initiative. | [asb.bicep](../../policy/builtin/assignments/asb.bicep) | [asb.parameters.json](../../policy/builtin/assignments/asb.parameters.json) |
 | [CIS Microsoft Azure Foundations Benchmark 1.3.0][cisMicrosoftAzureFoundationPolicySet] | This initiative includes policies that address a subset of CIS Microsoft Azure Foundations Benchmark recommendations. | [cis-msft-130.bicep](../../policy/builtin/assignments/cis-msft-130.bicep) | [cis-msft-130.parameters.json](../../policy/builtin/assignments/cis-msft-130.parameters.json) |
-|	[FedRAMP Moderate][fedrampmPolicySet] | This initiative includes policies that address a subset of FedRAMP Moderate controls. | [fedramp-moderate.bicep](../../policy/builtin/assignments/fedramp-moderate.bicep) | [fedramp-moderate.parameters.json](../../policy/builtin/assignments/fedramp-moderate.parameters.json) |
+|  [FedRAMP Moderate][fedrampmPolicySet] | This initiative includes policies that address a subset of FedRAMP Moderate controls. | [fedramp-moderate.bicep](../../policy/builtin/assignments/fedramp-moderate.bicep) | [fedramp-moderate.parameters.json](../../policy/builtin/assignments/fedramp-moderate.parameters.json) |
 | [HIPAA / HITRUST 9.2][hipaaHitrustPolicySet] | This initiative includes audit and virtual machine extension deployment policies that address a subset of HITRUST/HIPAA controls. | [hitrust-hipaa.bicep](../../policy/builtin/assignments/hitrust-hipaa.bicep) | [hitrust-hipaa.parameters.json](../../policy/builtin/assignments/hitrust-hipaa.parameters.json)
 | Location | Restrict deployments to Canadian regions. | [location.bicep](../../policy/builtin/assignments/location.bicep) | [location.parameters.json](../../policy/builtin/assignments/location.parameters.json) |
 
@@ -64,7 +64,7 @@ All policy set assignments are at the `pubsec` top level management group.  This
 
 > **Note**: The custom policies & policy sets are used when built-in alternative does not exist.  Automation is regularly revised to use built-in policies and policy sets as new options are made available.
 
-All policies and policy set definitions & assignments are at the `pubsec` top level management group.  This top level management group is retrieved from configuration parameter `var-topLevelManagementGroupName`.  See [Onboarding Guide for Azure DevOps](../onboarding/ado.md) for instructions to setting up management groups & policy pipeline.
+All policies and policy set definitions & assignments are at the `pubsec` top level management group.  This top level management group is retrieved from configuration parameter `var-topLevelManagementGroupName`.  See the [Azure DevOps Pipelines](../onboarding/azure-devops-pipelines.md) onboarding guide for instructions to setting up management groups & policy pipeline.
 
 ### Custom Policy Definitions
 
