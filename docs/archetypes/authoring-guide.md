@@ -1,11 +1,12 @@
 # Archetype Authoring Guide
 
+[Azure landing zones](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/) are the output of a multi-subscription Azure environment that accounts for scale, security governance, networking, and identity. Therefore, deploying an archetype will result in an Azure landing zone that can be enhanced, scaled and refined based on business need.
+
 This reference implementation provides a number of archetypes that can be used as-is or customized further to suit business needs.  Archetypes are self-contained Bicep deployment templates that are used to configure multiple subscriptions.  Archetypes provide the ability to configure new subscriptions with use case specific architecture in a repeatable method. One archetype can be used to configure many subscriptions.
 
 This implementation provides two types of archetypes:  Spoke archetypes & Platform archetypes.  Spoke archetypes are used to configure subscriptions for line of business use cases such as Machine Learning & Healthcare.  Platform archetypes are used to configure shared infrastructure such as Logging, Hub Networking and Firewalls.  Intent of the archetypes is to **provide a repeatable method** for configuring subscriptions.  It offers a **consistent deployment experience and supports common scenarios** required by your organization.
 
-To avoid archetype sprawl, we recommend a **maximum of 3-5 spoke archetypes**.  When there are new capabilities or Azure services to add, consider evolving an existing archetypes through **feature flags**.
-Once an archetype is deployed, the application teams can further modify the deployment for scale or new capabilities using their preferred deployment tools.
+To avoid archetype sprawl, we recommend a **maximum of 3-5 spoke archetypes**.  When there are new capabilities or Azure services to add, consider evolving an existing archetypes through **feature flags**.  Once an archetype is deployed, the application teams can further modify the deployment for scale or new capabilities using their preferred deployment tools.
 
 The goal of this authoring guide is to provide step-by-step instructions to create new and update existing archetypes.
 
