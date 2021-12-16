@@ -337,9 +337,6 @@ module addResourceAccess '../../util/deployment-script.bicep' = {
 }
 
 module akvRoleAssignmentForCMK '../../iam/resource/key-vault-role-assignment-to-sp.bicep' = {
-  dependsOn: [
-    synapse
-  ]
   name: 'rbac-${synapse.name}-key-vault'
   scope: resourceGroup(akvResourceGroupName)
   params: {
