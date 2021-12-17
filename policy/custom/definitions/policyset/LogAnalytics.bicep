@@ -73,7 +73,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           'Microsoft.DBforPostgreSQL/servers'
           'Microsoft.PowerBIDedicated/capacities'
           'Microsoft.Network/publicIPAddresses'
-          'Microsoft.RecoveryServices/vaults'
+         'Microsoft.RecoveryServices/vaults'
           'Microsoft.Cache/redis'
           'Microsoft.Relay/namespaces'
           'Microsoft.Search/searchServices'
@@ -284,18 +284,6 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         ]
         policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/237e0f7e-b0e8-4ec4-ad46-8c12cb66d673'
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Stream Analytics to Log Analytics workspace', ' ', '-'))
-        parameters: {
-          logAnalytics: {
-            value: '[parameters(\'logAnalytics\')]'
-          }
-        }
-      }
-      {
-        groupNames: [
-          'BUILTIN'
-        ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/c717fb0c-d118-4c43-ab3d-ece30ac81fb3'
-        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Recovery Services Vault to Log Analytics workspace for resource specific categories', ' ', '-'))
         parameters: {
           logAnalytics: {
             value: '[parameters(\'logAnalytics\')]'
@@ -776,7 +764,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           'CUSTOM'
         ]
         policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.AzureRecoveryVault-SiteRecovery')
-        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Site Recovery Event to Log Analytics Workspace', ' ', '-'))
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Site Recovery Events to Log Analytics Workspace', ' ', '-'))
         parameters: {
           logAnalytics: {
             value: '[parameters(\'logAnalytics\')]'
