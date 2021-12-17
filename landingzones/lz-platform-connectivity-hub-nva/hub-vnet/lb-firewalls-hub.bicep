@@ -90,12 +90,13 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
         ]
       }
     ]
-    backendAddressPools: [ {
-      name: '${name}-Backend-ext'
-    }
-    {
-      name: '${name}-Backend-int'
-    }
+    backendAddressPools: [
+      {
+        name: '${name}-Backend-ext'
+      }
+      {
+        name: '${name}-Backend-int'
+      }
     ]
     loadBalancingRules: [
       {
