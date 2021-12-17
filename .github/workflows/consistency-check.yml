@@ -1,20 +1,17 @@
-name: Pull Request Check
+name: Consistency Check
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "**.bicep"
-      - "**.json"
+  schedule:
+    - cron: '0 0 * * *'  # every day at midnight
+
 env:
   SCHEMA_FOLDER: schemas/latest/landingzones
   SUBSCRIPTIONS_PATH_FROM_ROOT: config/subscriptions
 
 jobs:
-  pull_request_checks:
-    name: Pull Request Check Job
+  consistency_check:
+    name: Consistency Check Job
     runs-on: ubuntu-latest
 
     steps:
@@ -75,7 +72,7 @@ jobs:
               Get-Content -Raw $_ | Test-Json -SchemaFile $HealthcareSchemaFile
           }
 
-      - name: Validate Bicep Templates
+      - name: Validate Bicep Templates using latest version of Bicep
         shell: bash
         run: |
           az upgrade --all --yes
