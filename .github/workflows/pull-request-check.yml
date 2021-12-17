@@ -78,4 +78,8 @@ jobs:
       - name: Validate Bicep Templates
         shell: bash
         run: |
+          az upgrade --all --yes
+          az bicep upgrade
+          az version
+          az bicep version
           find . -type f -name '*.bicep' | xargs -tn1 az bicep build -f 
