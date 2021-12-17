@@ -49,10 +49,9 @@ resource ascAutoProvision 'Microsoft.Security/autoProvisioningSettings@2017-08-0
 var azureDefenderServices = [
   'Arm'
   'AppServices'
-  'ContainerRegistry'
+  'Containers'
   'Dns'
   'KeyVaults'
-  'KubernetesService'
   'OpenSourceRelationalDatabases'
   'SqlServers'
   'SqlServerVirtualMachines'
