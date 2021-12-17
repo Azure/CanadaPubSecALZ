@@ -771,6 +771,48 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           }
         }
       }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.AzureRecoveryVault-SiteRecovery')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Site Recovery Event to Log Analytics Workspace', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy-asr'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.AzureRecoveryVault-Backup')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Azure Backup Events to Log Analytics Workspace', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy-backup'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
     ]
   }
 }
