@@ -65,7 +65,8 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Azure Machine Learning | Deploys Azure Machine Learning Service. | 
 | Azure Databricks | Deploys an Azure Databricks instance.  *There aren't any parameters for customization.* |
 | Azure Data Factory | Deploys an Azure Data Factory instance with Managed Virtual Network and Managed Integrated Runtime.  *There aren't any parameters for customization.* |
-| Azure Kubernetes Services | Deploys an AKS Cluster that will be used for deploying machine learning models, with option to choose either: Network Plugin: Kubenet + Network Policy: Calico **OR** Network Plugin: Azure CNI + Network Policy: Calico (Network Policy) **OR** Network Plugin: Azure CNI + Network Policy: Azure (Network Policy) .|
+| Azure Kubernetes Services | Deploys an AKS Cluster that will be used for deploying machine learning models, with option to choose either: Network Plugin: Kubenet + Network Policy: Calico **OR** Network Plugin: Azure CNI + Network Policy: Calico (Network Policy) **OR** Network Plugin: Azure CNI + Network Policy: Azure (Network Policy). Optional.|
+| Azure App Service | Deploys an App Service on Linux (container). Optional.
 | Azure Container Registry | Deploys an Azure Container Registry to store machine learning models as container images.  ACR is used when deploying pods to AKS. *There aren't any parameters for customization. |
 | Application Insights | Deploys an Application Insights instance that is used by Azure Machine Learning instance.  *There aren't any parameters for customization.* |
 
@@ -81,6 +82,7 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Machine learning and deployment | Azure Machine Learning - Cloud platform for end-to-end machine learning workflows | Optional – Customer Managed Keys, High Business Impact Workspace | [Azure Docs](https://docs.microsoft.com/azure/machine-learning/overview-what-is-azure-ml) |
 | Machine learning and deployment | Azure Container Registry - Managed private Docker cloud registry | Premium SKU.  Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/container-registry/container-registry-intro) |
 | Machine learning and deployment | Azure Kubernetes Service - Cloud hosted Kubernetes service | Private cluster enabled; Managed identity type; Network plugin set to kubenet.  Optional – Customer Managed Keys for Managed Disks | [Azure Docs](https://docs.microsoft.com/azure/aks/intro-kubernetes) |
+| Machine learning and deployment | Azure App Service on Linux (container) - Cloud hosted web app for model deployment | With App Service Plan SKU default as Premium 1 V3. Virtual network integration | [Azure Docs](https://docs.microsoft.com/en-us/azure/app-service/overview) |
 | SQL Storage | Azure SQL Managed Instance - Cloud database storage enabling lift and shift on-premise application migrations | Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/azure-sql/managed-instance/sql-managed-instance-paas-overview)
 | SQL Storage | Azure SQL Database - Fully managed cloud database engine | Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/azure-sql/database/sql-database-paas-overview) |
 | Key Management | Azure Key Vault - Centralized cloud storage of secrets and keys | Private Endpoint | [Azure Docs](https://docs.microsoft.com/azure/key-vault/general/overview)
@@ -94,7 +96,7 @@ The intended cloud service workflows and data movements for this archetype inclu
 4. Data engineering and transformation tasks can be done with Spark using Azure Databricks. Transformed data would be stored back in the data lake.
 5. Machine learning would be done using Azure Machine Learning.
 6. Models would be containerized and pushed to Azure Container Registry from Azure ML.
-7. Models would be the deployed as services to Azure Kubernetes Service from Container Registry.
+7. Models would be the deployed as services to either Azure Kubernetes Service or App Service from Container Registry.
 8. Secrets and keys would be stored safely in Azure Key Vault.
 9. Monitoring and logging would be through Application Insights.
 
@@ -126,6 +128,7 @@ Once the machine learning archetype is deployed and available to use, access con
 | Azure Storage Account for Azure ML | Network ACL deny | Private endpoint on `blob`, `file` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Data Factory | Public network access disabled, Azure integration runtime with managed virtual network | Private endpoint on `dataFactory` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Kubernetes Service | Private cluster, network profile set with either kubenet or Azure CNI | N/A | `aks`|
+| Azure App Service | Virtual Network integration, public network access disabled | N/A | 'integration' | 
 | Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Application Insights | N/A | N/A | N/A |
 
