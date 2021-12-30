@@ -94,6 +94,11 @@ param hubNetwork object
 //         "comments": "AKS Subnet",
 //         "name": "aks",
 //         "addressPrefix": "10.2.9.0/25"
+//       },
+//       "integration": {
+//         "comments": "Integration Subnet",
+//         "name": "integration",
+//         "addressPrefix": "10.2.10.0/25"
 //       }
 //     }
 //   }
@@ -156,6 +161,11 @@ param hubNetwork object
 //       comments: 'AKS Subnet'
 //       name: 'aks'
 //       addressPrefix: '10.2.9.0/25'
+//     }
+//     integration: {
+//       comments: 'Integration Subnet'
+//       name: 'integration'
+//       addressPrefix: '10.2.10.0/25'
 //     }
 //   }
 // }
@@ -242,6 +252,14 @@ module nsgSqlMi '../../azresources/network/nsg/nsg-sqlmi.bicep' = {
   }
 }
 
+module nsgIntegration '../../azresources/network/nsg/nsg-empty.bicep' = {
+  name: 'deploy-nsg-app-service-integration'
+  params: {
+    name: '${network.subnets.integration.name}Nsg'
+  }
+}
+
+
 // Route Tables
 resource udrOZ 'Microsoft.Network/routeTables@2021-02-01' = {
   name: '${network.subnets.oz.name}Udr'
@@ -300,6 +318,14 @@ module udrDatabricksPrivate '../../azresources/network/udr/udr-databricks-privat
   name: 'deploy-route-table-databricks-private'
   params: {
     name: '${network.subnets.databricksPrivate.name}Udr'
+  }
+}
+
+module udrIntegration '../../azresources/network/udr/udr-custom.bicep' = {
+  name: 'deploy-route-table-app-service-integration'
+  params: {
+    name: '${network.subnets.integration.name}Udr'
+    routes: []
   }
 }
 
@@ -378,6 +404,26 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
             id: udrAKS.id
           }
           privateEndpointNetworkPolicies: 'Disabled'
+        }
+      }
+      {
+        name: network.subnets.integration.name
+        properties: {
+          addressPrefix: network.subnets.integration.addressPrefix
+          networkSecurityGroup: {
+            id: nsgIntegration.outputs.nsgId
+          }
+          routeTable: {
+            id: udrIntegration.outputs.udrId
+          }
+          delegations: [
+            {
+              name: 'app-service-delegation'
+              properties: {
+                serviceName: 'Microsoft.Web/serverFarms'
+              }
+            }
+          ]
         }
       }
       {
@@ -637,6 +683,7 @@ output hrzId string = '${vnet.id}/subnets/${network.subnets.hrz.name}'
 output privateEndpointSubnetId string = '${vnet.id}/subnets/${network.subnets.privateEndpoints.name}'
 output sqlMiSubnetId string = '${vnet.id}/subnets/${network.subnets.sqlmi.name}'
 output aksSubnetId string = '${vnet.id}/subnets/${network.subnets.aks.name}'
+output integrationSubnetId string = '${vnet.id}/subnets/${network.subnets.integration.name}'
 
 output databricksPublicSubnetName string = network.subnets.databricksPublic.name
 output databricksPrivateSubnetName string = network.subnets.databricksPrivate.name

@@ -65,6 +65,10 @@ param keyVault object
 @description('Azure Kubernetes Service configuration.  Includes version.')
 param aks object
 
+// Azure App Service
+@description('Azure App Service configuration.')
+param appservice object
+
 // SQL Database
 @description('SQL Database configuration.  Includes enabled flag and username.')
 param sqldb object
@@ -82,7 +86,7 @@ param aml object
 param hubNetwork object
 
 // Example (JSON)
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks) ')
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, integration) ')
 param network object
 
 // Telemetry - Azure customer usage attribution
@@ -135,6 +139,7 @@ module landingZone 'lz.bicep' = {
     automation: automation
     keyVault: keyVault
     aks: aks
+    appservice: appservice
     sqldb: sqldb
     sqlmi: sqlmi
     aml: aml

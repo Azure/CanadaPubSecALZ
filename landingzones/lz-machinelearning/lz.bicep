@@ -50,6 +50,10 @@ param keyVault object
 @description('Azure Kubernetes Service configuration.  Includes version.')
 param aks object
 
+// Azure App Service
+@description('Azure App Service configuration.')
+param appservice object
+
 // SQL Database
 @description('SQL Database configuration.  Includes enabled flag and username.')
 param sqldb object
@@ -85,6 +89,9 @@ var amlName = 'aml${uniqueString(rgCompute.id)}'
 var acrName = 'acr${uniqueString(rgStorage.id)}'
 var aiName = 'ai${uniqueString(rgMonitor.id)}'
 var storageLoggingName = 'salogging${uniqueString(rgStorage.id)}'
+
+var appServicePlanName = 'asp${uniqueString(rgCompute.id)}'
+var appServiceName = 'as${uniqueString(rgCompute.id)}'
 
 var useDeploymentScripts = useCMK
 
@@ -342,7 +349,7 @@ module databricks '../../azresources/analytics/databricks/main.bicep' = {
   }
 }
 
-module aksCluster '../../azresources/containers/aks/main.bicep' = {
+module aksCluster '../../azresources/containers/aks/main.bicep' = if (aks.enabled) {
   name: 'deploy-aks-${aks.networkPlugin}'
   scope: rgCompute
   params: {
@@ -382,6 +389,38 @@ module aksCluster '../../azresources/containers/aks/main.bicep' = {
     akvName: useCMK ? akv.outputs.akvName : ''
   }
 }
+
+module appServicePlan '../../azresources/compute/web/app-service-plan-linux.bicep' = if (appservice.enabled) {
+  name: 'deploy-app-service-plan'
+  scope: rgCompute
+  params: {
+    name: appServicePlanName
+    skuName: 'P1V3'
+    skuTier: 'Premium'
+
+    tags: resourceTags
+  }
+}
+
+module appService '../../azresources/compute/web/appservice-linux.bicep' = {
+  name: 'deploy-app-service'
+  scope: rgCompute
+  params: {
+    name: appServiceName
+    appServicePlanId: appServicePlan.outputs.planId
+    
+    aiIKey: appInsights.outputs.aiIKey
+
+    storageName: dataLakeMetaData.outputs.storageName
+    storageId: dataLakeMetaData.outputs.storageId
+    
+    vnetIntegrationSubnetId: networking.outputs.integrationSubnetId
+    
+    tags: resourceTags
+  }
+}
+
+
 
 module adf '../../azresources/analytics/adf/main.bicep' = {
   name: 'deploy-adf'

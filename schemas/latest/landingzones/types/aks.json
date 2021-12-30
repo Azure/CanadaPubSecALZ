@@ -11,8 +11,14 @@
                         "type": "object",
                         "additionalProperties": false,
                         "properties": {
+                            "enabled": {
+                                "type": "boolean",
+                                "enum": [
+                                    true
+                                ]
+                            },
                             "version": {
-                                    "type": "string"
+                                "type": "string"
                             },
                             "networkPlugin": {
                                 "type": "string",
@@ -44,6 +50,7 @@
                             }  
                         },   
                         "required": [
+                            "enabled",
                             "version",
                             "networkPlugin",
                             "networkPolicy",
@@ -56,7 +63,13 @@
                         "type": "object",
                         "additionalProperties": false,
                         "properties": {
-                            "version": {
+                        "enabled": {
+                            "type": "boolean",
+                            "enum": [
+                                true
+                            ]
+                        },
+                        "version": {
                                 "type": "string"
                         },
                         "networkPlugin": {
@@ -85,6 +98,7 @@
                         }  
                     },   
                         "required": [
+                            "enabled",
                             "version",
                             "networkPlugin",
                             "networkPolicy",
