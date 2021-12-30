@@ -408,7 +408,7 @@ module appService '../../azresources/compute/web/appservice-linux.bicep' = {
   params: {
     name: appServiceName
     appServicePlanId: appServicePlan.outputs.planId
-    
+    stack: 'PYTHON|3.8'
     aiIKey: appInsights.outputs.aiIKey
 
     storageName: dataLakeMetaData.outputs.storageName
