@@ -402,13 +402,12 @@ module appServicePlan '../../azresources/compute/web/app-service-plan-linux.bice
   }
 }
 
-module appService '../../azresources/compute/web/appservice-linux.bicep' = {
+module appService '../../azresources/compute/web/appservice-linux-container.bicep' = if (appservice.enabled) {
   name: 'deploy-app-service'
   scope: rgCompute
   params: {
     name: appServiceName
     appServicePlanId: appServicePlan.outputs.planId
-    stack: 'PYTHON|3.8'
     aiIKey: appInsights.outputs.aiIKey
 
     storageName: dataLakeMetaData.outputs.storageName

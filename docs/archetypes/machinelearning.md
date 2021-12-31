@@ -376,6 +376,7 @@ This example configures:
     "aks": {
       "value": {
         "version": "1.21.2",
+        "enabled": true,
         "networkPlugin": "kubenet" ,
         "networkPolicy": "calico",
         "podCidr": "11.0.0.0/16",
@@ -397,6 +398,11 @@ This example configures:
       "value": {
         "enabled": true,
         "username": "azadmin"
+      }
+    },
+    "appservice": {
+      "value": {
+        "enabled": true
       }
     },
     "aml": {
@@ -471,6 +477,11 @@ This example configures:
             "comments": "AKS Subnet",
             "name": "aks",
             "addressPrefix": "10.4.9.0/25"
+          }
+          "integration": {
+            "comments": "Integration Subnet",
+            "name": "integration",
+            "addressPrefix": "10.4.10.0/25"
           }
         }
       }
