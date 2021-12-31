@@ -193,7 +193,7 @@
           "integration": {
             "comments": "Integration Subnet",
             "name": "integration",
-            "addressPrefix": "10.1.10.0/25"
+            "addressPrefix": "10.4.10.0/25"
           }
         }
       }
