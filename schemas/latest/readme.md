@@ -4,7 +4,7 @@
 
 ### December 30, 2021
 
-Change in `aks` schema object to support optional deployment of AKS using the `enabled` key as a required field.
+Changed `aks` schema object to support optional deployment of AKS using the `enabled` key as a required field.
 
 **Example**
 ```json
