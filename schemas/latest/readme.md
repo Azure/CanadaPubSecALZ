@@ -6,7 +6,7 @@
 
 Change in `aks` schema object to support optional deployment of AKS using the `enabled` key as a required field.
 
-** Example **
+**Example**
 ```json
 "aks": {
   "value": {
@@ -19,7 +19,7 @@ Added required `integration` subnet as well as the `appservice` object in machin
 
 Added `appservice` schema object to support optional deployment of App Service (for model deployments) using the `enabled` key as a required field.
 
-** Example **
+**Example**
 ```json
 "appservice": {
   "value": {
