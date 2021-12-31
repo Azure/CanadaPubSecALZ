@@ -104,6 +104,10 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
       enableHbiWorkspace: false
     }
 
+    appservice: {
+      enabled: true
+    }
+
     hubNetwork: {
       virtualNetworkId: hubVnetId
       egressVirtualApplianceIp: egressVirtualApplianceIp
@@ -169,6 +173,11 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
           comments: 'AKS Subnet'
           name: 'aks'
           addressPrefix: '10.2.9.0/25'
+        }
+        integration: {
+          comments: 'Integration Subnet'
+          name: 'integration'
+          addressPrefix: '10.2.10.0/25'
         }
       }
     }
