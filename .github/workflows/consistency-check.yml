@@ -75,7 +75,7 @@ jobs:
       - name: Validate Bicep Templates using latest version of Bicep
         shell: bash
         run: |
-          az upgrade --all --yes
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az bicep upgrade
           az version
           az bicep version
