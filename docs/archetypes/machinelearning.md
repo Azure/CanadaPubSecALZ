@@ -406,7 +406,6 @@ This example configures:
         "enabled": true,
         "skuName": "P1V3",
         "skuTier": "Premium"
-        
       }
     },
     "aml": {
