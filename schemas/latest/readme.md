@@ -15,18 +15,20 @@ Changed `aks` schema object to support optional deployment of AKS using the `ena
 }
 ```
 
-Added `appservice` schema object to support optional deployment of App Service (for model deployments) using the `enabled` key as a required field.
+Added `appServiceLinuxContainer` schema object to support optional deployment of App Service (for model deployments) using the `enabled` key as a required field. Sku name and tier are also required fields.
 
 **Example**
 ```json
-"appservice": {
+"appServiceLinuxContainer": {
   "value": {
-    "enabled": true
+    "enabled": true,
+    "skuName": "P1V3",
+    "skuTier": "Premium"
   }
 }
 ```
 
-Added required `integration` subnet as well as the `appservice` object in machine learning schema json file.
+Added required `appService` subnet as well as the `appServiceLinuxContainer` object in machine learning schema json file.
 
 
 ### November 27, 2021

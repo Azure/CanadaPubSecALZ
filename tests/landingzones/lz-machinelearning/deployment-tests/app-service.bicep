@@ -67,7 +67,7 @@ module appService '../../../../azresources/compute/web/appservice-linux-containe
     storageName: dataLakeMetaData.outputs.storageName
     storageId: dataLakeMetaData.outputs.storageId
     
-    vnetIntegrationSubnetId: networking.outputs.integrationSubnetId
+    vnetIntegrationSubnetId: networking.outputs.appServiceSubnetId
   }
 }
 

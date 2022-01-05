@@ -66,8 +66,8 @@ param keyVault object
 param aks object
 
 // Azure App Service
-@description('Azure App Service configuration.')
-param appservice object
+@description('Azure App Service Linux Container configuration.')
+param appServiceLinuxContainer object
 
 // SQL Database
 @description('SQL Database configuration.  Includes enabled flag and username.')
@@ -139,7 +139,7 @@ module landingZone 'lz.bicep' = {
     automation: automation
     keyVault: keyVault
     aks: aks
-    appservice: appservice
+    appServiceLinuxContainer: appServiceLinuxContainer
     sqldb: sqldb
     sqlmi: sqlmi
     aml: aml

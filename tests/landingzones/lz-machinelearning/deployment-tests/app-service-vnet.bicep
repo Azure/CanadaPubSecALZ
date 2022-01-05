@@ -9,17 +9,17 @@
 
 
 
-module nsgIntegration '../../../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsgAppService '../../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-app-service-integration'
   params: {
-    name: 'integrationNsg'
+    name: 'appServiceNsg'
   }
 }
 
-module udrIntegration '../../../../azresources/network/udr/udr-custom.bicep' = {
+module udrAppService '../../../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-app-service-integration'
   params: {
-    name: 'integrationUdr'
+    name: 'appServiceUdr'
     routes: []
   }
 }
@@ -48,10 +48,10 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         properties: {
           addressPrefix: '10.1.9.0/25'
           networkSecurityGroup: {
-            id: nsgIntegration.outputs.nsgId
+            id: nsgAppService.outputs.nsgId
           }
           routeTable: {
-            id: udrIntegration.outputs.udrId
+            id: udrAppService.outputs.udrId
           }
           delegations: [
             {
@@ -98,6 +98,6 @@ module privatezone_datalake_file '../../../../azresources/network/private-dns-zo
 }
 
 output privateEndpointSubnetId string = '${vnet.id}/subnets/pe'
-output integrationSubnetId string = '${vnet.id}/subnets/integration'
+output appServiceSubnetId string = '${vnet.id}/subnets/appService'
 output dataLakeBlobPrivateDnsZoneId string = privatezone_datalake_blob.outputs.privateDnsZoneId
 output dataLakeFilePrivateDnsZoneId string = privatezone_datalake_file.outputs.privateDnsZoneId

@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
     "definitions": {
-      "APPSERVICE": {
+      "APPSERVICELINUXCONTAINER": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -12,7 +12,7 @@
         "required": [
           "value"
         ],
-        "title": "AppService"
+        "title": "AppServiceLinuxContainer"
       },
       "Value": {
         "type": "object",
@@ -21,12 +21,21 @@
           "enabled": {
             "type": "boolean",
             "enum": [
-                true
+                true,
+                false
             ]
+          },
+          "skuName": {
+            "type": "string"
+          },
+          "skuTier": {
+            "type": "string"
           }
         },
         "required": [
-          "enabled"
+          "enabled",
+          "skuName",
+          "skuTier"
         ],
         "title": "Value"
       }

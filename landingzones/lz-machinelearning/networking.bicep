@@ -95,9 +95,9 @@ param hubNetwork object
 //         "name": "aks",
 //         "addressPrefix": "10.2.9.0/25"
 //       },
-//       "integration": {
-//         "comments": "Integration Subnet",
-//         "name": "integration",
+//       "appService": {
+//         "comments": "App Service Subnet",
+//         "name": "appService",
 //         "addressPrefix": "10.2.10.0/25"
 //       }
 //     }
@@ -162,9 +162,9 @@ param hubNetwork object
 //       name: 'aks'
 //       addressPrefix: '10.2.9.0/25'
 //     }
-//     integration: {
-//       comments: 'Integration Subnet'
-//       name: 'integration'
+//     appService: {
+//       comments: 'App Service Subnet'
+//       name: 'appService'
 //       addressPrefix: '10.2.10.0/25'
 //     }
 //   }
@@ -252,10 +252,10 @@ module nsgSqlMi '../../azresources/network/nsg/nsg-sqlmi.bicep' = {
   }
 }
 
-module nsgIntegration '../../azresources/network/nsg/nsg-empty.bicep' = {
+module nsgAppService '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-app-service-integration'
   params: {
-    name: '${network.subnets.integration.name}Nsg'
+    name: '${network.subnets.appService.name}Nsg'
   }
 }
 
@@ -321,10 +321,10 @@ module udrDatabricksPrivate '../../azresources/network/udr/udr-databricks-privat
   }
 }
 
-module udrIntegration '../../azresources/network/udr/udr-custom.bicep' = {
+module udrAppService '../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-app-service-integration'
   params: {
-    name: '${network.subnets.integration.name}Udr'
+    name: '${network.subnets.appService.name}Udr'
     routes: []
   }
 }
@@ -407,14 +407,14 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         }
       }
       {
-        name: network.subnets.integration.name
+        name: network.subnets.appService.name
         properties: {
-          addressPrefix: network.subnets.integration.addressPrefix
+          addressPrefix: network.subnets.appService.addressPrefix
           networkSecurityGroup: {
-            id: nsgIntegration.outputs.nsgId
+            id: nsgAppService.outputs.nsgId
           }
           routeTable: {
-            id: udrIntegration.outputs.udrId
+            id: udrAppService.outputs.udrId
           }
           delegations: [
             {
@@ -683,7 +683,7 @@ output hrzId string = '${vnet.id}/subnets/${network.subnets.hrz.name}'
 output privateEndpointSubnetId string = '${vnet.id}/subnets/${network.subnets.privateEndpoints.name}'
 output sqlMiSubnetId string = '${vnet.id}/subnets/${network.subnets.sqlmi.name}'
 output aksSubnetId string = '${vnet.id}/subnets/${network.subnets.aks.name}'
-output integrationSubnetId string = '${vnet.id}/subnets/${network.subnets.integration.name}'
+output appServiceSubnetId string = '${vnet.id}/subnets/${network.subnets.appService.name}'
 
 output databricksPublicSubnetName string = network.subnets.databricksPublic.name
 output databricksPrivateSubnetName string = network.subnets.databricksPrivate.name

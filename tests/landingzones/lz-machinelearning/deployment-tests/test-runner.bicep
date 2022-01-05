@@ -104,8 +104,10 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
       enableHbiWorkspace: false
     }
 
-    appservice: {
+    appServiceLinuxContainer: {
       enabled: true
+      skuName: 'P1V3'
+      skuTier: 'Premium'
     }
 
     hubNetwork: {
@@ -174,9 +176,9 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
           name: 'aks'
           addressPrefix: '10.2.9.0/25'
         }
-        integration: {
-          comments: 'Integration Subnet'
-          name: 'integration'
+        appService: {
+          comments: 'App Service Subnet'
+          name: 'appService'
           addressPrefix: '10.2.10.0/25'
         }
       }

@@ -14,7 +14,8 @@
                             "enabled": {
                                 "type": "boolean",
                                 "enum": [
-                                    true
+                                    true,
+                                    false
                                 ]
                             },
                             "version": {
@@ -66,7 +67,8 @@
                         "enabled": {
                             "type": "boolean",
                             "enum": [
-                                true
+                                true,
+                                false
                             ]
                         },
                         "version": {

@@ -51,8 +51,8 @@ param keyVault object
 param aks object
 
 // Azure App Service
-@description('Azure App Service configuration.')
-param appservice object
+@description('Azure App Service Linux Container configuration.')
+param appServiceLinuxContainer object
 
 // SQL Database
 @description('SQL Database configuration.  Includes enabled flag and username.')
@@ -91,7 +91,7 @@ var aiName = 'ai${uniqueString(rgMonitor.id)}'
 var storageLoggingName = 'salogging${uniqueString(rgStorage.id)}'
 
 var appServicePlanName = 'asp${uniqueString(rgCompute.id)}'
-var appServiceName = 'as${uniqueString(rgCompute.id)}'
+var appServiceLinuxContainerName = 'as${uniqueString(rgCompute.id)}'
 
 var useDeploymentScripts = useCMK
 
@@ -390,30 +390,30 @@ module aksCluster '../../azresources/containers/aks/main.bicep' = if (aks.enable
   }
 }
 
-module appServicePlan '../../azresources/compute/web/app-service-plan-linux.bicep' = if (appservice.enabled) {
+module appServicePlan '../../azresources/compute/web/app-service-plan-linux.bicep' = if (appServiceLinuxContainer.enabled) {
   name: 'deploy-app-service-plan'
   scope: rgCompute
   params: {
     name: appServicePlanName
-    skuName: 'P1V3'
-    skuTier: 'Premium'
+    skuName: appServiceLinuxContainer.skuName
+    skuTier: appServiceLinuxContainer.skuTier
 
     tags: resourceTags
   }
 }
 
-module appService '../../azresources/compute/web/appservice-linux-container.bicep' = if (appservice.enabled) {
+module appServiceLC '../../azresources/compute/web/appservice-linux-container.bicep' = if (appServiceLinuxContainer.enabled) {
   name: 'deploy-app-service'
   scope: rgCompute
   params: {
-    name: appServiceName
+    name: appServiceLinuxContainerName
     appServicePlanId: appServicePlan.outputs.planId
     aiIKey: appInsights.outputs.aiIKey
 
     storageName: dataLakeMetaData.outputs.storageName
     storageId: dataLakeMetaData.outputs.storageId
     
-    vnetIntegrationSubnetId: networking.outputs.integrationSubnetId
+    vnetIntegrationSubnetId: networking.outputs.appServiceSubnetId
     
     tags: resourceTags
   }

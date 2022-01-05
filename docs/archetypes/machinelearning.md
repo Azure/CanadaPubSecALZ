@@ -128,8 +128,8 @@ Once the machine learning archetype is deployed and available to use, access con
 | Azure Storage Account for Azure ML | Network ACL deny | Private endpoint on `blob`, `file` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Data Factory | Public network access disabled, Azure integration runtime with managed virtual network | Private endpoint on `dataFactory` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Kubernetes Service | Private cluster, network profile set with either kubenet or Azure CNI | N/A | `aks`|
-| Azure App Service | Virtual Network integration | N/A | `integration` | 
-| Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`|
+| Azure App Service | Virtual Network integration | N/A | `appService` | 
+| Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`|f
 | Azure Application Insights | N/A | N/A | N/A |
 
 This archetype also has the following security features as options for deployment:
@@ -234,7 +234,7 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Automation](../../schemas/latest/landingzones/types/automation.json)
     * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
     * [Azure Kubernetes Service](../../schemas/latest/landingzones/types/aks.json)
-    * [Azure App Service](../../schemas/latest/landingzones/types/appservice.json)
+    * [Azure App Service](../../schemas/latest/landingzones/types/appServiceLinuxContainer.json)
     * [Azure Machine Learning](../../schemas/latest/landingzones/types/aml.json)
     * [Azure Key Vault](../../schemas/latest/landingzones/types/keyVault.json)
     * [Azure SQL Database](../../schemas/latest/landingzones/types/sqldb.json)
@@ -401,9 +401,12 @@ This example configures:
         "username": "azadmin"
       }
     },
-    "appservice": {
+    "appServiceLinuxContainer": {
       "value": {
-        "enabled": true
+        "enabled": true,
+        "skuName": "P1V3",
+        "skuTier": "Premium"
+        
       }
     },
     "aml": {
@@ -479,9 +482,9 @@ This example configures:
             "name": "aks",
             "addressPrefix": "10.4.9.0/25"
           }
-          "integration": {
-            "comments": "Integration Subnet",
-            "name": "integration",
+          "appService": {
+            "comments": "App Service Subnet",
+            "name": "appService",
             "addressPrefix": "10.4.10.0/25"
           }
         }

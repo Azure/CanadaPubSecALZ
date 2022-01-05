@@ -99,9 +99,11 @@
         "dockerBridgeCidr": "30.0.0.1/16"
       }
     },
-    "appservice": {
+    "appServiceLinuxContainer": {
       "value": {
-        "enabled": true
+        "enabled": true,
+        "skuName": "P1V3",
+        "skuTier": "Premium"
       }
     },
     "sqldb": {
@@ -190,9 +192,9 @@
             "name": "aks",
             "addressPrefix": "10.4.9.0/25"
           },
-          "integration": {
-            "comments": "Integration Subnet",
-            "name": "integration",
+          "appService": {
+            "comments": "App Service Subnet",
+            "name": "appService",
             "addressPrefix": "10.4.10.0/25"
           }
         }
