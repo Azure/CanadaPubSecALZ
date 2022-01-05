@@ -44,7 +44,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         }
       }
       {
-        name: 'integration'
+        name: 'appService'
         properties: {
           addressPrefix: '10.1.9.0/25'
           networkSecurityGroup: {
