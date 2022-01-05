@@ -169,7 +169,7 @@ param hubNetwork object
 //     }
 //   }
 // }
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks) ')
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, app service) ')
 param network object
 
 var hubVnetIdSplit = split(hubNetwork.virtualNetworkId, '/')
