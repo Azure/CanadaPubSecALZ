@@ -350,7 +350,7 @@ module databricks '../../azresources/analytics/databricks/main.bicep' = {
 }
 
 module aksCluster '../../azresources/containers/aks/main.bicep' = if (aks.enabled) {
-  name: 'deploy-aks-${aks.networkPlugin}'
+  name: 'deploy-aks-${aks.enabled ? aks.networkPlugin : ''}'
   scope: rgCompute
   params: {
     tags: resourceTags
