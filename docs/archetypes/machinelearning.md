@@ -234,7 +234,7 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Automation](../../schemas/latest/landingzones/types/automation.json)
     * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
     * [Azure Kubernetes Service](../../schemas/latest/landingzones/types/aks.json)
-    * [Azure App Service](../../schemas/latest/landingzones/types/appServiceLinuxContainer.json)
+    * [Azure App Service for Linux Containers](../../schemas/latest/landingzones/types/appServiceLinuxContainer.json)
     * [Azure Machine Learning](../../schemas/latest/landingzones/types/aml.json)
     * [Azure Key Vault](../../schemas/latest/landingzones/types/keyVault.json)
     * [Azure SQL Database](../../schemas/latest/landingzones/types/sqldb.json)
