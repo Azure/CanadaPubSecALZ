@@ -407,7 +407,7 @@ module appServiceLC '../../azresources/compute/web/appservice-linux-container.bi
   scope: rgCompute
   params: {
     name: appServiceLinuxContainerName
-    appServicePlanId: appServicePlan.outputs.planId
+    appServicePlanId: appServiceLinuxContainer.enabled ? appServicePlan.outputs.planId : ''
     aiIKey: appInsights.outputs.aiIKey
 
     storageName: dataLakeMetaData.outputs.storageName
