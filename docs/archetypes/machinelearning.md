@@ -70,7 +70,6 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Azure Container Registry | Deploys an Azure Container Registry to store machine learning models as container images.  ACR is used when deploying pods to AKS. *There aren't any parameters for customization. |
 | Application Insights | Deploys an Application Insights instance that is used by Azure Machine Learning instance.  *There aren't any parameters for customization.* |
 
-> For App Service, the default plan SKU is `Premium` to support private endpoints, which may require a quota increase.
 ## Data Flow
 
 ![Data Flow](../media/architecture/archetype-machinelearning-dataflow.jpg)
@@ -88,6 +87,9 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | SQL Storage | Azure SQL Database - Fully managed cloud database engine | Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/azure-sql/database/sql-database-paas-overview) |
 | Key Management | Azure Key Vault - Centralized cloud storage of secrets and keys | Private Endpoint | [Azure Docs](https://docs.microsoft.com/azure/key-vault/general/overview)
 | Monitoring | Application Insights - Application performance and monitoring cloud service | - | [Azure Docs](https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview)
+
+
+> For App Service, the default plan SKU is `Premium` to support private endpoints, which may require a quota increase.
 
 The intended cloud service workflows and data movements for this archetype include:
 
