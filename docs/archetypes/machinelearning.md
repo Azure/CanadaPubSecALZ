@@ -82,14 +82,14 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Machine learning and deployment | Azure Machine Learning - Cloud platform for end-to-end machine learning workflows | Optional – Customer Managed Keys, High Business Impact Workspace | [Azure Docs](https://docs.microsoft.com/azure/machine-learning/overview-what-is-azure-ml) |
 | Machine learning and deployment | Azure Container Registry - Managed private Docker cloud registry | Premium SKU.  Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/container-registry/container-registry-intro) |
 | Machine learning and deployment | Azure Kubernetes Service - Cloud hosted Kubernetes service | Private cluster enabled; Managed identity type; Network plugin set to kubenet.  Optional – Customer Managed Keys for Managed Disks | [Azure Docs](https://docs.microsoft.com/azure/aks/intro-kubernetes) |
-| Machine learning and deployment | Azure App Service on Linux (container) - Cloud hosted web app for model deployment | With App Service Plan SKU default as Premium 1 V3. Virtual network integration | [Azure Docs](https://docs.microsoft.com/en-us/azure/app-service/overview) |
+| Machine learning and deployment | Azure App Service on Linux (container) - Cloud hosted web app for model deployment | With App Service Plan SKU default as Standard 1. Virtual network integration | [Azure Docs](https://docs.microsoft.com/en-us/azure/app-service/overview) |
 | SQL Storage | Azure SQL Managed Instance - Cloud database storage enabling lift and shift on-premise application migrations | Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/azure-sql/managed-instance/sql-managed-instance-paas-overview)
 | SQL Storage | Azure SQL Database - Fully managed cloud database engine | Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/azure-sql/database/sql-database-paas-overview) |
 | Key Management | Azure Key Vault - Centralized cloud storage of secrets and keys | Private Endpoint | [Azure Docs](https://docs.microsoft.com/azure/key-vault/general/overview)
 | Monitoring | Application Insights - Application performance and monitoring cloud service | - | [Azure Docs](https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview)
 
 
-> For App Service, the default plan SKU is `Premium` to support private endpoints, which may require a quota increase.
+> For App Service, for using the SKU tier `Premium` to support private endpoints, it may require a quota increase.
 
 The intended cloud service workflows and data movements for this archetype include:
 
@@ -409,8 +409,8 @@ This example configures:
     "appServiceLinuxContainer": {
       "value": {
         "enabled": true,
-        "skuName": "P1V3",
-        "skuTier": "Premium"
+        "skuName": "S1",
+        "skuTier": "Standard"
       }
     },
     "aml": {
