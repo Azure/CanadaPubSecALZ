@@ -22,7 +22,7 @@ Added `appServiceLinuxContainer` schema object to support optional deployment of
 "appServiceLinuxContainer": {
   "value": {
     "enabled": true,
-    "skuName": "P1V3",
+    "skuName": "P1V2",
     "skuTier": "Premium"
   }
 }
