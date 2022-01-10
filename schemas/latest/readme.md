@@ -2,6 +2,35 @@
 
 ## Landing Zone Schemas
 
+### December 30, 2021
+
+Changed `aks` schema object to support optional deployment of AKS using the `enabled` key as a required field.
+
+**Example**
+```json
+"aks": {
+  "value": {
+    "enabled": true
+  }
+}
+```
+
+Added `appServiceLinuxContainer` schema object to support optional deployment of App Service (for model deployments) using the `enabled` key as a required field. Sku name and tier are also required fields.
+
+**Example**
+```json
+"appServiceLinuxContainer": {
+  "value": {
+    "enabled": true,
+    "skuName": "P1V2",
+    "skuTier": "Premium"
+  }
+}
+```
+
+Added required `appService` subnet as well as the `appServiceLinuxContainer` object in machine learning schema json file.
+
+
 ### November 27, 2021
 
 Change in `aks` schema object to support Options for the creation of AKS Cluster with one of the following three scenarios:

@@ -65,7 +65,8 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Azure Machine Learning | Deploys Azure Machine Learning Service. | 
 | Azure Databricks | Deploys an Azure Databricks instance.  *There aren't any parameters for customization.* |
 | Azure Data Factory | Deploys an Azure Data Factory instance with Managed Virtual Network and Managed Integrated Runtime.  *There aren't any parameters for customization.* |
-| Azure Kubernetes Services | Deploys an AKS Cluster that will be used for deploying machine learning models, with option to choose either: Network Plugin: Kubenet + Network Policy: Calico **OR** Network Plugin: Azure CNI + Network Policy: Calico (Network Policy) **OR** Network Plugin: Azure CNI + Network Policy: Azure (Network Policy) .|
+| Azure Kubernetes Services | Deploys an AKS Cluster that will be used for deploying machine learning models, with option to choose either: Network Plugin: Kubenet + Network Policy: Calico **OR** Network Plugin: Azure CNI + Network Policy: Calico (Network Policy) **OR** Network Plugin: Azure CNI + Network Policy: Azure (Network Policy). Optional.|
+| Azure App Service | Deploys an App Service on Linux (container). Optional.
 | Azure Container Registry | Deploys an Azure Container Registry to store machine learning models as container images.  ACR is used when deploying pods to AKS. *There aren't any parameters for customization. |
 | Application Insights | Deploys an Application Insights instance that is used by Azure Machine Learning instance.  *There aren't any parameters for customization.* |
 
@@ -81,10 +82,14 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Machine learning and deployment | Azure Machine Learning - Cloud platform for end-to-end machine learning workflows | Optional – Customer Managed Keys, High Business Impact Workspace | [Azure Docs](https://docs.microsoft.com/azure/machine-learning/overview-what-is-azure-ml) |
 | Machine learning and deployment | Azure Container Registry - Managed private Docker cloud registry | Premium SKU.  Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/container-registry/container-registry-intro) |
 | Machine learning and deployment | Azure Kubernetes Service - Cloud hosted Kubernetes service | Private cluster enabled; Managed identity type; Network plugin set to kubenet.  Optional – Customer Managed Keys for Managed Disks | [Azure Docs](https://docs.microsoft.com/azure/aks/intro-kubernetes) |
+| Machine learning and deployment | Azure App Service on Linux (container) - Cloud hosted web app for model deployment | With App Service Plan SKU default as Premium 1 V2. Virtual network integration | [Azure Docs](https://docs.microsoft.com/en-us/azure/app-service/overview) |
 | SQL Storage | Azure SQL Managed Instance - Cloud database storage enabling lift and shift on-premise application migrations | Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/azure-sql/managed-instance/sql-managed-instance-paas-overview)
 | SQL Storage | Azure SQL Database - Fully managed cloud database engine | Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/azure-sql/database/sql-database-paas-overview) |
 | Key Management | Azure Key Vault - Centralized cloud storage of secrets and keys | Private Endpoint | [Azure Docs](https://docs.microsoft.com/azure/key-vault/general/overview)
 | Monitoring | Application Insights - Application performance and monitoring cloud service | - | [Azure Docs](https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview)
+
+
+> For App Service, for using the SKU tier `Premium` to support private endpoints, it may require a quota increase.
 
 The intended cloud service workflows and data movements for this archetype include:
 
@@ -94,7 +99,7 @@ The intended cloud service workflows and data movements for this archetype inclu
 4. Data engineering and transformation tasks can be done with Spark using Azure Databricks. Transformed data would be stored back in the data lake.
 5. Machine learning would be done using Azure Machine Learning.
 6. Models would be containerized and pushed to Azure Container Registry from Azure ML.
-7. Models would be the deployed as services to Azure Kubernetes Service from Container Registry.
+7. Models would be the deployed as services to either Azure Kubernetes Service or App Service from Container Registry.
 8. Secrets and keys would be stored safely in Azure Key Vault.
 9. Monitoring and logging would be through Application Insights.
 
@@ -126,7 +131,8 @@ Once the machine learning archetype is deployed and available to use, access con
 | Azure Storage Account for Azure ML | Network ACL deny | Private endpoint on `blob`, `file` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Data Factory | Public network access disabled, Azure integration runtime with managed virtual network | Private endpoint on `dataFactory` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Kubernetes Service | Private cluster, network profile set with either kubenet or Azure CNI | N/A | `aks`|
-| Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`|
+| Azure App Service | Virtual Network integration | N/A | `appService` | 
+| Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`|f
 | Azure Application Insights | N/A | N/A | N/A |
 
 This archetype also has the following security features as options for deployment:
@@ -178,6 +184,7 @@ The scripts are:
 2. Azure ML terminal connection to ACR test
 3. Databricks integration with Key Vault, SQL MI, SQL Database, Data Lake test
 4. Azure ML deployment through ACR to AKS test
+5. Azure ML deployment through ACR (using `model.package()`) to App Service test
 
 ### Test Scenarios
 
@@ -203,11 +210,18 @@ The scripts are:
 3. Create a new Databricks notebook in the workspace and copy in the integration test script
 4. Run the test script to verify connectivity to Key Vault, SQL DB/MI, and data lake
 
-**Azure ML deployment test**
+**Azure ML deployment test to AKS**
 
 1. Access the ML network and log into Azure ML through https://ml.azure.com
 2. Set up a compute instance and import the provided tests to the workspace
 3. Run the test script, which will build a Docker Azure ML model image, push it to ACR, and then AKS to pull and run the ML model
+
+**Azure ML deployment test to App Service**
+1. Access the ML network and log into Azure ML through https://ml.azure.com
+2. Set up a compute instance and import the provided tests to the workspace
+3. Run the test script to build a Docker Azure ML model image and push it to ACR using `model.package()`
+4. Ensure that the app service has `arcpull` permission for ACR
+5. Run the Azure CLI script to configure app service and run the container of the model service on App Service (Linux container)
 
 ## Azure Deployment
 
@@ -231,6 +245,7 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Automation](../../schemas/latest/landingzones/types/automation.json)
     * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
     * [Azure Kubernetes Service](../../schemas/latest/landingzones/types/aks.json)
+    * [Azure App Service for Linux Containers](../../schemas/latest/landingzones/types/appServiceLinuxContainer.json)
     * [Azure Machine Learning](../../schemas/latest/landingzones/types/aml.json)
     * [Azure Key Vault](../../schemas/latest/landingzones/types/keyVault.json)
     * [Azure SQL Database](../../schemas/latest/landingzones/types/sqldb.json)
@@ -252,9 +267,11 @@ Reference implementation uses parameter files with `object` parameters to consol
 | Deployment with SQL DB using SQL authentication | [tests/schemas/lz-machinelearning/SQLDB-sqlAuth.json](../../tests/schemas/lz-machinelearning/SQLDB-sqlAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
 | Deployment with SQL DB using mixed mode authentication | [tests/schemas/lz-machinelearning/SQLDB-mixedAuth.json](../../tests/schemas/lz-machinelearning/SQLDB-mixedAuth.json) | `parameters.sqldb.value.aadAuthenticationOnly` is false,  `parameters.sqldb.value.aad*` fields filled in & `parameters.sqldb.value.sqlAuthenticationUsername` filled in. |
 | Deployment without customer managed keys | [tests/schemas/lz-machinelearning/WithoutCMK.json](../../tests/schemas/lz-machinelearning/WithoutCMK.json) | `parameters.useCMK.value` is false. |
+| Deployment without AKS | [tests/schemas/lz-machinelearning/AKSIsFalse.json](../../tests/schemas/lz-machinelearning/AKSIsFalse.json) | `parameters.aks.value.enabled` is false. |
 | Deployment with AKS using Network Plugin: Kubenet + Network Policy: Calico | [tests/schemas/lz-machinelearning/AKS-Kubenet-Calico.json](../../tests/schemas/lz-machinelearning/AKS-Kubenet-Calico.json) | `parameters.aks.value.networkPlugin`  equals ***kubenet***, `parameters.aks.value.networkPlugin`  equals ***calico***, `parameters.aks.value.podCidr` is filled, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
 | Deployment with AKS using Network Plugin: Azure CNI + Network Policy: Calico | [tests/schemas/lz-machinelearning/AKS-AzureCNI-Calico.json](../../tests/schemas/lz-machinelearning/AKS-AzureCNI-Calico.json) | `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.networkPlugin`  equals ***calico***, `parameters.aks.value.podCidr` is ***empty***, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
 | Deployment with AKS using Network Plugin: Azure CNI + Network Policy: Azure | [tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json](../../tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json) | `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.podCidr` is ***empty***, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
+| Deployment without Azure App Service for Linux Containers | [tests/schemas/lz-machinelearning/AppServiceLinuxContainerIsFalse.json](../../tests/schemas/lz-machinelearning/AppServiceLinuxContainerIsFalse.json) | `parameters.appServiceLinuxContainer.value.enabled` is false. |
 
 ### Example Deployment Parameters
 
@@ -373,6 +390,7 @@ This example configures:
     "aks": {
       "value": {
         "version": "1.21.2",
+        "enabled": true,
         "networkPlugin": "kubenet" ,
         "networkPolicy": "calico",
         "podCidr": "11.0.0.0/16",
@@ -394,6 +412,13 @@ This example configures:
       "value": {
         "enabled": true,
         "username": "azadmin"
+      }
+    },
+    "appServiceLinuxContainer": {
+      "value": {
+        "enabled": true,
+        "skuName": "P1V2",
+        "skuTier": "Premium"
       }
     },
     "aml": {
@@ -468,6 +493,11 @@ This example configures:
             "comments": "AKS Subnet",
             "name": "aks",
             "addressPrefix": "10.4.9.0/25"
+          }
+          "appService": {
+            "comments": "App Service Subnet",
+            "name": "appService",
+            "addressPrefix": "10.4.10.0/25"
           }
         }
       }

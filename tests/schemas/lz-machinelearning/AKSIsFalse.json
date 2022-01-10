@@ -117,14 +117,7 @@
       },
       "aks": {
         "value": {
-          "version": "1.21.2",
-          "enabled": true,
-          "networkPlugin": "azure" ,
-          "networkPolicy": "azure",
-          "podCidr": "",
-          "serviceCidr": "20.0.0.0/16" ,
-          "dnsServiceIP": "20.0.0.10",
-          "dockerBridgeCidr": "30.0.0.1/16"
+          "enabled": false
         }
       },
       "appServiceLinuxContainer": {

@@ -67,6 +67,9 @@
         "aks": {
           "$ref": "types/aks.json#/definitions/AKS"
         },
+        "appServiceLinuxContainer": {
+          "$ref": "types/appServiceLinuxContainer.json#/definitions/APPSERVICELINUXCONTAINER"
+        },
         "sqldb": {
           "$ref": "types/sqldb.json#/definitions/SQLDB"
         },
@@ -95,6 +98,7 @@
         "automation",
         "keyVault",
         "aks",
+        "appServiceLinuxContainer",
         "sqldb",
         "sqlmi",
         "aml",
@@ -247,6 +251,9 @@
         },
         "aks": {
           "$ref": "#/definitions/Subnet"
+        },
+        "appService": {
+          "$ref": "#/definitions/Subnet"
         }
       },
       "required": [
@@ -258,7 +265,8 @@
         "databricksPublic",
         "databricksPrivate",
         "privateEndpoints",
-        "aks"
+        "aks",
+        "appService"
       ],
       "title": "Subnets"
     },

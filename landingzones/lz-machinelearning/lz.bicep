@@ -50,6 +50,10 @@ param keyVault object
 @description('Azure Kubernetes Service configuration.  Includes version.')
 param aks object
 
+// Azure App Service
+@description('Azure App Service Linux Container configuration.')
+param appServiceLinuxContainer object
+
 // SQL Database
 @description('SQL Database configuration.  Includes enabled flag and username.')
 param sqldb object
@@ -66,7 +70,7 @@ param aml object
 @description('Hub Network configuration that includes virtualNetworkId, rfc1918IPRange, rfc6598IPRange, egressVirtualApplianceIp, privateDnsManagedByHub flag, privateDnsManagedByHubSubscriptionId and privateDnsManagedByHubResourceGroupName.')
 param hubNetwork object
 
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks) ')
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, appService) ')
 param network object
 
 var sqldbPassword = sqldb.enabled && !sqldb.aadAuthenticationOnly  ? '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldb.sqlAuthenticationUsername))}' : ''
@@ -85,6 +89,9 @@ var amlName = 'aml${uniqueString(rgCompute.id)}'
 var acrName = 'acr${uniqueString(rgStorage.id)}'
 var aiName = 'ai${uniqueString(rgMonitor.id)}'
 var storageLoggingName = 'salogging${uniqueString(rgStorage.id)}'
+
+var appServicePlanName = 'asp${uniqueString(rgCompute.id)}'
+var appServiceLinuxContainerName = 'as${uniqueString(rgCompute.id)}'
 
 var useDeploymentScripts = useCMK
 
@@ -342,8 +349,8 @@ module databricks '../../azresources/analytics/databricks/main.bicep' = {
   }
 }
 
-module aksCluster '../../azresources/containers/aks/main.bicep' = {
-  name: 'deploy-aks-${aks.networkPlugin}'
+module aksCluster '../../azresources/containers/aks/main.bicep' = if (aks.enabled) {
+  name: 'deploy-aks-${aks.enabled ? aks.networkPlugin : ''}'
   scope: rgCompute
   params: {
     tags: resourceTags
@@ -382,6 +389,37 @@ module aksCluster '../../azresources/containers/aks/main.bicep' = {
     akvName: useCMK ? akv.outputs.akvName : ''
   }
 }
+
+module appServicePlan '../../azresources/compute/web/app-service-plan-linux.bicep' = if (appServiceLinuxContainer.enabled) {
+  name: 'deploy-app-service-plan'
+  scope: rgCompute
+  params: {
+    name: appServicePlanName
+    skuName: appServiceLinuxContainer.skuName
+    skuTier: appServiceLinuxContainer.skuTier
+
+    tags: resourceTags
+  }
+}
+
+module appServiceLC '../../azresources/compute/web/appservice-linux-container.bicep' = if (appServiceLinuxContainer.enabled) {
+  name: 'deploy-app-service'
+  scope: rgCompute
+  params: {
+    name: appServiceLinuxContainerName
+    appServicePlanId: appServiceLinuxContainer.enabled ? appServicePlan.outputs.planId : ''
+    aiIKey: appInsights.outputs.aiIKey
+
+    storageName: dataLakeMetaData.outputs.storageName
+    storageId: dataLakeMetaData.outputs.storageId
+    
+    vnetIntegrationSubnetId: networking.outputs.appServiceSubnetId
+    
+    tags: resourceTags
+  }
+}
+
+
 
 module adf '../../azresources/analytics/adf/main.bicep' = {
   name: 'deploy-adf'

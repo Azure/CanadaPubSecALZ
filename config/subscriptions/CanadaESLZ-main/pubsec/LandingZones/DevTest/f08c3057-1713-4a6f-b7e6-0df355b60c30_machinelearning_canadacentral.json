@@ -90,12 +90,20 @@
     "aks": {
       "value": {
         "version": "1.21.2",
+        "enabled": true,
         "networkPlugin": "kubenet" ,
         "networkPolicy": "calico",
         "podCidr": "11.0.0.0/16",
         "serviceCidr": "20.0.0.0/16" ,
         "dnsServiceIP": "20.0.0.10",
         "dockerBridgeCidr": "30.0.0.1/16"
+      }
+    },
+    "appServiceLinuxContainer": {
+      "value": {
+        "enabled": true,
+        "skuName": "P1V2",
+        "skuTier": "Premium"
       }
     },
     "sqldb": {
@@ -182,6 +190,11 @@
             "comments": "AKS Subnet",
             "name": "aks",
             "addressPrefix": "10.3.9.0/25"
+          },
+          "appService": {
+            "comments": "App Service Subnet",
+            "name": "appService",
+            "addressPrefix": "10.3.10.0/25"
           }
         }
       }

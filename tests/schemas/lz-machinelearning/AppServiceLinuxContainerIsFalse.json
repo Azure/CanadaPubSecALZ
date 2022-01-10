@@ -129,9 +129,7 @@
       },
       "appServiceLinuxContainer": {
         "value": {
-          "enabled": true,
-          "skuName": "P1V2",
-          "skuTier": "Premium"
+          "enabled": false
         }
       },
       "sqldb": {
