@@ -82,7 +82,7 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Machine learning and deployment | Azure Machine Learning - Cloud platform for end-to-end machine learning workflows | Optional – Customer Managed Keys, High Business Impact Workspace | [Azure Docs](https://docs.microsoft.com/azure/machine-learning/overview-what-is-azure-ml) |
 | Machine learning and deployment | Azure Container Registry - Managed private Docker cloud registry | Premium SKU.  Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/container-registry/container-registry-intro) |
 | Machine learning and deployment | Azure Kubernetes Service - Cloud hosted Kubernetes service | Private cluster enabled; Managed identity type; Network plugin set to kubenet.  Optional – Customer Managed Keys for Managed Disks | [Azure Docs](https://docs.microsoft.com/azure/aks/intro-kubernetes) |
-| Machine learning and deployment | Azure App Service on Linux (container) - Cloud hosted web app for model deployment | With App Service Plan SKU default as Standard 1. Virtual network integration | [Azure Docs](https://docs.microsoft.com/en-us/azure/app-service/overview) |
+| Machine learning and deployment | Azure App Service on Linux (container) - Cloud hosted web app for model deployment | With App Service Plan SKU default as Premium 1 V2. Virtual network integration | [Azure Docs](https://docs.microsoft.com/en-us/azure/app-service/overview) |
 | SQL Storage | Azure SQL Managed Instance - Cloud database storage enabling lift and shift on-premise application migrations | Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/azure-sql/managed-instance/sql-managed-instance-paas-overview)
 | SQL Storage | Azure SQL Database - Fully managed cloud database engine | Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/azure-sql/database/sql-database-paas-overview) |
 | Key Management | Azure Key Vault - Centralized cloud storage of secrets and keys | Private Endpoint | [Azure Docs](https://docs.microsoft.com/azure/key-vault/general/overview)
@@ -184,6 +184,7 @@ The scripts are:
 2. Azure ML terminal connection to ACR test
 3. Databricks integration with Key Vault, SQL MI, SQL Database, Data Lake test
 4. Azure ML deployment through ACR to AKS test
+5. Azure ML deployment through ACR (using `model.package()`) to App Service test
 
 ### Test Scenarios
 
@@ -209,11 +210,18 @@ The scripts are:
 3. Create a new Databricks notebook in the workspace and copy in the integration test script
 4. Run the test script to verify connectivity to Key Vault, SQL DB/MI, and data lake
 
-**Azure ML deployment test**
+**Azure ML deployment test to AKS**
 
 1. Access the ML network and log into Azure ML through https://ml.azure.com
 2. Set up a compute instance and import the provided tests to the workspace
 3. Run the test script, which will build a Docker Azure ML model image, push it to ACR, and then AKS to pull and run the ML model
+
+**Azure ML deployment test to App Service**
+1. Access the ML network and log into Azure ML through https://ml.azure.com
+2. Set up a compute instance and import the provided tests to the workspace
+3. Run the test script to build a Docker Azure ML model image and push it to ACR using `model.package()`
+4. Ensure that the app service has `arcpull` permission for ACR
+5. Run the Azure CLI script to configure app service and run the container of the model service on App Service (Linux container)
 
 ## Azure Deployment
 
@@ -409,8 +417,8 @@ This example configures:
     "appServiceLinuxContainer": {
       "value": {
         "enabled": true,
-        "skuName": "S1",
-        "skuTier": "Standard"
+        "skuName": "P1V2",
+        "skuTier": "Premium"
       }
     },
     "aml": {

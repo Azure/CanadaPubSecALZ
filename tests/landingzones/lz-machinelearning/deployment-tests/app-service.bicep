@@ -50,8 +50,8 @@ module appServicePlan '../../../../azresources/compute/web/app-service-plan-linu
   scope: rgCompute
   params: {
     name: 'asp-test'
-    skuName: 'S1'
-    skuTier: 'Standard'
+    skuName: 'P1V2'
+    skuTier: 'Premium'
   }
 }
 

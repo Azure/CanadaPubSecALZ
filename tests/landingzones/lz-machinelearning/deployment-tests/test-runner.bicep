@@ -106,7 +106,7 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
 
     appServiceLinuxContainer: {
       enabled: true
-      skuName: 'P1V3'
+      skuName: 'P1V2'
       skuTier: 'Premium'
     }
 
