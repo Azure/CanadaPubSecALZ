@@ -807,7 +807,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           'CUSTOM'
         ]
         policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Web-sites-app')
-        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Web App to Log Analytics Workspaces', ' ', '-'))
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for App Service to Log Analytics Workspaces', ' ', '-'))
         parameters: {
           logAnalytics: {
             value: '[parameters(\'logAnalytics\')]'
@@ -828,7 +828,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           'CUSTOM'
         ]
         policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Web-sites-functionapp')
-        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Functions to Log Analytics Workspaces', ' ', '-'))
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Function App to Log Analytics Workspaces', ' ', '-'))
         parameters: {
           logAnalytics: {
             value: '[parameters(\'logAnalytics\')]'
