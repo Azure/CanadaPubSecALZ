@@ -375,13 +375,19 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
       }
       {
         groupNames: [
-          'CUSTOM'
+          'BUILTIN'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Logs-Diagnostic-Settings')
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/7f89b1eb-583c-429a-8828-af049802c1d9'
         policyDefinitionReferenceId: toLower(replace('Audit diagnostic setting', ' ', '-'))
         parameters: {
           listOfResourceTypes: {
             value: '[parameters(\'listOfResourceTypesToAuditDiagnosticSettings\')]'
+          }
+          logsEnabled: {
+            value: true
+          }
+          metricsEnabled: {
+            value: false
           }
         }
       }
