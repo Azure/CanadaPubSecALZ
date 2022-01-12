@@ -11,7 +11,7 @@
       },
       {
         "field": "kind",
-        "equals": "functionapp"
+        "in": ["functionapp", "functionapp,linux", "functionapp,linux,container"]
       }
     ]
   },

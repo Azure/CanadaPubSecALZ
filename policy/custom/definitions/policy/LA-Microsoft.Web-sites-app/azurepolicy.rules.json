@@ -11,7 +11,7 @@
       },
       {
         "field": "kind",
-        "equals": "app"
+        "in": ["app", "app,linux", "app,linux,container"]
       }
     ]
   },
