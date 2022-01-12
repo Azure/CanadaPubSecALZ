@@ -88,6 +88,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           //'Microsoft.Compute/virtualMachineScaleSets' Removed since it is not supported
           'Microsoft.Network/virtualNetworks'
           'Microsoft.Network/virtualNetworkGateways'
+          'Microsoft.Web/sites'
         ]
       }
     }
@@ -792,6 +793,48 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           }
           profileName: {
             value: 'setByPolicy-backup'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Web-sites-app')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for App Service to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Web-sites-functionapp')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Function App to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
           }
           azureRegions: {
             value: [
