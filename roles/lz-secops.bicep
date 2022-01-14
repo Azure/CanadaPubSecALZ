@@ -13,8 +13,8 @@ targetScope = 'managementGroup'
 param assignableMgId string
 
 var scope = tenantResourceId('Microsoft.Management/managementGroups', assignableMgId)
-var roleName = 'Custom - Landing Zone Subscription Owner'
-var roleDescription = 'Delegated role for subscription owner generated from subscription Owner role'
+var roleName = 'Custom - Security Operations (SecOps)'
+var roleDescription = 'Security Administrator role with a horizontal view across the entire Azure estate and the Azure Key Vault purge policy.'
 
 // Telemetry - Azure customer usage attribution
 // Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
@@ -33,15 +33,20 @@ resource roleDefn 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' =
     permissions: [
       {
         actions: [
-          '*'
+          '*/read'
+          '*/register/action'
+          'Microsoft.KeyVault/locations/deletedVaults/purge/action'
+          'Microsoft.PolicyInsights/*'
+          'Microsoft.Authorization/policyAssignments/*'
+          'Microsoft.Authorization/policyDefinitions/*'
+          'Microsoft.Authorization/policyExemptions/*'
+          'Microsoft.Authorization/policySetDefinitions/*'
+          'Microsoft.Insights/alertRules/*'
+          'Microsoft.Resources/deployments/*'
+          'Microsoft.Security/*'
+          'Microsoft.Support/*'
         ]
-        notActions: [
-          'Microsoft.Authorization/*/write'
-          'Microsoft.Network/vpnGateways/*'
-          'Microsoft.Network/expressRouteCircuits/*'
-          'Microsoft.Network/routeTables/write'
-          'Microsoft.Network/vpnSites/*'
-        ]
+        notActions: []
         dataActions: []
         notDataActions: []
       }
