@@ -54,5 +54,5 @@ stages:
       parameters:
         description: 'Create Custom Roles'
         workingDir: $(System.DefaultWorkingDirectory)/roles
-        deployTemplates: [la-vminsights-readonly, lz-appowner]
+        deployTemplates: [lz-netops, lz-secops, lz-subowner, lz-appowner, la-vminsights-readonly]
         deployOperation: ${{ variables['deployOperation'] }}
