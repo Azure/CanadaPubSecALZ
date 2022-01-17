@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for SignalR to Log Analytics Workspaces",
+    "mode": "indexed"
+}

@@ -55,6 +55,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           'Microsoft.DataFactory/factories'
           'Microsoft.DataLakeAnalytics/accounts'
           'Microsoft.DataLakeStore/accounts'
+          'Microsoft.EventGrid/systemTopics'
           'Microsoft.EventGrid/eventSubscriptions'
           'Microsoft.EventGrid/topics'
           'Microsoft.EventHub/namespaces'
@@ -1069,6 +1070,111 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         ]
         policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Media-mediaservices')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Media Services to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Devices-IotHubs')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for IoT Hub to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.EventGrid-systemTopics')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Event Grid System Topic to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.EventGrid-topics')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Event Grid Topic to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Relay-namespaces')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Relay to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.SignalRService-SignalR')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for SignalR to Log Analytics Workspaces', ' ', '-'))
         parameters: {
           logAnalytics: {
             value: '[parameters(\'logAnalytics\')]'
