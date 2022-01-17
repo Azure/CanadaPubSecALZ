@@ -99,7 +99,7 @@ resource appservice_linuxcontainer_pe 'Microsoft.Network/privateEndpoints@2020-0
         properties: {
           privateLinkServiceId: app.id
           groupIds: [
-            'azurewebsites'
+            'sites'
           ]
         }
       }
