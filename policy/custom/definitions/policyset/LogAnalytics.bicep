@@ -45,7 +45,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           'Microsoft.ApiManagement/service'
           'Microsoft.Network/applicationGateways'
           'Microsoft.Automation/automationAccounts'
-          'Microsoft.ContainerInstance/containerGroups'
+          // 'Microsoft.ContainerInstance/containerGroups'  # Removed since it doesn't have any logs
           'Microsoft.ContainerRegistry/registries'
           'Microsoft.ContainerService/managedClusters'
           'Microsoft.Batch/batchAccounts'
@@ -1029,27 +1029,6 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         ]
         policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.ApiManagement-service')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for API Management to Log Analytics Workspaces', ' ', '-'))
-        parameters: {
-          logAnalytics: {
-            value: '[parameters(\'logAnalytics\')]'
-          }
-          profileName: {
-            value: 'setByPolicy'
-          }
-          azureRegions: {
-            value: [
-              'canadacentral'
-              'canadaeast'
-            ]
-          }
-        }
-      }
-      {
-        groupNames: [
-          'CUSTOM'
-        ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.ContainerInstance-containerGroups')
-        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Container Instance to Log Analytics Workspaces', ' ', '-'))
         parameters: {
           logAnalytics: {
             value: '[parameters(\'logAnalytics\')]'
