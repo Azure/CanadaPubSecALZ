@@ -49,6 +49,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           'Microsoft.ContainerRegistry/registries'
           'Microsoft.ContainerService/managedClusters'
           'Microsoft.Batch/batchAccounts'
+          'Microsoft.Cdn/profiles'
           'Microsoft.Cdn/profiles/endpoints'
           'Microsoft.CognitiveServices/accounts'
           'Microsoft.DocumentDB/databaseAccounts'
@@ -64,7 +65,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           'Microsoft.HDInsight/clusters'
           'Microsoft.Devices/IotHubs'
           'Microsoft.KeyVault/vaults'
-          //'Microsoft.Network/loadBalancers' # Removed since it doesn't have any logs
+          'Microsoft.Network/loadBalancers'
           'Microsoft.Logic/integrationAccounts'
           'Microsoft.Logic/workflows'
           'Microsoft.DBforMySQL/servers'
@@ -1175,6 +1176,132 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         ]
         policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.SignalRService-SignalR')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for SignalR to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Cdn-profiles-endpoints')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for CDN Endpoint to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Cdn-profiles-frontdoor')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Frontdoor to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Network-expressRouteCircuits')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Express Route Circuit to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Network-loadBalancers')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Load Balancer to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Network-trafficmanagerprofiles')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Traffic Manager to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Network-virtualNetworkGateways')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Virtual Network Gateway to Log Analytics Workspaces', ' ', '-'))
         parameters: {
           logAnalytics: {
             value: '[parameters(\'logAnalytics\')]'
