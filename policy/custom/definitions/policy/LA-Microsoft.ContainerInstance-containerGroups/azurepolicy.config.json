@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Container Instance to Log Analytics Workspaces",
+    "mode": "indexed"
+}

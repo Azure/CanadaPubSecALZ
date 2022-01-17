@@ -91,6 +91,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           'Microsoft.Network/virtualNetworks'
           'Microsoft.Network/virtualNetworkGateways'
           'Microsoft.Web/sites'
+          'Microsoft.Media/mediaservices'
         ]
       }
     }
@@ -1005,6 +1006,69 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         ]
         policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'Microsoft.TimeSeriesInsights-environments-Gen2')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Time Series Insights Gen 2 to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.ApiManagement-service')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for API Management to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.ContainerInstance-containerGroups')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Container Instance to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Media-mediaservices')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Media Services to Log Analytics Workspaces', ' ', '-'))
         parameters: {
           logAnalytics: {
             value: '[parameters(\'logAnalytics\')]'
