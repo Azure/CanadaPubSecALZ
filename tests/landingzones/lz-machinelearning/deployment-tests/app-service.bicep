@@ -10,7 +10,7 @@
 targetScope = 'subscription'
 
 resource rgCompute 'Microsoft.Resources/resourceGroups@2020-06-01' existing = {
-  name: 'testasp234'
+  name: 'testpeenabled'
 }
 
 module appInsights '../../../../azresources/monitor/ai-web.bicep' = {
