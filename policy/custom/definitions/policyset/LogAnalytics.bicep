@@ -70,6 +70,8 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           //'Microsoft.Network/networkInterfaces' # Removed since it doesn't have any logs
           'Microsoft.Network/networkSecurityGroups'
           'Microsoft.Network/bastionHosts'
+          'Microsoft.Kusto/clusters'
+          'Microsoft.DBForMariaDB/servers'
           'Microsoft.DBforPostgreSQL/servers'
           'Microsoft.PowerBIDedicated/capacities'
           'Microsoft.Network/publicIPAddresses'
