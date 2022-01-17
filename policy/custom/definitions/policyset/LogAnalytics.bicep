@@ -49,7 +49,6 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           'Microsoft.ContainerRegistry/registries'
           'Microsoft.ContainerService/managedClusters'
           'Microsoft.Batch/batchAccounts'
-          'Microsoft.Cdn/profiles'
           'Microsoft.Cdn/profiles/endpoints'
           'Microsoft.CognitiveServices/accounts'
           'Microsoft.DocumentDB/databaseAccounts'
