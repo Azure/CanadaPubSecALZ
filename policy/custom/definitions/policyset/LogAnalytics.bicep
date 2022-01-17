@@ -1205,8 +1205,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           }
           azureRegions: {
             value: [
-              'canadacentral'
-              'canadaeast'
+              'global'
             ]
           }
         }
@@ -1268,8 +1267,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           }
           azureRegions: {
             value: [
-              'canadacentral'
-              'canadaeast'
+              'global'
             ]
           }
         }
