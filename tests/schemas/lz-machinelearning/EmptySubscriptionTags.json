@@ -128,7 +128,8 @@
       "value": {
         "enabled": true,
         "skuName": "P1V2",
-        "skuTier": "Premium"
+        "skuTier": "Premium",
+        "enablePrivateEndpoint": true
       }
     },
     "sqldb": {

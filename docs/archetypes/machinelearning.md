@@ -131,7 +131,7 @@ Once the machine learning archetype is deployed and available to use, access con
 | Azure Storage Account for Azure ML | Network ACL deny | Private endpoint on `blob`, `file` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Data Factory | Public network access disabled, Azure integration runtime with managed virtual network | Private endpoint on `dataFactory` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Kubernetes Service | Private cluster, network profile set with either kubenet or Azure CNI | N/A | `aks`|
-| Azure App Service | Virtual Network integration | N/A | `appService` | 
+| Azure App Service | Virtual Network integration. Public network access can be disabled, using private endpoint instead | Private endpoint on `azureWebsites` + DNS registration to either hub or spoke | `appService`, `privateEndpoints` | 
 | Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`|f
 | Azure Application Insights | N/A | N/A | N/A |
 
@@ -272,7 +272,7 @@ Reference implementation uses parameter files with `object` parameters to consol
 | Deployment with AKS using Network Plugin: Azure CNI + Network Policy: Calico | [tests/schemas/lz-machinelearning/AKS-AzureCNI-Calico.json](../../tests/schemas/lz-machinelearning/AKS-AzureCNI-Calico.json) | `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.networkPlugin`  equals ***calico***, `parameters.aks.value.podCidr` is ***empty***, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
 | Deployment with AKS using Network Plugin: Azure CNI + Network Policy: Azure | [tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json](../../tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json) | `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.podCidr` is ***empty***, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
 | Deployment without Azure App Service for Linux Containers | [tests/schemas/lz-machinelearning/AppServiceLinuxContainerIsFalse.json](../../tests/schemas/lz-machinelearning/AppServiceLinuxContainerIsFalse.json) | `parameters.appServiceLinuxContainer.value.enabled` is false. |
-
+| Deployment with Azure App Service for Linux Containers without Private Endpoint| [tests/schemas/lz-machinelearning/AppServiceLinuxContainerPrivateEndpointIsFalse.json](../../tests/schemas/lz-machinelearning/AppServiceLinuxContainerPrivateEndpointIsFalse.json) | `parameters.appServiceLinuxContainer.value.enabled` is true, `parameters.appServiceLinuxContainer.value.sku{Name,Tier}` are filled, and `parameters.appServiceLinuxContainer.value.enablePrivateEndpoint` is false. |
 ### Example Deployment Parameters
 
 This example configures:
@@ -418,7 +418,8 @@ This example configures:
       "value": {
         "enabled": true,
         "skuName": "P1V2",
-        "skuTier": "Premium"
+        "skuTier": "Premium",
+        "enablePrivateEndpoint": true
       }
     },
     "aml": {

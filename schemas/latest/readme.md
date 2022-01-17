@@ -2,6 +2,18 @@
 
 ## Landing Zone Schemas
 
+### January 16, 2021
+Changed `appServiceLinuxContainer` schema object to support optional inbound private endpoint.
+
+**Example**
+```json
+"appServiceLinuxContainer": {
+  "value": {
+    "enablePrivateEndpoint": true
+  }
+}
+```
+
 ### December 30, 2021
 
 Changed `aks` schema object to support optional deployment of AKS using the `enabled` key as a required field.

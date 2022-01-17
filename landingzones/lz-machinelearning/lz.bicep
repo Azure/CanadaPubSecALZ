@@ -414,7 +414,10 @@ module appServiceLC '../../azresources/compute/web/appservice-linux-container.bi
     storageId: dataLakeMetaData.outputs.storageId
     
     vnetIntegrationSubnetId: networking.outputs.appServiceSubnetId
-    
+    enablePrivateEndpoint: appServiceLinuxContainer.enablePrivateEndpoint
+    privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
+    privateZoneId: networking.outputs.asPrivateDnsZoneId
+
     tags: resourceTags
   }
 }

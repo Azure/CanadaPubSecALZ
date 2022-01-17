@@ -68,6 +68,9 @@ module appService '../../../../azresources/compute/web/appservice-linux-containe
     storageId: dataLakeMetaData.outputs.storageId
     
     vnetIntegrationSubnetId: networking.outputs.appServiceSubnetId
+    enablePrivateEndpoint: true
+    privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
+    privateZoneId: networking.outputs.asPrivateDnsZoneId
   }
 }
 
