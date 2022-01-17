@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Time Series Insights Gen 2 to Log Analytics Workspaces",
+    "mode": "indexed"
+}
