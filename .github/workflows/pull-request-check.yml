@@ -78,4 +78,8 @@ jobs:
       - name: Validate Bicep Templates
         shell: bash
         run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+          az bicep upgrade
+          az version
+          az bicep version
           find . -type f -name '*.bicep' | xargs -tn1 az bicep build -f 

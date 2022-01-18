@@ -88,22 +88,6 @@ resource ascAzureDefender 'Microsoft.Authorization/policySetDefinitions@2020-03-
         groupNames: [
           'EXTRA'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/d3d1e68e-49d4-4b56-acff-93cef644b432'
-        policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for container registries to be enabled', ' ', '-'))
-        parameters: {}
-      }
-      {
-        groupNames: [
-          'EXTRA'
-        ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/133047bf-1369-41e3-a3be-74a11ed1395a'
-        policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for Kubernetes to be enabled', ' ', '-'))
-        parameters: {}
-      }
-      {
-        groupNames: [
-          'EXTRA'
-        ]
         policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/1f725891-01c0-420a-9059-4fa46cb770b7'
         policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for Key Vaults to be enabled', ' ', '-'))
         parameters: {}
@@ -170,6 +154,14 @@ resource ascAzureDefender 'Microsoft.Authorization/policySetDefinitions@2020-03-
         ]
         policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/8e86a5b6-b9bd-49d1-8e21-4bb8a0862222'
         policyDefinitionReferenceId: toLower(replace('Configure Azure Defender for servers to be enabled', ' ', '-'))
+        parameters: {}
+      }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/c9ddb292-b203-4738-aead-18e2716e858f'
+        policyDefinitionReferenceId: toLower(replace('Configure Microsoft Defender for Containers to be enabled', ' ', '-'))
         parameters: {}
       }
     ]

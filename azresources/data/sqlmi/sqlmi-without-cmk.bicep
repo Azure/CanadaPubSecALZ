@@ -66,9 +66,6 @@ resource sqlmi 'Microsoft.Sql/managedInstances@2020-11-01-preview' = {
 
   resource sqlmi_securityAlertPolicies 'securityAlertPolicies@2020-11-01-preview' = {
     name: 'Default'
-    dependsOn: [
-      sqlmi
-    ]
     properties: {
       state: 'Enabled'
       emailAccountAdmins: false

@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Function App to Log Analytics Workspaces",
+    "mode": "indexed"
+}
