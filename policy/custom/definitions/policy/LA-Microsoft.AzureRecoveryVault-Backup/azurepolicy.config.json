@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Recovery Vault for Azure Backup Events",
+    "mode": "indexed"
+}

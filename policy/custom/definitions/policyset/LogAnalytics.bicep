@@ -73,7 +73,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           'Microsoft.DBforPostgreSQL/servers'
           'Microsoft.PowerBIDedicated/capacities'
           'Microsoft.Network/publicIPAddresses'
-          'Microsoft.RecoveryServices/vaults'
+         'Microsoft.RecoveryServices/vaults'
           'Microsoft.Cache/redis'
           'Microsoft.Relay/namespaces'
           'Microsoft.Search/searchServices'
@@ -88,6 +88,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           //'Microsoft.Compute/virtualMachineScaleSets' Removed since it is not supported
           'Microsoft.Network/virtualNetworks'
           'Microsoft.Network/virtualNetworkGateways'
+          'Microsoft.Web/sites'
         ]
       }
     }
@@ -294,18 +295,6 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/c717fb0c-d118-4c43-ab3d-ece30ac81fb3'
-        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Recovery Services Vault to Log Analytics workspace for resource specific categories', ' ', '-'))
-        parameters: {
-          logAnalytics: {
-            value: '[parameters(\'logAnalytics\')]'
-          }
-        }
-      }
-      {
-        groupNames: [
-          'BUILTIN'
-        ]
         policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/6c66c325-74c8-42fd-a286-a74b0e2939d8'
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Azure Kubernetes Service to Log Analytics workspace', ' ', '-'))
         parameters: {
@@ -386,13 +375,19 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
       }
       {
         groupNames: [
-          'CUSTOM'
+          'BUILTIN'
         ]
-        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Logs-Diagnostic-Settings')
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/7f89b1eb-583c-429a-8828-af049802c1d9'
         policyDefinitionReferenceId: toLower(replace('Audit diagnostic setting', ' ', '-'))
         parameters: {
           listOfResourceTypes: {
             value: '[parameters(\'listOfResourceTypesToAuditDiagnosticSettings\')]'
+          }
+          logsEnabled: {
+            value: true
+          }
+          metricsEnabled: {
+            value: false
           }
         }
       }
@@ -756,6 +751,90 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         ]
         policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.OperationalInsights-workspaces')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Log Analytics Workspace', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.AzureRecoveryVault-SiteRecovery')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Site Recovery Events to Log Analytics Workspace', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy-asr'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.AzureRecoveryVault-Backup')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Azure Backup Events to Log Analytics Workspace', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy-backup'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Web-sites-app')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for App Service to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Web-sites-functionapp')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Function App to Log Analytics Workspaces', ' ', '-'))
         parameters: {
           logAnalytics: {
             value: '[parameters(\'logAnalytics\')]'

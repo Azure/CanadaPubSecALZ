@@ -1,0 +1,179 @@
+{
+  "if": {
+    "allOf": [
+      {
+        "field": "type",
+        "equals": "Microsoft.RecoveryServices/vaults"
+      },
+      {
+        "field": "location",
+        "in": "[parameters('AzureRegions')]"
+      }
+    ]
+  },
+  "then": {
+    "effect": "deployIfNotExists",
+    "details": {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "existenceCondition": {
+        "allOf": [
+          {
+            "count": {
+              "field": "Microsoft.Insights/diagnosticSettings/logs[*]",
+              "where": {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Insights/diagnosticSettings/logs[*].Category",
+                    "in": [
+                      "AzureSiteRecoveryJobs",
+                      "AzureSiteRecoveryEvents",
+                      "AzureSiteRecoveryReplicatedItems",
+                      "AzureSiteRecoveryReplicationStats",
+                      "AzureSiteRecoveryRecoveryPoints",
+                      "AzureSiteRecoveryReplicationDataUploadRate",
+                      "AzureSiteRecoveryProtectedDiskDataChurn"
+                    ]
+                  },
+                  {
+                    "field": "Microsoft.Insights/diagnosticSettings/logs[*].Enabled",
+                    "equals": "True"
+                  }
+                ]
+              }
+            },
+            "Equals": 7
+          },
+          {
+            "field": "Microsoft.Insights/diagnosticSettings/workspaceId",
+            "matchInsensitively": "[parameters('logAnalytics')]"
+          },
+          {
+            "field": "Microsoft.Insights/diagnosticSettings/logAnalyticsDestinationType",
+            "notEquals": "Dedicated"
+          }
+        ]
+      },
+      "roleDefinitionIds": [
+        "/providers/Microsoft.Authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293",
+        "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa"
+      ],
+      "deployment": {
+        "properties": {
+          "mode": "incremental",
+          "template": {
+            "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+              "diagnosticsSettingNameToUse": {
+                "type": "string"
+              },
+              "resourceName": {
+                "type": "string"
+              },
+              "logAnalytics": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              },
+              "logsEnabled": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "metricsEnabled": {
+                "type": "string"
+              },
+             
+              "profileName": {
+                "type": "string"
+              }
+            },
+            "variables": {},
+            "resources": [
+              {
+                "type": "Microsoft.RecoveryServices/vaults/providers/diagnosticSettings",
+                "apiVersion": "2017-05-01-preview",
+                "name": "[concat(parameters('resourceName'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
+                "location": "[parameters('location')]",
+                "dependsOn": [],
+                "properties": {
+                  "workspaceId": "[parameters('logAnalytics')]",
+                  "metrics": [ {
+                    "category": "AllMetrics",
+                    "enabled": "[parameters('metricsEnabled')]",
+                    "retentionPolicy": {
+                      "enabled": false,
+                      "days": 0
+                    }
+                  }],
+                  "logs": [
+                    {
+                      "category": "AzureSiteRecoveryJobs",
+                      "enabled":"[parameters('logsEnabled')]"
+                    },
+                    {
+                      "category": "AzureSiteRecoveryEvents",
+                      "enabled": "[parameters('logsEnabled')]"
+                    },
+                    {
+                      "category": "AzureSiteRecoveryReplicatedItems",
+                      "enabled":"[parameters('logsEnabled')]"
+                    },
+                    {
+                      "category": "AzureSiteRecoveryReplicationStats",
+                      "enabled": "[parameters('logsEnabled')]"
+                    },
+                    {
+                      "category": "AzureSiteRecoveryRecoveryPoints",
+                      "enabled": "[parameters('logsEnabled')]"
+                    },
+                    {
+                      "category": "AzureSiteRecoveryReplicationDataUploadRate",
+                      "enabled": "[parameters('logsEnabled')]"
+                    },
+                    {
+                      "category": "AzureSiteRecoveryProtectedDiskDataChurn",
+                      "enabled": "[parameters('logsEnabled')]"
+                    }
+                  ]
+                }
+              }
+            ],
+            "outputs": {"policy": {
+              "type": "string",
+              "value": "[concat(parameters('logAnalytics'), 'configured for diagnostic logs for ', ': ', parameters('name'))]"
+            }}
+          },
+          "parameters": {
+            "diagnosticsSettingNameToUse": {
+              "value": "[parameters('diagnosticsSettingNameToUse')]"
+            },
+            "logAnalytics": {
+              "value": "[parameters('logAnalytics')]"
+            },
+            "resourceName": {
+              "value": "[field('name')]"
+            },
+            "location": {
+              "value": "[field('location')]"
+            },
+            "name": {
+              "value": "[field('name')]"
+            },
+            "metricsEnabled": {
+              "value": "[parameters('metricsEnabled')]"
+            },
+            "logsEnabled": {
+              "value": "[parameters('logsEnabled')]"
+            },
+            "profileName": {
+              "value": "[parameters('profileName')]"
+            }
+          }
+        }
+      }
+    }
+  }
+}

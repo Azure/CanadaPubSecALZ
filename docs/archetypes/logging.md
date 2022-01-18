@@ -51,7 +51,6 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
     * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
 
-
 ## Deployment Instructions
 
 Use the [Azure DevOps Pipelines](../onboarding/azure-devops-pipelines.md) onboarding guide to configure this archetype.

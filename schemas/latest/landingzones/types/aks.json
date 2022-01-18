@@ -1,101 +1,130 @@
 {
-  "$schema": "http://json-schema.org/draft-06/schema#", 
-  "definitions": {
-      "AKS": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-              "value": {
-                "oneOf": [
-                    {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                            "version": {
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "definitions": {
+        "AKS": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "value": {
+                    "oneOf": [
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "enum": [
+                                        true
+                                    ]
+                                },
+                                "version": {
                                     "type": "string"
+                                },
+                                "networkPlugin": {
+                                    "type": "string",
+                                    "enum": [
+                                        "azure"
+                                    ]
+                                },
+                                "networkPolicy": {
+                                    "type": "string",
+                                    "enum": [
+                                        "azure",
+                                        "calico"
+                                    ]
+                                },
+                                "podCidr": {
+                                    "type": "string",
+                                    "enum": [
+                                        ""
+                                    ]
+                                },
+                                "serviceCidr": {
+                                    "type": "string"
+                                },
+                                "dnsServiceIP": {
+                                    "type": "string"
+                                },
+                                "dockerBridgeCidr": {
+                                    "type": "string"
+                                }
                             },
-                            "networkPlugin": {
-                                "type": "string",
-                                "enum": [
-                                    "azure"
-                                ]
-                            },
-                            "networkPolicy": {
-                                "type": "string",
-                                "enum": [
-                                    "azure",
-                                    "calico"
-                                ]
-                            },
-                            "podCidr": {
-                                "type": "string",
-                                "enum": [
-                                    ""
-                                ]                                
-                            },
-                            "serviceCidr": {
-                                "type": "string"
-                            },  
-                            "dnsServiceIP": {
-                                "type": "string"
-                            },  
-                            "dockerBridgeCidr": {
-                                "type": "string"
-                            }  
-                        },   
-                        "required": [
-                            "version",
-                            "networkPlugin",
-                            "networkPolicy",
-                            "podCidr",
-                            "serviceCidr",
-                            "dockerBridgeCidr"
-                        ]   
-                    },
-                    {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                            "version": {
-                                "type": "string"
-                        },
-                        "networkPlugin": {
-                            "type": "string",
-                            "enum": [
-                                "kubenet"
+                            "required": [
+                                "enabled",
+                                "version",
+                                "networkPlugin",
+                                "networkPolicy",
+                                "podCidr",
+                                "serviceCidr",
+                                "dockerBridgeCidr"
                             ]
                         },
-                        "networkPolicy": {
-                            "type": "string",
-                            "enum": [
-                                "calico"
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "enum": [
+                                        true
+                                    ]
+                                },
+                                "version": {
+                                    "type": "string"
+                                },
+                                "networkPlugin": {
+                                    "type": "string",
+                                    "enum": [
+                                        "kubenet"
+                                    ]
+                                },
+                                "networkPolicy": {
+                                    "type": "string",
+                                    "enum": [
+                                        "calico"
+                                    ]
+                                },
+                                "podCidr": {
+                                    "type": "string"
+                                },
+                                "serviceCidr": {
+                                    "type": "string"
+                                },
+                                "dnsServiceIP": {
+                                    "type": "string"
+                                },
+                                "dockerBridgeCidr": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "enabled",
+                                "version",
+                                "networkPlugin",
+                                "networkPolicy",
+                                "podCidr",
+                                "serviceCidr",
+                                "dockerBridgeCidr"
                             ]
                         },
-                        "podCidr": {
-                            "type": "string"                            
-                        },
-                        "serviceCidr": {
-                            "type": "string"
-                        },  
-                        "dnsServiceIP": {
-                            "type": "string"
-                        },  
-                        "dockerBridgeCidr": {
-                            "type": "string"
-                        }  
-                    },   
-                        "required": [
-                            "version",
-                            "networkPlugin",
-                            "networkPolicy",
-                            "podCidr",
-                            "serviceCidr",
-                            "dockerBridgeCidr"
-                        ]  
-                    }
-                ]
-            }
-          },
+                        {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "enum": [
+                                        false
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "enabled"
+                            ]
+                        }
+                    ]
+                }
+            },
             "required": [
                 "value"
             ],
