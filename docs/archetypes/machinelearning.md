@@ -133,7 +133,7 @@ Once the machine learning archetype is deployed and available to use, access con
 | Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`|f
 | Azure Application Insights | N/A | N/A | N/A |
 
-> For App Service, private endpoint requires the SKU tier `Premium`: https://docs.microsoft.com/en-us/azure/app-service/networking/private-endpoint so this may require a quota increase.
+> For App Service, private endpoint requires the SKU tier `Premium`: https://docs.microsoft.com/azure/app-service/networking/private-endpoint so this may require a quota increase.
 
 This archetype also has the following security features as options for deployment:
 
