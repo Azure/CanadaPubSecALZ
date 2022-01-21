@@ -18,7 +18,7 @@ parameters:
     values:
       - create
       - what-if
-  - name: managementGroupDeploymentScope
+  - name: policyAssignmentManagementGroupScope
     type: string
   - name: workingDir
     type: string
@@ -45,15 +45,15 @@ steps:
         
         sed -i 's~{{var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix}}~$(var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix)~g' ${{ policy }}.parameters.json
 
-        sed -i 's~{{var-policyAssignmentManagementGroupId}}~${{ parameters.managementGroupDeploymentScope }}~g' ${{ policy }}.parameters.json
+        sed -i 's~{{var-policyAssignmentManagementGroupId}}~${{ parameters.policyAssignmentManagementGroupScope }}~g' ${{ policy }}.parameters.json
 
         cat ${{ policy }}.parameters.json ; echo
 
-        echo "Deploying ${{ policy }}.bicep using ${{ parameters.deployOperation}} operation at ${{ parameters.managementGroupDeploymentScope }} scope ..."
+        echo "Deploying ${{ policy }}.bicep using ${{ parameters.deployOperation}} operation at ${{ parameters.policyAssignmentManagementGroupScope }} scope ..."
 
         az deployment mg ${{ parameters.deployOperation }} \
           --location $(deploymentRegion) \
-          --management-group-id ${{ parameters.managementGroupDeploymentScope }} \
+          --management-group-id ${{ parameters.policyAssignmentManagementGroupScope }} \
           --template-file ${{ policy }}.bicep \
           --parameters ${{ policy }}.parameters.json
         
