@@ -3,15 +3,11 @@
     "allOf": [
       {
         "field": "type",
-        "equals": "Microsoft.Web/sites"
+        "equals": "Microsoft.Kusto/clusters"
       },
       {
         "field": "location",
         "in": "[parameters('AzureRegions')]"
-      },
-      {
-        "field": "kind",
-        "in": ["app", "app,linux", "app,linux,container"]
       }
     ]
   },
@@ -67,7 +63,7 @@
             "variables": {},
             "resources": [
               {
-                "type": "Microsoft.Web/sites/providers/diagnosticSettings",
+                "type": "Microsoft.Kusto/clusters/providers/diagnosticSettings",
                 "apiVersion": "2017-05-01-preview",
                 "name": "[concat(parameters('name'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
                 "location": "[parameters('location')]",
@@ -85,35 +81,35 @@
                   ],
                   "logs": [
                     {
-                      "category": "AppServiceHTTPLogs",
+                      "category": "SucceededIngestion",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServiceConsoleLogs",
+                      "category": "FailedIngestion",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServiceAppLogs",
+                      "category": "IngestionBatching",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServiceAuditLogs",
+                      "category": "Command",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServiceIPSecAuditLogs",
+                      "category": "Query",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServicePlatformLogs",
+                      "category": "TableUsageStatistics",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServiceAntivirusScanAuditLogs",
+                      "category": "TableDetails",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServiceFileAuditLogs",
+                      "category": "Journal",
                       "enabled": "[parameters('logsEnabled')]"
                     }
                   ]

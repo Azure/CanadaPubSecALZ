@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Analysis Service to Log Analytics Workspaces",
+    "mode": "indexed"
+}

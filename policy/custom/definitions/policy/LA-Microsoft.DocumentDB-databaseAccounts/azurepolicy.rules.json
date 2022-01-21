@@ -3,7 +3,7 @@
     "allOf": [
       {
         "field": "type",
-        "equals": "Microsoft.Web/sites"
+        "equals": "Microsoft.DocumentDB/databaseAccounts"
       },
       {
         "field": "location",
@@ -11,7 +11,7 @@
       },
       {
         "field": "kind",
-        "in": ["app", "app,linux", "app,linux,container"]
+        "in": ["GlobalDocumentDB", "MongoDB", "Parse"]
       }
     ]
   },
@@ -67,7 +67,7 @@
             "variables": {},
             "resources": [
               {
-                "type": "Microsoft.Web/sites/providers/diagnosticSettings",
+                "type": "Microsoft.DocumentDB/databaseAccounts/providers/diagnosticSettings",
                 "apiVersion": "2017-05-01-preview",
                 "name": "[concat(parameters('name'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
                 "location": "[parameters('location')]",
@@ -85,35 +85,39 @@
                   ],
                   "logs": [
                     {
-                      "category": "AppServiceHTTPLogs",
+                      "category": "DataPlaneRequests",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServiceConsoleLogs",
+                      "category": "MongoRequests",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServiceAppLogs",
+                      "category": "QueryRuntimeStatistics",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServiceAuditLogs",
+                      "category": "PartitionKeyStatistics",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServiceIPSecAuditLogs",
+                      "category": "PartitionKeyRUConsumption",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServicePlatformLogs",
+                      "category": "ControlPlaneRequests",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServiceAntivirusScanAuditLogs",
+                      "category": "CassandraRequests",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AppServiceFileAuditLogs",
+                      "category": "GremlinRequests",
+                      "enabled": "[parameters('logsEnabled')]"
+                    },
+                    {
+                      "category": "TableApiRequests",
                       "enabled": "[parameters('logsEnabled')]"
                     }
                   ]
