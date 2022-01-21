@@ -89,8 +89,6 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Monitoring | Application Insights - Application performance and monitoring cloud service | - | [Azure Docs](https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview)
 
 
-> For App Service, for using the SKU tier `Premium` to support private endpoints, it may require a quota increase.
-
 The intended cloud service workflows and data movements for this archetype include:
 
 1. Data can be ingested from various sources using Data Factory, which uses managed virtual network for its Azure hosted integration runtime.
@@ -134,6 +132,8 @@ Once the machine learning archetype is deployed and available to use, access con
 | Azure App Service | Virtual Network integration. Public network access can be disabled, using private endpoint instead | Private endpoint on `azureWebsites` + DNS registration to either hub or spoke | `appService`, `privateEndpoints` | 
 | Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`|f
 | Azure Application Insights | N/A | N/A | N/A |
+
+> For App Service, private endpoint requires the SKU tier `Premium`: https://docs.microsoft.com/en-us/azure/app-service/networking/private-endpoint so this may require a quota increase.
 
 This archetype also has the following security features as options for deployment:
 
