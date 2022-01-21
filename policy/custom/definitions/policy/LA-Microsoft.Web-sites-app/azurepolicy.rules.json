@@ -107,6 +107,14 @@
                     {
                       "category": "AppServicePlatformLogs",
                       "enabled": "[parameters('logsEnabled')]"
+                    },
+                    {
+                      "category": "AppServiceAntivirusScanAuditLogs",
+                      "enabled": "[parameters('logsEnabled')]"
+                    },
+                    {
+                      "category": "AppServiceFileAuditLogs",
+                      "enabled": "[parameters('logsEnabled')]"
                     }
                   ]
                 }
