@@ -157,6 +157,7 @@ Parameters can be templated using the syntax `{{PARAMETER_NAME}}`.  Following pa
 | {{var-logging-logAnalyticsResourceGroupName}} | Environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml)  | `pubsec-central-logging-rg`
 | {{var-logging-logAnalyticsRetentionInDays}} | Environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml) | `730`
 | {{var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix}} | Environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml)  | `pubsecnsg`
+| {{var-policyAssignmentManagementGroupId}} | The management group scope for policy assignment. | `pubsec`
 
 ---
 
