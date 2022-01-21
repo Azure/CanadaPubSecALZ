@@ -10,7 +10,7 @@
 targetScope = 'subscription'
 
 resource rgCompute 'Microsoft.Resources/resourceGroups@2020-06-01' existing = {
-  name: 'testasp234'
+  name: 'testpeenablednot'
 }
 
 module appInsights '../../../../azresources/monitor/ai-web.bicep' = {
@@ -68,6 +68,9 @@ module appService '../../../../azresources/compute/web/appservice-linux-containe
     storageId: dataLakeMetaData.outputs.storageId
     
     vnetIntegrationSubnetId: networking.outputs.appServiceSubnetId
+    enablePrivateEndpoint: false
+    privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
+    privateZoneId: networking.outputs.asPrivateDnsZoneId
   }
 }
 

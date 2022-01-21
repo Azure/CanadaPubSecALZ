@@ -28,6 +28,16 @@ param aiIKey string
 @description('Virtual Network Integration Subnet Resource Id.')
 param vnetIntegrationSubnetId string
 
+@description('Whether to deploy private endpoint for inbound traffic')
+param enablePrivateEndpoint bool
+
+@description('Private DNS Zone Resource Id.')
+param privateZoneId string
+
+@description('Private endpoint subnet ID')
+param privateEndpointSubnetId string
+
+
 // Linux Web App with Virtual Network Integration
 resource app 'Microsoft.Web/sites@2021-02-01' = {
   name: name
@@ -71,6 +81,42 @@ resource app 'Microsoft.Web/sites@2021-02-01' = {
     properties: {
       subnetResourceId: vnetIntegrationSubnetId
       swiftSupported: true
+    }
+  }
+}
+
+
+resource appservice_linuxcontainer_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (enablePrivateEndpoint) {
+  location: resourceGroup().location
+  name: '${app.name}-endpoint'
+  properties: {
+    subnet: {
+      id: privateEndpointSubnetId
+    }
+    privateLinkServiceConnections: [
+      {
+        name: '${app.name}-endpoint'
+        properties: {
+          privateLinkServiceId: app.id
+          groupIds: [
+            'sites'
+          ]
+        }
+      }
+    ]
+  }
+
+  resource appservice_pe_dns_reg 'privateDnsZoneGroups@2020-06-01' = {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: 'privatelink_azure_websites_net'
+          properties: {
+            privateDnsZoneId: privateZoneId
+          }
+        }
+      ]
     }
   }
 }
