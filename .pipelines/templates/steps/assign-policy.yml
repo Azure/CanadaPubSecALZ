@@ -18,6 +18,8 @@ parameters:
     values:
       - create
       - what-if
+  - name: managementGroupDeploymentScope
+    type: string
   - name: workingDir
     type: string
   
@@ -45,11 +47,11 @@ steps:
 
         cat ${{ policy }}.parameters.json ; echo
 
-        echo "Deploying ${{ policy }}.bicep using ${{ parameters.deployOperation}} operation..."
+        echo "Deploying ${{ policy }}.bicep using ${{ parameters.deployOperation}} operation at ${{ parameters.managementGroupDeploymentScope }} scope ..."
 
         az deployment mg ${{ parameters.deployOperation }} \
           --location $(deploymentRegion) \
-          --management-group-id $(var-topLevelManagementGroupName) \
+          --management-group-id ${{ parameters.managementGroupDeploymentScope }} \
           --template-file ${{ policy }}.bicep \
           --parameters ${{ policy }}.parameters.json
         
