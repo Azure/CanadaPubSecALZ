@@ -108,6 +108,7 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
       enabled: true
       skuName: 'P1V2'
       skuTier: 'Premium'
+      enablePrivateEndpoint: true
     }
 
     hubNetwork: {

@@ -17,3 +17,5 @@ az webapp config appsettings set --resource-group <rg> --name <unique-app-servic
 az webapp config set --resource-group <rg> --name <unique-app-service-name> --linux-fx-version 'DOCKER|<container-registry-name>.azurecr.io/test_image:<date_time_tag>'
 az resource update --resource-group <rg> --name <unique-app-service-name>/config/web --set properties.acrUseManagedIdentityCreds=true --resource-type 'Microsoft.Web/sites/config'
 
+# can redeploy app service if anything issues come up
+az webapp create --resource-group <rg> --plan <app-service-plan> --name <unique-app-service-name> --deployment-container-image-name 'DOCKER|<docker-address>'

@@ -584,6 +584,21 @@ module privatezone_acr '../../azresources/network/private-dns-zone.bicep' = {
   }
 }
 
+module privatezone_as '../../azresources/network/private-dns-zone.bicep' = {
+  name: 'deploy-privatezone-as'
+  scope: resourceGroup()
+  params: {
+    zone: 'privatelink.azurewebsites.net'
+    vnetId: vnet.id
+
+    dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub
+    dnsLinkToVirtualNetwork: !hubNetwork.privateDnsManagedByHub || (hubNetwork.privateDnsManagedByHub && !usingCustomDNSServers)
+    dnsExistingZoneSubscriptionId: hubNetwork.privateDnsManagedByHubSubscriptionId
+    dnsExistingZoneResourceGroupName: hubNetwork.privateDnsManagedByHubResourceGroupName
+    registrationEnabled: false
+  }
+}
+
 module privatezone_datalake_blob '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-blob'
   scope: resourceGroup()
@@ -698,5 +713,6 @@ output sqlDBPrivateDnsZoneId string = privatezone_sqldb.outputs.privateDnsZoneId
 output amlApiPrivateDnsZoneId string = privatezone_azureml_api.outputs.privateDnsZoneId
 output amlNotebooksPrivateDnsZoneId string = privatezone_azureml_notebook.outputs.privateDnsZoneId
 output aksPrivateDnsZoneId string = privatezone_aks.outputs.privateDnsZoneId
+output asPrivateDnsZoneId string = privatezone_as.outputs.privateDnsZoneId
 
 output aksUdrNAme string = udrAKS.name

@@ -117,7 +117,14 @@
       },
       "aks": {
         "value": {
-          "enabled": false
+          "version": "1.21.2",
+          "enabled": true,
+          "networkPlugin": "azure" ,
+          "networkPolicy": "azure",
+          "podCidr": "",
+          "serviceCidr": "20.0.0.0/16" ,
+          "dnsServiceIP": "20.0.0.10",
+          "dockerBridgeCidr": "30.0.0.1/16"
         }
       },
       "appServiceLinuxContainer": {
@@ -125,7 +132,7 @@
           "enabled": true,
           "skuName": "P1V2",
           "skuTier": "Premium",
-          "enablePrivateEndpoint": true
+          "enablePrivateEndpoint": false
         }
       },
       "sqldb": {
