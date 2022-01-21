@@ -122,3 +122,12 @@ stages:
         deployOperation: ${{ variables['deployOperation'] }}
         managementGroupDeploymentScope: $(var-topLevelManagementGroupName)
         workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
+
+
+    - template: templates/steps/assign-policy.yml
+      parameters:
+        description: 'Assign Policy Set pubsecLandingZones'
+        deployTemplates: [asb]
+        deployOperation: ${{ variables['deployOperation'] }}
+        managementGroupDeploymentScope: pubsecLandingZones
+        workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
