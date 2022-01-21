@@ -45,7 +45,7 @@ steps:
         
         sed -i 's~{{var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix}}~$(var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix)~g' ${{ policy }}.parameters.json
 
-        sed -i 's~{{var-policyAssignmentManagementGroupId}}~$(var-policyAssignmentManagementGroupId)~g' ${{ policy }}.parameters.json
+        sed -i 's~{{var-policyAssignmentManagementGroupId}}~${{ parameters.managementGroupDeploymentScope }}~g' ${{ policy }}.parameters.json
 
         cat ${{ policy }}.parameters.json ; echo
 
