@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Virtual Network Gateway to Log Analytics Workspaces",
+    "mode": "indexed"
+}
