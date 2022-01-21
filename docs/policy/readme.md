@@ -41,6 +41,7 @@ Azure DevOps Pipeline ([.pipelines/policy.yml](../../.pipelines/policy.yml)) is 
         description: 'Assign Policy Set'
         deployTemplates: [asb, cis-msft-130, location, nist80053r4, nist80053r5, pbmm, hitrust-hipaa, fedramp-moderate]
         deployOperation: ${{ variables['deployOperation'] }}
+        policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
         workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
 ```
 
@@ -101,6 +102,7 @@ Azure DevOps Pipeline ([.pipelines/policy.yml](../../.pipelines/policy.yml)) is 
         description: 'Define Policy Set'
         deployTemplates: [AKS, DefenderForCloud, LogAnalytics, Network, DNSPrivateEndpoints, Tags]
         deployOperation: ${{ variables['deployOperation'] }}
+        policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
         workingDir: $(System.DefaultWorkingDirectory)/policy/custom/definitions/policyset
 ```
 
@@ -130,6 +132,7 @@ Azure DevOps Pipeline ([.pipelines/policy.yml](../../.pipelines/policy.yml)) is 
         description: 'Assign Policy Set'
         deployTemplates: [AKS, DefenderForCloud, LogAnalytics, Network, Tags]
         deployOperation: ${{ variables['deployOperation'] }}
+        policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
         workingDir: $(System.DefaultWorkingDirectory)/policy/custom/assignments
 ```
 
