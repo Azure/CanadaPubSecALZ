@@ -18,6 +18,8 @@ parameters:
     values:
       - create
       - what-if
+  - name: policyAssignmentManagementGroupScope
+    type: string
   - name: workingDir
     type: string
   
@@ -34,24 +36,29 @@ steps:
         $(var-bashPreInjectScript)
 
         echo "Populating templated parameters in ${{ policy }}.parameters.json"
-        sed -i 's~{{var-topLevelManagementGroupName}}~$(var-topLevelManagementGroupName)~g' ${{ policy }}.parameters.json
 
-        sed -i 's~{{var-logging-logAnalyticsWorkspaceResourceId}}~$(var-logging-logAnalyticsWorkspaceResourceId)~g' ${{ policy }}.parameters.json
-        sed -i 's~{{var-logging-logAnalyticsWorkspaceId}}~$(var-logging-logAnalyticsWorkspaceId)~g' ${{ policy }}.parameters.json
-        sed -i 's~{{var-logging-logAnalyticsResourceGroupName}}~$(var-logging-logAnalyticsResourceGroupName)~g' ${{ policy }}.parameters.json
-        sed -i 's~{{var-logging-logAnalyticsRetentionInDays}}~$(var-logging-logAnalyticsRetentionInDays)~g' ${{ policy }}.parameters.json
+        cp ${{ policy }}.parameters.json ${{ policy }}.populated.parameters.json
+
+        sed -i 's~{{var-topLevelManagementGroupName}}~$(var-topLevelManagementGroupName)~g' ${{ policy }}.populated.parameters.json
+
+        sed -i 's~{{var-logging-logAnalyticsWorkspaceResourceId}}~$(var-logging-logAnalyticsWorkspaceResourceId)~g' ${{ policy }}.populated.parameters.json
+        sed -i 's~{{var-logging-logAnalyticsWorkspaceId}}~$(var-logging-logAnalyticsWorkspaceId)~g' ${{ policy }}.populated.parameters.json
+        sed -i 's~{{var-logging-logAnalyticsResourceGroupName}}~$(var-logging-logAnalyticsResourceGroupName)~g' ${{ policy }}.populated.parameters.json
+        sed -i 's~{{var-logging-logAnalyticsRetentionInDays}}~$(var-logging-logAnalyticsRetentionInDays)~g' ${{ policy }}.populated.parameters.json
         
-        sed -i 's~{{var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix}}~$(var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix)~g' ${{ policy }}.parameters.json
+        sed -i 's~{{var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix}}~$(var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix)~g' ${{ policy }}.populated.parameters.json
 
-        cat ${{ policy }}.parameters.json ; echo
+        sed -i 's~{{var-policyAssignmentManagementGroupId}}~${{ parameters.policyAssignmentManagementGroupScope }}~g' ${{ policy }}.populated.parameters.json
 
-        echo "Deploying ${{ policy }}.bicep using ${{ parameters.deployOperation}} operation..."
+        cat ${{ policy }}.populated.parameters.json ; echo
+
+        echo "Deploying ${{ policy }}.bicep using ${{ parameters.deployOperation}} operation at ${{ parameters.policyAssignmentManagementGroupScope }} scope ..."
 
         az deployment mg ${{ parameters.deployOperation }} \
           --location $(deploymentRegion) \
-          --management-group-id $(var-topLevelManagementGroupName) \
+          --management-group-id ${{ parameters.policyAssignmentManagementGroupScope }} \
           --template-file ${{ policy }}.bicep \
-          --parameters ${{ policy }}.parameters.json
+          --parameters ${{ policy }}.populated.parameters.json
         
         $(var-bashPostInjectScript)
       workingDirectory: ${{ parameters.workingDir }}
