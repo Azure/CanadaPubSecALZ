@@ -59,7 +59,7 @@ param privateDnsZones array = [
   'privatelink.api.azureml.ms'
   'privatelink.notebooks.azure.net'
   'privatelink.service.signalr.net'
-  'privatelink.monitor.azure.com'
+//  'privatelink.monitor.azure.com'
   'privatelink.oms.opinsights.azure.com'
   'privatelink.ods.opinsights.azure.com'
   'privatelink.agentsvc.azure-automation.net'
