@@ -48,7 +48,7 @@ If you don't wish to send usage data to Microsoft, you can set the `customerUsag
 ## Instructions
 
 * [Step 1 - Create Service Principal Account & Assign RBAC](#step-1---create-service-principal-account--assign-rbac)
-* [Step 2 _ Configure Service Connection in Azure DevOps Project Configuration](#step-2---configure-service-connection-in-azure-devops-project-configuration)
+* [Step 2 - Configure Service Connection in Azure DevOps Project Configuration](#step-2---configure-service-connection-in-azure-devops-project-configuration)
 * [Step 3 - Configure Management Groups](#step-3---configure-management-groups)
 * [Step 4 - Configure Custom Roles](#step-4---configure-custom-roles)
 * [Step 5 - Configure Logging](#step-5--configure-logging)
