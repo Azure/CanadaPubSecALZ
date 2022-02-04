@@ -19,7 +19,7 @@
         "allOf": [
           {
             "field": "type",
-            "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+            "equals": "Microsoft.Resources/resourceGroups"
           },
           {
             "field": "[concat('tags[', parameters('tagName'), ']')]",
