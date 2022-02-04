@@ -59,6 +59,12 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
        listOfMembersToIncludeInWindowsVMAdministratorsGroup: {
         value: listOfMembersToIncludeInWindowsVMAdministratorsGroup
        }
+       'logsEnabled-7f89b1eb-583c-429a-8828-af049802c1d9': {
+         value: true
+       }
+       'metricsEnabled-7f89b1eb-583c-429a-8828-af049802c1d9': {
+         value: false
+       }
     }
     enforcementMode: enforcementMode
   }
