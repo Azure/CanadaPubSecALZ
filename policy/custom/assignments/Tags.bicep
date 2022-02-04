@@ -36,7 +36,7 @@ var rgInheritedPolicyFromSubscriptionToResourceGroupId = 'custom-tags-inherited-
 var rgInheritedAssignmentFromSubscriptionToResourceGroupName = 'Custom - Tags inherited from subscription to resource group if missing'
 
 resource rgInheritedPolicySetFromSubscriptionToResourceGroupAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
-  name: 'tags-sub-to-rg-${uniqueString('tags-from-sub-to-rg-', policyAssignmentManagementGroupId)}'
+  name: 'tags-torg-${uniqueString('tags-torg-', policyAssignmentManagementGroupId)}'
   properties: {
     displayName: rgInheritedAssignmentFromSubscriptionToResourceGroupName
     policyDefinitionId: '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${rgInheritedPolicyFromSubscriptionToResourceGroupId}'
