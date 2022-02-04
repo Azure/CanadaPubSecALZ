@@ -3,7 +3,6 @@
   "name": "Tags-Inherit-Tag-From-Subscription-To-ResourceGroup",
   "properties": {
     "displayName": "Inherit a tag from the subscription to resource group if missing",
-    "policyType": "BuiltIn",
     "mode": "Indexed",
     "description": "Adds the specified tag with its value from the containing subscription when any resource group is missing this tag is created or updated.  If the tag exists with a different value it will not be changed.",
     "parameters": {
