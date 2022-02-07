@@ -75,6 +75,8 @@ Git for Windows includes Unix utilities (e.g. `cut`, `tr`, etc.) that are used b
 
 Verify that the path to these utilities is included in the `echo %PATH%` output, i.e. it must be part of your system path or user environment path for the user running these scripts. The default installation location for these files is `C:\Program Files\Git\usr\bin`.
 
+> NOTE: In addition to ensuring the path to these utilities is included in your `%PATH%`, you should also verify that it precedes the `C:\Windows\System32` path. This is due to a conflict with the Linux version of the `sort.exe` utility and the Windows version of the `sort.exe` utility. The following script files invoke `sort.exe` and expect the Linux version: `delete-management-groups.bat` and `list-management-groups.bat`.
+
 ---
 
 ## Required Permissions
