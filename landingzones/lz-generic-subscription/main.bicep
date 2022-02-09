@@ -125,9 +125,6 @@ module subScaffold '../scaffold-subscription.bicep' = {
 
 // Create Network Watcher Resource Group
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  dependsOn: [
-    subScaffold
-  ]
   name: resourceGroups.networkWatcher
   location: deployment().location
   tags: resourceTags
@@ -135,9 +132,6 @@ resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
 
 // Create Virtual Network Resource Group - only if Virtual Network is being deployed
 resource rgVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = if (network.deployVnet) {
-  dependsOn: [
-    subScaffold
-  ]
   name: network.deployVnet ? resourceGroups.networking : 'placeholder'
   location: deployment().location
   tags: resourceTags
@@ -145,9 +139,6 @@ resource rgVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = if (network.de
 
 // Create Azure Automation Resource Group
 resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  dependsOn: [
-    subScaffold
-  ]
   name: resourceGroups.automation
   location: deployment().location
   tags: resourceTags
@@ -155,9 +146,6 @@ resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
 
 // Create Azure backup RecoveryVault Resource Group
 resource backupRgVault 'Microsoft.Resources/resourceGroups@2020-06-01' =if (backupRecoveryVault.enabled) {
-  dependsOn: [
-    subScaffold
-  ]
   name: resourceGroups.backupRecoveryVault
   location: deployment().location
   tags: resourceTags
