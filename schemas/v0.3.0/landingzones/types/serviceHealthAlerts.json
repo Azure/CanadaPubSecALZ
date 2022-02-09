@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "definitions": {
+    "ServiceHealthAlerts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/Value"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "ServiceHealthAlerts"
+    },
+    "Value": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resourceGroupName": {
+          "type": "string"
+        },
+        "incidentTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "regions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "receivers": {
+          "$ref": "#/definitions/Receivers"
+        },
+        "actionGroupName": {
+          "type": "string"
+        },
+        "actionGroupShortName": {
+          "type": "string"
+        },
+        "alertRuleName": {
+          "type": "string"
+        },
+        "alertRuleDescription": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "actionGroupName",
+        "actionGroupShortName",
+        "alertRuleDescription",
+        "alertRuleName",
+        "incidentTypes",
+        "receivers",
+        "regions",
+        "resourceGroupName"
+      ],
+      "title": "Value"
+    },
+    "Receivers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "app": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "email": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/phone"
+          }
+        },
+        "voice": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/phone"
+          }
+        }
+      },
+      "required": [
+        "app",
+        "email",
+        "sms",
+        "voice"
+      ],
+      "title": "Receivers"
+    },
+    "phone": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "countryCode": {
+          "type": "string",
+          "format": "integer"
+        },
+        "phoneNumber": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "countryCode",
+        "phoneNumber"
+      ],
+      "title": "phone"
+    }
+  }
+}

@@ -2,6 +2,8 @@
 
 This document provides steps required to onboard to the Azure Landing Zones design using Azure DevOps Pipelines.
 
+> There are scripts available to help simplify the onboarding process to Azure Landing Zones design using Azure DevOps Pipelines. The [Azure DevOps Scripts](./azure-devops-scripts.md) document contains more detailed information on the those scripts.
+
 **All steps will need to be repeated per Azure AD tenant.**
 
 ---
@@ -45,18 +47,18 @@ If you don't wish to send usage data to Microsoft, you can set the `customerUsag
 
 ## Instructions
 
-* [Step 1: Create Service Principal Account & Assign RBAC](#step-1--create-service-principal-account--assign-rbac)
-* [Step 2: Configure Service Connection in Azure DevOps Project Configuration](#step-2--configure-service-connection-in-azure-devops-project-configuration)
-* [Step 3: Configure Management Groups](#step-3--configure-management-groups)
-* [Step 4: Configure Custom Roles](#step-4--configure-custom-roles)
-* [Step 5: Configure Logging](#step-5--configure-logging)
-* [Step 6: Configure Azure Policies](#step-6--configure-azure-policies)
-* [Step 7: Configure Hub Networking](#step-7--configure-hub-networking)
-* [Step 8: Configure Subscription Archetypes](#step-8--configure-subscription-archetypes)
+* [Step 1 - Create Service Principal Account & Assign RBAC](#step-1---create-service-principal-account--assign-rbac)
+* [Step 2 - Configure Service Connection in Azure DevOps Project Configuration](#step-2---configure-service-connection-in-azure-devops-project-configuration)
+* [Step 3 - Configure Management Groups](#step-3---configure-management-groups)
+* [Step 4 - Configure Custom Roles](#step-4---configure-custom-roles)
+* [Step 5 - Configure Logging](#step-5--configure-logging)
+* [Step 6 - Configure Azure Policies](#step-6---configure-azure-policies)
+* [Step 7 - Configure Hub Networking](#step-7---configure-hub-networking)
+* [Step 8 - Configure Subscription Archetypes](#step-8---configure-subscription-archetypes)
 
 ---
 
-## Step 1:  Create Service Principal Account & Assign RBAC
+## Step 1 - Create Service Principal Account & Assign RBAC
 
 An Azure service principal is an identity created for use with applications, hosted services, and automated tools to access Azure resources. This access is restricted by the roles assigned to the service principal, giving you control over which resources can be accessed and at which level. For security reasons, it's always recommended to use service principals with automated tools rather than allowing them to log in with a user identity.
 
@@ -98,7 +100,7 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 
 ---
 
-## Step 2:  Configure Service Connection in Azure DevOps Project Configuration
+## Step 2 - Configure Service Connection in Azure DevOps Project Configuration
 
 * Settings
   * **Connection Type**:  Azure Resource Manager
@@ -137,7 +139,7 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 
 ---
 
-## Step 3:  Configure Management Groups
+## Step 3 - Configure Management Groups
 
 ### Step: 3.1: Update common.yml in git repository
 
@@ -195,7 +197,7 @@ variables:
 
 ---
 
-## Step 4:  Configure Custom Roles
+## Step 4 - Configure Custom Roles
 
 1. Pipeline definition for Custom Roles.
 
@@ -215,7 +217,7 @@ variables:
 
 ---
 
-## Step 5:  Configure Logging
+## Step 5 - Configure Logging
 
 ### Step 5.1:  Setup Azure AD Security Group (Recommended)
 
@@ -358,37 +360,34 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 ---
 
-## Step 6:  Configure Azure Policies
+## Step 6 - Configure Azure Policies
 
 1. Pipeline definition for Azure Policies. Overview of Azure Policy and definitions deployed refer to [readme.md under `/docs/policy`](../../docs/policy/readme.md)
 
     *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
-    1.    Go to Pipelines
-    2.    New Pipeline
-    3.    Choose Azure Repos Git
-    4.    Select Repository
-    5.    Select Existing Azure Pipeline YAML file
-    6.    Identify the pipeline in `.pipelines/policy.yml`.
-    7.  Save the pipeline (don't run it yet)
-    8.  Rename the pipeline to `policy-ci`
-
+    1. Go to Pipelines
+    2. New Pipeline
+    3. Choose Azure Repos Git
+    4. Select Repository
+    5. Select Existing Azure Pipeline YAML file
+    6. Identify the pipeline in `.pipelines/policy.yml`.
+    7. Save the pipeline (don't run it yet)
+    8. Rename the pipeline to `policy-ci`
 
 2. Run pipeline and wait for completion.
 
 ---
 
-## Step 7:  Configure Hub Networking
+## Step 7 - Configure Hub Networking
 
-1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3. 
-
-   Update networking section of the configuration file to deploy one of the two options: 
-   
-    1. [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
-    2. [Hub Networking with Fortinet Firewall (NVA)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
+1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.  
+    Update networking section of the configuration file to deploy one of the two options:
+     1. [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
+     2. [Hub Networking with Fortinet Firewall (NVA)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
 
     Depending on the preference, you may delete/comment the configuration that is not required. For example, when deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls". 
-    
+
  *Note:*  **var-hubnetwork-subscriptionRoleAssignments** should include Azure AD security group's object ID responsible for managing Azure networking. If role assignments are not required, you must change the example provided with the following setting:
 
   ```yml
@@ -396,7 +395,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
         []
   ```
 
- Include the values for the following as well: 
+ Include the values for the following as well:
    * Valid contact information for the Azure Service Health Alerts: email and phone number
    * Values for Azure resource tags 
    * IP ranges for the virtual networks
@@ -673,7 +672,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 ---
 
-## Step 8:  Configure Subscription Archetypes
+## Step 8 - Configure Subscription Archetypes
 
 1. Configure Pipeline definition for subscription archetypes
 
