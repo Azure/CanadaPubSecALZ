@@ -392,7 +392,7 @@ To simplify, let's assume a single `CostCenter` tag is required for every resour
 | --- | --- | --- |
 | `CostCenter=123` | `CostCenter` tag not defined when creating a resource group. | `CostCenter=123` is inherited from subscription.  Resource group is created. |
 | `CostCenter=123` | `CostCenter=ABC` defined when creating the resource group. | `CostCenter=ABC` takes precedence since it's explicitly defined on the resource group.  Resource group is created. |
-| `CostCenter` tag is not defined. | `CostCenter` tag not defined when creating a resource group | Policy violation since tag can't be inherited from subscription nor it hasn't been defined on resource group. Resource group is not created. |
+| `CostCenter` tag is not defined. | `CostCenter` tag not defined when creating a resource group. | Policy violation since tag can't be inherited from subscription nor it hasn't been defined on resource group. Resource group is not created. |
 
 **Example scenarios for inheriting from resource group to resources**
 
