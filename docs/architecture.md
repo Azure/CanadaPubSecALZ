@@ -347,6 +347,13 @@ A tagging strategy include business and operational details:
 * The business side of this strategy ensures that tags include the organizational information needed to identify the teams. Use a resource along with the business owners who are responsible for resource costs.
 * The operational side ensures that tags include information that IT teams use to identify the workload, application, environment, criticality, and other information useful for managing resources.
 
+Tags can be assigned to resource groups using 2 approaches:
+
+| Approach | Mechanism |
+| --- | --- |
+| Automatically assigned from the Subscription tags | Azure Policy:  Inherit a tag from the subscription to resource group if missing |
+| Explicitly set on a Resource Group | Azure Portal, ARM templates, CLI, PowerShell, etc. All tags can be inherited by default from subscription and can be changed as needed per resource group. |
+
 Tags can be assigned to resources using 3 approaches:
 
 | Approach | Mechanism |
