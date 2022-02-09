@@ -336,9 +336,7 @@ For example, when you grant access to your team responsible for infrastructure s
 | IT Teams responsible for one or more line of business with permissions to one or more subscriptions, resource groups or resources with at least Reader role. | Access the logs through the resource's Logs menu for the Azure resource (i.e., VM or Storage Account or Database). | Only to Azure resources based on RBAC.  User can query logs for specific resources, resource groups, or subscription they have access to from any workspace but can't query logs for other resources. |
 | Application Team with permissions to one or more subscriptions, resource groups or resources with at least Reader role. | Access the logs through the resource's Logs menu for the Azure resource (i.e., VM or Storage Account or Database). | Only to Azure resources based on RBAC.  User can query logs for specific resources, resource groups, or subscription they have access to from any workspace but can't query logs for other resources. |
 
-
 ---
-
 
 ## 7. Tagging
 
@@ -363,18 +361,20 @@ Azure Landing Zones for Canadian Public Sector recommends the following tagging 
 
 ![Tags](media/architecture/tags.jpg)
 
-To achieve this design, built-in and custom Azure Policies are used to automatically propagate tags from Resource Group, validate mandatory tags at Resource Groups and to provide remediation to back-fill resources with missing tags.  Azure Policies used to achieve this design are:
+To achieve this design, custom Azure Policies are used to automatically propagate tags from subscription & resource group, validate mandatory tags at resource groups and to provide remediation to back-fill resource groups and resources with missing tags.  Azure Policies used to achieve this design are:
 
-* [Built-in] Inherit a tag from the resource group if missing
+* [Custom] Inherit a tag from the subscription to resource group if missing (1 policy per tag)
+* [Custom] Inherit a tag from the resource group if missing (1 policy per tag)
 * [Custom] Require a tag on resource groups (1 policy per tag)
 * [Custom] Audit missing tag on resource (1 policy per tag)
 
 This approach ensures that:
 
 * All resource groups contain the expected tags; and
+* All resource groups can inherit common tags from subscription when missing; and
 * All resources in that resource groups will automatically inherit those tags.
 
-This helps remove deployment friction by eliminating the explicit tagging requirement per resource.  The tags can be override per resource if required. 
+This helps remove deployment friction by eliminating the explicit tagging requirement per resource.  The tags can be overridden per resource group & resource if required.
 
 *We chose custom policies so that they can be grouped in a policy set (initiative) and have unique names to describe their purpose.*
 
