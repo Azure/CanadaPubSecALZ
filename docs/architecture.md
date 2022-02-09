@@ -382,6 +382,29 @@ This approach ensures that:
 
 This helps remove deployment friction by eliminating the explicit tagging requirement per resource.  The tags can be overridden per resource group & resource if required.
 
+**Example scenarios for inheriting from subscription to resource group**
+
+These example scenarios outline the behaviour when using Azure Policy for inheriting tag values.
+
+To simplify, let's assume a single `CostCenter` tag is required for every resource group.
+
+| Subscription Tags | Resource Group Tags | Outcome |
+| --- | --- | --- |
+| `CostCenter=123` | `CostCenter` tag not defined when creating a resource group. | `CostCenter=123` is inherited from subscription.  Resource group is created. |
+| `CostCenter=123` | `CostCenter=ABC` defined when creating the resource group. | `CostCenter=ABC` takes precedence since it's explicitly defined on the resource group.  Resource group is created. |
+| `CostCenter` tag is not defined. | `CostCenter` tag not defined when creating a resource group | Policy violation since tag can't be inherited from subscription nor it hasn't been defined on resource group. Resource group is not created. |
+
+**Example scenarios for inheriting from resource group to resources**
+
+These example scenarios outline the behaviour when using Azure Policy for inheriting tag values.
+
+To simplify, let's assume a single `CostCenter` tag is required for every resource.
+
+| Resource Group Tags | Resource Tags | Outcome |
+| --- | --- | --- |
+| `CostCenter=123` | `CostCenter` tag not defined when creating a resource. | `CostCenter=123` is inherited from resource group.  Resource is created. |
+| `CostCenter=123` | `CostCenter=ABC` defined when creating the resource. | `CostCenter=ABC` takes precedence since it's explicitly defined on the resource.  Resource is created. |
+
 *We chose custom policies so that they can be grouped in a policy set (initiative) and have unique names to describe their purpose.*
 
 **Design Considerations**
