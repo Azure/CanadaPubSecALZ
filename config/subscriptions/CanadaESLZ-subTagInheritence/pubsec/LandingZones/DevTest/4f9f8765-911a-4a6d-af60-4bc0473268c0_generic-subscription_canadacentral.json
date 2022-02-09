@@ -77,6 +77,7 @@
         },
         "resourceTags": {
             "value": {
+                "CostCenter": "cost-center-tag",
                 "ClientOrganization": "client-organization-tag",
                 "DataSensitivity": "data-sensitivity-tag",
                 "ProjectContact": "project-contact-tag",
