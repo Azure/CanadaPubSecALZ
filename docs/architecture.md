@@ -354,11 +354,10 @@ Tags can be assigned to resource groups using 2 approaches:
 | Automatically assigned from the Subscription tags | Azure Policy:  Inherit a tag from the subscription to resource group if missing |
 | Explicitly set on a Resource Group | Azure Portal, ARM templates, CLI, PowerShell, etc. All tags can be inherited by default from subscription and can be changed as needed per resource group. |
 
-Tags can be assigned to resources using 3 approaches:
+Tags can be assigned to resources using 2 approaches:
 
 | Approach | Mechanism |
 | --- | --- |
-| Automatically assigned from the Subscription tags | Azure Policy:  Inherit a tag from the subscription if missing |
 | Automatically assigned from the Resource Group tags | Azure Policy:  Inherit a tag from the resource group if missing |
 | Explicitly set on a Resource | Azure Portal, ARM templates, CLI, PowerShell, etc.<br /><br />**Note:**  It's recommended to inherit tags that are required by the organization through Subscription & Resource Group.  Per resource tags are typically added by Application Teams for their own purposes. |
 
