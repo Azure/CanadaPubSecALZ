@@ -79,10 +79,10 @@
         },
         "resourceGroups": {
             "value": {
-                "automation": "rgAutomation102021W1",
-                "networking": "rgVnet102021W1",
+                "automation": "rgAutomation",
+                "networking": "rgVnet",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecovervyVault102021W1"
+                "backupRecoveryVault":"rgRecoveryVault"
             }
         },
         "automation": {
