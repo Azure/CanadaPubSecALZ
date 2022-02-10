@@ -68,7 +68,7 @@
                 "automation": "rgAutomation2022Q1",
                 "networking": "rgVnet2022Q1",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecovervyVault2022Q1"
+                "backupRecoveryVault":"rgRecoveryVault2022Q1"
             }
         },
         "automation": {

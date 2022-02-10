@@ -89,7 +89,7 @@
                 "automation": "rgAutomation102021W1",
                 "networking": "rgVnet102021W1",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecovervyVault102021W1"
+                "backupRecoveryVault":"rgRecoveryVault102021W1"
             }
         },
         "automation": {

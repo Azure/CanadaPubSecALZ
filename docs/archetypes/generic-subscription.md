@@ -207,7 +207,7 @@ This example configures:
                 "automation": "rgAutomation092021W3",
                 "networking": "rgVnet092021W3",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecovervyVault102021W1"
+                "backupRecoveryVault":"rgRecoveryVault102021W1"
             }
         },
         "automation": {
