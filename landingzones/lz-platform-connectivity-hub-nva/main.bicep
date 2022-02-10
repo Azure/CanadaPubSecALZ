@@ -271,7 +271,7 @@ param hubBastionSubnetAddressPrefix string //= '192.168.0.0/24'
 @description('Boolean flag to determine whether virtual machines will be deployed, either Ubuntu (for internal testing) or Fortinet (for workloads).  Default: true')
 param deployFirewallVMs bool = true
 
-@description('Boolean flag to dtermine whether Fortinet firewalls will eb deployed.  Default: true')
+@description('Boolean flag to determine whether Fortinet firewalls will be deployed.  Default: true')
 param useFortigateFW bool = true
 
 // Firewall Virtual Appliances - For Non-production Traffic
