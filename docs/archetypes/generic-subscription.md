@@ -204,10 +204,10 @@ This example configures:
         },
         "resourceGroups": {
             "value": {
-                "automation": "rgAutomation092021W3",
-                "networking": "rgVnet092021W3",
+                "automation": "rgAutomation",
+                "networking": "rgVnet",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecoveryVault102021W1"
+                "backupRecoveryVault":"rgRecoveryVault"
             }
         },
         "automation": {
