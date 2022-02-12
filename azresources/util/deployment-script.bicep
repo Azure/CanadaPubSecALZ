@@ -16,8 +16,8 @@ param deploymentScript string
 @description('Identity for the deployment script to execute in Azure Container Instance.')
 param deploymentScriptIdentityId string
 
-@description('Azure CLI Version.  Default: 2.26.0')
-param azCliVersion string = '2.26.0'
+@description('Azure CLI Version.  Default: 2.32.0')
+param azCliVersion string = '2.32.0'
 
 @description('Force Update Tag.  Default:  utcNow()')
 param forceUpdateTag string = utcNow()
