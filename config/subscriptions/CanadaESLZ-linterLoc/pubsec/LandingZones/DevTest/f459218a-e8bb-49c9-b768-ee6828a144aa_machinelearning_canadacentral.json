@@ -65,13 +65,13 @@
     },
     "resourceGroups": {
       "value": {
-        "automation": "azmlcmksqlmi2022Q1Automation",
-        "compute": "azmlcmksqlmi2022Q1Compute",
-        "monitor": "azmlcmksqlmi2022Q1Monitor",
-        "networking": "azmlcmksqlmi2022Q1Network",
+        "automation": "azmlcmksqlmi2022Q1W2Automation",
+        "compute": "azmlcmksqlmi2022Q1W2Compute",
+        "monitor": "azmlcmksqlmi2022Q1W2Monitor",
+        "networking": "azmlcmksqlmi2022Q1W2Network",
         "networkWatcher": "NetworkWatcherRG",
-        "security": "azmlcmksqlmi2022Q1Security",
-        "storage": "azmlcmksqlmi2022Q1Storage"
+        "security": "azmlcmksqlmi2022Q1W2Security",
+        "storage": "azmlcmksqlmi2022Q1W2Storage"
       }
     },
     "useCMK": {
@@ -79,7 +79,7 @@
     },
     "automation": {
       "value": {
-        "name": "azmlcmksqlmi2022Q1automation"
+        "name": "azmlcmksqlmi2022Q1W2automation"
       }
     },
     "keyVault": {
@@ -140,7 +140,7 @@
       "value": {
         "peerToHubVirtualNetwork": true,
         "useRemoteGateway": false,
-        "name": "azmlcmksqlmi2022Q1vnet",
+        "name": "azmlcmksqlmi2022Q1W2vnet",
         "dnsServers": [
           "10.18.1.4"
         ],
