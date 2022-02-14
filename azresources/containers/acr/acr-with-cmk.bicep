@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Container Registry Name.')
 param name string
 
@@ -69,6 +72,7 @@ module tempAkv '../../security/key-vault.bicep' = {
   name: 'deploy-keyvault-temp'
   params: {
     name: tempKeyVaultName
+    location: location
     softDeleteRetentionInDays: 7
   }
 }
@@ -98,7 +102,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2020-11-01-preview' = {
 
   name: name
   tags: tags
-  location: resourceGroup().location
+  location: location
   sku: {
     name: 'Premium'
   }
@@ -143,7 +147,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2020-11-01-preview' = {
 }
 
 resource acr_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (!empty(privateZoneId)) {
-  location: resourceGroup().location
+  location: location
   name: '${acr.name}-endpoint'
   properties: {
     subnet: {
@@ -222,6 +226,7 @@ module rotateCmkAndCleanUp '../../util/deployment-script.bicep' = {
     deploymentScript: format(cliCmkRotateCmkAndCleanUpCommand, resourceGroup().name, name, akvKey.outputs.keyUri, tempAkv.outputs.akvName)
     deploymentScriptName: 'rotate-cmk-and-clean-up-acr-${acr.name}-ds'
     deploymentScriptIdentityId: deploymentScriptIdentityId
+    location: location
   }
 }
 

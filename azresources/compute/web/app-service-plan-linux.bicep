@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure App Service Plan Name.')
 param name string
 
@@ -21,7 +24,7 @@ param skuTier string
 
 resource plan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: name
-  location: resourceGroup().location
+  location: location
   tags: tags
   kind: 'Linux'
   sku: {

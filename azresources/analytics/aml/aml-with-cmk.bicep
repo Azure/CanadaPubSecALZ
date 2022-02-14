@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Machine Learning name.')
 param name string
 
@@ -62,7 +65,7 @@ module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
 resource aml 'Microsoft.MachineLearningServices/workspaces@2020-08-01' = {
   name: name
   tags: tags
-  location: resourceGroup().location
+  location: location
   identity: {
     type: 'SystemAssigned'
   }
@@ -90,7 +93,7 @@ resource aml 'Microsoft.MachineLearningServices/workspaces@2020-08-01' = {
 
 // Create Private Endpoints and register their IPs with Private DNS Zone
 resource aml_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: '${aml.name}-endpoint'
   properties: {
     subnet: {

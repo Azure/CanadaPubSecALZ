@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Machine Learning name.')
 param name string
 
@@ -57,6 +60,7 @@ module amlWithoutCMK 'aml-without-cmk.bicep' = if (!useCMK) {
   params: {
     name: name
     tags: tags
+    location: location
     keyVaultId: akv.id
     containerRegistryId: containerRegistryId
     storageAccountId: storageAccountId
@@ -74,6 +78,7 @@ module amlWithCMK 'aml-with-cmk.bicep' = if (useCMK) {
   params: {
     name: name
     tags: tags
+    location: location
     keyVaultId: akv.id
     containerRegistryId: containerRegistryId
     storageAccountId: storageAccountId

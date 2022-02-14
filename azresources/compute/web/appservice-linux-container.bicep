@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure App Service Name.')
 param name string
 
@@ -42,7 +45,7 @@ param privateEndpointSubnetId string
 resource app 'Microsoft.Web/sites@2021-02-01' = {
   name: name
   tags: tags
-  location: resourceGroup().location
+  location: location
   kind: 'app,linux,container'
   identity: {
     type: 'SystemAssigned'
@@ -87,7 +90,7 @@ resource app 'Microsoft.Web/sites@2021-02-01' = {
 
 
 resource appservice_linuxcontainer_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (enablePrivateEndpoint) {
-  location: resourceGroup().location
+  location: location
   name: '${app.name}-endpoint'
   properties: {
     subnet: {
