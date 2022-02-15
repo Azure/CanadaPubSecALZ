@@ -172,7 +172,7 @@ variables:
         # Management Groups
         var-parentManagementGroupId: abcddfdb-bef5-46d9-99cf-ed67dabc8783
         var-topLevelManagementGroupName: pubsec
-
+        var-topLevelManagementGroupDisplayName: 'Azure Landing Zones for Canadian Public Sector'
     ```
 
 3. Commit the changes to git repository
