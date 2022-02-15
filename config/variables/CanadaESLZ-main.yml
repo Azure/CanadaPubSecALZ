@@ -24,8 +24,8 @@ variables:
   # Management Groups
   var-parentManagementGroupId: 343ddfdb-bef5-46d9-99cf-ed67d5948783
   var-topLevelManagementGroupName: pubsec
-  var-topLevelManagementGroupDisplayName: 'Public Sector Landing Zones'
-
+  var-topLevelManagementGroupDisplayName: 'Azure Landing Zones for Canadian Public Sector'
+  
   # Logging
   var-logging-managementGroupId: pubsecPlatformManagement
   var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
