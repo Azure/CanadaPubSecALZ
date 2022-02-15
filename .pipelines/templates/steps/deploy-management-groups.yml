@@ -41,7 +41,7 @@ steps:
         --parameters \
             parentManagementGroupId=$(var-parentManagementGroupId) \
             topLevelManagementGroupName=$(var-topLevelManagementGroupName) \
-            topLevelManagementGroupDisplayName="$[variables['var-topLevelManagementGroupDisplayName']]"
+            topLevelManagementGroupDisplayName="variables['var-topLevelManagementGroupDisplayName']"
 
       $(var-bashPostInjectScript)
     workingDirectory: '${{ parameters.workingDir }}'
