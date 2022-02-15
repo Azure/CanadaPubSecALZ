@@ -17,3 +17,7 @@ variables:
   var-bashPreInjectScript: 'set -E; function catch { echo "##vso[task.logissue type=error]Caller: $(caller), LineNo: $LINENO, Command: $BASH_COMMAND" ; exit 1 ; } ; echo ; echo "Current working directory: $(pwd)" ; echo ; trap catch ERR'
   var-bashPostInjectScript: ':'
   var-TriggerSubscriptionDeployOn: 'A'  # A=added, M=modified, D=deleted
+
+  # Top level management group name.  This variable can be overwritten in branch specific configuration such as
+  # in your Azure DevOps organization specific config (i.e. CanadaESLZ-main.yml)
+  var-topLevelManagementGroupDisplayName: 'Public Sector Landing Zones'
