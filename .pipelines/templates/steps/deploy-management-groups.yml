@@ -40,7 +40,8 @@ steps:
         --template-file ${{ parameters.templateFile }} \
         --parameters \
             parentManagementGroupId=$(var-parentManagementGroupId) \
-            topLevelManagementGroupName=$(var-topLevelManagementGroupName)
+            topLevelManagementGroupName=$(var-topLevelManagementGroupName) \
+            topLevelManagementGroupDisplayName='$(var-topLevelManagementGroupDisplayName)'
 
       $(var-bashPostInjectScript)
     workingDirectory: '${{ parameters.workingDir }}'
