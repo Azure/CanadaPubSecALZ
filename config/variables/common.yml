@@ -20,4 +20,4 @@ variables:
 
   # Top level management group name.  This variable can be overwritten in branch specific configuration such as
   # in your Azure DevOps organization specific config (i.e. CanadaESLZ-main.yml)
-  var-topLevelManagementGroupDisplayName: 'Public Sector Landing Zones'
+  var-topLevelManagementGroupDisplayName: 'Azure Landing Zones for Canadian Public Sector'
