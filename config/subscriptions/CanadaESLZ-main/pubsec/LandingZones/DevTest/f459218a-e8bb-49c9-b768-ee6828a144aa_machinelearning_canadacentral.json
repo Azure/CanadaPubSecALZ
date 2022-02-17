@@ -65,13 +65,13 @@
     },
     "resourceGroups": {
       "value": {
-        "automation": "azmlcmksqlmi102021W1Automation",
-        "compute": "azmlcmksqlmi102021W1Compute",
-        "monitor": "azmlcmksqlmi102021W1Monitor",
-        "networking": "azmlcmksqlmi102021W1Network",
+        "automation": "azmlcmksqlmi2022Q1Automation",
+        "compute": "azmlcmksqlmi2022Q1Compute",
+        "monitor": "azmlcmksqlmi2022Q1Monitor",
+        "networking": "azmlcmksqlmi2022Q1Network",
         "networkWatcher": "NetworkWatcherRG",
-        "security": "azmlcmksqlmi102021W1Security",
-        "storage": "azmlcmksqlmi102021W1Storage"
+        "security": "azmlcmksqlmi2022Q1Security",
+        "storage": "azmlcmksqlmi2022Q1Storage"
       }
     },
     "useCMK": {
@@ -79,7 +79,7 @@
     },
     "automation": {
       "value": {
-        "name": "azmlcmksqlmi102021W1automation"
+        "name": "azmlcmksqlmi2022Q1automation"
       }
     },
     "keyVault": {
@@ -89,7 +89,7 @@
     },
     "aks": {
       "value": {
-        "version": "1.21.2",
+        "version": "1.22.6",
         "enabled": true,
         "networkPlugin": "kubenet" ,
         "networkPolicy": "calico",
@@ -140,7 +140,7 @@
       "value": {
         "peerToHubVirtualNetwork": true,
         "useRemoteGateway": false,
-        "name": "azmlcmksqlmi102021W1vnet",
+        "name": "azmlcmksqlmi2022Q1vnet",
         "dnsServers": [
           "10.18.1.4"
         ],

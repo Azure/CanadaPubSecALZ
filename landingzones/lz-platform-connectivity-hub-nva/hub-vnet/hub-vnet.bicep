@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 // Hub Virtual Network
 
 // VNET
@@ -90,53 +93,61 @@ module nsgpublic '../../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'deploy-nsg-${publicSubnetName}'
   params: {
     name: '${publicSubnetName}Nsg'
+    location: location
   }
 }
 module nsgean '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${eanSubnetName}'
   params: {
     name: '${eanSubnetName}Nsg'
+    location: location
   }
 }
 module nsgprd '../../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'deploy-nsg-${prodIntSubnetName}'
   params: {
     name: '${prodIntSubnetName}Nsg'
+    location: location
   }
 }
 module nsgdev '../../../azresources/network/nsg/nsg-allowall.bicep' = {
   name: 'deploy-nsg-${devIntSubnetName}'
   params: {
     name: '${devIntSubnetName}Nsg'
+    location: location
   }
 }
 module nsgha '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${haSubnetName}'
   params: {
     name: '${haSubnetName}Nsg'
+    location: location
   }
 }
 module nsgmrz '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${mrzIntSubnetName}'
   params: {
     name: '${mrzIntSubnetName}Nsg'
+    location: location
   }
 }
 module nsgpaz '../../../azresources/network/nsg/nsg-appgwv2.bicep' = {
   name: 'deploy-nsg-${pazSubnetName}'
   params: {
     name: '${pazSubnetName}Nsg'
+    location: location
   }
 }
 module nsgbastion '../../../azresources/network/nsg/nsg-bastion.bicep' = {
   name: 'deploy-nsg-AzureBastionNsg'
   params: {
     name: 'AzureBastionNsg'
+    location: location
   }
 }
 
 resource hubVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: vnetName
   properties: {
     enableDdosProtection: !empty(ddosStandardPlanId)

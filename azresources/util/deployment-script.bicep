@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Deployment Script Name.')
 param deploymentScriptName string
 
@@ -30,7 +33,7 @@ param retentionInterval string = 'PT1H'
 
 resource ds 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: deploymentScriptName
-  location: resourceGroup().location
+  location: location
   kind: 'AzureCLI'
   identity: {
     type: 'UserAssigned'

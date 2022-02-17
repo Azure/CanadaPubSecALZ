@@ -9,6 +9,9 @@
 
 targetScope = 'subscription'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 resource rgCompute 'Microsoft.Resources/resourceGroups@2020-06-01' existing = {
   name: 'testpeenablednot'
 }
@@ -18,12 +21,16 @@ module appInsights '../../../../azresources/monitor/ai-web.bicep' = {
   scope: rgCompute
   params: {
     name: 'ai'
+    location: location
   }
 }
 
 module networking 'app-service-vnet.bicep' = {
   name: 'deploy-network'
   scope: rgCompute
+  params: {
+    location: location
+  }
 }
 // azure machine learning uses a metadata data lake storage account
 
@@ -31,6 +38,8 @@ module dataLakeMetaData '../../../../azresources/storage/storage-generalpurpose.
   name: 'deploy-aml-metadata-storage'
   scope: rgCompute
   params: {
+    location: location
+
     name: 'storagehudua123'
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
@@ -52,6 +61,8 @@ module appServicePlan '../../../../azresources/compute/web/app-service-plan-linu
     name: 'asp-test'
     skuName: 'P1V2'
     skuTier: 'Premium'
+
+    location: location
   }
 }
 
@@ -60,6 +71,8 @@ module appService '../../../../azresources/compute/web/appservice-linux-containe
   name: 'deploy-app-service'
   scope: rgCompute
   params: {
+    location: location
+    
     name: 'ashudua123'
     appServicePlanId: appServicePlan.outputs.planId
     aiIKey: appInsights.outputs.aiIKey

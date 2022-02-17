@@ -65,13 +65,13 @@
     },
     "resourceGroups": {
       "value": {
-        "automation": "azmlcmk102021W1Automation",
-        "compute": "azmlcmk102021W1Compute",
-        "monitor": "azmlcmk102021W1Monitor",
-        "networking": "azmlcmk102021W1Network",
+        "automation": "azmlcmk2022Q1Automation",
+        "compute": "azmlcmk2022Q1Compute",
+        "monitor": "azmlcmk2022Q1Monitor",
+        "networking": "azmlcmk2022Q1Network",
         "networkWatcher": "NetworkWatcherRG",
-        "security": "azmlcmk102021W1Security",
-        "storage": "azmlcmk102021W1Storage"
+        "security": "azmlcmk2022Q1Security",
+        "storage": "azmlcmk2022Q1Storage"
       }
     },
     "useCMK": {
@@ -79,7 +79,7 @@
     },
     "automation": {
       "value": {
-        "name": "azmlcmk102021W1automation"
+        "name": "azmlcmk2022Q1automation"
       }
     },
     "keyVault": {
@@ -89,7 +89,7 @@
     },
     "aks": {
       "value": {
-        "version": "1.21.2",
+        "version": "1.22.6",
         "enabled": true,
         "networkPlugin": "kubenet" ,
         "networkPolicy": "calico",
@@ -139,7 +139,7 @@
       "value": {
         "peerToHubVirtualNetwork": true,
         "useRemoteGateway": false,
-        "name": "azmlcmk102021W1vnet",
+        "name": "azmlcmk2022Q1vnet",
         "dnsServers": [
           "10.18.1.4"
         ],

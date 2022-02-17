@@ -2,6 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "location": {
+            "value": "canadacentral"
+        },
         "serviceHealthAlerts": {
             "value": {
                 "resourceGroupName": "pubsec-service-health",
@@ -130,18 +133,18 @@
         },
         "hubNetwork": {
             "value": {
-                "virtualNetworkId": "",
-                "rfc1918IPRange": "",
-                "rfc6598IPRange": "",
-                "egressVirtualApplianceIp": "",
-                "privateDnsManagedByHub": false,
-                "privateDnsManagedByHubSubscriptionId": "",
-                "privateDnsManagedByHubResourceGroupName": ""
+                "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+                "rfc1918IPRange": "10.18.0.0/22",
+                "rfc6598IPRange": "100.60.0.0/16",
+                "egressVirtualApplianceIp": "10.18.1.4",
+                "privateDnsManagedByHub": true,
+                "privateDnsManagedByHubSubscriptionId": "ed7f4eed-9010-4227-b115-2a5e37728f27",
+                "privateDnsManagedByHubResourceGroupName": "pubsec-dns-rg"
             }
         },
         "network": {
             "value": {
-                "peerToHubVirtualNetwork": false,
+                "peerToHubVirtualNetwork": true,
                 "useRemoteGateway": false,
                 "name": "healthvnet",
                 "dnsServers": [

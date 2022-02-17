@@ -66,6 +66,7 @@ Reference implementation uses parameter files with `object` parameters to consol
   * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-generic-subscription.json)
 
   * Common types
+    * [Location](../../schemas/latest/landingzones/types/location.json)
     * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
     * [Microsoft Defender for Cloud](../../schemas/latest/landingzones/types/securityCenter.json)
     * [Subscription Role Assignments](../../schemas/latest/landingzones/types/subscriptionRoleAssignments.json)
@@ -83,6 +84,7 @@ Reference implementation uses parameter files with `object` parameters to consol
 | Scenario | Example JSON Parameters | Notes |
 |:-------- |:----------------------- |:----- |
 | Deployment with Hub Virtual Network | [tests/schemas/lz-generic-subscription/FullDeployment-With-Hub.json](../../tests/schemas/lz-generic-subscription/FullDeployment-With-Hub.json) | - |
+| Deployment with Location | [tests/schemas/lz-generic-subscription/FullDeployment-With-Location.json](../../tests/schemas/lz-generic-subscription/FullDeployment-With-Location.json) | `parameters.location.value` is `canadacentral` |
 | Deployment without Hub Virtual Network | [tests/schemas/lz-generic-subscription/FullDeployment-Without-Hub.json](../../tests/schemas/lz-generic-subscription/FullDeployment-Without-Hub.json) | `parameters.hubNetwork.value.*` fields are empty & `parameters.network.value.peerToHubVirtualNetwork` is false. |
 | Deployment with subscription budget | [tests/schemas/lz-generic-subscription/BudgetIsTrue.json](../../tests/schemas/lz-generic-subscription/BudgetIsTrue.json) | `parameters.subscriptionBudget.value.createBudget` is set to `true` and budget information filled in. |
 | Deployment without subscription budget | [tests/schemas/lz-generic-subscription/BudgetIsFalse.json](../../tests/schemas/lz-generic-subscription/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
@@ -114,6 +116,9 @@ This example configures:
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "location": {
+            "value": "canadacentral"
+        },
         "serviceHealthAlerts": {
             "value": {
                 "resourceGroupName": "pubsec-service-health",
@@ -204,10 +209,10 @@ This example configures:
         },
         "resourceGroups": {
             "value": {
-                "automation": "rgAutomation092021W3",
-                "networking": "rgVnet092021W3",
+                "automation": "rgAutomation",
+                "networking": "rgVnet",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecovervyVault102021W1"
+                "backupRecoveryVault":"rgRecoveryVault"
             }
         },
         "automation": {

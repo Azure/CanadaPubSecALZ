@@ -2,6 +2,9 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "location": {
+      "value": "canadacentral"
+    },
     "serviceHealthAlerts": {
       "value": {
         "resourceGroupName": "pubsec-service-health",
@@ -66,7 +69,13 @@
     },
     "subscriptionBudget": {
       "value": {
-        "createBudget": false
+        "createBudget": true,
+        "name": "MonthlySubscriptionBudget",
+        "amount": 1000,
+        "timeGrain": "Monthly",
+        "contactEmails": [
+          "alzcanadapubsec@microsoft.com"
+        ]
       }
     },
     "subscriptionTags": {
@@ -112,10 +121,10 @@
       "value": {
         "version": "1.21.2",
         "enabled": true,
-        "networkPlugin": "kubenet" ,
+        "networkPlugin": "kubenet",
         "networkPolicy": "calico",
         "podCidr": "11.0.0.0/16",
-        "serviceCidr": "20.0.0.0/16" ,
+        "serviceCidr": "20.0.0.0/16",
         "dnsServiceIP": "20.0.0.10",
         "dockerBridgeCidr": "30.0.0.1/16"
       }
@@ -131,8 +140,10 @@
     "sqldb": {
       "value": {
         "enabled": true,
-        "sqlAuthenticationUsername": "azadmin",
-        "aadAuthenticationOnly": false
+        "aadAuthenticationOnly": true,
+        "aadLoginName": "DBA Group",
+        "aadLoginObjectID": "4e4ea47c-ee21-4add-ad2f-a75d0d8014e0",
+        "aadLoginType": "Group"
       }
     },
     "sqlmi": {
