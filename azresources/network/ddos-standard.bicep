@@ -7,12 +7,15 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure DDOS Standard Plan Name.')
 param name string
 
 resource ddosPlan 'Microsoft.Network/ddosProtectionPlans@2020-07-01' = {
   name: name
-  location: resourceGroup().location
+  location: location
   properties: {}
 }
 

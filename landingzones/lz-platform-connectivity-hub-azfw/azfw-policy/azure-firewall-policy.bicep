@@ -3,12 +3,15 @@
 // EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Firewall Policy Name')
 param name string
 
 resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
   name: name
-  location: resourceGroup().location
+  location: location
   properties: {
     sku: {
       tier: 'Premium'

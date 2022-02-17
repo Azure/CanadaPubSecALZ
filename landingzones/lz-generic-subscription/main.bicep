@@ -42,6 +42,9 @@ For accepted parameter values, see:
 
 */
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 // Service Health
 @description('Service Health alerts')
 param serviceHealthAlerts object = {}
@@ -112,6 +115,8 @@ module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
   scope: subscription()
   params: {
+    location: location
+    
     serviceHealthAlerts: serviceHealthAlerts
     subscriptionRoleAssignments: subscriptionRoleAssignments
     subscriptionBudget: subscriptionBudget
@@ -126,21 +131,21 @@ module subScaffold '../scaffold-subscription.bicep' = {
 // Create Network Watcher Resource Group
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.networkWatcher
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 // Create Virtual Network Resource Group - only if Virtual Network is being deployed
 resource rgVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = if (network.deployVnet) {
   name: network.deployVnet ? resourceGroups.networking : 'placeholder'
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 // Create Azure Automation Resource Group
 resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.automation
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
@@ -151,13 +156,14 @@ module automationAccount '../../azresources/automation/automation-account.bicep'
   params: {
     automationAccountName: automation.name
     tags: resourceTags
+    location: location
   }
 }
 
 // Create Azure backup RecoveryVault Resource Group
 resource backupRgVault 'Microsoft.Resources/resourceGroups@2020-06-01' =if(backupRecoveryVault.enabled) {
   name: resourceGroups.backupRecoveryVault
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
@@ -168,6 +174,7 @@ module backupVault '../../azresources/management/backup-recovery-vault.bicep'= i
   params:{
     vaultName: backupRecoveryVault.name
     tags: resourceTags
+    location: location
   }
 }
 
@@ -178,5 +185,6 @@ module vnet 'networking.bicep' = if (network.deployVnet) {
   params: {
     hubNetwork: hubNetwork
     network: network
+    location: location
   }
 }

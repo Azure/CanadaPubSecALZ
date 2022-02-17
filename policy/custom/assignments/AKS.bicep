@@ -9,6 +9,9 @@
 
 targetScope = 'managementGroup'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 @description('Management Group scope for the policy definition.')
 param policyDefinitionManagementGroupId string
 
@@ -48,7 +51,7 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }
 
 resource podSecurityRestrictedStandardsPolicySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
@@ -64,7 +67,7 @@ resource podSecurityRestrictedStandardsPolicySetAssignment 'Microsoft.Authorizat
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }
 
 resource podSecurityBaselineStandardsPolicySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
@@ -80,7 +83,7 @@ resource podSecurityBaselineStandardsPolicySetAssignment 'Microsoft.Authorizatio
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }
 
 // These role assignments are required to allow Policy Assignment to remediate.

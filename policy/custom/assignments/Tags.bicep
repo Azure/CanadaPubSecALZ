@@ -9,6 +9,9 @@
 
 targetScope = 'managementGroup'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 @description('Management Group scope for the policy definition.')
 param policyDefinitionManagementGroupId string
 
@@ -48,7 +51,7 @@ resource rgInheritedPolicySetAssignment 'Microsoft.Authorization/policyAssignmen
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }
 
 resource rgPolicySetRoleAssignmentContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
@@ -78,7 +81,7 @@ resource rgRequiredPolicySetAssignment 'Microsoft.Authorization/policyAssignment
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }
 
 // Audit for Tags on Resources
@@ -98,5 +101,5 @@ resource resourcesAuditPolicySetAssignment 'Microsoft.Authorization/policyAssign
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }

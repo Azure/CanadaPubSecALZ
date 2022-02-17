@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('SQL Database Logical Server Name.')
 param sqlServerName string
 
@@ -44,7 +47,7 @@ param aadAdministrator object
 
 resource sqlserver 'Microsoft.Sql/servers@2021-02-01-preview' = {
   tags: tags
-  location: resourceGroup().location
+  location: location
   name: sqlServerName
   identity: {
     type: 'SystemAssigned'
@@ -110,7 +113,7 @@ module roleAssignSQLToSALogging '../../iam/resource/storage-role-assignment-to-s
 }
 
 resource sqlserver_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: '${sqlserver.name}-endpoint'
   properties: {
     subnet: {

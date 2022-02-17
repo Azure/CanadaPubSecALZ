@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 // Networking
 // Example (JSON)
 // -----------------------------
@@ -207,7 +210,7 @@ var routesToHub = [
 // Network Security Groups
 resource nsgOZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${network.subnets.oz.name}Nsg'
-  location: resourceGroup().location
+  location: location
   properties: {
     securityRules: []
   }
@@ -215,7 +218,7 @@ resource nsgOZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
 
 resource nsgPAZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${network.subnets.paz.name}Nsg'
-  location: resourceGroup().location
+  location: location
   properties: {
     securityRules: []
   }
@@ -223,7 +226,7 @@ resource nsgPAZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
 
 resource nsgRZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${network.subnets.rz.name}Nsg'
-  location: resourceGroup().location
+  location: location
   properties: {
     securityRules: []
   }
@@ -231,7 +234,7 @@ resource nsgRZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
 
 resource nsgHRZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
   name: '${network.subnets.hrz.name}Nsg'
-  location: resourceGroup().location
+  location: location
   properties: {
     securityRules: []
   }
@@ -242,6 +245,7 @@ module nsgDatabricks '../../azresources/network/nsg/nsg-databricks.bicep' = {
   params: {
     namePublic: '${network.subnets.databricksPublic.name}Nsg'
     namePrivate: '${network.subnets.databricksPrivate.name}Nsg'
+    location: location
   }
 }
 
@@ -249,6 +253,7 @@ module nsgSqlMi '../../azresources/network/nsg/nsg-sqlmi.bicep' = {
   name: 'deploy-nsg-sqlmi'
   params: {
     name: '${network.subnets.sqlmi.name}Nsg'
+    location: location
   }
 }
 
@@ -256,6 +261,7 @@ module nsgAppService '../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-app-service-integration'
   params: {
     name: '${network.subnets.appService.name}Nsg'
+    location: location
   }
 }
 
@@ -263,7 +269,7 @@ module nsgAppService '../../azresources/network/nsg/nsg-empty.bicep' = {
 // Route Tables
 resource udrOZ 'Microsoft.Network/routeTables@2021-02-01' = {
   name: '${network.subnets.oz.name}Udr'
-  location: resourceGroup().location
+  location: location
   properties: {
     routes: network.peerToHubVirtualNetwork ? routesToHub : null
   }
@@ -271,7 +277,7 @@ resource udrOZ 'Microsoft.Network/routeTables@2021-02-01' = {
 
 resource udrPAZ 'Microsoft.Network/routeTables@2021-02-01' = {
   name: '${network.subnets.paz.name}Udr'
-  location: resourceGroup().location
+  location: location
   properties: {
     routes: network.peerToHubVirtualNetwork ? routesToHub : null
   }
@@ -279,7 +285,7 @@ resource udrPAZ 'Microsoft.Network/routeTables@2021-02-01' = {
 
 resource udrRZ 'Microsoft.Network/routeTables@2021-02-01' = {
   name: '${network.subnets.rz.name}Udr'
-  location: resourceGroup().location
+  location: location
   properties: {
     routes: network.peerToHubVirtualNetwork ? routesToHub : null
   }
@@ -287,7 +293,7 @@ resource udrRZ 'Microsoft.Network/routeTables@2021-02-01' = {
 
 resource udrHRZ 'Microsoft.Network/routeTables@2021-02-01' = {
   name: '${network.subnets.hrz.name}Udr'
-  location: resourceGroup().location
+  location: location
   properties: {
     routes: network.peerToHubVirtualNetwork ? routesToHub : null
   }
@@ -295,7 +301,7 @@ resource udrHRZ 'Microsoft.Network/routeTables@2021-02-01' = {
 
 resource udrAKS 'Microsoft.Network/routeTables@2021-02-01' = {
   name: '${network.subnets.aks.name}Udr'
-  location: resourceGroup().location
+  location: location
   properties: {
     routes: network.peerToHubVirtualNetwork ? routesToHub : null
   }
@@ -304,6 +310,7 @@ module udrSqlMi '../../azresources/network/udr/udr-sqlmi.bicep' = {
   name: 'deploy-route-table-sqlmi'
   params: {
     name: '${network.subnets.sqlmi.name}Udr'
+    location: location
   }
 }
 
@@ -311,6 +318,7 @@ module udrDatabricksPublic '../../azresources/network/udr/udr-databricks-public.
   name: 'deploy-route-table-databricks-public'
   params: {
     name: '${network.subnets.databricksPublic.name}Udr'
+    location: location
   }
 }
 
@@ -318,6 +326,7 @@ module udrDatabricksPrivate '../../azresources/network/udr/udr-databricks-privat
   name: 'deploy-route-table-databricks-private'
   params: {
     name: '${network.subnets.databricksPrivate.name}Udr'
+    location: location
   }
 }
 
@@ -325,6 +334,7 @@ module udrAppService '../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-app-service-integration'
   params: {
     name: '${network.subnets.appService.name}Udr'
+    location: location
     routes: []
   }
 }
@@ -332,7 +342,7 @@ module udrAppService '../../azresources/network/udr/udr-custom.bicep' = {
 // Virtual Network
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   name: network.name
-  location: resourceGroup().location
+  location: location
   properties: {
     dhcpOptions: {
       dnsServers: network.dnsServers
@@ -678,7 +688,7 @@ module privatezone_aks '../../azresources/network/private-dns-zone.bicep' = {
   name: 'deploy-privatezone-aks'
   scope: resourceGroup()
   params: {
-    zone: toLower('privatelink.${resourceGroup().location}.azmk8s.io')
+    zone: toLower('privatelink.${location}.azmk8s.io')
     vnetId: vnet.id
 
     dnsCreateNewZone: !hubNetwork.privateDnsManagedByHub

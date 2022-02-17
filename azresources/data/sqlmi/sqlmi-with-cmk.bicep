@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('SQL Managed Instance Name.')
 param name string
 
@@ -68,7 +71,7 @@ module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
 
 resource sqlmi 'Microsoft.Sql/managedInstances@2020-11-01-preview' = {
   name: name
-  location: resourceGroup().location
+  location: location
   tags: tags
   identity: {
     type: 'SystemAssigned'

@@ -7,12 +7,14 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-
+@description('Location for the deployment.')
+param location string = resourceGroup().location
 
 module nsgAppService '../../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-app-service-integration'
   params: {
     name: 'appServiceNsg'
+    location: location
   }
 }
 
@@ -20,6 +22,7 @@ module udrAppService '../../../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-app-service-integration'
   params: {
     name: 'appServiceUdr'
+    location: location
     routes: []
   }
 }
@@ -28,7 +31,7 @@ module udrAppService '../../../../azresources/network/udr/udr-custom.bicep' = {
 // Virtual Network
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   name: 'testasvnet'
-  location: resourceGroup().location
+  location: location
   properties: {
     addressSpace: {
       addressPrefixes: [
