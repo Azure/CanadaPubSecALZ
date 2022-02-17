@@ -9,6 +9,9 @@
 
 targetScope = 'subscription'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 var testScenarios = [
   {
     enabled: true
@@ -61,13 +64,13 @@ var tags = {
 
 resource rgTestHarnessInfraAssets 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: 'test-harness-infra-assets'
-  location: deployment().location
+  location: location
   tags: tags
 }
 
 resource rgTestHarnessSupportingAssets 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: 'test-harness-supporting-assets'
-  location: deployment().location
+  location: location
   tags: tags
 }
 
@@ -76,6 +79,7 @@ module rgTestHarnessManagedIdentity '../../../../azresources/iam/user-assigned-i
   name: 'deploy-test-harness-managed-identity'
   params: {
     name: 'test-harness-machine-learning-lz-managed-identity'
+    location: location
   }
 }
 
@@ -97,6 +101,7 @@ module logAnalyticsWorkspace '../../../../azresources/monitor/log-analytics.bice
     automationAccountName: 'automation-${uniqueString(rgTestHarnessSupportingAssets.name)}'
     workspaceRetentionInDays: 90
     tags: tags
+    location: location
   }
 }
 
@@ -109,6 +114,8 @@ module runner 'test-runner.bicep' =  [for (scenario, i) in testScenarios: if (sc
   name: 'execute-runner-scenario-${i + 1}'
   scope: subscription()
   params: {
+    location: location
+
     deploymentScriptIdentityId: rgTestHarnessManagedIdentity.outputs.identityId
     deploymentScriptResourceGroupName: rgTestHarnessInfraAssets.name
 
@@ -149,5 +156,6 @@ module harnessCleanup '../../../../azresources/util/deployment-script.bicep' = {
     deploymentScript: format(cleanUpScript, subscription().subscriptionId, rgTestHarnessSupportingAssets.name, rgTestHarnessManagedIdentity.outputs.identityPrincipalId, subscription().id)
     deploymentScriptName: 'cleanup-test-harness'
     deploymentScriptIdentityId: rgTestHarnessManagedIdentity.outputs.identityId
+    location: location
   }
 }

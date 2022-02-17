@@ -3,6 +3,9 @@
 // EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Firewall Name')
 param name string
 
@@ -23,7 +26,7 @@ param existingFirewallPolicyId string
 
 resource firewallPublicIp 'Microsoft.Network/publicIPAddresses@2021-02-01' = if (!forcedTunnelingEnabled) {
   name: '${name}PublicIp'
-  location: resourceGroup().location
+  location: location
   sku: {
     name: 'Standard'
     tier: 'Regional'
@@ -36,7 +39,7 @@ resource firewallPublicIp 'Microsoft.Network/publicIPAddresses@2021-02-01' = if 
 
 resource firewallManagementPublicIp 'Microsoft.Network/publicIPAddresses@2021-02-01' = if (forcedTunnelingEnabled) {
   name: '${name}MangementPublicIp'
-  location: resourceGroup().location
+  location: location
   sku: {
     name: 'Standard'
     tier: 'Regional'
@@ -49,7 +52,7 @@ resource firewallManagementPublicIp 'Microsoft.Network/publicIPAddresses@2021-02
 
 resource firewall 'Microsoft.Network/azureFirewalls@2021-02-01' = {
   name: name
-  location: resourceGroup().location
+  location: location
   zones: !empty(zones) ? zones : null
   properties: {
     sku: {

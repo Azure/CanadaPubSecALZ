@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Storage Account Resource Group Name.')
 param storageResourceGroupName string
 
@@ -70,5 +73,6 @@ module enableCmk '../util/deployment-script.bicep' = {
     deploymentScript: format(cliCommand, resourceGroup().name, storage.name, akv.properties.vaultUri, akvKey.outputs.keyName)
     deploymentScriptName: 'enable-cmk-${storage.name}-ds'
     deploymentScriptIdentityId: deploymentScriptIdentityId
+    location: location
   }
 }
