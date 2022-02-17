@@ -51,7 +51,7 @@ resource rgInheritedPolicySetFromSubscriptionToResourceGroupAssignment 'Microsof
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }
 
 resource rgPolicySetRoleAssignmentFromSubscriptionToResourceGroupContributor 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
