@@ -5,6 +5,9 @@
 // ----------------------------------------------------------------------------------
 targetScope = 'subscription'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 // Tags
 // Example (JSON)
 // -----------------------------
@@ -48,7 +51,7 @@ module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-u
 
 resource rgFirewallPolicy 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroupName
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
@@ -57,6 +60,7 @@ module firewallPolicy 'azfw-policy/azure-firewall-policy.bicep' = {
   name: 'deploy-azure-firewall-policy'
   params: {
     name: policyName
+    location: location
   }
 }
 

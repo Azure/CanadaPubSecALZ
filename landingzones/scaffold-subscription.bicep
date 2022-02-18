@@ -9,6 +9,9 @@
 
 targetScope = 'subscription'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 // Service Health
 // Example (JSON)
 // -----------------------------
@@ -186,7 +189,7 @@ module budget '../azresources/cost/budget-subscription.bicep' = if (!empty(subsc
 // Create Service Health resource group for managing alerts and action groups
 resource rgServiceHealth 'Microsoft.Resources/resourceGroups@2021-04-01' = if (!empty(serviceHealthAlerts)) {
   name: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.resourceGroupName : 'rgServiceHealth'
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 

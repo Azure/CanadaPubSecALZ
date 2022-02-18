@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Automation Account name.')
 param automationAccountName string
 
@@ -16,7 +19,7 @@ param tags object = {}
 resource automationAccount 'Microsoft.Automation/automationAccounts@2015-10-31' = {
   name: automationAccountName
   tags: tags
-  location: resourceGroup().location
+  location: location
   properties: {
     sku: {
       name: 'Basic'

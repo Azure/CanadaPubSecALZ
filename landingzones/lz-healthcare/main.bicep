@@ -19,6 +19,9 @@ For accepted parameter values, see:
 
 */
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 // Service Health
 @description('Service Health alerts')
 param serviceHealthAlerts object = {}
@@ -97,6 +100,8 @@ module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
   scope: subscription()
   params: {
+    location: location
+
     serviceHealthAlerts: serviceHealthAlerts
     subscriptionRoleAssignments: subscriptionRoleAssignments
     subscriptionBudget: subscriptionBudget
@@ -114,6 +119,8 @@ module landingZone 'lz.bicep' = {
   name: 'deploy-healthcare-archetype'
   scope: subscription()
   params: {
+    location: location
+    
     securityContactEmail: securityCenter.email
 
     resourceTags: resourceTags

@@ -2,19 +2,40 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-    "location": {
-        "value": "canadacentral"
-    },
-    "serviceHealthAlerts": {
+        "location": {
+            "value": "canada"
+        },
+        "serviceHealthAlerts": {
             "value": {
                 "resourceGroupName": "pubsec-service-health",
-                "incidentTypes": [ "Incident", "Security" ],
-                "regions": [ "Global", "Canada East", "Canada Central" ],
+                "incidentTypes": [
+                    "Incident",
+                    "Security"
+                ],
+                "regions": [
+                    "Global",
+                    "Canada East",
+                    "Canada Central"
+                ],
                 "receivers": {
-                    "app": [ "alzcanadapubsec@microsoft.com" ],
-                    "email": [ "alzcanadapubsec@microsoft.com" ],
-                    "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-                    "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                    "app": [
+                        "alzcanadapubsec@microsoft.com"
+                    ],
+                    "email": [
+                        "alzcanadapubsec@microsoft.com"
+                    ],
+                    "sms": [
+                        {
+                            "countryCode": "1",
+                            "phoneNumber": "5555555555"
+                        }
+                    ],
+                    "voice": [
+                        {
+                            "countryCode": "1",
+                            "phoneNumber": "5555555555"
+                        }
+                    ]
                 },
                 "actionGroupName": "Sub1 ALZ action group",
                 "actionGroupShortName": "sub1-alert",
@@ -48,7 +69,13 @@
         },
         "subscriptionBudget": {
             "value": {
-                "createBudget": false
+                "createBudget": true,
+                "name": "MonthlySubscriptionBudget",
+                "amount": 1000,
+                "timeGrain": "Monthly",
+                "contactEmails": [
+                    "alzcanadapubsec@microsoft.com"
+                ]
             }
         },
         "subscriptionTags": {
@@ -68,10 +95,10 @@
         },
         "resourceGroups": {
             "value": {
-                "automation": "rgAutomation2022Q1",
-                "networking": "rgVnet2022Q1",
+                "automation": "rgAutomation092021W3",
+                "networking": "rgVnet092021W3",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecoveryVault2022Q1"
+                "backupRecoveryVault":"rgRecoveryVault"
             }
         },
         "automation": {

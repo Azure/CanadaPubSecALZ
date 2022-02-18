@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure App Service Name.')
 param name string
 
@@ -44,7 +47,7 @@ param vnetIntegrationSubnetId string
 resource app 'Microsoft.Web/sites@2020-06-01' = {
   name: name
   tags: tags
-  location: resourceGroup().location
+  location: location
   kind: 'linux'
   identity: {
     type: 'SystemAssigned'

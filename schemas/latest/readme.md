@@ -2,6 +2,18 @@
 
 ## Landing Zone Schemas
 
+### February 14, 2022
+
+Added location schema object.  This is an optional setting for archetypes.  This setting will default to `deployment().location`.
+
+**Example**
+
+```json
+    "location": {
+        "value": "canadacentral"
+    }
+```
+
 ### January 16, 2021
 Changed `appServiceLinuxContainer` schema object to support optional inbound private endpoint.
 

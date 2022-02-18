@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('SQL Database Logical Server Name.')
 param sqlServerName string
 
@@ -65,7 +68,7 @@ module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
 
 resource sqlserver 'Microsoft.Sql/servers@2021-02-01-preview' = {
   tags: tags
-  location: resourceGroup().location
+  location: location
   name: sqlServerName
   identity: {
     type: 'SystemAssigned'
@@ -157,7 +160,7 @@ module enableTDE 'sqldb-with-cmk-enable-tde.bicep' = {
 }
 
 resource sqlserver_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: '${sqlserver.name}-endpoint'
   properties: {
     subnet: {

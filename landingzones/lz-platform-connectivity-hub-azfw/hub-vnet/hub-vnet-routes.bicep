@@ -3,6 +3,9 @@
 // EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Public Access Zone Route Table Name')
 param publicAccessZoneUdrName string
 
@@ -54,6 +57,7 @@ module publicAccessZoneUdr '../../../azresources/network/udr/udr-custom.bicep' =
   params: {
     name: publicAccessZoneUdrName
     routes: routes
+    location: location
   }
 }
 
@@ -62,5 +66,6 @@ module managementRestrictedZoneUdr '../../../azresources/network/udr/udr-custom.
   params: {
     name: managementRestrictedZoneUdrName
     routes: routes
+    location: location
   }
 }

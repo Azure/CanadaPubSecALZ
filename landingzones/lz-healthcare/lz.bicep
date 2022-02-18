@@ -9,6 +9,9 @@
 
 targetScope = 'subscription'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 /*
 
 For accepted parameter values, see:
@@ -82,43 +85,43 @@ var eventhubName = 'eventhub${uniqueString(rgCompute.id)}'
 //resource group deployments
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.networkWatcher
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.automation
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 resource rgVnet 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroups.networking
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 resource rgStorage 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.storage
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 resource rgCompute 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.compute
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 resource rgSecurity 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.security
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 resource rgMonitor 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.monitor
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
@@ -129,6 +132,7 @@ module automationAccount '../../azresources/automation/automation-account.bicep'
   params: {
     automationAccountName: automation.name
     tags: resourceTags
+    location: location    
   }
 }
 
@@ -138,6 +142,7 @@ module deploymentScriptIdentity '../../azresources/iam/user-assigned-identity.bi
   scope: rgAutomation
   params: {
     name: 'deployment-scripts'
+    location: location
   }
 }
 
@@ -180,6 +185,7 @@ module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploy
     deploymentScript: format(azCliCommandDeploymentScriptPermissionCleanup, deploymentScriptIdentity.outputs.identityPrincipalId, rgStorage.id)
     deploymentScriptIdentityId: deploymentScriptIdentity.outputs.identityId
     deploymentScriptName: 'ds-rbac-${resourceGroups.storage}-cleanup'
+    location: location
   }  
 }
 
@@ -194,6 +200,7 @@ module rgComputeDeploymentScriptPermissionCleanup '../../azresources/util/deploy
     deploymentScript: format(azCliCommandDeploymentScriptPermissionCleanup, deploymentScriptIdentity.outputs.identityPrincipalId, rgCompute.id)
     deploymentScriptIdentityId: deploymentScriptIdentity.outputs.identityId
     deploymentScriptName: 'ds-rbac-${resourceGroups.compute}-cleanup'
+    location: location
   }  
 }
 
@@ -204,6 +211,7 @@ module networking 'networking.bicep' = {
   params: {
     hubNetwork: hubNetwork
     network: network
+    location: location
   }
 }
 
@@ -214,6 +222,7 @@ module akv '../../azresources/security/key-vault.bicep' = {
   params: {
     name: akvName
     tags: resourceTags
+    location: location
 
     enabledForDiskEncryption: true
 
@@ -228,6 +237,7 @@ module storageLogging '../../azresources/storage/storage-generalpurpose.bicep' =
   params: {
     tags: resourceTags
     name: storageLoggingName
+    location: location
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
@@ -247,6 +257,8 @@ module sqlDb '../../azresources/data/sqldb/main.bicep' = if (sqldb.enabled) {
   name: 'deploy-sqldb'
   scope: rgStorage
   params: {
+    location: location
+
     tags: resourceTags
     sqlServerName: sqlServerName
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
@@ -273,6 +285,7 @@ module dataLake '../../azresources/storage/storage-adlsgen2.bicep' = {
   params: {
     tags: resourceTags
     name: datalakeStorageName
+    location: location
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
 
@@ -295,6 +308,7 @@ module egressLb '../../azresources/network/lb-egress.bicep' = {
   params: {
     name: databricksEgressLbName
     tags: resourceTags
+    location: location
   }
 }
 
@@ -302,6 +316,8 @@ module databricks '../../azresources/analytics/databricks/main.bicep' = {
   name: 'deploy-databricks'
   scope: rgCompute
   params: {
+    location: location
+
     name: databricksName
     tags: resourceTags
     vnetId: networking.outputs.vnetId
@@ -320,6 +336,7 @@ module adf '../../azresources/analytics/adf/main.bicep' = {
   params: {
     name: adfName
     tags: resourceTags
+    location: location
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     datafactoryPrivateZoneId: networking.outputs.adfDataFactoryPrivateDnsZoneId
@@ -336,6 +353,7 @@ module acr '../../azresources/containers/acr/main.bicep' = {
   params: {
     name: acrName
     tags: resourceTags
+    location: location
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.acrPrivateDnsZoneId
@@ -353,6 +371,7 @@ module appInsights '../../azresources/monitor/ai-web.bicep' = {
   params: {
     tags: resourceTags
     name: aiName
+    location: location
   }
 }
 
@@ -364,6 +383,7 @@ module dataLakeMetaData '../../azresources/storage/storage-generalpurpose.bicep'
   params: {
     tags: resourceTags
     name: amlMetaStorageName
+    location: location
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
@@ -380,6 +400,8 @@ module aml '../../azresources/analytics/aml/main.bicep' = {
   name: 'deploy-aml'
   scope: rgCompute
   params: {
+    location: location
+
     name: amlName
     tags: resourceTags
     containerRegistryId: acr.outputs.acrId
@@ -402,6 +424,7 @@ module synapseAnalytics '../../azresources/analytics/synapse/main.bicep' = {
   params: {
     name: synapseName
     tags: resourceTags
+    location: location
 
     managedResourceGroupName: '${rgCompute.name}-${synapseName}-${uniqueString(rgCompute.id)}'
 
@@ -504,6 +527,8 @@ module fhir '../../azresources/compute/fhir.bicep' = {
   params: {
     name: fhirName
     tags: resourceTags
+    location: location
+
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.fhirPrivateDnsZoneId
   }
@@ -517,6 +542,7 @@ module functionStorage '../../azresources/storage/storage-generalpurpose.bicep' 
   params: {
     tags: resourceTags
     name: azfuncStorageName
+    location: location
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
@@ -538,6 +564,7 @@ module functionAppServicePlan '../../azresources/compute/web/app-service-plan-li
     skuTier: 'Standard'
 
     tags: resourceTags
+    location: location
   }
 }
 
@@ -556,6 +583,8 @@ module functionApp '../../azresources/compute/web/functions-python-linux.bicep' 
     vnetIntegrationSubnetId: networking.outputs.webAppSubnetId
     
     tags: resourceTags
+
+    location: location
   }
 }
 
@@ -566,6 +595,7 @@ module streamanalytics '../../azresources/analytics/stream-analytics/main.bicep'
   params: {
     name: stranalyticsName
     tags: resourceTags
+    location: location
   }
 }
 
@@ -576,6 +606,8 @@ module eventhub '../../azresources/integration/eventhub.bicep' = {
   params: {
     name: eventhubName
     tags: resourceTags
+    location: location
+    
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneEventHubId : networking.outputs.eventhubPrivateDnsZoneId
   }
