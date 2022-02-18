@@ -336,9 +336,7 @@ For example, when you grant access to your team responsible for infrastructure s
 | IT Teams responsible for one or more line of business with permissions to one or more subscriptions, resource groups or resources with at least Reader role. | Access the logs through the resource's Logs menu for the Azure resource (i.e., VM or Storage Account or Database). | Only to Azure resources based on RBAC.  User can query logs for specific resources, resource groups, or subscription they have access to from any workspace but can't query logs for other resources. |
 | Application Team with permissions to one or more subscriptions, resource groups or resources with at least Reader role. | Access the logs through the resource's Logs menu for the Azure resource (i.e., VM or Storage Account or Database). | Only to Azure resources based on RBAC.  User can query logs for specific resources, resource groups, or subscription they have access to from any workspace but can't query logs for other resources. |
 
-
 ---
-
 
 ## 7. Tagging
 
@@ -349,11 +347,17 @@ A tagging strategy include business and operational details:
 * The business side of this strategy ensures that tags include the organizational information needed to identify the teams. Use a resource along with the business owners who are responsible for resource costs.
 * The operational side ensures that tags include information that IT teams use to identify the workload, application, environment, criticality, and other information useful for managing resources.
 
-Tags can be assigned to resources using 3 approaches:
+Tags can be assigned to resource groups using 2 approaches:
 
 | Approach | Mechanism |
 | --- | --- |
-| Automatically assigned from the Subscription tags | Azure Policy:  Inherit a tag from the subscription if missing |
+| Automatically assigned from the Subscription tags | Azure Policy:  Inherit a tag from the subscription to resource group if missing |
+| Explicitly set on a Resource Group | Azure Portal, ARM templates, CLI, PowerShell, etc. All tags can be inherited by default from subscription and can be changed as needed per resource group. |
+
+Tags can be assigned to resources using 2 approaches:
+
+| Approach | Mechanism |
+| --- | --- |
 | Automatically assigned from the Resource Group tags | Azure Policy:  Inherit a tag from the resource group if missing |
 | Explicitly set on a Resource | Azure Portal, ARM templates, CLI, PowerShell, etc.<br /><br />**Note:**  It's recommended to inherit tags that are required by the organization through Subscription & Resource Group.  Per resource tags are typically added by Application Teams for their own purposes. |
 
@@ -363,18 +367,43 @@ Azure Landing Zones for Canadian Public Sector recommends the following tagging 
 
 ![Tags](media/architecture/tags.jpg)
 
-To achieve this design, built-in and custom Azure Policies are used to automatically propagate tags from Resource Group, validate mandatory tags at Resource Groups and to provide remediation to back-fill resources with missing tags.  Azure Policies used to achieve this design are:
+To achieve this design, custom Azure Policies are used to automatically propagate tags from subscription & resource group, validate mandatory tags at resource groups and to provide remediation to back-fill resource groups and resources with missing tags.  Azure Policies used to achieve this design are:
 
-* [Built-in] Inherit a tag from the resource group if missing
+* [Custom] Inherit a tag from the subscription to resource group if missing (1 policy per tag)
+* [Custom] Inherit a tag from the resource group if missing (1 policy per tag)
 * [Custom] Require a tag on resource groups (1 policy per tag)
 * [Custom] Audit missing tag on resource (1 policy per tag)
 
 This approach ensures that:
 
 * All resource groups contain the expected tags; and
+* All resource groups can inherit common tags from subscription when missing; and
 * All resources in that resource groups will automatically inherit those tags.
 
-This helps remove deployment friction by eliminating the explicit tagging requirement per resource.  The tags can be override per resource if required. 
+This helps remove deployment friction by eliminating the explicit tagging requirement per resource.  The tags can be overridden per resource group & resource if required.
+
+**Example scenarios for inheriting from subscription to resource group**
+
+These example scenarios outline the behaviour when using Azure Policy for inheriting tag values.
+
+To simplify, let's assume a single `CostCenter` tag is required for every resource group.
+
+| Subscription Tags | Resource Group Tags | Outcome |
+| --- | --- | --- |
+| `CostCenter=123` | `CostCenter` tag not defined when creating a resource group. | `CostCenter=123` is inherited from subscription.  Resource group is created. |
+| `CostCenter=123` | `CostCenter=ABC` defined when creating the resource group. | `CostCenter=ABC` takes precedence since it's explicitly defined on the resource group.  Resource group is created. |
+| `CostCenter` tag is not defined. | `CostCenter` tag not defined when creating a resource group. | Policy violation since tag can't be inherited from subscription nor it hasn't been defined on resource group. Resource group is not created. |
+
+**Example scenarios for inheriting from resource group to resources**
+
+These example scenarios outline the behaviour when using Azure Policy for inheriting tag values.
+
+To simplify, let's assume a single `CostCenter` tag is required for every resource.
+
+| Resource Group Tags | Resource Tags | Outcome |
+| --- | --- | --- |
+| `CostCenter=123` | `CostCenter` tag not defined when creating a resource. | `CostCenter=123` is inherited from resource group.  Resource is created. |
+| `CostCenter=123` | `CostCenter=ABC` defined when creating the resource. | `CostCenter=ABC` takes precedence since it's explicitly defined on the resource.  Resource is created. |
 
 *We chose custom policies so that they can be grouped in a policy set (initiative) and have unique names to describe their purpose.*
 

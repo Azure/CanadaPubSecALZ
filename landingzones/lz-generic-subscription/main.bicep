@@ -149,6 +149,13 @@ resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   tags: resourceTags
 }
 
+// Create Azure backup RecoveryVault Resource Group
+resource rgBackupVault 'Microsoft.Resources/resourceGroups@2020-06-01' =if (backupRecoveryVault.enabled) {
+  name: resourceGroups.backupRecoveryVault
+  location: location
+  tags: resourceTags
+}
+
 // Create automation account
 module automationAccount '../../azresources/automation/automation-account.bicep' = {
   name: 'deploy-automation-account'
@@ -160,17 +167,10 @@ module automationAccount '../../azresources/automation/automation-account.bicep'
   }
 }
 
-// Create Azure backup RecoveryVault Resource Group
-resource backupRgVault 'Microsoft.Resources/resourceGroups@2020-06-01' =if(backupRecoveryVault.enabled) {
-  name: resourceGroups.backupRecoveryVault
-  location: location
-  tags: resourceTags
-}
-
 //create recovery vault for backup of vms
 module backupVault '../../azresources/management/backup-recovery-vault.bicep'= if(backupRecoveryVault.enabled){
   name:'deploy-backup-recoveryvault'
-  scope: backupRgVault
+  scope: rgBackupVault
   params:{
     vaultName: backupRecoveryVault.name
     tags: resourceTags
