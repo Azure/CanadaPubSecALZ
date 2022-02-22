@@ -102,7 +102,7 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 
 ## Step 2 - Configure Azure DevOps
 
-### Step: 2.1: Configure Service Connection in Azure DevOps Project Configuration
+### Step 2.1: Configure Service Connection in Azure DevOps Project Configuration
 
 * Settings
   * **Connection Type**:  Azure Resource Manager
@@ -139,7 +139,7 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 
 * **Reference**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml).  Use the settings described above when following the instructions.
 
-### Step: 2.2: Configure Azure DevOps Pipeline Environment
+### Step 2.2: Configure Azure DevOps Pipeline Environment
 
 An environment is a collection of resources that you can target with deployments from a pipeline. Typical examples of environment names are Dev, Test, QA, Staging, and Production.  More information such as benefits of using Environments can be found in [Azure Docs](https://docs.microsoft.com/azure/devops/pipelines/process/environments).
 
@@ -169,7 +169,7 @@ Instructions:
 
 ## Step 3 - Configure Management Groups
 
-### Step: 3.1: Update common.yml in git repository
+### Step 3.1: Update common.yml in git repository
 
 Create/edit `./config/variables/common.yml` in Git with Service Connection name.  This file is used in all Azure DevOps pipelines.
 
