@@ -174,6 +174,7 @@ Instructions:
 Create/edit `./config/variables/common.yml` in Git with Service Connection name.  This file is used in all Azure DevOps pipelines.
 
 **Sample YAML**
+
 ```yaml
 variables:
 
@@ -211,15 +212,14 @@ variables:
 
     *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
-    1.    Go to Pipelines
-    2.    New Pipeline
-    3.    Choose Azure Repos Git
-    4.    Select Repository
-    5.    Select Existing Azure Pipeline YAML file
-    6.    Identify the pipeline in `.pipelines/management-groups.yml`.
-    7.  Save the pipeline (don't run it yet)
-    8.  Rename the pipeline to `management-groups-ci`
-
+    1. Go to Pipelines
+    2. New Pipeline
+    3. Choose Azure Repos Git
+    4. Select Repository
+    5. Select Existing Azure Pipeline YAML file
+    6. Identify the pipeline in `.pipelines/management-groups.yml`.
+    7. Save the pipeline (don't run it yet)
+    8. Rename the pipeline to `management-groups-ci`
 
 2. Run pipeline and wait for completion.
 
@@ -240,7 +240,6 @@ variables:
     7. Save the pipeline (don't run it yet)
     8. Rename the pipeline to `roles-ci`
 
-
 2. Run pipeline and wait for completion.
 
 ---
@@ -257,94 +256,97 @@ This role assignment is used to grant users access to the logging subscription b
 
 > **When you are using an existing Log Analytics Workspace in your subscription**, set the configuration parameters of the existing Log Analytics Workspace.  These settings will be used by deployments such as Azure Policy for Log Analytics integration.
 >
-> When a Log Analytics Workspace & Automation account already exists - set the following: 
->    - Subscription ID
->    - Resource Group
->    - Log Analytics Workspace name
->    - Automation account name  
+> When a Log Analytics Workspace & Automation account already exists - set the following:
+>
+>- Subscription ID
+>- Resource Group
+>- Log Analytics Workspace name
+>- Automation account name  
 >
 > **The deployment automation will update the existing resources instead of creating new.**
 
 1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
-* Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
-
-```yml
-    var-logging-subscriptionRoleAssignments: >
-        []
-```
-
-* Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
-
-* Update with valid contact information for the Azure Service Health Alerts: email and phone number. 
-
-* Set the values for the Azure tags that would be applied to the logging resources. 
-
-**Sample environment YAML (Logging section only)**
-
-```yml
-    variables:
-        # Logging
-        var-logging-managementGroupId: pubsecPlatformManagement
-        var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
-        var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
-        var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
-        var-logging-logAnalyticsRetentionInDays: 730
-        var-logging-logAnalyticsAutomationAccountName: automation-account
-        var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
-        var-logging-serviceHealthAlerts: >
-            {
-                "resourceGroupName": "pubsec-service-health",
-                "incidentTypes": [ "Incident", "Security" ],
-                "regions": [ "Global", "Canada East", "Canada Central" ],
-                "receivers": {
-                    "app": [ "alzcanadapubsec@microsoft.com" ],
-                    "email": [ "alzcanadapubsec@microsoft.com" ],
-                    "sms": [
-                        { "countryCode": "1", "phoneNumber": "5555555555" }
-                    ],
-                    "voice": [
-                        { "countryCode": "1", "phoneNumber": "5555555555" }
-                    ]
-                }
-            }
-        var-logging-securityCenter: >
-            {
-                "email": "alzcanadapubsec@microsoft.com",
-                "phone": "5555555555"
-            }
+    * Update **var-logging-managementGroupId** with the logging management group.  This is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-logging-managementGroupId` will be `contosoPlatformManagement`.
+    
+    * Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
+    
+    ```yml
         var-logging-subscriptionRoleAssignments: >
-            [
-                {
-                    "comments": "Built-in Contributor Role",
-                    "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-                    "securityGroupObjectIds": [
-                        "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-                    ]
-                }
-            ]
-        var-logging-subscriptionBudget: >
-            {
-                "createBudget": false,
-                "name": "MonthlySubscriptionBudget",
-                "amount": 1000,
-                "timeGrain": "Monthly",
-                "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
-            }
-        var-logging-subscriptionTags: >
-            {
-                "ISSO": "isso-tbd"
-            }
-        var-logging-resourceTags: >
-            {
-                "ClientOrganization": "client-organization-tag",
-                "CostCenter": "cost-center-tag",
-                "DataSensitivity": "data-sensitivity-tag",
-                "ProjectContact": "project-contact-tag",
-                "ProjectName": "project-name-tag",
-                "TechnicalContact": "technical-contact-tag"
-            }
-```
+            []
+    ```
+
+      * Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
+      
+      * Update with valid contact information for the Azure Service Health Alerts: email and phone number.
+      
+      * Set the values for the Azure tags that would be applied to the logging resources.
+      
+      **Sample environment YAML (Logging section only)**
+      
+      ```yml
+          variables:
+              # Logging
+              var-logging-managementGroupId: pubsecPlatformManagement
+              var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
+              var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
+              var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
+              var-logging-logAnalyticsRetentionInDays: 730
+              var-logging-logAnalyticsAutomationAccountName: automation-account
+              var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
+              var-logging-serviceHealthAlerts: >
+                  {
+                      "resourceGroupName": "pubsec-service-health",
+                      "incidentTypes": [ "Incident", "Security" ],
+                      "regions": [ "Global", "Canada East", "Canada Central" ],
+                      "receivers": {
+                          "app": [ "alzcanadapubsec@microsoft.com" ],
+                          "email": [ "alzcanadapubsec@microsoft.com" ],
+                          "sms": [
+                              { "countryCode": "1", "phoneNumber": "5555555555" }
+                          ],
+                          "voice": [
+                              { "countryCode": "1", "phoneNumber": "5555555555" }
+                          ]
+                      }
+                  }
+              var-logging-securityCenter: >
+                  {
+                      "email": "alzcanadapubsec@microsoft.com",
+                      "phone": "5555555555"
+                  }
+              var-logging-subscriptionRoleAssignments: >
+                  [
+                      {
+                          "comments": "Built-in Contributor Role",
+                          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                          "securityGroupObjectIds": [
+                              "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+                          ]
+                      }
+                  ]
+              var-logging-subscriptionBudget: >
+                  {
+                      "createBudget": false,
+                      "name": "MonthlySubscriptionBudget",
+                      "amount": 1000,
+                      "timeGrain": "Monthly",
+                      "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
+                  }
+              var-logging-subscriptionTags: >
+                  {
+                      "ISSO": "isso-tbd"
+                  }
+              var-logging-resourceTags: >
+                  {
+                      "ClientOrganization": "client-organization-tag",
+                      "CostCenter": "cost-center-tag",
+                      "DataSensitivity": "data-sensitivity-tag",
+                      "ProjectContact": "project-contact-tag",
+                      "ProjectName": "project-name-tag",
+                      "TechnicalContact": "technical-contact-tag"
+                  }
+      ```
 
 2. Commit the changes to git repository.
 
@@ -354,15 +356,14 @@ This role assignment is used to grant users access to the logging subscription b
 
     *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
-    1.    Go to Pipelines
-    2.    New Pipeline
-    3.    Choose Azure Repos Git
-    4.    Select Repository
-    5.    Select Existing Azure Pipeline YAML file
-    6.    Identify the pipeline in `.pipelines/platform-logging.yml`.
-    7.  Save the pipeline (don't run it yet)
-    8.  Rename the pipeline to `platform-logging-ci`
-
+    1. Go to Pipelines
+    2. New Pipeline
+    3. Choose Azure Repos Git
+    4. Select Repository
+    5. Select Existing Azure Pipeline YAML file
+    6. Identify the pipeline in `.pipelines/platform-logging.yml`.
+    7. Save the pipeline (don't run it yet)
+    8. Rename the pipeline to `platform-logging-ci`
 
 2. Run pipeline and wait for completion.
 
@@ -378,7 +379,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     1. Navigate to Azure Portal
     2. Navigate to Log Analytics Workspace
     3. Workspace ID is listed on the Overview screen
-* Log Analytics Shared Key 
+* Log Analytics Shared Key
     1. Navigate to Azure Portal
     2. Navigate to Log Analytics Workspace
     3. Navigate to Agents Management
@@ -414,219 +415,219 @@ In order to configure audit stream for Azure Monitor, identify the following inf
      1. [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
      2. [Hub Networking with Fortinet Firewall (NVA)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
 
-    Depending on the preference, you may delete/comment the configuration that is not required. For example, when deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls". 
+    Depending on the preference, you may delete/comment the configuration that is not required. For example, when deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls".
 
- *Note:*  **var-hubnetwork-subscriptionRoleAssignments** should include Azure AD security group's object ID responsible for managing Azure networking. If role assignments are not required, you must change the example provided with the following setting:
-
-  ```yml
-    var-hubnetwork-subscriptionRoleAssignments: >
-        []
-  ```
-
- Include the values for the following as well:
-   * Valid contact information for the Azure Service Health Alerts: email and phone number
-   * Values for Azure resource tags 
-   * IP ranges for the virtual networks
-   * Enable/Disable Azure DDOS Standard
-
-
+    * Update **var-hubnetwork-managementGroupId** with the networking management group.  This is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-hubnetwork-managementGroupId` will be `contosoPlatformConnectivity`.
+    
+    * Update **var-hubnetwork-subscriptionRoleAssignments** based on Azure AD security group's object ID responsible for managing Azure networking. If role assignments are not required, you must change the example provided with the following setting:
+    
+      ```yml
+        var-hubnetwork-subscriptionRoleAssignments: >
+            []
+      ```
+    
+    * Valid contact information for the Azure Service Health Alerts: email and phone number
+    * Values for Azure resource tags
+    * IP ranges for the virtual networks
+    * Enable/Disable Azure DDOS Standard
+    
     **Sample environment YAML (Hub Networking section only)**
-
-    ```yml
-        variables:
-           # Hub Networking
-           var-hubnetwork-managementGroupId: pubsecPlatformConnectivity
-           var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
-           var-hubnetwork-serviceHealthAlerts: >
-             {
-               "resourceGroupName": "pubsec-service-health",
-               "incidentTypes": [ "Incident", "Security" ],
-               "regions": [ "Global", "Canada East", "Canada Central" ],
-               "receivers": {
-                   "app": [ "alzcanadapubsec@microsoft.com" ],
-                   "email": [ "alzcanadapubsec@microsoft.com" ],
-                   "sms": [
-                       { "countryCode": "1", "phoneNumber": "5555555555" }
-                   ],
-                   "voice": [
-                       { "countryCode": "1", "phoneNumber": "5555555555" }
-                   ]
-               },
-               "actionGroupName": "ALZ action group",
-               "actionGroupShortName": "alz-alert",
-               "alertRuleName": "ALZ alert rule",
-               "alertRuleDescription": "Alert rule for Azure Landing Zone"
-             }
-           var-hubnetwork-securityCenter: >
-             {
-               "email": "alzcanadapubsec@microsoft.com",
-               "phone": "5555555555"
-             }
-           var-hubnetwork-subscriptionRoleAssignments: >
-             [
-               {
-                   "comments": "Built-in Contributor Role",
-                   "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-                   "securityGroupObjectIds": [
-                       "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-                   ]
-               }
-             ]
-           var-hubnetwork-subscriptionBudget: >
-             {
-               "createBudget": false,
-               "name": "MonthlySubscriptionBudget",
-               "amount": 1000,
-               "timeGrain": "Monthly",
-               "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
-             }
-           var-hubnetwork-subscriptionTags: >
-             {
-               "ISSO": "isso-tbd"
-             }
-           var-hubnetwork-resourceTags: >
-             {
-               "ClientOrganization": "client-organization-tag",
-               "CostCenter": "cost-center-tag",
-               "DataSensitivity": "data-sensitivity-tag",
-               "ProjectContact": "project-contact-tag",
-               "ProjectName": "project-name-tag",
-               "TechnicalContact": "technical-contact-tag"
-             }
-
-           ## Hub Networking - Private Dns Zones
-           var-hubnetwork-deployPrivateDnsZones: true
-           var-hubnetwork-rgPrivateDnsZonesName: pubsec-dns-rg
-
-           ## Hub Networking - DDOS
-           var-hubnetwork-deployDdosStandard: false
-           var-hubnetwork-rgDdosName: pubsec-ddos-rg
-           var-hubnetwork-ddosPlanName: ddos-plan
-
-           ## Hub Networking - Public Zone
-           var-hubnetwork-rgPazName: pubsec-public-access-zone-rg
-
-           ## Hub Networking - Management Restricted Zone Virtual Network
-           var-hubnetwork-rgMrzName: pubsec-management-restricted-zone-rg
-           var-hubnetwork-mrzVnetName: management-restricted-vnet
-           var-hubnetwork-mrzVnetAddressPrefixRFC1918: 10.18.4.0/22
-
-           var-hubnetwork-mrzMazSubnetName: MazSubnet
-           var-hubnetwork-mrzMazSubnetAddressPrefix: 10.18.4.0/25
-
-           var-hubnetwork-mrzInfSubnetName: InfSubnet
-           var-hubnetwork-mrzInfSubnetAddressPrefix: 10.18.4.128/25
-
-           var-hubnetwork-mrzSecSubnetName: SecSubnet
-           var-hubnetwork-mrzSecSubnetAddressPrefix: 10.18.5.0/26
-
-           var-hubnetwork-mrzLogSubnetName: LogSubnet
-           var-hubnetwork-mrzLogSubnetAddressPrefix: 10.18.5.64/26
-
-           var-hubnetwork-mrzMgmtSubnetName: MgmtSubnet
-           var-hubnetwork-mrzMgmtSubnetAddressPrefix: 10.18.5.128/26
-
-           var-hubnetwork-bastionName: bastion
-           var-hubnetwork-bastionSku: Standard
-           var-hubnetwork-bastionScaleUnits: 2
-
-           ####################################################################################
-           ### Hub Networking with Azure Firewall                                           ###
-           ####################################################################################
-           var-hubnetwork-azfw-rgPolicyName: pubsec-azure-firewall-policy-rg
-           var-hubnetwork-azfw-policyName: pubsecAzureFirewallPolicy
-
-           var-hubnetwork-azfw-rgHubName: pubsec-hub-networking-rg
-           var-hubnetwork-azfw-hubVnetName: hub-vnet
-           var-hubnetwork-azfw-hubVnetAddressPrefixRFC1918: 10.18.0.0/22
-           var-hubnetwork-azfw-hubVnetAddressPrefixRFC6598: 100.60.0.0/16
-           var-hubnetwork-azfw-hubVnetAddressPrefixBastion: 192.168.0.0/16
-
-           var-hubnetwork-azfw-hubPazSubnetName: PAZSubnet
-           var-hubnetwork-azfw-hubPazSubnetAddressPrefix: 100.60.1.0/24
-
-           var-hubnetwork-azfw-hubGatewaySubnetPrefix: 10.18.0.0/27
-           var-hubnetwork-azfw-hubAzureFirewallSubnetAddressPrefix: 10.18.1.0/24
-           var-hubnetwork-azfw-hubAzureFirewallManagementSubnetAddressPrefix: 10.18.2.0/26
-           var-hubnetwork-azfw-hubBastionSubnetAddressPrefix: 192.168.0.0/24
-
-           var-hubnetwork-azfw-azureFirewallName: pubsecAzureFirewall
-           var-hubnetwork-azfw-azureFirewallZones: '["1", "2", "3"]'
-           var-hubnetwork-azfw-azureFirewallForcedTunnelingEnabled: false
-           var-hubnetwork-azfw-azureFirewallForcedTunnelingNextHop: 10.17.1.4
-
-           ####################################################################################
-           ### Hub Networking with Fortinet Firewalls                                       ###
-           ####################################################################################
-
-           ## Hub Networking - Core Virtual Network
-           var-hubnetwork-nva-rgHubName: pubsec-hub-networking-rg
-           var-hubnetwork-nva-hubVnetName: hub-vnet
-           var-hubnetwork-nva-hubVnetAddressPrefixRFC1918: 10.18.0.0/22
-           var-hubnetwork-nva-hubVnetAddressPrefixRFC6598: 100.60.0.0/16
-           var-hubnetwork-nva-hubVnetAddressPrefixBastion: 192.168.0.0/16
-
-           var-hubnetwork-nva-hubEanSubnetName: EanSubnet
-           var-hubnetwork-nva-hubEanSubnetAddressPrefix: 10.18.0.0/27
-
-           var-hubnetwork-nva-hubPublicSubnetName: PublicSubnet
-           var-hubnetwork-nva-hubPublicSubnetAddressPrefix: 100.60.0.0/24
-
-           var-hubnetwork-nva-hubPazSubnetName: PAZSubnet
-           var-hubnetwork-nva-hubPazSubnetAddressPrefix: 100.60.1.0/24
-
-           var-hubnetwork-nva-hubDevIntSubnetName: DevIntSubnet
-           var-hubnetwork-nva-hubDevIntSubnetAddressPrefix: 10.18.0.64/27
-
-           var-hubnetwork-nva-hubProdIntSubnetName: PrdIntSubnet
-           var-hubnetwork-nva-hubProdIntSubnetAddressPrefix: 10.18.0.32/27
-
-           var-hubnetwork-nva-hubMrzIntSubnetName: MrzSubnet
-           var-hubnetwork-nva-hubMrzIntSubnetAddressPrefix: 10.18.0.96/27
-
-           var-hubnetwork-nva-hubHASubnetName: HASubnet
-           var-hubnetwork-nva-hubHASubnetAddressPrefix: 10.18.0.128/28
-
-           var-hubnetwork-nva-hubGatewaySubnetPrefix: 10.18.1.0/27
-
-           var-hubnetwork-nva-hubBastionSubnetAddressPrefix: 192.168.0.0/24
-
-           ## Hub Networking - Firewall Virtual Appliances
-           var-hubnetwork-nva-deployFirewallVMs: false
-           var-hubnetwork-nva-useFortigateFW: false
-
-           ### Hub Networking - Firewall Virtual Appliances - For Non-production Traffic
-           var-hubnetwork-nva-fwDevILBName: pubsecDevFWILB
-           var-hubnetwork-nva-fwDevVMSku: Standard_D8s_v4
-           var-hubnetwork-nva-fwDevVM1Name: pubsecDevFW1
-           var-hubnetwork-nva-fwDevVM2Name: pubsecDevFW2
-           var-hubnetwork-nva-fwDevILBExternalFacingIP: 100.60.0.7
-           var-hubnetwork-nva-fwDevVM1ExternalFacingIP: 100.60.0.8
-           var-hubnetwork-nva-fwDevVM2ExternalFacingIP: 100.60.0.9
-           var-hubnetwork-nva-fwDevVM1MrzIntIP: 10.18.0.104
-           var-hubnetwork-nva-fwDevVM2MrzIntIP: 10.18.0.105
-           var-hubnetwork-nva-fwDevILBDevIntIP: 10.18.0.68
-           var-hubnetwork-nva-fwDevVM1DevIntIP: 10.18.0.69
-           var-hubnetwork-nva-fwDevVM2DevIntIP: 10.18.0.70
-           var-hubnetwork-nva-fwDevVM1HAIP: 10.18.0.134
-           var-hubnetwork-nva-fwDevVM2HAIP: 10.18.0.135
-
-           ### Hub Networking - Firewall Virtual Appliances - For Production Traffic
-           var-hubnetwork-nva-fwProdILBName: pubsecProdFWILB
-           var-hubnetwork-nva-fwProdVMSku: Standard_F8s_v2
-           var-hubnetwork-nva-fwProdVM1Name: pubsecProdFW1
-           var-hubnetwork-nva-fwProdVM2Name: pubsecProdFW2
-           var-hubnetwork-nva-fwProdILBExternalFacingIP: 100.60.0.4
-           var-hubnetwork-nva-fwProdVM1ExternalFacingIP: 100.60.0.5
-           var-hubnetwork-nva-fwProdVM2ExternalFacingIP: 100.60.0.6
-           var-hubnetwork-nva-fwProdVM1MrzIntIP: 10.18.0.101
-           var-hubnetwork-nva-fwProdVM2MrzIntIP: 10.18.0.102
-           var-hubnetwork-nva-fwProdILBPrdIntIP: 10.18.0.36
-           var-hubnetwork-nva-fwProdVM1PrdIntIP: 10.18.0.37
-           var-hubnetwork-nva-fwProdVM2PrdIntIP: 10.18.0.38
-           var-hubnetwork-nva-fwProdVM1HAIP: 10.18.0.132
-           var-hubnetwork-nva-fwProdVM2HAIP: 10.18.0.133
-    ```
+    
+      ```yml
+          variables:
+              # Hub Networking
+              var-hubnetwork-managementGroupId: pubsecPlatformConnectivity
+              var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
+              var-hubnetwork-serviceHealthAlerts: >
+                {
+                  "resourceGroupName": "pubsec-service-health",
+                  "incidentTypes": [ "Incident", "Security" ],
+                  "regions": [ "Global", "Canada East", "Canada Central" ],
+                  "receivers": {
+                      "app": [ "alzcanadapubsec@microsoft.com" ],
+                      "email": [ "alzcanadapubsec@microsoft.com" ],
+                      "sms": [
+                          { "countryCode": "1", "phoneNumber": "5555555555" }
+                      ],
+                      "voice": [
+                          { "countryCode": "1", "phoneNumber": "5555555555" }
+                      ]
+                  },
+                  "actionGroupName": "ALZ action group",
+                  "actionGroupShortName": "alz-alert",
+                  "alertRuleName": "ALZ alert rule",
+                  "alertRuleDescription": "Alert rule for Azure Landing Zone"
+                }
+              var-hubnetwork-securityCenter: >
+                {
+                  "email": "alzcanadapubsec@microsoft.com",
+                  "phone": "5555555555"
+                }
+              var-hubnetwork-subscriptionRoleAssignments: >
+                [
+                  {
+                      "comments": "Built-in Contributor Role",
+                      "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                      "securityGroupObjectIds": [
+                          "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+                      ]
+                  }
+                ]
+              var-hubnetwork-subscriptionBudget: >
+                {
+                  "createBudget": false,
+                  "name": "MonthlySubscriptionBudget",
+                  "amount": 1000,
+                  "timeGrain": "Monthly",
+                  "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
+                }
+              var-hubnetwork-subscriptionTags: >
+                {
+                  "ISSO": "isso-tbd"
+                }
+              var-hubnetwork-resourceTags: >
+                {
+                  "ClientOrganization": "client-organization-tag",
+                  "CostCenter": "cost-center-tag",
+                  "DataSensitivity": "data-sensitivity-tag",
+                  "ProjectContact": "project-contact-tag",
+                  "ProjectName": "project-name-tag",
+                  "TechnicalContact": "technical-contact-tag"
+                }
+    
+              ## Hub Networking - Private Dns Zones
+              var-hubnetwork-deployPrivateDnsZones: true
+              var-hubnetwork-rgPrivateDnsZonesName: pubsec-dns-rg
+    
+              ## Hub Networking - DDOS
+              var-hubnetwork-deployDdosStandard: false
+              var-hubnetwork-rgDdosName: pubsec-ddos-rg
+              var-hubnetwork-ddosPlanName: ddos-plan
+    
+              ## Hub Networking - Public Zone
+              var-hubnetwork-rgPazName: pubsec-public-access-zone-rg
+    
+              ## Hub Networking - Management Restricted Zone Virtual Network
+              var-hubnetwork-rgMrzName: pubsec-management-restricted-zone-rg
+              var-hubnetwork-mrzVnetName: management-restricted-vnet
+              var-hubnetwork-mrzVnetAddressPrefixRFC1918: 10.18.4.0/22
+    
+              var-hubnetwork-mrzMazSubnetName: MazSubnet
+              var-hubnetwork-mrzMazSubnetAddressPrefix: 10.18.4.0/25
+    
+              var-hubnetwork-mrzInfSubnetName: InfSubnet
+              var-hubnetwork-mrzInfSubnetAddressPrefix: 10.18.4.128/25
+    
+              var-hubnetwork-mrzSecSubnetName: SecSubnet
+              var-hubnetwork-mrzSecSubnetAddressPrefix: 10.18.5.0/26
+    
+              var-hubnetwork-mrzLogSubnetName: LogSubnet
+              var-hubnetwork-mrzLogSubnetAddressPrefix: 10.18.5.64/26
+    
+              var-hubnetwork-mrzMgmtSubnetName: MgmtSubnet
+              var-hubnetwork-mrzMgmtSubnetAddressPrefix: 10.18.5.128/26
+    
+              var-hubnetwork-bastionName: bastion
+              var-hubnetwork-bastionSku: Standard
+              var-hubnetwork-bastionScaleUnits: 2
+    
+              ####################################################################################
+              ### Hub Networking with Azure Firewall                                           ###
+              ####################################################################################
+              var-hubnetwork-azfw-rgPolicyName: pubsec-azure-firewall-policy-rg
+              var-hubnetwork-azfw-policyName: pubsecAzureFirewallPolicy
+    
+              var-hubnetwork-azfw-rgHubName: pubsec-hub-networking-rg
+              var-hubnetwork-azfw-hubVnetName: hub-vnet
+              var-hubnetwork-azfw-hubVnetAddressPrefixRFC1918: 10.18.0.0/22
+              var-hubnetwork-azfw-hubVnetAddressPrefixRFC6598: 100.60.0.0/16
+              var-hubnetwork-azfw-hubVnetAddressPrefixBastion: 192.168.0.0/16
+    
+              var-hubnetwork-azfw-hubPazSubnetName: PAZSubnet
+              var-hubnetwork-azfw-hubPazSubnetAddressPrefix: 100.60.1.0/24
+    
+              var-hubnetwork-azfw-hubGatewaySubnetPrefix: 10.18.0.0/27
+              var-hubnetwork-azfw-hubAzureFirewallSubnetAddressPrefix: 10.18.1.0/24
+              var-hubnetwork-azfw-hubAzureFirewallManagementSubnetAddressPrefix: 10.18.2.0/26
+              var-hubnetwork-azfw-hubBastionSubnetAddressPrefix: 192.168.0.0/24
+    
+              var-hubnetwork-azfw-azureFirewallName: pubsecAzureFirewall
+              var-hubnetwork-azfw-azureFirewallZones: '["1", "2", "3"]'
+              var-hubnetwork-azfw-azureFirewallForcedTunnelingEnabled: false
+              var-hubnetwork-azfw-azureFirewallForcedTunnelingNextHop: 10.17.1.4
+    
+              ####################################################################################
+              ### Hub Networking with Fortinet Firewalls                                       ###
+              ####################################################################################
+    
+              ## Hub Networking - Core Virtual Network
+              var-hubnetwork-nva-rgHubName: pubsec-hub-networking-rg
+              var-hubnetwork-nva-hubVnetName: hub-vnet
+              var-hubnetwork-nva-hubVnetAddressPrefixRFC1918: 10.18.0.0/22
+              var-hubnetwork-nva-hubVnetAddressPrefixRFC6598: 100.60.0.0/16
+              var-hubnetwork-nva-hubVnetAddressPrefixBastion: 192.168.0.0/16
+    
+              var-hubnetwork-nva-hubEanSubnetName: EanSubnet
+              var-hubnetwork-nva-hubEanSubnetAddressPrefix: 10.18.0.0/27
+    
+              var-hubnetwork-nva-hubPublicSubnetName: PublicSubnet
+              var-hubnetwork-nva-hubPublicSubnetAddressPrefix: 100.60.0.0/24
+    
+              var-hubnetwork-nva-hubPazSubnetName: PAZSubnet
+              var-hubnetwork-nva-hubPazSubnetAddressPrefix: 100.60.1.0/24
+    
+              var-hubnetwork-nva-hubDevIntSubnetName: DevIntSubnet
+              var-hubnetwork-nva-hubDevIntSubnetAddressPrefix: 10.18.0.64/27
+    
+              var-hubnetwork-nva-hubProdIntSubnetName: PrdIntSubnet
+              var-hubnetwork-nva-hubProdIntSubnetAddressPrefix: 10.18.0.32/27
+    
+              var-hubnetwork-nva-hubMrzIntSubnetName: MrzSubnet
+              var-hubnetwork-nva-hubMrzIntSubnetAddressPrefix: 10.18.0.96/27
+    
+              var-hubnetwork-nva-hubHASubnetName: HASubnet
+              var-hubnetwork-nva-hubHASubnetAddressPrefix: 10.18.0.128/28
+    
+              var-hubnetwork-nva-hubGatewaySubnetPrefix: 10.18.1.0/27
+    
+              var-hubnetwork-nva-hubBastionSubnetAddressPrefix: 192.168.0.0/24
+    
+              ## Hub Networking - Firewall Virtual Appliances
+              var-hubnetwork-nva-deployFirewallVMs: false
+              var-hubnetwork-nva-useFortigateFW: false
+    
+              ### Hub Networking - Firewall Virtual Appliances - For Non-production Traffic
+              var-hubnetwork-nva-fwDevILBName: pubsecDevFWILB
+              var-hubnetwork-nva-fwDevVMSku: Standard_D8s_v4
+              var-hubnetwork-nva-fwDevVM1Name: pubsecDevFW1
+              var-hubnetwork-nva-fwDevVM2Name: pubsecDevFW2
+              var-hubnetwork-nva-fwDevILBExternalFacingIP: 100.60.0.7
+              var-hubnetwork-nva-fwDevVM1ExternalFacingIP: 100.60.0.8
+              var-hubnetwork-nva-fwDevVM2ExternalFacingIP: 100.60.0.9
+              var-hubnetwork-nva-fwDevVM1MrzIntIP: 10.18.0.104
+              var-hubnetwork-nva-fwDevVM2MrzIntIP: 10.18.0.105
+              var-hubnetwork-nva-fwDevILBDevIntIP: 10.18.0.68
+              var-hubnetwork-nva-fwDevVM1DevIntIP: 10.18.0.69
+              var-hubnetwork-nva-fwDevVM2DevIntIP: 10.18.0.70
+              var-hubnetwork-nva-fwDevVM1HAIP: 10.18.0.134
+              var-hubnetwork-nva-fwDevVM2HAIP: 10.18.0.135
+    
+              ### Hub Networking - Firewall Virtual Appliances - For Production Traffic
+              var-hubnetwork-nva-fwProdILBName: pubsecProdFWILB
+              var-hubnetwork-nva-fwProdVMSku: Standard_F8s_v2
+              var-hubnetwork-nva-fwProdVM1Name: pubsecProdFW1
+              var-hubnetwork-nva-fwProdVM2Name: pubsecProdFW2
+              var-hubnetwork-nva-fwProdILBExternalFacingIP: 100.60.0.4
+              var-hubnetwork-nva-fwProdVM1ExternalFacingIP: 100.60.0.5
+              var-hubnetwork-nva-fwProdVM2ExternalFacingIP: 100.60.0.6
+              var-hubnetwork-nva-fwProdVM1MrzIntIP: 10.18.0.101
+              var-hubnetwork-nva-fwProdVM2MrzIntIP: 10.18.0.102
+              var-hubnetwork-nva-fwProdILBPrdIntIP: 10.18.0.36
+              var-hubnetwork-nva-fwProdVM1PrdIntIP: 10.18.0.37
+              var-hubnetwork-nva-fwProdVM2PrdIntIP: 10.18.0.38
+              var-hubnetwork-nva-fwProdVM1HAIP: 10.18.0.132
+              var-hubnetwork-nva-fwProdVM2HAIP: 10.18.0.133
+      ```
 
 2. Configure Variable Group:  firewall-secrets **(required for Fortinet Firewall deployment)**
 
@@ -644,7 +645,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
         * var-hubnetwork-nva-fwUsername
         * var-hubnetwork-nva-fwPassword
 
-    * Click Save 
+    * Click Save
 
 3. Configure Pipeline for Platform – Hub Networking using Azure Firewall (only if Azure Firewall based Hub Networking is used)
 
@@ -654,22 +655,21 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
     2. New Pipeline
 
-        1. Choose Azure Repos Git
-        2. Select Repository
-        3. Select Existing Azure Pipeline YAML file
-        4. Identify the pipeline in `.pipelines/platform-connectivity-hub-azfw-policy.yml`.
-        6. Save the pipeline (don't run it yet)
-        7. Rename the pipeline to `platform-connectivity-hub-azfw-policy-ci`
+      1. Choose Azure Repos Git
+      2. Select Repository
+      3. Select Existing Azure Pipeline YAML file
+      4. Identify the pipeline in `.pipelines/platform-connectivity-hub-azfw-policy.yml`.
+      6. Save the pipeline (don't run it yet)
+      7. Rename the pipeline to `platform-connectivity-hub-azfw-policy-ci`
 
     3. New Pipeline
-    
-        1. Choose Azure Repos Git
-        2. Select Repository
-        3. Select Existing Azure Pipeline YAML file
-        4. Identify the pipeline in `.pipelines/platform-connectivity-hub-azfw.yml`.
-        6. Save the pipeline (don't run it yet)
-        7. Rename the pipeline to `platform-connectivity-hub-azfw-ci`
 
+      1. Choose Azure Repos Git
+      2. Select Repository
+      3. Select Existing Azure Pipeline YAML file
+      4. Identify the pipeline in `.pipelines/platform-connectivity-hub-azfw.yml`.
+      6. Save the pipeline (don't run it yet)
+      7. Rename the pipeline to `platform-connectivity-hub-azfw-ci`
 
 4. Configure Pipeline for Platform – Hub Networking using NVAs (only if Fortinet Firewall based Hub Networking is used)
 
@@ -745,4 +745,3 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     3. In the Run Pipelines dialog window, enter the first 4 digits of your new subscription configuration file name (4 is usually enough of the GUID to uniquely identify the subscription) between the square brackets in the `subscriptions` parameter field. For example: `[802e]`.
 
     4. In the Run Pipelines dialog window, click the `Run` button to start the pipeline.
-
