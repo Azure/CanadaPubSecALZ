@@ -267,6 +267,8 @@ This role assignment is used to grant users access to the logging subscription b
 
 1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
+* Update **var-logging-managementGroupId** with the logging management group.  This is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-logging-managementGroupId` will be `contosoPlatformManagement`.
+
 * Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
 
 ```yml
@@ -276,9 +278,9 @@ This role assignment is used to grant users access to the logging subscription b
 
 * Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
 
-* Update with valid contact information for the Azure Service Health Alerts: email and phone number. 
+* Update with valid contact information for the Azure Service Health Alerts: email and phone number.
 
-* Set the values for the Azure tags that would be applied to the logging resources. 
+* Set the values for the Azure tags that would be applied to the logging resources.
 
 **Sample environment YAML (Logging section only)**
 
@@ -415,14 +417,14 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
     Depending on the preference, you may delete/comment the configuration that is not required. For example, when deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls".
 
- *Note:*  **var-hubnetwork-subscriptionRoleAssignments** should include Azure AD security group's object ID responsible for managing Azure networking. If role assignments are not required, you must change the example provided with the following setting:
+* Update **var-hubnetwork-managementGroupId** with the networking management group.  This is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-hubnetwork-managementGroupId` will be `contosoPlatformConnectivity`.
+
+* Update **var-hubnetwork-subscriptionRoleAssignments** based on Azure AD security group's object ID responsible for managing Azure networking. If role assignments are not required, you must change the example provided with the following setting:
 
   ```yml
     var-hubnetwork-subscriptionRoleAssignments: >
         []
   ```
-
- Include the values for the following as well:
 
 * Valid contact information for the Azure Service Health Alerts: email and phone number
 * Values for Azure resource tags
