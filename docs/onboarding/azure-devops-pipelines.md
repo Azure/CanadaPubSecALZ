@@ -48,7 +48,7 @@ If you don't wish to send usage data to Microsoft, you can set the `customerUsag
 ## Instructions
 
 * [Step 1 - Create Service Principal Account & Assign RBAC](#step-1---create-service-principal-account--assign-rbac)
-* [Step 2 - Configure Service Connection in Azure DevOps Project Configuration](#step-2---configure-service-connection-in-azure-devops-project-configuration)
+* [Step 2 - Configure Azure DevOps](#step-2---configure-azure-devops)
 * [Step 3 - Configure Management Groups](#step-3---configure-management-groups)
 * [Step 4 - Configure Custom Roles](#step-4---configure-custom-roles)
 * [Step 5 - Configure Logging](#step-5--configure-logging)
@@ -100,7 +100,9 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 
 ---
 
-## Step 2 - Configure Service Connection in Azure DevOps Project Configuration
+## Step 2 - Configure Azure DevOps
+
+### Step 2.1: Configure Service Connection in Azure DevOps Project Configuration
 
 * Settings
   * **Connection Type**:  Azure Resource Manager
@@ -137,11 +139,37 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 
 * **Reference**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml).  Use the settings described above when following the instructions.
 
+### Step 2.2: Configure Azure DevOps Pipeline Environment
+
+An environment is a collection of resources that you can target with deployments from a pipeline. Typical examples of environment names are Dev, Test, QA, Staging, and Production.  More information such as benefits of using Environments can be found in [Azure Docs](https://docs.microsoft.com/azure/devops/pipelines/process/environments).
+
+Azure DevOps may create an environment if it doesn't exist, however, it's recommended to explicitly create an empty environment and reference it from deployment jobs. This lets you record the deployment history against the environment.
+
+This project uses Git branch names as environments and can be seen in Azure DevOps Pipeline YAMLs.  Each branch should have it's own environment defined.  For example:  `main` branch will have an environment called `main`.
+
+Example:  [Management Group Pipeline](../../.pipelines/management-groups.yml)
+
+```yml
+  - deployment: DeployManagementGroupsJob
+    displayName: Deploy Management Groups Job
+    environment: ${{ variables['Build.SourceBranchName'] }}
+
+    # ... deployment tasks
+```
+
+Instructions:
+
+1. Navigate to Pipelines -> Environments
+2. Click on `New environment` button
+3. Enter the name of your Git branch, such as `main`
+4. Ensure `None` is selected in the Resource section
+5. Click `Create`
+
 ---
 
 ## Step 3 - Configure Management Groups
 
-### Step: 3.1: Update common.yml in git repository
+### Step 3.1: Update common.yml in git repository
 
 Create/edit `./config/variables/common.yml` in Git with Service Connection name.  This file is used in all Azure DevOps pipelines.
 
