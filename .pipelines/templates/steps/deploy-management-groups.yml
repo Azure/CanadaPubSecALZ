@@ -39,7 +39,7 @@ steps:
 
       echo "Deploying $templateFile using ${{ parameters.deployOperation }} operation"
 
-      hierarchyJson="$(var-managementGroupHierarchy)"
+      hierarchyJson='$(var-managementGroupHierarchy)'
       declare -a groups=()
       readarray -t groups < <(echo $hierarchyJson | jq -r 'recurse | [.id] + [.name] + ( .children?[] | [.id] + [.name] ) | @sh')
 
@@ -60,7 +60,7 @@ steps:
           --management-group-id $(var-parentManagementGroupId) \
           --template-file $templateFile
           --parameters \
-              topLevelManagementGroupName=$(var-topLevelManagementGroupName) \
+              topLevelManagementGroupName='$(var-topLevelManagementGroupName)' \
               parentManagementGroupId="$parentManagementGroupId" \
               childManagementGroupId="$childManagementGroupId" \
               childManagementGroupName="$childManagementGroupName"
