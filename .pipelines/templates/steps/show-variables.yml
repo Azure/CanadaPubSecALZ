@@ -14,16 +14,30 @@ parameters:
 
 steps:
 
+- task: Bash@3
+  displayName: Test Variables
+  inputs:
+    targetType: inline
+    script: |
+      $(var-bashPreInjectScript)
+
+      printenv | grep 'var.*'
+
+      $(var-bashPostInjectScript)
+
 # Show variables (hard-coded)
 - task: Bash@3
-  displayName: Variables
+  condition: false
+  displayName: Show Variables
   inputs:
     targetType: inline
     script: |
       $(var-bashPreInjectScript)
 
       echo
+      echo
       echo "COMMON"
+      echo
       echo "  deploymentRegion = $(deploymentRegion)"
       echo "  serviceConnection = $(serviceConnection)"
       echo "  vmImage = $(vmImage)"
@@ -35,21 +49,36 @@ steps:
       # echo "  var-bashPostInjectScript = $(var-bashPostInjectScript)"
 
       echo
+      echo
       echo "MANAGEMENT GROUPS"
+      echo
       echo "  var-parentManagementGroupId = $(var-parentManagementGroupId)"
       echo "  var-topLevelManagementGroupName = $(var-topLevelManagementGroupName)"
       echo "  var-managementGroupHierarchy = $(var-managementGroupHierarchy)"
     
       echo
+      echo
       echo "LOGGING"
+      echo
       echo "  var-logging-managementGroupId = $(var-logging-managementGroupId)"
       echo "  var-logging-subscriptionId = $(var-logging-subscriptionId)"
       echo "  var-logging-logAnalyticsResourceGroupName = $(var-logging-logAnalyticsResourceGroupName)"
       echo "  var-logging-logAnalyticsWorkspaceName = $(var-logging-logAnalyticsWorkspaceName)"
-    
+      echo "  var-logging-logAnalyticsRetentionInDays = $(var-logging-logAnalyticsRetentionInDays)"
+      echo "  var-logging-logAnalyticsAutomationAccountName = $(var-logging-logAnalyticsAutomationAccountName)"
+      echo "  var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix = $(var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix)"
+      echo "  var-logging-serviceHealthAlerts = $(var-logging-serviceHealthAlerts)"
+      echo "  var-logging-securityCenter = $(var-logging-securityCenter)"
+      echo "  var-logging-subscriptionRoleAssignments = $(var-logging-subscriptionRoleAssignments)"
+      echo "  var-logging-subscriptionBudget = $(var-logging-subscriptionBudget)"
+      echo "  var-logging-subscriptionTags = $(var-logging-subscriptionTags)"
+      echo "  var-logging-resourceTags = $(var-logging-resourceTags)"
+
+      echo
       echo
       echo "HUB NETWORKING"
+      echo
       echo "  var-hubnetwork-managementGroupId = $(var-hubnetwork-managementGroupId)"
       echo "  var-hubnetwork-subscriptionId = $(var-hubnetwork-subscriptionId)"
-    
+
       $(var-bashPostInjectScript)
