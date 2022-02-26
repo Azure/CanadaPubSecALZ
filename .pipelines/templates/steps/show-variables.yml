@@ -56,18 +56,18 @@ steps:
       echo
       echo "HUB NETWORKING (core)"
       echo
-      printenv | grep -i "^var-hubnetwork-(?!nva|azfw)"
+      printenv | grep -i -P '^var-hubnetwork-(?!nva|azfw)'
 
       echo
       echo
       echo "HUB NETWORKING WITH AZURE FIREWALL"
       echo
-      printenv | grep -i "^var-hubnetwork-azfw-"
+      printenv | grep -i '^var-hubnetwork-azfw-'
 
       echo
       echo
       echo "HUB NETWORKING WITH NETWORK VIRTUAL APPLIANCE"
       echo
-      printenv | grep -i "^var-hubnetwork-nva-"
+      printenv | grep -i '^var-hubnetwork-nva-'
 
       $(var-bashPostInjectScript)
