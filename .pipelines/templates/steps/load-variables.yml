@@ -18,8 +18,8 @@ steps:
       $(var-bashPreInjectScript)
 
       # If new 'var-managementGroupHierarchy' variable is defined, then remap legacy variables still in use
-      hierarchyJson=$(var-managementGroupHierarchy)
-      if [[ -n "$hierarchyJson" ]]; then
+      hierarchyJson="$(var-managementGroupHierarchy)"
+      if [[ -n $hierarchyJson ]]; then
         echo "The new 'var-managementGroupHierarchy' variable IS defined."
         echo "REMAPPING legacy 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName' variables."
         parentManagementGroupId=`echo $hierarchyJson | jq -r '.id'`
