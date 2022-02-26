@@ -1,0 +1,34 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+steps:
+
+# Load Variables
+- task: Bash@3
+  displayName: Load Variables
+  inputs:
+    targetType: inline
+    script: |
+      $(var-bashPreInjectScript)
+
+      # If new 'var-managementGroupHierarchy' variable is defined, then remap legacy variables still in use
+      hierarchyJson=$(var-managementGroupHierarchy)
+      if [[ -n $(var-managementGroupHierarchy) ]]; then
+        echo "The new 'var-managementGroupHierarchy' variable IS defined."
+        echo "REMAPPING legacy 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName' variables."
+        parentManagementGroupId=`echo $hierarchyJson | jq -r '.id'`
+        topLevelManagementGroupName=`echo $hierarchyJson | jq -r '.children[0].id'`
+        echo "##vso[task.setvariable variable=var-parentManagementGroupId]$parentManagementGroupId"
+        echo "##vso[task.setvariable variable=var-topLevelManagementGroupName]$topLevelManagementGroupName"
+      else
+        echo "The new 'var-managementGroupHierarchy' variable IS NOT defined."
+        echo "USING existing legacy 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName' variables."
+      fi
+
+      $(var-bashPostInjectScript)

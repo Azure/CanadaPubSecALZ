@@ -38,6 +38,7 @@ steps:
       echo "MANAGEMENT GROUPS"
       echo "  var-parentManagementGroupId = $(var-parentManagementGroupId)"
       echo "  var-topLevelManagementGroupName = $(var-topLevelManagementGroupName)"
+      echo "  var-managementGroupHierarchy = $(var-managementGroupHierarchy)"
     
       echo
       echo "LOGGING"

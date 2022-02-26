@@ -22,8 +22,8 @@
 
 variables:
   # Management Groups
-  var-parentManagementGroupId: c0156602-5e7d-47be-9128-69dbf7152c17
-  var-topLevelManagementGroupName: pubsec
+  #var-parentManagementGroupId: c0156602-5e7d-47be-9128-69dbf7152c17
+  #var-topLevelManagementGroupName: pubsec
   var-managementGroupHierarchy: >
     {
       "name": "Tenant Root Group",
@@ -38,7 +38,7 @@ variables:
               "children": [
                 { "name": "Identity", "id": "pubsecPlatformIdentity", "children": [] },
                 { "name": "Connectivity", "id": "pubsecPlatformConnectivity", "children": [] },
-                { "name": "Management", "id": "pubsecPlatformConnectivity", "children": [] }
+                { "name": "Management", "id": "pubsecPlatformManagement", "children": [] }
               ]
             },
             {
