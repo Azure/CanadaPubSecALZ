@@ -27,7 +27,7 @@ steps:
 #- ${{ if ne(length(variables['var-managementGroupHierarchy']), 0) }}:
 - task: AzureCLI@2
   condition: ne(variables['var-managementGroupHierarchy'], '')
-  displayName: ${{ parameters.description }}
+  displayName: ${{ parameters.description }} (modern)
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
@@ -73,7 +73,7 @@ steps:
 #- ${{ if eq(length(variables['var-managementGroupHierarchy']), 0) }}:
 - task: AzureCLI@2
   condition: eq(variables['var-managementGroupHierarchy'], '')
-  displayName: ${{ parameters.description }}
+  displayName: ${{ parameters.description }} (legacy)
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
