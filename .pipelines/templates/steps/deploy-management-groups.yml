@@ -24,70 +24,72 @@ parameters:
 steps:
 
 # Modern step for deploying management group structure based on 'var-managementGroupHierarchy' YAML variable
-- ${{ if ne(length(variables['var-managementGroupHierarchy']), 0) }}:
-  - task: AzureCLI@2
-    displayName: ${{ parameters.description }}
-    inputs:
-      azureSubscription: $(serviceConnection)
-      scriptType: 'bash'
-      scriptLocation: 'inlineScript'
-      inlineScript: |
-        $(var-bashPreInjectScript)
+#- ${{ if ne(length(variables['var-managementGroupHierarchy']), 0) }}:
+- task: AzureCLI@2
+  condition: ne(variables.var-managementGroupHierarchy, '')
+  displayName: ${{ parameters.description }}
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
 
-        templateFile=structure-v2.bicep
+      templateFile=structure-v2.bicep
 
-        echo "Deploying $templateFile using ${{ parameters.deployOperation }} operation"
+      echo "Deploying $templateFile using ${{ parameters.deployOperation }} operation"
 
-        hierarchyJson=$(var-managementGroupHierarchy)
-        declare -a groups=()
-        readarray -t groups < <(echo $hierarchyJson | jq -r 'recurse | [.id] + [.name] + ( .children?[] | [.id] + [.name] ) | @sh')
+      hierarchyJson=$(var-managementGroupHierarchy)
+      declare -a groups=()
+      readarray -t groups < <(echo $hierarchyJson | jq -r 'recurse | [.id] + [.name] + ( .children?[] | [.id] + [.name] ) | @sh')
 
-        echo "Found ${#groups[@]} management groups to deploy in configuration file"
+      echo "Found ${#groups[@]} management groups to deploy in configuration file"
 
-        for group in "${groups[@]}"
-        do
-          declare -a "parts=($group)"
-          parentManagementGroupId=${parts[0]}"
-          parentManagementGroupName=${parts[1]}"
-          childManagementGroupId=${parts[2]}"
-          childManagementGroupName=${parts[3]}"
-            
-          echo "   Deploying new child management group [id:$childManagementGroupId,name:$childManagementGroupName] of parent management group [id:$parentManagementGroupId,name:$parentManagementGroupName]"
-
-          az deployment mg ${{ parameters.deployOperation }} \
-            --location $(deploymentRegion) \
-            --management-group-id $(var-parentManagementGroupId) \
-            --template-file $templateFile
-            --parameters \
-                topLevelManagementGroupName=$(var-topLevelManagementGroupName) \
-                parentManagementGroupId="$parentManagementGroupId" \
-                childManagementGroupId="$childManagementGroupId" \
-                childManagementGroupName="$childManagementGroupName"
-        done
-
-        $(var-bashPostInjectScript)
-      workingDirectory: '${{ parameters.workingDir }}'
-
-# Legacy step for deploying management group structure coded in management-groups/structure.bicep
-- ${{ if eq(length(variables['var-managementGroupHierarchy']), 0) }}:
-  - task: AzureCLI@2
-    displayName: ${{ parameters.description }}
-    inputs:
-      azureSubscription: $(serviceConnection)
-      scriptType: 'bash'
-      scriptLocation: 'inlineScript'
-      inlineScript: |
-        $(var-bashPreInjectScript)
-        
-        echo "Deploying ${{ parameters.templateFile }} using ${{ parameters.deployOperation }} operation..."
+      for group in "${groups[@]}"
+      do
+        declare -a "parts=($group)"
+        parentManagementGroupId=${parts[0]}"
+        parentManagementGroupName=${parts[1]}"
+        childManagementGroupId=${parts[2]}"
+        childManagementGroupName=${parts[3]}"
+          
+        echo "   Deploying new child management group [id:$childManagementGroupId,name:$childManagementGroupName] of parent management group [id:$parentManagementGroupId,name:$parentManagementGroupName]"
 
         az deployment mg ${{ parameters.deployOperation }} \
           --location $(deploymentRegion) \
           --management-group-id $(var-parentManagementGroupId) \
-          --template-file ${{ parameters.templateFile }} \
+          --template-file $templateFile
           --parameters \
-              parentManagementGroupId=$(var-parentManagementGroupId) \
-              topLevelManagementGroupName=$(var-topLevelManagementGroupName)
+              topLevelManagementGroupName=$(var-topLevelManagementGroupName) \
+              parentManagementGroupId="$parentManagementGroupId" \
+              childManagementGroupId="$childManagementGroupId" \
+              childManagementGroupName="$childManagementGroupName"
+      done
 
-        $(var-bashPostInjectScript)
-      workingDirectory: '${{ parameters.workingDir }}'
+      $(var-bashPostInjectScript)
+    workingDirectory: '${{ parameters.workingDir }}'
+
+# Legacy step for deploying management group structure coded in management-groups/structure.bicep
+#- ${{ if eq(length(variables['var-managementGroupHierarchy']), 0) }}:
+- task: AzureCLI@2
+  condition: eq(variables.var-managementGroupHierarchy, '')
+  displayName: ${{ parameters.description }}
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+      
+      echo "Deploying ${{ parameters.templateFile }} using ${{ parameters.deployOperation }} operation..."
+
+      az deployment mg ${{ parameters.deployOperation }} \
+        --location $(deploymentRegion) \
+        --management-group-id $(var-parentManagementGroupId) \
+        --template-file ${{ parameters.templateFile }} \
+        --parameters \
+            parentManagementGroupId=$(var-parentManagementGroupId) \
+            topLevelManagementGroupName=$(var-topLevelManagementGroupName)
+
+      $(var-bashPostInjectScript)
+    workingDirectory: '${{ parameters.workingDir }}'
