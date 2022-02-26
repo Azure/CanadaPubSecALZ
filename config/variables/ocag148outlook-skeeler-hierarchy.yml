@@ -21,10 +21,11 @@
 #         currently executing pipeline.
 
 variables:
+
   # Management Groups
-  var-parentManagementGroupId: TEST-PRESENCE-c0156602-5e7d-47be-9128-69dbf7152c17
-  var-topLevelManagementGroupName: TEST-PRESENCE-pubsec
-  var-managementGroupHierarchy: >
+  # var-parentManagementGroupId: c0156602-5e7d-47be-9128-69dbf7152c17
+  # var-topLevelManagementGroupName: pubsec
+  var-managementgroup-hierarchy: >
     {
       "name": "Tenant Root Group",
       "id": "c0156602-5e7d-47be-9128-69dbf7152c17",

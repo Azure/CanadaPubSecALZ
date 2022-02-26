@@ -27,6 +27,8 @@ jobs:
         steps:
         - checkout: self
 
+        - template: ../steps/load-variables.yml
+
         - template: ../steps/show-variables.yml
           parameters:
             json: ${{ convertToJson(variables) }}

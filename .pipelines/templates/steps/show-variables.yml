@@ -14,70 +14,60 @@ parameters:
 
 steps:
 
+# Show variables
 - task: Bash@3
-  displayName: Test Variables
+  displayName: Show Variables
   inputs:
     targetType: inline
     script: |
       $(var-bashPreInjectScript)
 
-      printenv
+      echo
+      echo
+      echo "COMMON"
+      echo
+      echo "  deploymentRegion = $(deploymentRegion)"
+      echo "  serviceConnection = $(serviceConnection)"
+      echo "  vmImage = $(vmImage)"
+      echo "  deployOperation = $(deployOperation)"
+      echo "  subscriptionsPathFromRoot = $(subscriptionsPathFromRoot)"
+      echo "  var-TriggerSubscriptionDeployOn = $(var-TriggerSubscriptionDeployOn)"
+
+      echo
+      echo
+      echo "MANAGEMENT GROUPS (modern)"
+      echo
+      echo "  var-managementgroup-hierarchy = $(var-managementgroup-hierarchy)"
+
+      echo
+      echo
+      echo "MANAGEMENT GROUPS (legacy)"
+      echo
+      echo "  var-parentManagementGroupId = $(var-parentManagementGroupId)"
+      echo "  var-topLevelManagementGroupName = $(var-topLevelManagementGroupName)"
+
+      echo
+      echo
+      echo "LOGGING"
+      echo
+      printenv | grep -i "^var-logging-"
+
+      echo
+      echo
+      echo "HUB NETWORKING (core)"
+      echo
+      printenv | grep -i "^var-hubnetwork-(?!nva|azfw)"
+
+      echo
+      echo
+      echo "HUB NETWORKING WITH AZURE FIREWALL"
+      echo
+      printenv | grep -i "^var-hubnetwork-azfw-"
+
+      echo
+      echo
+      echo "HUB NETWORKING WITH NETWORK VIRTUAL APPLIANCE"
+      echo
+      printenv | grep -i "^var-hubnetwork-nva-"
 
       $(var-bashPostInjectScript)
-
-# # Show variables (hard-coded)
-# - task: Bash@3
-#   displayName: Show Variables
-#   inputs:
-#     targetType: inline
-#     script: |
-#       $(var-bashPreInjectScript)
-
-#       echo
-#       echo
-#       echo "COMMON"
-#       echo
-#       echo "  deploymentRegion = $(deploymentRegion)"
-#       echo "  serviceConnection = $(serviceConnection)"
-#       echo "  vmImage = $(vmImage)"
-#       echo "  deployOperation = $(deployOperation)"
-#       echo "  subscriptionsPathFromRoot = $(subscriptionsPathFromRoot)"
-#       echo "  var-TriggerSubscriptionDeployOn = $(var-TriggerSubscriptionDeployOn)"
-
-#       # echo "  var-bashPreInjectScript = $(var-bashPreInjectScript)"
-#       # echo "  var-bashPostInjectScript = $(var-bashPostInjectScript)"
-
-#       echo
-#       echo
-#       echo "MANAGEMENT GROUPS"
-#       echo
-#       echo "  var-parentManagementGroupId = $(var-parentManagementGroupId)"
-#       echo "  var-topLevelManagementGroupName = $(var-topLevelManagementGroupName)"
-#       echo "  var-managementGroupHierarchy = $(var-managementGroupHierarchy)"
-    
-#       echo
-#       echo
-#       echo "LOGGING"
-#       echo
-#       echo "  var-logging-managementGroupId = $(var-logging-managementGroupId)"
-#       echo "  var-logging-subscriptionId = $(var-logging-subscriptionId)"
-#       echo "  var-logging-logAnalyticsResourceGroupName = $(var-logging-logAnalyticsResourceGroupName)"
-#       echo "  var-logging-logAnalyticsWorkspaceName = $(var-logging-logAnalyticsWorkspaceName)"
-#       echo "  var-logging-logAnalyticsRetentionInDays = $(var-logging-logAnalyticsRetentionInDays)"
-#       echo "  var-logging-logAnalyticsAutomationAccountName = $(var-logging-logAnalyticsAutomationAccountName)"
-#       echo "  var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix = $(var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix)"
-#       echo "  var-logging-serviceHealthAlerts = $(var-logging-serviceHealthAlerts)"
-#       echo "  var-logging-securityCenter = $(var-logging-securityCenter)"
-#       echo "  var-logging-subscriptionRoleAssignments = $(var-logging-subscriptionRoleAssignments)"
-#       echo "  var-logging-subscriptionBudget = $(var-logging-subscriptionBudget)"
-#       echo "  var-logging-subscriptionTags = $(var-logging-subscriptionTags)"
-#       echo "  var-logging-resourceTags = $(var-logging-resourceTags)"
-
-#       echo
-#       echo
-#       echo "HUB NETWORKING"
-#       echo
-#       echo "  var-hubnetwork-managementGroupId = $(var-hubnetwork-managementGroupId)"
-#       echo "  var-hubnetwork-subscriptionId = $(var-hubnetwork-subscriptionId)"
-
-#       $(var-bashPostInjectScript)

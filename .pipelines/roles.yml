@@ -50,6 +50,12 @@ stages:
     displayName: Custom Roles Job
 
     steps:
+    - template: templates/steps/load-variables.yml
+
+    - template: templates/steps/show-variables.yml
+      parameters:
+        json: ${{ convertToJson(variables) }}
+
     - template: templates/steps/create-roles.yml
       parameters:
         description: 'Custom Role'

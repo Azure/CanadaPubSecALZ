@@ -77,6 +77,8 @@ stages:
 
     - template: templates/steps/load-log-analytics-vars.yml
 
+    - template: templates/steps/load-variables.yml
+
     - template: templates/steps/show-variables.yml
       parameters:
         json: ${{ convertToJson(variables) }}
@@ -110,6 +112,8 @@ stages:
     steps:
 
     - template: templates/steps/load-log-analytics-vars.yml
+
+    - template: templates/steps/load-variables.yml
 
     - template: templates/steps/show-variables.yml
       parameters:

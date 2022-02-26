@@ -23,10 +23,9 @@ parameters:
 
 steps:
 
-# Modern step for deploying management group structure based on 'var-managementGroupHierarchy' YAML variable
-#- ${{ if ne(length(variables['var-managementGroupHierarchy']), 0) }}:
+# Modern step for deploying management group structure based on 'var-managementgroup-hierarchy' YAML variable
 - task: AzureCLI@2
-  condition: ne(variables['var-managementGroupHierarchy'], '')
+  condition: ne(variables['var-managementgroup-hierarchy'], '')
   displayName: ${{ parameters.description }} (modern)
   inputs:
     azureSubscription: $(serviceConnection)
@@ -39,7 +38,7 @@ steps:
 
       echo "Deploying $templateFile using ${{ parameters.deployOperation }} operation"
 
-      hierarchyJson='$(var-managementGroupHierarchy)'
+      hierarchyJson='$(var-managementgroup-hierarchy)'
       declare -a groups=()
       readarray -t groups < <(echo $hierarchyJson | jq -r 'recurse | [.id] + [.name] + ( .children?[] | [.id] + [.name] ) | @sh')
 
@@ -69,10 +68,9 @@ steps:
       $(var-bashPostInjectScript)
     workingDirectory: '${{ parameters.workingDir }}'
 
-# Legacy step for deploying management group structure coded in management-groups/structure.bicep
-#- ${{ if eq(length(variables['var-managementGroupHierarchy']), 0) }}:
+# Legacy step for deploying management group structure hard-coded in management-groups/structure.bicep
 - task: AzureCLI@2
-  condition: eq(variables['var-managementGroupHierarchy'], '')
+  condition: eq(variables['var-managementgroup-hierarchy'], '')
   displayName: ${{ parameters.description }} (legacy)
   inputs:
     azureSubscription: $(serviceConnection)
