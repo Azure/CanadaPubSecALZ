@@ -48,12 +48,12 @@ steps:
       for group in "${groups[@]}"
       do
         declare -a "parts=($group)"
-        parentManagementGroupId=${parts[0]}"
-        parentManagementGroupName=${parts[1]}"
-        childManagementGroupId=${parts[2]}"
-        childManagementGroupName=${parts[3]}"
+        parentManagementGroupId=${parts[0]}
+        parentManagementGroupName=${parts[1]}
+        childManagementGroupId=${parts[2]}
+        childManagementGroupName=${parts[3]}
           
-        echo "   Deploying new child management group id=$childManagementGroupId name=$childManagementGroupName of parent management group id=$parentManagementGroupId name=$parentManagementGroupName"
+        echo "   Deploying new child management group [id=$childManagementGroupId, name=$childManagementGroupName] of parent management group [id=$parentManagementGroupId, name=$parentManagementGroupName]"
 
         az deployment mg ${{ parameters.deployOperation }} \
           --location $(deploymentRegion) \
