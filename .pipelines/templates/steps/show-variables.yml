@@ -21,7 +21,7 @@ steps:
     script: |
       $(var-bashPreInjectScript)
 
-      printenv | grep "^var.*"
+      echo $(printenv | grep "^var.*")
 
       $(var-bashPostInjectScript)
 
