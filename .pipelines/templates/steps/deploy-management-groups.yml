@@ -26,7 +26,7 @@ steps:
 # Modern step for deploying management group structure based on 'var-managementGroupHierarchy' YAML variable
 #- ${{ if ne(length(variables['var-managementGroupHierarchy']), 0) }}:
 - task: AzureCLI@2
-  condition: ne(variables.var-managementGroupHierarchy, '')
+  condition: ne(variables['var-managementGroupHierarchy'], '')
   displayName: ${{ parameters.description }}
   inputs:
     azureSubscription: $(serviceConnection)
@@ -72,7 +72,7 @@ steps:
 # Legacy step for deploying management group structure coded in management-groups/structure.bicep
 #- ${{ if eq(length(variables['var-managementGroupHierarchy']), 0) }}:
 - task: AzureCLI@2
-  condition: eq(variables.var-managementGroupHierarchy, '')
+  condition: eq(variables['var-managementGroupHierarchy'], '')
   displayName: ${{ parameters.description }}
   inputs:
     azureSubscription: $(serviceConnection)
