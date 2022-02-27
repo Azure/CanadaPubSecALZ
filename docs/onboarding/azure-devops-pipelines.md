@@ -205,7 +205,7 @@ Instructions:
           "id": "abcddfdb-bef5-46d9-99cf-ed67dabc8783",
           "children": [
             {
-              "name": "pubsec",
+              "name": "Azure Landing Zones for Canadian Public Sector",
               "id": "pubsec",
               "children": [
                 {

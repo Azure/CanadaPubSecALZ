@@ -33,7 +33,7 @@ variables:
       "id": "80fabd0e-d9f9-4261-97f0-37b9244e12c1",
       "children": [
         {
-          "name": "pubsec",
+          "name": "Azure Landing Zones for Canadian Public Sector",
           "id": "pubsec",
           "children": [
             {
