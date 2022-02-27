@@ -415,7 +415,11 @@ In order to configure audit stream for Azure Monitor, identify the following inf
      1. [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
      2. [Hub Networking with Fortinet Firewall (NVA)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
 
-    Depending on the preference, you may delete/comment the configuration that is not required. For example, when deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls".
+    Depending on the preference, you may optionally delete/comment the configuration that is not required. For example, when deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls".
+
+    > Note: Even deleting or commenting out the variables that are not required, either for the **Hub Networking with Azure Firewall** or the **Hub Networking with Fortinet Firewall (NVA)**
+    is optional since the deployment will be based on the pipeline you configure anyway. So if you configured the **platform-connectivity-hub-azfw-policy-ci** and the **platform-connectivity-hub-azfw-ci** pipelines,
+    only the _Azure Firewall_ option will be deployed, not the _NVA_ option.
 
     * Update **var-hubnetwork-managementGroupId** with the networking management group.  This is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-hubnetwork-managementGroupId` will be `contosoPlatformConnectivity`.
     
