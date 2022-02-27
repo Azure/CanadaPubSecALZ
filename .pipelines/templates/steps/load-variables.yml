@@ -18,21 +18,21 @@ steps:
       $(var-bashPreInjectScript)
 
       ### -------------------------------------------------------------------------------------------------
-      ### Create the legacy 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName'
+      ### Create the 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName'
       ### variables (used in YAML pipeilne definitions) based on information extracted from the
       ### newer 'var-managementgroup-hierarchy' variable, if it is defined.
       ### -------------------------------------------------------------------------------------------------
       hierarchyJson='$(var-managementgroup-hierarchy)'
       if [[ -n $hierarchyJson ]]; then
         echo "The new 'var-managementgroup-hierarchy' variable IS defined."
-        echo "REMAPPING legacy 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName' variables."
+        echo "REMAPPING 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName' variables."
         parentManagementGroupId=`echo $hierarchyJson | jq -r '.id'`
         topLevelManagementGroupName=`echo $hierarchyJson | jq -r '.children[0].id'`
         echo "##vso[task.setvariable variable=var-parentManagementGroupId]$parentManagementGroupId"
         echo "##vso[task.setvariable variable=var-topLevelManagementGroupName]$topLevelManagementGroupName"
       else
         echo "The new 'var-managementgroup-hierarchy' variable IS NOT defined."
-        echo "USING existing legacy 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName' variables."
+        echo "USING existing 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName' variables."
       fi
 
       ### -------------------------------------------------------------------------------------------------
