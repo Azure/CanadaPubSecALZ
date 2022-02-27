@@ -268,7 +268,7 @@ Instructions:
     In CanadaPubSecALZ v0.8.0 or earlier, the only portion of the management group hierarchy that is configurable is the top level management group id (specified using the `topLevelManagementGroupName` attribute shown above). For these versions, observe the following guidance:
 
     * The management group name is not configurable, it is automatically set ot the same value provided for the id.
-    * The management group hierarchy is hard-coded in the `management-groups/structure.bicep` source file. You will need to modify this file (add/edit/remove bicep code) if you want to change the management group hierarchy.
+    * The management group hierarchy is hard-coded in the [management-groups/structure.bicep](https://github.com/Azure/CanadaPubSecALZ/blob/main/management-groups/structure.bicep) source file. You will need to modify this file (add/edit/remove bicep code) if you want to change the management group hierarchy.
   
 3. Commit the changes to git repository
 
