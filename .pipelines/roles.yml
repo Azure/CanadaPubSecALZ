@@ -46,13 +46,24 @@ stages:
 
   jobs:
 
-  - job: CustomRolesJob
+  - deployment: CustomRolesJob
     displayName: Custom Roles Job
+    environment: ${{ variables['Build.SourceBranchName'] }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
 
-    steps:
-    - template: templates/steps/create-roles.yml
-      parameters:
-        description: 'Custom Role'
-        workingDir: $(System.DefaultWorkingDirectory)/roles
-        deployTemplates: [lz-netops, lz-secops, lz-subowner, lz-appowner, la-vminsights-readonly]
-        deployOperation: ${{ variables['deployOperation'] }}
+          - template: templates/steps/load-variables.yml
+
+          - template: templates/steps/show-variables.yml
+            parameters:
+              json: ${{ convertToJson(variables) }}
+
+          - template: templates/steps/create-roles.yml
+            parameters:
+              description: 'Custom Role'
+              workingDir: $(System.DefaultWorkingDirectory)/roles
+              deployTemplates: [lz-netops, lz-secops, lz-subowner, lz-appowner, la-vminsights-readonly]
+              deployOperation: ${{ variables['deployOperation'] }}

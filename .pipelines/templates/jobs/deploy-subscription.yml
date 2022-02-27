@@ -27,6 +27,8 @@ jobs:
         steps:
         - checkout: self
 
+        - template: ../steps/load-variables.yml
+
         - template: ../steps/show-variables.yml
           parameters:
             json: ${{ convertToJson(variables) }}
@@ -48,7 +50,8 @@ jobs:
               # Resolve partial configuration file specification
               if [[ ! ${subscription} =~ .*/.* ]]; then
                 echo
-                echo "Resolving partial configuration file specifier: ${subscription} ..."
+                echo "Resolving partial configuration file specifier: ${subscription}"
+                echo "Finding matching configuration file(s) under path ${config}/${enviro}"
                 readarray -t lines < <(find ${config}/${enviro} -type f -name "*${subscription}*" | sed "s/^${config_sed}\///g")
                 if [[ ${#lines[@]} < 1 || ${#lines[@]} > 1 ]]; then
                   echo "##vso[task.logissue type=error]Found ${#lines[@]} subscription configuration file matches based on qualifier: ${subscription}. Partial configuration file name search must have exactly 1 match."

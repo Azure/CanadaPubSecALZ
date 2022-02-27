@@ -116,9 +116,62 @@ Management groups give you enterprise-grade management at a large scale no matte
 Azure Landing Zones for Canadian Public Sector recommends the following Management Group structure.  This structure can be customized based on your organization's requirements.  Specifically:
 
 * Landing Zones will be split by 3 groups of environments (DEV/TEST, QA, PROD).
+  > Note that this is just one example of a management group hierarchy structure. Other hierarchy structures can be defined via configuration in CanadaPubSecALZ v0.9.0 or later. More on this below.
+
 * Sandbox management group is used for any new subscriptions that will be created.  This will remove the subscription sprawl from the Root Tenant Group and will pull all subscriptions into the security compliance.
 
 ![Management Group Structure](media/architecture/management-group-structure.jpg)
+
+In **CanadaPubSecALZ v0.9.0 or later**, the management group hierarchy can be defined in the environment configuration file. The following configuration illustrates how you can adopt the [Enterprise Scale Management Group Structure](https://github.com/Azure/Enterprise-Scale/wiki/How-Enterprise-Scale-Works#enterprise-scale-management-group-structure) as defined by the [Azure / Enterprise-Scale](https://github.com/Azure/Enterprise-Scale) project:
+
+```yml
+var-managementgroup-hierarchy: >
+  {
+    "name": "Tenant Root Group",
+    "id": "<azure-ad-tenant-guid>",
+    "children": [
+      {
+        "name": "Top Level",
+        "id": "Top-Level",
+        "children": [
+          {
+            "name": "Platform", "id": "Platform",
+            "children": [
+              { "name": "Identity", "id": "PlatformIdentity", "children": [] },
+              { "name": "Connectivity", "id": "PlatformConnectivity", "children": [] },
+              { "name": "Management", "id": "PlatformManagement", "children": [] }
+            ]
+          },
+          {
+            "name": "Landing Zones", "id": "LandingZones",
+            "children": [
+              { "name": "Corp", "id": "LandingZonesCorp", "children": [] },
+              { "name": "Online", "id": "LandingZonesOnline", "children": [] }
+            ]
+          },
+          {
+            "name": "Sandbox", "id": "Sandbox",
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+```
+
+The main difference between the original `pubsec` management group hierarchy and the example above is in the subdivision of the `LandingZones` management group; i.e. child management groups of `Corp` and `Online` rather than `DevTest`, `QA`, and `Prod`.
+
+Other variations on possible child management groups of the `LandingZones` management group that have arisen in discussions with customers include:
+
+* `Prod` and `NonProd`
+* `Classified` and `Unclassified`
+
+When choosing a management group hierarchy, consider the following:
+
+* Authoritative guidance from subject matter experts
+* Your organizational requirements
+* Recommended best practices
+* [Important facts about management groups](https://docs.microsoft.com/azure/governance/management-groups/overview#important-facts-about-management-groups)
 
 Customers with existing management group structure can consider merging the recommended structure to continue to use the existing structure.  The new structure deployed side-by-side will enable the ability to:
 
