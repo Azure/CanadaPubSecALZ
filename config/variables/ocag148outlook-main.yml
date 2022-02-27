@@ -22,7 +22,7 @@
 
 variables:
 
-  # Management Groups (legacy)
+  # Management Groups
   # var-parentManagementGroupId: c0156602-5e7d-47be-9128-69dbf7152c17
   # var-topLevelManagementGroupName: pubsec
 
