@@ -334,7 +334,7 @@ This role assignment is used to grant users access to the logging subscription b
 1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
     * Update **var-logging-managementGroupId** with the logging management group:
-      * For **CanadaPubSecALZ v0.9.0 or later**, this is based on the `id` attribute of the first child element defined in your `var-managementgroup-hierarchy` configuration value. In JSON notation, this is equivalent to: `.children[0].id`.
+      * For **CanadaPubSecALZ v0.9.0 or later**, this will be the management id that represents the Logging Management Group in the defined hierarchy.
       * For **CanadaPubSecALZ v0.8.0 or earlier**, this is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-logging-managementGroupId` will be `contosoPlatformManagement`.
 
     * Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
@@ -490,7 +490,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     only the _Azure Firewall_ option will be deployed, not the _NVA_ option.
 
     * Update **var-hubnetwork-managementGroupId** with the networking management group:
-        * For **CanadaPubSecALZ v0.9.0 or later**, this is based on the `id` attribute of the first child element defined in your `var-managementgroup-hierarchy` configuration value. In JSON notation, this is equivalent to: `.children[0].id`.
+        * For **CanadaPubSecALZ v0.9.0 or later**, this will be the management id that represents the Networking Management Group in the defined hierarchy.
         * For **CanadaPubSecALZ v0.8.0 or earlier**, this is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-hubnetwork-managementGroupId` will be `contosoPlatformConnectivity`.
 
     * Update **var-hubnetwork-subscriptionRoleAssignments** based on Azure AD security group's object ID responsible for managing Azure networking. If role assignments are not required, you must change the example provided with the following setting:
