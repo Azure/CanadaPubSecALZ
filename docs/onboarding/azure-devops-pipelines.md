@@ -209,7 +209,29 @@ Instructions:
               "id": "pubsec",
               "children": [
                 {
-    ...
+                  "name": "Platform", "id": "pubsecPlatform",
+                  "children": [
+                    { "name": "Identity", "id": "pubsecPlatformIdentity", "children": [] },
+                    { "name": "Connectivity", "id": "pubsecPlatformConnectivity", "children": [] },
+                    { "name": "Management", "id": "pubsecPlatformManagement", "children": [] }
+                  ]
+                },
+                {
+                  "name": "LandingZones", "id": "pubsecLandingZones",
+                  "children": [
+                    { "name": "DevTest", "id": "pubsecLandingZonesDevTest", "children": [] },
+                    { "name": "QA", "id": "pubsecLandingZonesQA", "children": [] },
+                    { "name": "Prod", "id": "pubsecLandingZonesProd", "children": [] }
+                  ]
+                },
+                {
+                  "name": "Sandbox", "id": "pubsecSandbox",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
     ```
 
     In CanadaPubSecALZ v0.9.0 or later, the management group hierarchy can be defined in the environment configuration file. It is represented in JSON as a set of nested management group objects with the structure:
