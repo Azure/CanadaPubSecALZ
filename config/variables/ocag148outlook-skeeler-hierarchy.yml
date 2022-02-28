@@ -225,27 +225,6 @@ variables:
   ####################################################################################
   ### Hub Networking with Azure Firewall                                           ###
   ####################################################################################
-  var-hubnetwork-azfw-rgPolicyName: pubsec-azure-firewall-policy-rg
-  var-hubnetwork-azfw-policyName: pubsecAzureFirewallPolicy
-  
-  var-hubnetwork-azfw-rgHubName: pubsec-hub-networking-rg
-  var-hubnetwork-azfw-hubVnetName: hub-vnet
-  var-hubnetwork-azfw-hubVnetAddressPrefixRFC1918: 10.18.0.0/22
-  var-hubnetwork-azfw-hubVnetAddressPrefixRFC6598: 100.60.0.0/16
-  var-hubnetwork-azfw-hubVnetAddressPrefixBastion: 192.168.0.0/16
-
-  var-hubnetwork-azfw-hubPazSubnetName: PAZSubnet
-  var-hubnetwork-azfw-hubPazSubnetAddressPrefix: 100.60.1.0/24
-
-  var-hubnetwork-azfw-hubGatewaySubnetPrefix: 10.18.0.0/27
-  var-hubnetwork-azfw-hubAzureFirewallSubnetAddressPrefix: 10.18.1.0/24
-  var-hubnetwork-azfw-hubAzureFirewallManagementSubnetAddressPrefix: 10.18.2.0/26
-  var-hubnetwork-azfw-hubBastionSubnetAddressPrefix: 192.168.0.0/24
-  
-  var-hubnetwork-azfw-azureFirewallName: pubsecAzureFirewall
-  var-hubnetwork-azfw-azureFirewallZones: '["1", "2", "3"]'
-  var-hubnetwork-azfw-azureFirewallForcedTunnelingEnabled: false
-  var-hubnetwork-azfw-azureFirewallForcedTunnelingNextHop: 10.17.1.4
 
   ####################################################################################
   ### Hub Networking with Fortinet Firewalls                                       ###
