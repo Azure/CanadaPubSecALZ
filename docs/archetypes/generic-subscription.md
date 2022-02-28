@@ -339,7 +339,7 @@ Change the "securityCenter": {"value": {"email": "", "phone": ""} properties wit
 ### Subscription Role Assignments
 
 Modify the two "subscriptionRoleAssignments: {"value": ["securityGroupObjectIds": []]}" properties with your specific unique object ids of the respective groups for the **Contributor** built-in
-and **Custom Role: Landing Zone Application Owner** roles for this landing zone subscription.
+and **Custom Role: Landing Zone Application Owner** roles for this landing zone subscription. These assignments are optional and can be 0 or more role assignments using either Built-In or Custom roles and security groups.
 
 ![Generic Subscription: Subscription Role Assignments](../../docs/media/archetypes/subscription-role-assignments.jpg)
 
@@ -348,7 +348,9 @@ and **Custom Role: Landing Zone Application Owner** roles for this landing zone 
 1. Specify the desired custom values for the following tags: "resourceTags": {"value": {"ClientOrganization": "","CostCenter": "", "DataSensitivity": "", "ProjectContact": "", "ProjectName": "", "TechnicalContact": ""}".
 You may also include any additional name value pairs of tags required.
 
-2. Addtionally, you can also customize default resource name values with any specific preferred naming conventions, as indicated by the item **2** circles shown below.
+2. Addtionally, you can customize default resources and resource group names with any specific preferred naming conventions, as indicated by the item **2** circles shown below.
+
+3. In general, these tags can be modified and even replaced as required, and should also align to the Tagging policy set paramters at: `.../policy/custom/definitions/policyset/Tags.parameters.json`.
 
 ![Generic Subscription: Tags and Naming Conventions](../../docs/media/archetypes/resource-tags-and-naming-conventions.jpg)
 
@@ -357,7 +359,7 @@ You may also include any additional name value pairs of tags required.
 **IMPORTANT**
 
 To avoid a failure when running any of the connectivity pipelines, the subscriptionId segment value of the "hubNetwork": {"value": } string (item **1**), must be updated from it's default value to the specific hubNetwork subscriptionId that was 
-actually deployed previously, so this subscription as a spoke can be peered to it.
+actually deployed previously, so that the virtual network in this spoke subscription can be VNET Peered to the Hub Network.
 
 ![Generic Subscription: Hub Virtual Network ID](../../docs/media/archetypes/virtual-network-id.jpg)
 
