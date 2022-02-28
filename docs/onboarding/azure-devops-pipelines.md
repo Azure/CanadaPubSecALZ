@@ -171,39 +171,105 @@ Instructions:
 
 ### Step 3.1: Update common.yml in git repository
 
-Create/edit `./config/variables/common.yml` in Git with Service Connection name.  This file is used in all Azure DevOps pipelines.
+1. Create/edit `./config/variables/common.yml` in Git with Service Connection name.  This file is used in all Azure DevOps pipelines.
 
-**Sample YAML**
+    **Sample YAML**
 
-```yaml
-variables:
-
-  deploymentRegion: canadacentral
-  serviceConnection: spn-azure-platform-ops
-  vmImage: ubuntu-latest
-  deployOperation: create
-
-```
+    ```yaml
+    variables:
+    
+      deploymentRegion: canadacentral
+      serviceConnection: spn-azure-platform-ops
+      vmImage: ubuntu-latest
+      deployOperation: create
+    
+    ```
 
 ### Step 3.2:  Update environment config file in git repository
 
 1. Identify the parent management group and obtain its ID. 
 
-    * *Note: ID of default parent management group 'Tenant Root Group' is Azure Active Directory (AAD) Tenant ID (GUID).*
+    >**Note**: The ID of the default parent management group 'Tenant Root Group' is the same as the Azure Active Directory (AAD) Tenant ID (GUID).
 
-2. Create/edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git (i.e. CanadaESLZ-main.yml).  This file name is automatically inferred based on the Azure DevOps organization name and the branch.
+2. Create/edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git (i.e. CanadaESLZ-main.yml).  This file name is automatically inferred by the pipeline based on the Azure DevOps organization name and the branch name.
 
-    **Sample environment YAML**
+    **Sample environment YAML (v0.9.0 or later)**
+
+    ```yml
+    variables:
+    
+      # Management Groups
+      var-managementgroup-hierarchy: >
+        {
+          "name": "Tenant Root Group",
+          "id": "abcddfdb-bef5-46d9-99cf-ed67dabc8783",
+          "children": [
+            {
+              "name": "Azure Landing Zones for Canadian Public Sector",
+              "id": "pubsec",
+              "children": [
+                {
+                  "name": "Platform", "id": "pubsecPlatform",
+                  "children": [
+                    { "name": "Identity", "id": "pubsecPlatformIdentity", "children": [] },
+                    { "name": "Connectivity", "id": "pubsecPlatformConnectivity", "children": [] },
+                    { "name": "Management", "id": "pubsecPlatformManagement", "children": [] }
+                  ]
+                },
+                {
+                  "name": "LandingZones", "id": "pubsecLandingZones",
+                  "children": [
+                    { "name": "DevTest", "id": "pubsecLandingZonesDevTest", "children": [] },
+                    { "name": "QA", "id": "pubsecLandingZonesQA", "children": [] },
+                    { "name": "Prod", "id": "pubsecLandingZonesProd", "children": [] }
+                  ]
+                },
+                {
+                  "name": "Sandbox", "id": "pubsecSandbox",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+    ```
+
+    In CanadaPubSecALZ v0.9.0 or later, the management group hierarchy can be defined in the environment configuration file. It is represented in JSON as a set of nested management group objects with the structure:
+
+    ```json
+    {
+      "name": "Management Group Display Name",
+      "id": "ManagementGroupIdentifier_NoSpaces",
+      "children": []
+    }
+    ```
+
+    Each `"children": []` element is an array of the same object type, and may contain zero or more child management group object definitions, which in turn may contain their own arrays of zero or more child management group object definitions.
+
+    Observe the following guidance when configuring your management group hierarchy:
+
+      * Specify the `id` and `name` of your existing Azure AD tenant for the topmost management group definition. The `id` attribute for this element is mapped into the `var-parentManagementGroupId` pipeline variable for backward compatibility.
+      * Specify only 1 child management group definition for the topmost management group definition. You can specify more than 1 child of the topmost management group definition, but it is the first child of the topmost level that will be considered the root of of your management group hierarchy, and is the scope that the `policy-ci` pipeline will use to deploy built-in and custom policies. The `id` attribute for this element is mapped into the `var-topLevelManagementGroupName` pipeline variable for backward compatibility.
+      * The `id` attribute for management group elements can only be an ASCII letter, digit, `-`, `_`, `(`, `)`, `.` and cannot end with a period. In the sample environment configuration file (`CanadaESLZ-main.yml`), we illustrate a convention that prepends the id of the parent management group to the id of each child management group. This is an example only and not a requirement. You are welcome to choose any management group id convention that best suits your needs.
+      * If you are using **CanadaPubSecALZ v0.9.0 or later** and **do not** include a `var-managementgroup-hierarchy` variable setting in your configuration, it will fallback to using the pipeline variables `var-parentManagementGroupId` and `var-topLevelManagementGroupName`. This is to ensure backward compatibility, enabling newer versions of the code to run with older environment configurations.
+      * If you are using **CanadaPubSecALZ v0.9.0** or later and **do** include a `var-managementgroup-hierarchy` variable setting in your configuration, it will override any pipeline variables `var-parentManagementGroupId` and `var-topLevelManagementGroupName` also present.
+
+    **Sample environment YAML (v0.8.0 or earlier)**
 
     ```yaml
     variables:
-
+  
         # Management Groups
         var-parentManagementGroupId: abcddfdb-bef5-46d9-99cf-ed67dabc8783
         var-topLevelManagementGroupName: pubsec
-
+    ...
     ```
 
+    In CanadaPubSecALZ v0.8.0 or earlier, the only portion of the management group hierarchy that is configurable is the top level management group id (specified using the `topLevelManagementGroupName` attribute shown above). For these versions, observe the following guidance:
+
+    * The management group name is not configurable, it is automatically set ot the same value provided for the id.
+    * The management group hierarchy is hard-coded in the [management-groups/structure.bicep](https://github.com/Azure/CanadaPubSecALZ/blob/main/management-groups/structure.bicep) source file. You will need to modify this file (add/edit/remove bicep code) if you want to change the management group hierarchy.
+  
 3. Commit the changes to git repository
 
 ### Step 3.3:  Configure Azure DevOps Pipeline
@@ -267,23 +333,25 @@ This role assignment is used to grant users access to the logging subscription b
 
 1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
-    * Update **var-logging-managementGroupId** with the logging management group.  This is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-logging-managementGroupId` will be `contosoPlatformManagement`.
-    
+    * Update **var-logging-managementGroupId** with the logging management group:
+      * For **CanadaPubSecALZ v0.9.0 or later**, this will be the management id that represents the Logging Management Group in the defined hierarchy.
+      * For **CanadaPubSecALZ v0.8.0 or earlier**, this is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-logging-managementGroupId` will be `contosoPlatformManagement`.
+
     * Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
-    
+
     ```yml
         var-logging-subscriptionRoleAssignments: >
             []
     ```
 
       * Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
-      
+
       * Update with valid contact information for the Azure Service Health Alerts: email and phone number.
-      
+
       * Set the values for the Azure tags that would be applied to the logging resources.
-      
+
       **Sample environment YAML (Logging section only)**
-      
+
       ```yml
           variables:
               # Logging
@@ -415,24 +483,30 @@ In order to configure audit stream for Azure Monitor, identify the following inf
      1. [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
      2. [Hub Networking with Fortinet Firewall (NVA)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
 
-    Depending on the preference, you may delete/comment the configuration that is not required. For example, when deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls".
+    Depending on the preference, you may optionally delete/comment the configuration that is not required. For example, when deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls".
 
-    * Update **var-hubnetwork-managementGroupId** with the networking management group.  This is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-hubnetwork-managementGroupId` will be `contosoPlatformConnectivity`.
-    
+    > Note: Even deleting or commenting out the variables that are not required, either for the **Hub Networking with Azure Firewall** or the **Hub Networking with Fortinet Firewall (NVA)**
+    is optional since the deployment will be based on the pipeline you configure anyway. So if you configured the **platform-connectivity-hub-azfw-policy-ci** and the **platform-connectivity-hub-azfw-ci** pipelines,
+    only the _Azure Firewall_ option will be deployed, not the _NVA_ option.
+
+    * Update **var-hubnetwork-managementGroupId** with the networking management group:
+        * For **CanadaPubSecALZ v0.9.0 or later**, this will be the management id that represents the Networking Management Group in the defined hierarchy.
+        * For **CanadaPubSecALZ v0.8.0 or earlier**, this is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-hubnetwork-managementGroupId` will be `contosoPlatformConnectivity`.
+
     * Update **var-hubnetwork-subscriptionRoleAssignments** based on Azure AD security group's object ID responsible for managing Azure networking. If role assignments are not required, you must change the example provided with the following setting:
-    
+
       ```yml
         var-hubnetwork-subscriptionRoleAssignments: >
             []
       ```
-    
+
     * Valid contact information for the Azure Service Health Alerts: email and phone number
     * Values for Azure resource tags
     * IP ranges for the virtual networks
     * Enable/Disable Azure DDOS Standard
-    
+
     **Sample environment YAML (Hub Networking section only)**
-    
+
       ```yml
           variables:
               # Hub Networking

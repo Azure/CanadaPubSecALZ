@@ -1,0 +1,274 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/GenericSubscriptionArchetypeDefinition",
+  "definitions": {
+    "GenericSubscriptionArchetypeDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": [
+            "https"
+          ],
+          "qt-uri-extensions": [
+            ".json"
+          ]
+        },
+        "contentVersion": {
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/definitions/Parameters"
+        }
+      },
+      "required": [
+        "$schema",
+        "contentVersion",
+        "parameters"
+      ],
+      "title": "GenericSubscriptionArchetypeDefinition"
+    },
+    "Parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "$ref": "types/location.json#/definitions/Location"
+        },
+        "serviceHealthAlerts": {
+          "$ref": "types/serviceHealthAlerts.json#/definitions/ServiceHealthAlerts"
+        },
+        "securityCenter": {
+          "$ref": "types/securityCenter.json#/definitions/SecurityCenter"
+        },
+        "subscriptionRoleAssignments": {
+          "$ref": "types/subscriptionRoleAssignments.json#/definitions/SubscriptionRoleAssignments"
+        },
+        "subscriptionBudget": {
+          "$ref": "types/subscriptionBudget.json#/definitions/SubscriptionBudget"
+        },
+        "subscriptionTags": {
+          "$ref": "types/subscriptionTags.json#/definitions/SubscriptionTags"
+        },
+        "resourceTags": {
+          "$ref": "types/resourceTags.json#/definitions/ResourceTags"
+        },
+        "resourceGroups": {
+          "$ref": "#/definitions/ResourceGroups"
+        },
+        "automation": {
+          "$ref": "types/automation.json#/definitions/Automation"
+        },
+        "backupRecoveryVault": {
+          "$ref": "types/backupRecoveryVault.json#/definitions/RecoveryVault"
+        },
+        "hubNetwork": {
+          "$ref": "types/hubNetwork.json#/definitions/HubNetworkWithoutPrivateDNS"
+        },
+        "network": {
+          "$ref": "#/definitions/Network"
+        }
+      },
+      "required": [
+        "resourceTags",
+        "securityCenter",
+        "serviceHealthAlerts",
+        "subscriptionBudget",
+        "subscriptionRoleAssignments",
+        "subscriptionTags",
+        "resourceGroups",
+        "automation",
+        "hubNetwork",
+        "network",
+        "backupRecoveryVault"
+      ],
+      "title": "Parameters"
+    },
+    "ResourceGroups": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/ResourceGroupsValue"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "ResourceGroups"
+    },
+    "ResourceGroupsValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "automation": {
+          "type": "string"
+        },
+        "backupRecoveryVault": {
+          "type": "string"
+        },
+        "networking": {
+          "type": "string"
+        },
+        "networkWatcher": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "automation",
+        "networkWatcher",
+        "networking",
+        "backupRecoveryVault"
+      ],
+      "title": "ResourceGroupsValue"
+    },
+    "Network": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/NetworkValue"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "Network"
+    },
+    "NetworkValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "deployVnet": {
+          "type": "boolean"
+        },
+        "peerToHubVirtualNetwork": {
+          "type": "boolean"
+        },
+        "useRemoteGateway": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "dnsServers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "addressPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subnets": {
+          "$ref": "#/definitions/Subnets"
+        }
+      },
+      "required": [
+        "addressPrefixes",
+        "deployVnet",
+        "dnsServers",
+        "name",
+        "peerToHubVirtualNetwork",
+        "subnets",
+        "useRemoteGateway"
+      ],
+      "title": "NetworkValue"
+    },
+    "Subnets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "oz": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "paz": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "rz": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "hrz": {
+          "$ref": "#/definitions/Subnet"
+        },
+        "optional": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Subnet"
+          }
+        }
+      },
+      "required": [
+        "oz",
+        "paz",
+        "rz",
+        "hrz",
+        "optional"
+      ],
+      "title": "Subnets"
+    },
+    "Delegations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "serviceName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "serviceName"
+      ],
+      "title": "Delegations"
+    },
+    "Nsg": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "title": "Nsg"
+    },
+    "Subnet": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "comments": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "addressPrefix": {
+          "type": "string"
+        },
+        "nsg": {
+          "$ref": "#/definitions/Nsg"
+        },
+        "udr": {
+          "$ref": "#/definitions/Nsg"
+        },
+        "delegations": {
+          "$ref": "#/definitions/Delegations"
+        }
+      },
+      "required": [
+        "addressPrefix",
+        "comments",
+        "name",
+        "nsg",
+        "udr"
+      ],
+      "title": "subnet"
+    }
+  }
+}

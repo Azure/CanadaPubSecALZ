@@ -21,9 +21,45 @@
 #         currently executing pipeline.
 
 variables:
+
   # Management Groups
-  var-parentManagementGroupId: 343ddfdb-bef5-46d9-99cf-ed67d5948783
-  var-topLevelManagementGroupName: pubsec
+  # var-parentManagementGroupId: 343ddfdb-bef5-46d9-99cf-ed67d5948783
+  # var-topLevelManagementGroupName: pubsec
+
+  # Management Groups (modern)
+  var-managementgroup-hierarchy: >
+    {
+      "name": "Tenant Root Group",
+      "id": "343ddfdb-bef5-46d9-99cf-ed67d5948783",
+      "children": [
+        {
+          "name": "Azure Landing Zones for Canadian Public Sector",
+          "id": "pubsec",
+          "children": [
+            {
+              "name": "Platform", "id": "pubsecPlatform",
+              "children": [
+                { "name": "Identity", "id": "pubsecPlatformIdentity", "children": [] },
+                { "name": "Connectivity", "id": "pubsecPlatformConnectivity", "children": [] },
+                { "name": "Management", "id": "pubsecPlatformManagement", "children": [] }
+              ]
+            },
+            {
+              "name": "LandingZones", "id": "pubsecLandingZones",
+              "children": [
+                { "name": "DevTest", "id": "pubsecLandingZonesDevTest", "children": [] },
+                { "name": "QA", "id": "pubsecLandingZonesQA", "children": [] },
+                { "name": "Prod", "id": "pubsecLandingZonesProd", "children": [] }
+              ]
+            },
+            {
+              "name": "Sandbox", "id": "pubsecSandbox",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
 
   # Logging
   var-logging-managementGroupId: pubsecPlatformManagement
