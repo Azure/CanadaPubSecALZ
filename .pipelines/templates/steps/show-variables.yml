@@ -20,7 +20,7 @@ steps:
   inputs:
     targetType: inline
     script: |
-      $(var-bashPreInjectScript)
+      # $(var-bashPreInjectScript)
 
       echo
       echo
