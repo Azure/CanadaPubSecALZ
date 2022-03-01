@@ -326,26 +326,26 @@ This example configures:
 
 ### Service Health Alerts
 
-Update the **"serviceHealthAlerts":** properties with specific email addresses and phone numbers as required.
+Update the **serviceHealthAlerts** properties with specific email addresses and phone numbers as required.
 
 ![Generic Subscription: Service Health Alerts](../../docs/media/archetypes/service-health-alerts-receivers.jpg)
 
 ### Security Center
 
-Change the **"securityCenter":** properties with specific email and address values to reflect your actual point of contact.
+Change the **securityCenter** properties with specific email and address values to reflect your actual point of contact.
 
 ![Generic Subscription: Security Center](../../docs/media/archetypes/security-center-contact-info.jpg)
 
 ### Subscription Role Assignments
 
-Modify the two **"subscriptionRoleAssignments:** properties with your specific unique object ids of the respective groups for the **Contributor** built-in
+Modify the two **subscriptionRoleAssignments** properties with your specific unique object ids of the respective groups for the **Contributor** built-in
 and **Custom Role: Landing Zone Application Owner** roles for this landing zone subscription. These assignments are optional and can be 0 or more role assignments using either Built-In or Custom roles and security groups.
 
 ![Generic Subscription: Subscription Role Assignments](../../docs/media/archetypes/subscription-role-assignments.jpg)
 
 ### Resource Tags and Preferred Naming Convention
 
-1. Specify the desired custom values for the **"resourceTags":** properties.
+1. Specify the desired custom values for the **resourceTags** properties.
 You may also include any additional name value pairs of tags required. Generally, these tags can be modified and even replaced as required, and should also align to the Tagging policy set paramters at: [Generic Subscription](https://github.com/Azure/CanadaPubSecALZ/blob/main/docs/archetypes/generic-subscription.md).
 
 2. Addtionally, you can customize default resources and resource group names with any specific preferred naming convention, as indicated by the item **2** circles shown below.
@@ -357,7 +357,7 @@ You may also include any additional name value pairs of tags required. Generally
 
 **IMPORTANT**
 
-To avoid a failure when running any of the connectivity pipelines, the subscriptionId segment value of the **"hubNetwork":** string (item **1**), must be updated from it's default value to the specific hubNetwork subscriptionId that was actually deployed previously, so that the virtual network in this spoke subscription can be VNET Peered to the Hub Network.
+To avoid a failure when running any of the connectivity pipelines, the subscriptionId segment value of the **hubNetwork** string (item **1**), must be updated from it's default value to the specific hubNetwork subscriptionId that was actually deployed previously, so that the virtual network in this spoke subscription can be VNET Peered to the Hub Network.
 
 ![Generic Subscription: Hub Virtual Network ID](../../docs/media/archetypes/virtual-network-id.jpg)
 
