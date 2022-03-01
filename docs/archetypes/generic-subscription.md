@@ -2,12 +2,20 @@
 
 ## Table of Contents
 
-* [Overview](#overview)
-* [Azure Deployment](#azure-deployment)
-  * [Schema Definition](#schema-definition)
-  * [Deployment Scenarios](#deployment-scenarios)
-  * [Example Deployment Parameters](#example-deployment-parameters)
-  * [Deployment Instructions](#deployment-instructions)
+- [Archetype: Generic Subscription](#archetype-generic-subscription)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Azure Deployment](#azure-deployment)
+    - [Schema Definition](#schema-definition)
+    - [Deployment Scenarios](#deployment-scenarios)
+    - [Example Deployment Parameters](#example-deployment-parameters)
+  - [Recommended Parameter Property Updates](#recommended-parameter-property-updates)
+    - [Service Health Alerts](#service-health-alerts)
+    - [Security Center](#security-center)
+    - [Subscription Role Assignments](#subscription-role-assignments)
+    - [Resource Tags and Preferred Naming Convention](#resource-tags-and-preferred-naming-convention)
+    - [Hub Virtual Network ID](#hub-virtual-network-id)
+    - [Deployment Instructions](#deployment-instructions)
 
 ## Overview
 
@@ -313,6 +321,49 @@ This example configures:
     }
 }
 ```
+
+## Recommended Parameter Property Updates
+
+### Service Health Alerts
+
+Update the **serviceHealthAlerts** properties with specific email addresses and phone numbers as required.
+
+![Generic Subscription: Service Health Alerts](../../docs/media/archetypes/service-health-alerts-receivers.jpg)
+
+### Security Center
+
+Change the **securityCenter** properties with specific email and address values to reflect your actual point of contact.
+
+![Generic Subscription: Security Center](../../docs/media/archetypes/security-center-contact-info.jpg)
+
+### Subscription Role Assignments
+
+Modify the two **subscriptionRoleAssignments** properties with your specific unique object ids of the respective groups for the **Contributor** built-in
+and **Custom Role: Landing Zone Application Owner** roles for this landing zone subscription. These assignments are optional and can be 0 or more role assignments using either Built-In or Custom roles and security groups.
+
+![Generic Subscription: Subscription Role Assignments](../../docs/media/archetypes/subscription-role-assignments.jpg)
+
+### Resource Tags and Preferred Naming Convention
+
+1. Specify the desired custom values for the **resourceTags** properties.
+You may also include any additional name value pairs of tags required. Generally, these tags can be modified and even replaced as required, and should also align to the Tagging policy set paramters at: [Tag Policy](https://github.com/Azure/CanadaPubSecALZ/blob/main/policy/custom/definitions/policyset/Tags.parameters.json).
+
+2. Addtionally, you can customize default resources and resource group names with any specific preferred naming convention, as indicated by the item **2** circles shown below.
+   
+
+![Generic Subscription: Tags and Naming Conventions](../../docs/media/archetypes/resource-tags-and-naming-conventions.jpg)
+
+### Hub Virtual Network ID
+
+**IMPORTANT**
+
+To avoid a failure when running any of the connectivity pipelines, the subscriptionId segment value of the **hubNetwork** string (item **1**), must be updated from it's default value to the specific hubNetwork subscriptionId that was actually deployed previously, so that the virtual network in this spoke subscription can be VNET Peered to the Hub Network.
+
+![Generic Subscription: Hub Virtual Network ID](../../docs/media/archetypes/virtual-network-id.jpg)
+
+The rest of the segments for the **virtualNetworkId** string must also match the actual resources that were deployed from the connectivity pipeline, such as the name of the resource group,
+in case a different prefix besides **pubsec** was used to conform to a specific and preferred naming convention or organization prefix (item **2**), or the default VNET name of hub-vnet was also changed to something else,
+(**item 3**) - again based on a specific and preferred naming convention that may have been used before when the actual hub VNET was deployed.
 
 ### Deployment Instructions
 
