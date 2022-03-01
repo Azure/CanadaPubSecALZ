@@ -346,7 +346,7 @@ and **Custom Role: Landing Zone Application Owner** roles for this landing zone 
 ### Resource Tags and Preferred Naming Convention
 
 1. Specify the desired custom values for the **resourceTags** properties.
-You may also include any additional name value pairs of tags required. Generally, these tags can be modified and even replaced as required, and should also align to the Tagging policy set paramters at: [Generic Subscription](https://github.com/Azure/CanadaPubSecALZ/blob/main/docs/archetypes/generic-subscription.md).
+You may also include any additional name value pairs of tags required. Generally, these tags can be modified and even replaced as required, and should also align to the Tagging policy set paramters at: [Tag Policy](https://github.com/Azure/CanadaPubSecALZ/blob/main/policy/custom/definitions/policyset/Tags.parameters.json).
 
 2. Addtionally, you can customize default resources and resource group names with any specific preferred naming convention, as indicated by the item **2** circles shown below.
    
