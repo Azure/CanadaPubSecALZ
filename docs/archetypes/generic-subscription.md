@@ -346,10 +346,10 @@ and **Custom Role: Landing Zone Application Owner** roles for this landing zone 
 ### Resource Tags and Preferred Naming Convention
 
 1. Specify the desired custom values for the following tags: "resourceTags": {"value": {"ClientOrganization": "","CostCenter": "", "DataSensitivity": "", "ProjectContact": "", "ProjectName": "", "TechnicalContact": ""}".
-You may also include any additional name value pairs of tags required.
+You may also include any additional name value pairs of tags required. Generally, these tags can be modified and even replaced as required, and should also align to the Tagging policy set paramters at: `.../policy/custom/definitions/policyset/Tags.parameters.json`.
 
 2. Addtionally, you can customize default resources and resource group names with any specific preferred naming convention, as indicated by the item **2** circles shown below.
-   Generally, these tags can be modified and even replaced as required, and should also align to the Tagging policy set paramters at: `.../policy/custom/definitions/policyset/Tags.parameters.json`.
+   
 
 ![Generic Subscription: Tags and Naming Conventions](../../docs/media/archetypes/resource-tags-and-naming-conventions.jpg)
 
