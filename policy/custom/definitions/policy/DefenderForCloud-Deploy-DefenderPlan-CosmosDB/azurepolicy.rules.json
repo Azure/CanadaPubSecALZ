@@ -11,7 +11,7 @@
      "effect": "[parameters('effect')]",
      "details": {
          "type": "Microsoft.Security/pricings",
-         "name": "OpenSourceRelationalDatabases",
+         "name": "CosmosDbs",
          "deploymentScope": "Subscription",
          "existenceScope": "Subscription",
          "roleDefinitionIds": [
