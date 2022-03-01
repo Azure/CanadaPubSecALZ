@@ -55,7 +55,8 @@ If you don't wish to send usage data to Microsoft, you can set the `customerUsag
 * [Step 6 - Configure Azure Policies](#step-6---configure-azure-policies)
 * [Step 7 - Configure Hub Networking](#step-7---configure-hub-networking)
 * [Step 8 - Configure Subscription Archetypes](#step-8---configure-subscription-archetypes)
-
+* Migration
+    * [Populate management group hierarchy from your environment](#populate-management-group-hierarchy-from-your-environment)
 ---
 
 ## Step 1 - Create Service Principal Account & Assign RBAC
@@ -819,3 +820,141 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     3. In the Run Pipelines dialog window, enter the first 4 digits of your new subscription configuration file name (4 is usually enough of the GUID to uniquely identify the subscription) between the square brackets in the `subscriptions` parameter field. For example: `[802e]`.
 
     4. In the Run Pipelines dialog window, click the `Run` button to start the pipeline.
+
+## Migration
+
+### Populate management group hierarchy from your environment
+
+You can migrate to the management group hierarchy implemented in v0.9.0 by populating the hierarchy from your existing Azure environment.  By migrating to the hierarchy, you can take advantage of simplified configuration without modifying Bicep templates.  To generate the hierarchy:
+
+1. Login to Azure CLI.
+2. Execute the following command
+
+    ```bash
+    # Replace this value with your environment.  This id is the same as Azure Active Directory ID.
+    TENANT_ROOT_GROUP_ID='<< ENTER YOUR TENANT ROOT GROUP ID >>'
+    
+    az account management-group show --name $TENANT_ROOT_GROUP_ID -e -r | jq 'recurse(.children[]?) |= del(select(.type == "/subscriptions")) | del(..|nulls) | recurse(.children[]?) |= {"id":.name, "name":.displayName, "children": (.children // [] )}'
+    ```
+
+    This command will:
+
+    * Use Azure CLI to retrieve the management group structure recursively from `Tenant Root Group`.  Response from Azure CLI will include subscriptions.
+    * Use `jq` to
+      * Remove all objects that are of type: `/subscription`
+      * Removing the subscription objects leaves `null` in place in arrays so we then delete the nulls references
+      * Recurse through the intermediate json and select `name`, `id` and `children` (if children is null, then mark it as an empty array `[]`).
+
+    Output:
+
+    ```json
+    {
+      "id": "<< ENTER YOUR TENANT ROOT GROUP ID >>",
+      "name": "Tenant Root Group",
+      "children": [
+        {
+          "id": "pubsec",
+          "name": "Azure Landing Zones for Canadian Public Sector",
+          "children": [
+            {
+              "id": "pubsecSandbox",
+              "name": "Sandbox",
+              "children": []
+            },
+            {
+              "id": "pubsecPlatform",
+              "name": "Platform",
+              "children": [
+                {
+                  "id": "pubsecPlatformIdentity",
+                  "name": "Identity",
+                  "children": []
+                },
+                {
+                  "id": "pubsecPlatformManagement",
+                  "name": "Management",
+                  "children": []
+                },
+                {
+                  "id": "pubsecPlatformConnectivity",
+                  "name": "Connectivity",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "pubsecLandingZones",
+              "name": "Landing Zones",
+              "children": [
+                {
+                  "id": "pubsecLandingZonesQA",
+                  "name": "QA",
+                  "children": []
+                },
+                {
+                  "id": "pubsecLandingZonesDevTest",
+                  "name": "Dev/Test",
+                  "children": []
+                },
+                {
+                  "id": "pubsecLandingZonesProd",
+                  "name": "Production",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    ```
+
+3. Update `./config/variables/<devops-org-name>-<branch-name>.yml`
+
+    * Comment or delete the following two variables.  They will be queried from the management group hierarchy and set by Azure DevOps for pipeline execution:
+      * var-parentManagementGroupId
+      * var-topLevelManagementGroupName
+    * Add new variable `var-managementgroup-hierarchy` with the JSON output from above.
+
+      **Sample YAML**
+
+      ```yml
+      # Management Groups
+      # var-parentManagementGroupId: 343ddfdb-bef5-46d9-99cf-ed67d5948783
+      # var-topLevelManagementGroupName: pubsec
+    
+      # Management Groups (modern)
+      var-managementgroup-hierarchy: >
+        {
+          "name": "Tenant Root Group",
+          "id": "343ddfdb-bef5-46d9-99cf-ed67d5948783",
+          "children": [
+            {
+              "name": "Azure Landing Zones for Canadian Public Sector",
+              "id": "pubsec",
+              "children": [
+                {
+                  "name": "Platform", "id": "pubsecPlatform",
+                  "children": [
+                    { "name": "Identity", "id": "pubsecPlatformIdentity", "children": [] },
+                    { "name": "Connectivity", "id": "pubsecPlatformConnectivity", "children": [] },
+                    { "name": "Management", "id": "pubsecPlatformManagement", "children": [] }
+                  ]
+                },
+                {
+                  "name": "LandingZones", "id": "pubsecLandingZones",
+                  "children": [
+                    { "name": "DevTest", "id": "pubsecLandingZonesDevTest", "children": [] },
+                    { "name": "QA", "id": "pubsecLandingZonesQA", "children": [] },
+                    { "name": "Prod", "id": "pubsecLandingZonesProd", "children": [] }
+                  ]
+                },
+                {
+                  "name": "Sandbox", "id": "pubsecSandbox",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+        ```
