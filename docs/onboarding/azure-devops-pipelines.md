@@ -832,12 +832,21 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 You can migrate to the management group hierarchy implemented in v0.9.0 by populating the hierarchy from your existing Azure environment.  By migrating to the hierarchy, you can take advantage of simplified configuration without modifying Bicep templates.  To generate the hierarchy:
 
-1. Login to Azure CLI.
-2. Execute the following command
+1. Install [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) & [jq](https://stedolan.github.io/jq/download/) on your environment.
+
+2. Login to Azure CLI.
+
+    ```bash
+    az login
+    ```
+
+3. Execute the following command
+
+    **Bash Shell**
 
     ```bash
     # Replace this value with your environment.  This id is the same as Azure Active Directory ID.
-    TENANT_ROOT_GROUP_ID='<< ENTER YOUR TENANT ROOT GROUP ID >>'
+    TENANT_ROOT_GROUP_ID='<< TENANT ROOT GROUP ID >>'
     
     az account management-group show --name $TENANT_ROOT_GROUP_ID -e -r | jq 'recurse(.children[]?) |= del(select(.type == "/subscriptions")) | del(..|nulls) | recurse(.children[]?) |= {"id":.name, "name":.displayName, "children": (.children // [] )}'
     ```
