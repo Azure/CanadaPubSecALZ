@@ -851,6 +851,15 @@ You can migrate to the management group hierarchy implemented in v0.9.0 by popul
     az account management-group show --name $TENANT_ROOT_GROUP_ID -e -r | jq 'recurse(.children[]?) |= del(select(.type == "/subscriptions")) | del(..|nulls) | recurse(.children[]?) |= {"id":.name, "name":.displayName, "children": (.children // [] )}'
     ```
 
+    **Windows Shell**
+
+    ```bash
+    set TENANT_ROOT_GROUP_ID=<< TENANT ROOT GROUP ID >>
+    
+    az account management-group show --name %TENANT_ROOT_GROUP_ID% -e -r | jq "recurse(.children[]?) |= del(select(.type == \"/subscriptions\")) | del(..|nulls) | recurse(.children[]?) |= {\"id\":.name, \"name\":.displayName, \"children\": (.
+    children // [] )}"
+    ```
+
     This command will:
 
     * Use Azure CLI to retrieve the management group structure recursively from `TENANT ROOT GROUP ID`.  This management group is typically called `Tenant Root Group` unless it has been changed by your organization.  Response from Azure CLI will include subscriptions.
