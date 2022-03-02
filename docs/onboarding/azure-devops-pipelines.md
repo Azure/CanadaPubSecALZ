@@ -939,6 +939,8 @@ You can migrate to the management group hierarchy implemented in v0.9.0 by popul
       * var-topLevelManagementGroupName
     * Add new variable `var-managementgroup-hierarchy` with the JSON output from above.
 
+    > **Note:** YAML is indentation sensitive, therefore ensure this section is indented correctly in your configuration.
+
       **Sample YAML**
 
       ```yml
