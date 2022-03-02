@@ -55,6 +55,8 @@ If you don't wish to send usage data to Microsoft, you can set the `customerUsag
 * [Step 6 - Configure Azure Policies](#step-6---configure-azure-policies)
 * [Step 7 - Configure Hub Networking](#step-7---configure-hub-networking)
 * [Step 8 - Configure Subscription Archetypes](#step-8---configure-subscription-archetypes)
+* [Appendix](#appendix)
+  * [Populate management group hierarchy from your environment](#populate-management-group-hierarchy-from-your-environment)
 
 ---
 
@@ -187,7 +189,7 @@ Instructions:
 
 ### Step 3.2:  Update environment config file in git repository
 
-1. Identify the parent management group and obtain its ID. 
+1. Identify the parent management group and obtain its ID.
 
     >**Note**: The ID of the default parent management group 'Tenant Root Group' is the same as the Azure Active Directory (AAD) Tenant ID (GUID).
 
@@ -234,7 +236,7 @@ Instructions:
         }
     ```
 
-    In CanadaPubSecALZ v0.9.0 or later, the management group hierarchy can be defined in the environment configuration file. It is represented in JSON as a set of nested management group objects with the structure:
+    In CanadaPubSecALZ v0.9.0 or later, the management group hierarchy can be defined in the environment configuration file.  It is represented in JSON as a set of nested management group objects with the structure:
 
     ```json
     {
@@ -243,6 +245,8 @@ Instructions:
       "children": []
     }
     ```
+
+    Please follow the instructions in Appendix to [populate the management group hierarchy from your Azure environment](#populate-management-group-hierarchy-from-your-environment).
 
     Each `"children": []` element is an array of the same object type, and may contain zero or more child management group object definitions, which in turn may contain their own arrays of zero or more child management group object definitions.
 
@@ -437,7 +441,7 @@ This role assignment is used to grant users access to the logging subscription b
 
 ### Step 5.4:  Configure Audit Stream from Azure DevOps to Log Analytics Workspace (Optional)
 
-Audit streams represent a pipeline that flows audit events from your Azure DevOps organization to a stream target. Every half hour or less, new audit events are bundled and streamed to your targets. 
+Audit streams represent a pipeline that flows audit events from your Azure DevOps organization to a stream target. Every half hour or less, new audit events are bundled and streamed to your targets.
 
 We recommend reviewing common [Microsoft Sentinel detection patterns and rules provided in GitHub](https://github.com/Azure/Azure-Sentinel/tree/master/Detections/AzureDevOpsAuditing) as part of configuring Microsoft Sentinel.
 
@@ -819,3 +823,159 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     3. In the Run Pipelines dialog window, enter the first 4 digits of your new subscription configuration file name (4 is usually enough of the GUID to uniquely identify the subscription) between the square brackets in the `subscriptions` parameter field. For example: `[802e]`.
 
     4. In the Run Pipelines dialog window, click the `Run` button to start the pipeline.
+
+---
+
+## Appendix
+
+### Populate management group hierarchy from your environment
+
+You can migrate to the management group hierarchy implemented in v0.9.0 by populating the hierarchy from your existing Azure environment.  By migrating to the hierarchy, you can take advantage of simplified configuration without modifying Bicep templates.  To generate the hierarchy:
+
+1. Install [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) & [jq](https://stedolan.github.io/jq/download/) on your environment.
+
+2. Login to Azure CLI.
+
+    ```bash
+    az login
+    ```
+
+3. Execute the following command
+
+    **Bash Shell**
+
+    ```bash
+    # Replace this value with your environment.  This id is the same as Azure Active Directory ID.
+    TENANT_ROOT_GROUP_ID='<< TENANT ROOT GROUP ID >>'
+    
+    az account management-group show --name $TENANT_ROOT_GROUP_ID -e -r | jq 'recurse(.children[]?) |= del(select(.type == "/subscriptions")) | del(..|nulls) | recurse(.children[]?) |= {"id":.name, "name":.displayName, "children": (.children // [] )}'
+    ```
+
+    **Windows Shell**
+
+    ```bash
+    set TENANT_ROOT_GROUP_ID=<< TENANT ROOT GROUP ID >>
+    
+    az account management-group show --name %TENANT_ROOT_GROUP_ID% -e -r | jq "recurse(.children[]?) |= del(select(.type == \"/subscriptions\")) | del(..|nulls) | recurse(.children[]?) |= {\"id\":.name, \"name\":.displayName, \"children\": (.
+    children // [] )}"
+    ```
+
+    This command will:
+
+    * Use Azure CLI to retrieve the management group structure recursively from `TENANT ROOT GROUP ID`.  This management group is typically called `Tenant Root Group` unless it has been changed by your organization.  Response from Azure CLI will include subscriptions.
+    * Use `jq` to
+      * Remove all objects that are of type: `/subscription`
+      * Removing the subscription objects leaves `null` in place in arrays so we then delete the nulls references
+      * Recurse through the intermediate json and select `name`, `id` and `children` (if children is null, then mark it as an empty array `[]`).
+
+    Output:
+
+    ```json
+    {
+      "id": "<< TENANT ROOT GROUP ID >>",
+      "name": "Tenant Root Group",
+      "children": [
+        {
+          "id": "pubsec",
+          "name": "Azure Landing Zones for Canadian Public Sector",
+          "children": [
+            {
+              "id": "pubsecSandbox",
+              "name": "Sandbox",
+              "children": []
+            },
+            {
+              "id": "pubsecPlatform",
+              "name": "Platform",
+              "children": [
+                {
+                  "id": "pubsecPlatformIdentity",
+                  "name": "Identity",
+                  "children": []
+                },
+                {
+                  "id": "pubsecPlatformManagement",
+                  "name": "Management",
+                  "children": []
+                },
+                {
+                  "id": "pubsecPlatformConnectivity",
+                  "name": "Connectivity",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "pubsecLandingZones",
+              "name": "Landing Zones",
+              "children": [
+                {
+                  "id": "pubsecLandingZonesQA",
+                  "name": "QA",
+                  "children": []
+                },
+                {
+                  "id": "pubsecLandingZonesDevTest",
+                  "name": "Dev/Test",
+                  "children": []
+                },
+                {
+                  "id": "pubsecLandingZonesProd",
+                  "name": "Production",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    ```
+
+4. Update `./config/variables/<devops-org-name>-<branch-name>.yml`
+
+    * Delete the following two variables.  They will be queried from the management group hierarchy and set by Azure DevOps for pipeline execution:
+      * var-parentManagementGroupId
+      * var-topLevelManagementGroupName
+    * Add new variable `var-managementgroup-hierarchy` with the JSON output from above.
+
+    > **Note:** YAML is indentation sensitive, therefore ensure this section is indented correctly in your configuration.
+
+      **Sample YAML**
+
+      ```yml
+      # Management Groups
+      var-managementgroup-hierarchy: >
+        {
+          "name": "Tenant Root Group",
+          "id": "343ddfdb-bef5-46d9-99cf-ed67d5948783",
+          "children": [
+            {
+              "name": "Azure Landing Zones for Canadian Public Sector",
+              "id": "pubsec",
+              "children": [
+                {
+                  "name": "Platform", "id": "pubsecPlatform",
+                  "children": [
+                    { "name": "Identity", "id": "pubsecPlatformIdentity", "children": [] },
+                    { "name": "Connectivity", "id": "pubsecPlatformConnectivity", "children": [] },
+                    { "name": "Management", "id": "pubsecPlatformManagement", "children": [] }
+                  ]
+                },
+                {
+                  "name": "LandingZones", "id": "pubsecLandingZones",
+                  "children": [
+                    { "name": "DevTest", "id": "pubsecLandingZonesDevTest", "children": [] },
+                    { "name": "QA", "id": "pubsecLandingZonesQA", "children": [] },
+                    { "name": "Prod", "id": "pubsecLandingZonesProd", "children": [] }
+                  ]
+                },
+                {
+                  "name": "Sandbox", "id": "pubsecSandbox",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+        ```
