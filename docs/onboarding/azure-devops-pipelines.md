@@ -55,8 +55,9 @@ If you don't wish to send usage data to Microsoft, you can set the `customerUsag
 * [Step 6 - Configure Azure Policies](#step-6---configure-azure-policies)
 * [Step 7 - Configure Hub Networking](#step-7---configure-hub-networking)
 * [Step 8 - Configure Subscription Archetypes](#step-8---configure-subscription-archetypes)
-* Migration
-    * [Populate management group hierarchy from your environment](#populate-management-group-hierarchy-from-your-environment)
+* [Appendix](#appendix)
+  * [Populate management group hierarchy from your environment](#populate-management-group-hierarchy-from-your-environment)
+
 ---
 
 ## Step 1 - Create Service Principal Account & Assign RBAC
@@ -188,7 +189,7 @@ Instructions:
 
 ### Step 3.2:  Update environment config file in git repository
 
-1. Identify the parent management group and obtain its ID. 
+1. Identify the parent management group and obtain its ID.
 
     >**Note**: The ID of the default parent management group 'Tenant Root Group' is the same as the Azure Active Directory (AAD) Tenant ID (GUID).
 
@@ -235,7 +236,7 @@ Instructions:
         }
     ```
 
-    In CanadaPubSecALZ v0.9.0 or later, the management group hierarchy can be defined in the environment configuration file. It is represented in JSON as a set of nested management group objects with the structure:
+    In CanadaPubSecALZ v0.9.0 or later, the management group hierarchy can be defined in the environment configuration file.  It is represented in JSON as a set of nested management group objects with the structure:
 
     ```json
     {
@@ -244,6 +245,8 @@ Instructions:
       "children": []
     }
     ```
+
+    Please follow the instructions in Appendix to [populate the management group hierarchy from your Azure environment](#populate-management-group-hierarchy-from-your-environment).
 
     Each `"children": []` element is an array of the same object type, and may contain zero or more child management group object definitions, which in turn may contain their own arrays of zero or more child management group object definitions.
 
@@ -438,7 +441,7 @@ This role assignment is used to grant users access to the logging subscription b
 
 ### Step 5.4:  Configure Audit Stream from Azure DevOps to Log Analytics Workspace (Optional)
 
-Audit streams represent a pipeline that flows audit events from your Azure DevOps organization to a stream target. Every half hour or less, new audit events are bundled and streamed to your targets. 
+Audit streams represent a pipeline that flows audit events from your Azure DevOps organization to a stream target. Every half hour or less, new audit events are bundled and streamed to your targets.
 
 We recommend reviewing common [Microsoft Sentinel detection patterns and rules provided in GitHub](https://github.com/Azure/Azure-Sentinel/tree/master/Detections/AzureDevOpsAuditing) as part of configuring Microsoft Sentinel.
 
@@ -821,7 +824,9 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
     4. In the Run Pipelines dialog window, click the `Run` button to start the pipeline.
 
-## Migration
+---
+
+## Appendix
 
 ### Populate management group hierarchy from your environment
 
