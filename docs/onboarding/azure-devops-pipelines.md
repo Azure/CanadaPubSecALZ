@@ -853,7 +853,7 @@ You can migrate to the management group hierarchy implemented in v0.9.0 by popul
 
     This command will:
 
-    * Use Azure CLI to retrieve the management group structure recursively from `Tenant Root Group`.  Response from Azure CLI will include subscriptions.
+    * Use Azure CLI to retrieve the management group structure recursively from `TENANT ROOT GROUP ID`.  This management group is typically called `Tenant Root Group` unless it has been changed by your organization.  Response from Azure CLI will include subscriptions.
     * Use `jq` to
       * Remove all objects that are of type: `/subscription`
       * Removing the subscription objects leaves `null` in place in arrays so we then delete the nulls references
@@ -863,7 +863,7 @@ You can migrate to the management group hierarchy implemented in v0.9.0 by popul
 
     ```json
     {
-      "id": "<< ENTER YOUR TENANT ROOT GROUP ID >>",
+      "id": "<< TENANT ROOT GROUP ID >>",
       "name": "Tenant Root Group",
       "children": [
         {
@@ -923,7 +923,7 @@ You can migrate to the management group hierarchy implemented in v0.9.0 by popul
     }
     ```
 
-3. Update `./config/variables/<devops-org-name>-<branch-name>.yml`
+4. Update `./config/variables/<devops-org-name>-<branch-name>.yml`
 
     * Comment or delete the following two variables.  They will be queried from the management group hierarchy and set by Azure DevOps for pipeline execution:
       * var-parentManagementGroupId
