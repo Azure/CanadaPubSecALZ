@@ -934,7 +934,7 @@ You can migrate to the management group hierarchy implemented in v0.9.0 by popul
 
 4. Update `./config/variables/<devops-org-name>-<branch-name>.yml`
 
-    * Comment or delete the following two variables.  They will be queried from the management group hierarchy and set by Azure DevOps for pipeline execution:
+    * Delete the following two variables.  They will be queried from the management group hierarchy and set by Azure DevOps for pipeline execution:
       * var-parentManagementGroupId
       * var-topLevelManagementGroupName
     * Add new variable `var-managementgroup-hierarchy` with the JSON output from above.
@@ -943,10 +943,6 @@ You can migrate to the management group hierarchy implemented in v0.9.0 by popul
 
       ```yml
       # Management Groups
-      # var-parentManagementGroupId: 343ddfdb-bef5-46d9-99cf-ed67d5948783
-      # var-topLevelManagementGroupName: pubsec
-    
-      # Management Groups (modern)
       var-managementgroup-hierarchy: >
         {
           "name": "Tenant Root Group",
