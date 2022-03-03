@@ -353,7 +353,7 @@ For example when the file path is:
 | Deployment Information | Approach | Example |
 |:---------------------- |:-------- |:------- |
 | Environment | DevOps organization name & Git branch name | `CanadaESLZ-main` |
-| Management Group | Folder hierarchy under `config/subscription/CanadaESLZ-main` | pubsecLandingZonesDevTest (without the `/`).  [See below for details](#management-group-id-detection).
+| Management Group | Calculated based on concatenating the folder hierarchy under `config/subscription/CanadaESLZ-main` | pubsecLandingZonesDevTest (without the `/`).  [See below for details](#management-group-id-detection).
 | Subscription | Part of the file name | `8c6e48a4-4c73-4a1f-9f95-9447804f2c98` |
 | Deployment location | Part of the file name | `canadacentral` |
 | Deployment parameters | Content of the file | [See file content](../../config/subscriptions/CanadaESLZ-main/pubsec/LandingZones/DevTest/8c6e48a4-4c73-4a1f-9f95-9447804f2c98_machinelearning_canadacentral.json) |
