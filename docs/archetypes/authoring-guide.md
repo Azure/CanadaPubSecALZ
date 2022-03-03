@@ -422,21 +422,3 @@ To support approach #2:
     ```
 
 - `subscription-ci` will then take the folder name as the structure (since there aren't any sub folders).  In this example `DevTest` management group id will be `DevTest`.
-
-    **Advanced Customization (optional)**
-
-    If you prefer to keep the management group hierarchy but skip the automatic folder concatenation, it is possible to update the logic in [.pipelines/templates/jobs/deploy-subscription.yml](../../.pipelines/templates/jobs/deploy-subscription.yml).
-
-    > We are providing this step for completeness and for further customizations in your own projects.
-
-    ```bash
-        mgmt_group=$(printf "%s" "${dparts[@]:1:${#dparts[@]}-2}")
-        echo "  - management Group: ${mgmt_group}"
-    ```
-
-    The above snippet will need to be replaced with:
-
-    ```bash
-        mgmt_group=$(printf "%s" "${dparts[@]:${#dparts[@]}-2:1}")
-        echo "  - management Group: ${mgmt_group}"
-    ```
