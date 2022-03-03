@@ -50,24 +50,24 @@ steps:
       echo
       echo "LOGGING"
       echo
-      printenv | grep -i "^var-logging-"
+      printenv -0 | grep -zi "^var-logging-"
 
       echo
       echo
       echo "HUB NETWORKING (core)"
       echo
-      printenv | grep -i -P '^var-hubnetwork-(?!nva|azfw)'
+      printenv -0 | grep -zi -P '^var-hubnetwork-(?!nva|azfw)'
 
       echo
       echo
       echo "HUB NETWORKING WITH AZURE FIREWALL"
       echo
-      printenv | grep -i '^var-hubnetwork-azfw-'
+      printenv -0 | grep -zi '^var-hubnetwork-azfw-'
 
       echo
       echo
       echo "HUB NETWORKING WITH NETWORK VIRTUAL APPLIANCE"
       echo
-      printenv | grep -i '^var-hubnetwork-nva-'
+      printenv -0 | grep -zi '^var-hubnetwork-nva-'
 
       $(var-bashPostInjectScript)
