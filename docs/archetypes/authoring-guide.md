@@ -395,9 +395,9 @@ There are two approaches for achieving uniquness:
 
     In this approach, you must ensure all management group ids are unique yourself.
 
-The `subscription-ci` management group detection logic is built based on approach #1.  However it will also work for both scenarios.
+The `subscription-ci` management group detection logic is built to accommodate both scenarios.
 
-To support approach #1:
+**To support approach #1:**
 
 - Folder structure in `config/subscription/` is created without including the prefixes.  For example:
 
@@ -410,7 +410,7 @@ To support approach #1:
 
 - `subscription-ci` will then take the folder structure and concatenate it to create the management group id.  In this example `DevTest` management group id will be `pubsecLandingZonesDevTest`.
 
-To support approach #2:
+**To support approach #2:**
 
 - Folder structure in `config/subscription/` should be flat.  For example:
 
