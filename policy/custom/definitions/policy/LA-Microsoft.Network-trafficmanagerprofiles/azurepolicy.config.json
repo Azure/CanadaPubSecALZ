@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Traffic Manager to Log Analytics Workspaces",
+    "mode": "indexed"
+}

@@ -1,0 +1,143 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "definitions": {
+        "SQLDB": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "value": {
+                    "oneOf": [
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "enum": [
+                                        true
+                                    ]
+                                },
+                                "sqlAuthenticationUsername": {
+                                    "type": "string"
+                                },
+                                "aadAuthenticationOnly":{
+                                    "type":"boolean",
+                                    "enum": [
+                                        false
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "enabled",
+                                "sqlAuthenticationUsername",
+                                "aadAuthenticationOnly"
+                            ]
+                        },
+                        {
+                            "type":"object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "enum": [
+                                        true
+                                    ]
+                            },
+                            "aadAuthenticationOnly":{
+                                "type":"boolean",
+                                "enum": [
+                                    false
+                                ]
+                            },
+                            "sqlAuthenticationUsername": {
+                                "type": "string"
+                            },
+                            "aadLoginName":{
+                                "type":"string"
+                            },
+                            "aadLoginObjectID":{
+                                "type":"string"
+                            },
+                            "aadLoginType":{
+                                "type":"string",
+                                "enum": [
+                                    "User",
+                                    "Group",
+                                    "Application"
+                                ] 
+                            }
+                        },
+                        "required": [
+                            "enabled",
+                            "aadAuthenticationOnly",
+                            "aadLoginName",
+                            "aadLoginObjectID",
+                            "aadLoginType",
+                            "sqlAuthenticationUsername"
+                        ]
+                    },
+                    {
+                        "type":"object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "enabled": {
+                                "type": "boolean",
+                                "enum": [
+                                    true
+                                ]
+                        },
+                        "aadAuthenticationOnly":{
+                            "type":"boolean",
+                            "enum": [
+                                true
+                            ]
+                        },
+                        "aadLoginName":{
+                            "type":"string"
+                        },
+                        "aadLoginObjectID":{
+                            "type":"string"
+                        },
+                        "aadLoginType":{
+                            "type":"string",
+                            "enum": [
+                                "User",
+                                "Group",
+                                "Application"
+                            ] 
+                        }
+                    },
+                    "required": [
+                        "enabled",
+                        "aadAuthenticationOnly",
+                        "aadLoginName",
+                        "aadLoginObjectID",
+                        "aadLoginType"
+                    ]
+                }
+                        ,
+                        {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "enum": [
+                                        false
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "enabled"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "value"
+            ],
+            "title": "sqldb"
+        }
+    }
+}

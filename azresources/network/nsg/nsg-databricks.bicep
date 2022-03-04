@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Network Security Group Name for Public Subnet.')
 param namePublic string
 
@@ -15,7 +18,7 @@ param namePrivate string
 
 resource nsgPublic 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
   name: namePublic
-  location: resourceGroup().location
+  location: location
   properties: {
     securityRules: [
       {
@@ -108,7 +111,7 @@ resource nsgPublic 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
 
 resource nsgPrivate 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
   name: namePrivate
-  location: resourceGroup().location
+  location: location
   properties: {
     securityRules: [
       {

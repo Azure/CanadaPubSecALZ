@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Relay to Log Analytics Workspaces",
+    "mode": "indexed"
+}

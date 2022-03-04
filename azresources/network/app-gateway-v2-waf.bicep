@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Application Gateway v2 Name.')
 param name string
 
@@ -48,7 +51,7 @@ param enableHttp2 bool = true
 
 resource appgwPublicIp 'Microsoft.Network/publicIPAddresses@2020-06-01' = {
   name: '${name}PublicIp'
-  location: resourceGroup().location
+  location: location
   sku: {
     name: 'Standard'
   }
@@ -59,7 +62,7 @@ resource appgwPublicIp 'Microsoft.Network/publicIPAddresses@2020-06-01' = {
 
 resource appgw 'Microsoft.Network/applicationGateways@2020-07-01' = {
   name: name
-  location: resourceGroup().location
+  location: location
   properties: {
     sku: {
       name: 'WAF_v2'

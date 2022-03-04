@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Synapse Analytics name.')
 param name string
 
@@ -82,6 +85,7 @@ module synapseWithoutCMK 'synapse-without-cmk.bicep' = if (!useCMK) {
   params: {
     name: name
     tags: tags 
+    location: location
     
     adlsResourceGroupName: adlsResourceGroupName 
     adlsName: adlsName 
@@ -113,6 +117,7 @@ module synapseWithCMK 'synapse-with-cmk.bicep' = if (useCMK) {
   params: {
     name: name
     tags: tags 
+    location: location
     
     adlsResourceGroupName: adlsResourceGroupName 
     adlsName: adlsName 

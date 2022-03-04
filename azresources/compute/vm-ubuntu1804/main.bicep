@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Virtual Machine Name.')
 param vmName string
 
@@ -52,6 +55,7 @@ module vmWithoutCMK 'vm-ubuntu1804-without-cmk.bicep' = if (!useCMK) {
     params: {
         vmName: vmName
         vmSize: vmSize
+        location: location
 
         subnetId: subnetId
 
@@ -70,6 +74,7 @@ module vmWithCMK 'vm-ubuntu1804-with-cmk.bicep' = if (useCMK) {
     params: {
         vmName: vmName
         vmSize: vmSize
+        location: location
 
         subnetId: subnetId
 

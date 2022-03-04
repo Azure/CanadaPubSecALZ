@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('SQL Managed Instance Name.')
 param sqlServerName string
 
@@ -62,6 +65,7 @@ module sqlmiWithoutCMK 'sqlmi-without-cmk.bicep' = if (!useCMK) {
   params: {
     name: sqlServerName
     tags: tags
+    location: location
 
     skuName: skuName
 
@@ -85,6 +89,7 @@ module sqlmiWithCMK 'sqlmi-with-cmk.bicep' = if (useCMK) {
   params: {
     name: sqlServerName
     tags: tags
+    location: location
 
     skuName: skuName
 

@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Container Registry Name.')
 param name string
 
@@ -43,7 +46,7 @@ param privateZoneId string
 resource acr 'Microsoft.ContainerRegistry/registries@2020-11-01-preview' = {
   name: name
   tags: tags
-  location: resourceGroup().location
+  location: location
   sku: {
     name: 'Premium'
   }
@@ -80,7 +83,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2020-11-01-preview' = {
 }
 
 resource acr_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (!empty(privateZoneId)) {
-  location: resourceGroup().location
+  location: location
   name: '${acr.name}-endpoint'
   properties: {
     subnet: {

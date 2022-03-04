@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Cosmos DB to Log Analytics Workspaces",
+    "mode": "indexed"
+}

@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Synapse Analytics name.')
 param name string
 
@@ -82,7 +85,7 @@ module dataLakeSynapseFS '../../storage/storage-adlsgen2-fs.bicep' = {
 resource synapsePrivateLinkHub 'Microsoft.Synapse/privateLinkHubs@2021-03-01' = {
   name: '${toLower(name)}plhub'
   tags: tags
-  location: resourceGroup().location
+  location: location
 }
 
 resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
@@ -92,7 +95,7 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
 
   name: name
   tags: tags
-  location: resourceGroup().location
+  location: location
   properties: {
     sqlAdministratorLoginPassword: synapsePassword
     managedResourceGroupName: managedResourceGroupName
@@ -169,7 +172,7 @@ module roleAssignSynapseToSALogging '../../iam/resource/storage-role-assignment-
 }
 
 resource synapse_workspace_web_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: '${synapse.name}-web-endpoint'
   properties: {
     subnet: {
@@ -204,7 +207,7 @@ resource synapse_workspace_web_pe 'Microsoft.Network/privateEndpoints@2020-06-01
 }
 
 resource synapse_workspace_dev_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: '${synapse.name}-workspace-dev-endpoint'
   properties: {
     subnet: {
@@ -239,7 +242,7 @@ resource synapse_workspace_dev_pe 'Microsoft.Network/privateEndpoints@2020-06-01
 }
 
 resource synapse_workspace_sql_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: '${synapse.name}-workspace-sql-endpoint'
   properties: {
     subnet: {
@@ -274,7 +277,7 @@ resource synapse_workspace_sql_pe 'Microsoft.Network/privateEndpoints@2020-06-01
 }
 
 resource synapse_workspace_sql_on_demand_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: '${synapse.name}-workspace-sql-ondemand-endpoint'
   properties: {
     subnet: {
@@ -336,5 +339,6 @@ module addResourceAccess '../../util/deployment-script.bicep' = {
     deploymentScript: format(azCliCommand, synapse.id, subscription().tenantId, adlsResourceGroupName, adlsName)
     deploymentScriptName: 'grant-access-${synapse.name}-${adlsName}'
     deploymentScriptIdentityId: deploymentScriptIdentityId
+    location: location
   }
 }
