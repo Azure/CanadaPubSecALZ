@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Virtual Machine Name.')
 param vmName string
 
@@ -59,7 +62,7 @@ module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
 
 resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2020-12-01' = {
     name: '${vmName}-disk-encryption-set'
-    location: resourceGroup().location
+    location: location
     identity: {
         type: 'SystemAssigned'
     }
@@ -85,7 +88,7 @@ module diskEncryptionSetRoleAssignmentForCMK '../../iam/resource/key-vault-role-
 
 resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
     name: '${vmName}-nic'
-    location: resourceGroup().location
+    location: location
     properties: {
         enableAcceleratedNetworking: enableAcceleratedNetworking
         ipConfigurations: [
@@ -110,7 +113,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
     ]
 
     name: vmName
-    location: resourceGroup().location
+    location: location
     zones: [
         availabilityZone
     ]

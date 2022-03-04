@@ -38,6 +38,12 @@ stages:
           steps:
           - checkout: self
 
+          - template: templates/steps/load-variables.yml
+
+          - template: templates/steps/show-variables.yml
+            parameters:
+              json: ${{ convertToJson(variables) }}
+
           - template: templates/steps/deploy-platform-connectivity-hub-azfw-policy.yml
             parameters:
               description: 'Deploy Azure Firewall Policy'

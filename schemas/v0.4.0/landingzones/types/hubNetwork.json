@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "definitions": {
+    "HubNetworkWithoutPrivateDNS": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/ValueWithoutPrivateDNS"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "HubNetworkWithoutPrivateDNS"
+    },
+    "HubNetworkWithPrivateDNS": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/ValueWithPrivateDNS"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "HubNetworkWithPrivateDNS"
+    },
+    "ValueWithoutPrivateDNS": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "virtualNetworkId": {
+          "type": "string"
+        },
+        "rfc1918IPRange": {
+          "type": "string"
+        },
+        "rfc6598IPRange": {
+          "type": "string"
+        },
+        "egressVirtualApplianceIp": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "egressVirtualApplianceIp",
+        "rfc1918IPRange",
+        "rfc6598IPRange",
+        "virtualNetworkId"
+      ],
+      "title": "ValueWithoutPrivateDNS"
+    },
+    "ValueWithPrivateDNS": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "virtualNetworkId": {
+          "type": "string"
+        },
+        "rfc1918IPRange": {
+          "type": "string"
+        },
+        "rfc6598IPRange": {
+          "type": "string"
+        },
+        "egressVirtualApplianceIp": {
+          "type": "string"
+        },
+        "privateDnsManagedByHub": {
+          "type": "boolean"
+        },
+        "privateDnsManagedByHubSubscriptionId": {
+          "type": "string"
+        },
+        "privateDnsManagedByHubResourceGroupName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "egressVirtualApplianceIp",
+        "rfc1918IPRange",
+        "rfc6598IPRange",
+        "virtualNetworkId",
+        "privateDnsManagedByHub",
+        "privateDnsManagedByHubResourceGroupName",
+        "privateDnsManagedByHubSubscriptionId"
+      ],
+      "title": "ValueWithoutPrivateDNS"
+    }
+  }
+}

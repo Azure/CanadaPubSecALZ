@@ -89,8 +89,6 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Monitoring | Application Insights - Application performance and monitoring cloud service | - | [Azure Docs](https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview)
 
 
-> For App Service, for using the SKU tier `Premium` to support private endpoints, it may require a quota increase.
-
 The intended cloud service workflows and data movements for this archetype include:
 
 1. Data can be ingested from various sources using Data Factory, which uses managed virtual network for its Azure hosted integration runtime.
@@ -131,9 +129,11 @@ Once the machine learning archetype is deployed and available to use, access con
 | Azure Storage Account for Azure ML | Network ACL deny | Private endpoint on `blob`, `file` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Data Factory | Public network access disabled, Azure integration runtime with managed virtual network | Private endpoint on `dataFactory` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Kubernetes Service | Private cluster, network profile set with either kubenet or Azure CNI | N/A | `aks`|
-| Azure App Service | Virtual Network integration | N/A | `appService` | 
+| Azure App Service | Virtual Network integration. Public network access can be disabled, using private endpoint instead | Private endpoint on `azureWebsites` + DNS registration to either hub or spoke | `appService`, `privateEndpoints` | 
 | Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`|f
 | Azure Application Insights | N/A | N/A | N/A |
+
+> For App Service, private endpoint requires the SKU tier `Premium`: https://docs.microsoft.com/azure/app-service/networking/private-endpoint so this may require a quota increase.
 
 This archetype also has the following security features as options for deployment:
 
@@ -234,6 +234,7 @@ Reference implementation uses parameter files with `object` parameters to consol
   * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-machinelearning.json)
 
   * Common types
+    * [Location](../../schemas/latest/landingzones/types/location.json)
     * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
     * [Microsoft Defender for Cloud](../../schemas/latest/landingzones/types/securityCenter.json)
     * [Subscription Role Assignments](../../schemas/latest/landingzones/types/subscriptionRoleAssignments.json)
@@ -256,6 +257,7 @@ Reference implementation uses parameter files with `object` parameters to consol
 | Scenario | Example JSON Parameters | Notes |
 |:-------- |:----------------------- |:----- |
 | Deployment with Hub Virtual Network | [tests/schemas/lz-machinelearning/FullDeployment-With-Hub.json](../../tests/schemas/lz-machinelearning/FullDeployment-With-Hub.json) | - |
+| Deployment with Location | [tests/schemas/lz-machinelearning/FullDeployment-With-Location.json](../../tests/schemas/lz-machinelearning/FullDeployment-With-Location.json) | `parameters.location.value` is `canadacentral` |
 | Deployment without Hub Virtual Network | [tests/schemas/lz-machinelearning/FullDeployment-Without-Hub.json](../../tests/schemas/lz-machinelearning/FullDeployment-Without-Hub.json) | `parameters.hubNetwork.value.*` fields are empty & `parameters.network.value.peerToHubVirtualNetwork` is false. |
 | Deployment with subscription budget | [tests/schemas/lz-machinelearning/BudgetIsTrue.json](../../tests/schemas/lz-machinelearning/BudgetIsTrue.json) | `parameters.subscriptionBudget.value.createBudget` is set to `true` and budget information filled in. |
 | Deployment without subscription budget | [tests/schemas/lz-machinelearning/BudgetIsFalse.json](../../tests/schemas/lz-machinelearning/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
@@ -272,7 +274,7 @@ Reference implementation uses parameter files with `object` parameters to consol
 | Deployment with AKS using Network Plugin: Azure CNI + Network Policy: Calico | [tests/schemas/lz-machinelearning/AKS-AzureCNI-Calico.json](../../tests/schemas/lz-machinelearning/AKS-AzureCNI-Calico.json) | `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.networkPlugin`  equals ***calico***, `parameters.aks.value.podCidr` is ***empty***, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
 | Deployment with AKS using Network Plugin: Azure CNI + Network Policy: Azure | [tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json](../../tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json) | `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.podCidr` is ***empty***, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
 | Deployment without Azure App Service for Linux Containers | [tests/schemas/lz-machinelearning/AppServiceLinuxContainerIsFalse.json](../../tests/schemas/lz-machinelearning/AppServiceLinuxContainerIsFalse.json) | `parameters.appServiceLinuxContainer.value.enabled` is false. |
-
+| Deployment with Azure App Service for Linux Containers without Private Endpoint| [tests/schemas/lz-machinelearning/AppServiceLinuxContainerPrivateEndpointIsFalse.json](../../tests/schemas/lz-machinelearning/AppServiceLinuxContainerPrivateEndpointIsFalse.json) | `parameters.appServiceLinuxContainer.value.enabled` is true, `parameters.appServiceLinuxContainer.value.sku{Name,Tier}` are filled, and `parameters.appServiceLinuxContainer.value.enablePrivateEndpoint` is false. |
 ### Example Deployment Parameters
 
 This example configures:
@@ -418,7 +420,8 @@ This example configures:
       "value": {
         "enabled": true,
         "skuName": "P1V2",
-        "skuTier": "Premium"
+        "skuTier": "Premium",
+        "enablePrivateEndpoint": true
       }
     },
     "aml": {

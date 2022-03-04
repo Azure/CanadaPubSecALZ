@@ -9,6 +9,9 @@
 
 targetScope = 'subscription'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 param deploymentScriptIdentityId string
 param deploymentScriptResourceGroupName string
 
@@ -39,6 +42,8 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
   name: 'execute-test-${testRunnerId}'
   scope: subscription()
   params: {
+    location: location
+
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
     securityCenter: {
@@ -108,6 +113,7 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
       enabled: true
       skuName: 'P1V2'
       skuTier: 'Premium'
+      enablePrivateEndpoint: true
     }
 
     hubNetwork: {
@@ -219,5 +225,7 @@ module testCleanup '../../../../azresources/util/deployment-script.bicep' = if (
     deploymentScriptName: 'cleanup-test-${testRunnerId}'
     deploymentScriptIdentityId: deploymentScriptIdentityId
     timeout: 'PT6H'
+
+    location: location
   }
 }

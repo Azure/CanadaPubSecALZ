@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('SQL Database Logical Server Name.')
 param sqlServerName string
 
@@ -81,6 +84,8 @@ var aadAdministrator = {
 module sqldbWithoutCMK 'sqldb-without-cmk.bicep' = if (!useCMK) {
   name: 'deploy-sqldb-without-cmk'
   params: {
+    location: location
+    
     sqlServerName: sqlServerName
 
     privateEndpointSubnetId: privateEndpointSubnetId
@@ -103,6 +108,8 @@ module sqldbWithoutCMK 'sqldb-without-cmk.bicep' = if (!useCMK) {
 module sqldbWithCMK 'sqldb-with-cmk.bicep' = if (useCMK) {
   name: 'deploy-sqldb-with-cmk'
   params: {
+    location: location
+
     sqlServerName: sqlServerName
 
     privateEndpointSubnetId: privateEndpointSubnetId

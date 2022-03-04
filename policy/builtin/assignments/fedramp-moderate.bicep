@@ -9,6 +9,9 @@
 
 targetScope = 'managementGroup'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
@@ -53,7 +56,7 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }
 
 // These role assignments are required to allow Policy Assignment to remediate.

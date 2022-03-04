@@ -5,6 +5,9 @@
 // ----------------------------------------------------------------------------------
 targetScope = 'subscription'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 // Service Health
 // Example (JSON)
 // -----------------------------
@@ -288,6 +291,8 @@ module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
   scope: subscription()
   params: {
+    location: location
+
     serviceHealthAlerts: serviceHealthAlerts
 
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
@@ -305,42 +310,42 @@ module subScaffold '../scaffold-subscription.bicep' = {
 // Create Network Watcher Resource Group
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgNetworkWatcherName
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 // Create Private DNS Zone Resource Group - optional
 resource rgPrivateDnsZones 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployPrivateDnsZones) {
   name: rgPrivateDnsZonesName
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 // Create Azure DDOS Standard Resource Group - optional
 resource rgDdos 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployDdosStandard) {
   name: rgDdosName
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 // Create Hub Virtual Network Resource Group
 resource rgHubVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgHubName
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 // Create Managemend Restricted Virtual Network Resource Group
 resource rgMrzVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgMrzName
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 // Create Public Access Zone Resource Group
 resource rgPaz 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgPazName
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
@@ -371,6 +376,7 @@ module ddosPlan '../../azresources/network/ddos-standard.bicep' = if (deployDdos
   scope: rgDdos
   params: {
     name: ddosPlanName
+    location: location
   }
 }
 
@@ -387,6 +393,7 @@ module publicAccessZoneUdr '../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-${hubPazSubnetName}Udr'
   scope: rgHubVnet
   params: {
+    location: location
     name: '${hubPazSubnetName}Udr'
     routes: [
       {
@@ -404,6 +411,7 @@ module managementRestrictedZoneUdr '../../azresources/network/udr/udr-custom.bic
   name: 'deploy-route-table-MrzSpokeUdr'
   scope: rgHubVnet
   params: {
+    location: location
     name: 'MrzSpokeUdr'
     routes: [
       {
@@ -422,6 +430,8 @@ module hubVnet 'hub-vnet/hub-vnet.bicep' = {
   name: 'deploy-hub-vnet-${hubVnetName}'
   scope: rgHubVnet
   params: {
+    location: location
+
     vnetName: hubVnetName
     vnetAddressPrefixRFC1918: hubVnetAddressPrefixRFC1918
     vnetAddressPrefixRFC6598: hubVnetAddressPrefixRFC6598
@@ -448,6 +458,8 @@ module mrzVnet 'mrz-vnet/mrz-vnet.bicep' = {
   name: 'deploy-management-vnet-${mrzVnetName}'
   scope: rgMrzVnet
   params: {
+    location: location
+
     vnetName: mrzVnetName
     vnetAddressPrefix: mrzVnetAddressPrefixRFC1918
 
@@ -480,6 +492,7 @@ module azureFirewall '../../azresources/network/firewall.bicep' = {
   name: 'deploy-azure-firewall'
   scope: rgHubVnet
   params: {
+    location: location
     name: azureFirewallName
     zones: azureFirewallZones
     firewallSubnetId: hubVnet.outputs.AzureFirewallSubnetId
@@ -497,6 +510,8 @@ module hubVnetRoutes 'hub-vnet/hub-vnet-routes.bicep' = {
   name: 'deploy-hub-vnet-routes'
   scope: rgHubVnet
   params: {
+    location: location
+    
     azureFirwallPrivateIp: azureFirewall.outputs.firewallPrivateIp
     hubVnetAddressPrefixRFC1918: hubVnetAddressPrefixRFC1918
     hubVnetAddressPrefixRFC6598: hubVnetAddressPrefixRFC6598
@@ -526,6 +541,7 @@ module bastion '../../azresources/network/bastion.bicep' = {
   name: 'deploy-bastion'
   scope: rgHubVnet
   params: {
+    location: location
     name: bastionName
     sku: bastionSku
     scaleUnits: bastionScaleUnits

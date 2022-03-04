@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for CDN Endpoint to Log Analytics Workspaces",
+    "mode": "indexed"
+}

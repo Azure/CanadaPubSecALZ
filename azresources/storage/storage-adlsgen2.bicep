@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('ADLS Gen2 Storage Account Name')
 param name string
 
@@ -49,7 +52,7 @@ param deploymentScriptIdentityId string
 /* Storage Account */
 resource storage 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   tags: tags
-  location: resourceGroup().location
+  location: location
   name: name
   identity: {
     type: 'SystemAssigned'
@@ -111,6 +114,7 @@ module enableCMK 'storage-enable-cmk.bicep' = if (useCMK) {
   params: {
     storageAccountName: storage.name
     storageResourceGroupName: resourceGroup().name
+    location: location
 
     keyVaultResourceGroupName: akvResourceGroupName
     keyVaultName: akvName
@@ -121,7 +125,7 @@ module enableCMK 'storage-enable-cmk.bicep' = if (useCMK) {
 
 /* Private Endpoints */
 resource datalake_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (!empty(blobPrivateZoneId)) {
-  location: resourceGroup().location
+  location: location
   name: '${storage.name}-blob-endpoint'
   properties: {
     subnet: {
@@ -156,7 +160,7 @@ resource datalake_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (
 }
 
 resource datalake_dfs_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (!empty(dfsPrivateZoneId)) {
-  location: resourceGroup().location
+  location: location
   name: '${storage.name}-dfs-endpoint'
   properties: {
     subnet: {
