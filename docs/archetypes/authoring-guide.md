@@ -333,32 +333,92 @@ module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-u
 
 ## Deployment Instructions
 
-> Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Machine Learning.
+> Use the [Onboarding Guide for Azure DevOps](../onboarding/azure-devops-pipelines.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Generic Subscription, Machine Learning and Healthcare.
 
-Parameter files for archetype deployment are configured in [config/subscription](../../config/subscriptions) folder.  This folder contains JSON parameter configurations for configuring subscriptions based on an archetype through `subscription-ci` Azure DevOps Pipeline.  The folder hierarchy is comprised of the following elements, from this folder downward:
+Azure Resource Manager (ARM) parameters files provide deployment information to setup subscriptions.  Deployment information can include `location`, `resource group names`, `resource names` and `networking`. You can find more information in [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/templates/parameter-files) on ARM parameter files.
 
-1. A environment folder named for the Azure DevOps Org and Git Repo branch name, e.g. 'CanadaESLZ-main'.
-2. The management group hierarchy defined for your environment, e.g. `pubsec/LandingZones/Prod`. The location of the config file represents which Management Group the subscription is a member of.
+These parameter files are located in [config/subscription](../../config/subscriptions) folder.  This folder is configurable in `common.yml` and you can override in environment configuration files using the `subscriptionsPathFromRoot` setting.  By default it is set to `config/subscriptions`.  
 
-For example, if your Azure DevOps organization name is 'CanadaESLZ', you have two Git Repo branches named 'main' and 'dev', and you have top level management group named 'pubsec' with the standard structure, then your path structure would look like this:
+Immediate subfolder defines the environment which is based on Azure DevOps Organization (i.e. `CanadaESLZ`) & Git branch name (i.e. `main`), for example the subfolder will be called `CanadaESLZ-main`.  You can have many environments based on Git branch names such as `CanadaESLZ-feature-1`, `CanadaESLZ-dev`, etc.
 
-```none
-/config/subscriptions
-    /CanadaESLZ-main           <- Your environment, e.g. CanadaESLZ-main, CanadaESLZ-dev, etc.
-        /pubsec                <- Your top level management root group name
-            /LandingZones
-                /Prod
-                    /xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx_machinelearning.json
-                    /yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy_machinelearning_canadacentral.json
-```
+ARM parameter files are used by `subscription-ci` Azure DevOps Pipeline when configuring subscriptions with Azure resources.  The pipeline will detect environment, management group, subscription, deployment location and deployment parameters using the folder hierarchy, file name and file content.
 
-The JSON config file name is in one of the following two formats:
+For example when the file path is:
 
-- [AzureSubscriptionGUID]\_[TemplateName].json
-- [AzureSubscriptionGUID]\_[TemplateName]\_[DeploymentLocation].json
+`config/subscriptions/CanadaESLZ-main/pubsec/LandingZones/DevTest/8c6e48a4-4c73-4a1f-9f95-9447804f2c98_machinelearning_canadacentral.json`
 
-The subscription GUID is needed by the pipeline; since it's not available in the file contents, it is specified in the config file name.
+- **Folder hierarchy:** config/subscriptions/CanadaESLZ-main/pubsec/LandingZones/DevTest/
+- **File name:** 8c6e48a4-4c73-4a1f-9f95-9447804f2c98_machinelearning_canadacentral.json
 
-The template name/type is a text fragment corresponding to a path name (or part of a path name) under the '/landingzones' top level path. It indicates which Bicep templates to run on the subscription. For example, the machine learning path is `/landingzones/lz-machinelearning`, so we remove the `lz-` prefix and use `machinelearning` to specify this type of landing zone.
+| Deployment Information | Approach | Example |
+|:---------------------- |:-------- |:------- |
+| Environment | DevOps organization name & Git branch name | `CanadaESLZ-main` |
+| Management Group | Calculated based on concatenating the folder hierarchy under `config/subscription/CanadaESLZ-main` | pubsecLandingZonesDevTest (without the `/`).  [See below for details](#management-group-id-detection).
+| Subscription | Part of the file name | `8c6e48a4-4c73-4a1f-9f95-9447804f2c98` |
+| Deployment location | Part of the file name | `canadacentral` |
+| Deployment parameters | Content of the file | [See file content](../../config/subscriptions/CanadaESLZ-main/pubsec/LandingZones/DevTest/8c6e48a4-4c73-4a1f-9f95-9447804f2c98_machinelearning_canadacentral.json) |
 
-The deployment location is the short name of an Azure deployment location, which may be used to override the `deploymentRegion` YAML variable. The allowable values for this value can be determined by looking at the `Name` column output of the command: `az account list-locations -o table`.
+The ARM parameter file name can be in one of two formats:
+
+- `[SubscriptionGUID]`\_`[ArchetypeName]`.json
+- `[SubscriptionGUID]`\_`[ArchetypeName]`\_`[DeploymentLocation]`.json
+
+The subscription GUID is required by the pipeline to target the archetype deployment.
+
+The template name/type is a text fragment corresponding to a path name (or part of a path name) under the '/landingzones' top level path. It indicates which Bicep templates to run on the subscription. For example, the machine learning path is `/landingzones/lz-machinelearning`, so we remove the `lz-` prefix and use `machinelearning` to specify this type of landing zone (archetype).
+
+The deployment location is the short name of an Azure deployment location, which may be used to override the `deploymentRegion` YAML variable.  This parameter is configurable in `common.yml` and you can also override in environment configuration files.  By default it is set to `canadacentral`.  The allowable values for this value can be determined by looking at the `Name` column output of the command: `az account list-locations -o table`.
+
+### Management Group Id detection
+
+Management Group Id must be unique within an Azure environment.  Since a management group hierarchy can be up to 6 levels deep with many child management groups , it is important to ensure uniqueness across all management groups ids.
+
+There are two approaches for achieving uniquness:
+
+1. Use the parent management group id as the prefix for every child management group id.  For example:
+
+    ```none
+        - pubsec
+          - pubsecLandingZones
+            - pubsecLandingZonesDevTest
+    ```
+
+    In this approach, the prefix creates the natural uniqueness.
+
+2. Create a management group hierarchy where every management group id can be unique and it is manually checked.  For example:
+
+    ```none
+        - pubsec
+          - LandingZones
+            - DevTest
+    ```
+
+    In this approach, you must ensure all management group ids are unique yourself.
+
+The `subscription-ci` management group detection logic is built to accommodate both scenarios.
+
+**To support approach #1:**
+
+- Folder structure in `config/subscription/` is created without including the prefixes.  For example:
+
+    ```none
+          config/subscription/CanadaESLZ-main
+            - pubsec
+                - LandingZones
+                    - DevTest
+    ```
+
+- `subscription-ci` will then take the folder structure and concatenate it to create the management group id.  In this example `DevTest` management group id will be `pubsecLandingZonesDevTest`.
+
+**To support approach #2:**
+
+- Folder structure in `config/subscription/` should be flat.  For example:
+
+    ```none
+          config/subscription/CanadaESLZ-main
+            - pubsec
+            - LandingZones
+            - DevTest
+    ```
+
+- `subscription-ci` will then take the folder name as the structure (since there aren't any sub folders).  In this example `DevTest` management group id will be `DevTest`.

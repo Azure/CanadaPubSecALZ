@@ -19,7 +19,7 @@ choice /C YN /M "Do you want to proceed?"
 if errorlevel 2 exit /b 0
 
 REM Process all pipeline definitions
-for %%N in (management-groups roles platform-logging policy platform-connectivity-hub-nva platform-connectivity-hub-azfw platform-connectivity-hub-azfw-policy subscriptions) do (
+for %%N in (management-groups roles platform-logging policy platform-connectivity-hub-nva platform-connectivity-hub-azfw platform-connectivity-hub-azfw-policy subscription) do (
     echo.
     echo Deleting pipeline [%%N]...
     echo.
