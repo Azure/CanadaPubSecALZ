@@ -69,7 +69,7 @@ set PIPELINE=platform-connectivity-hub-azfw-policy%DEVOPS_PIPELINE_NAME_SUFFIX%
 goto :RunPipeline
 
 :case_8
-set PIPELINE=subscriptions%DEVOPS_PIPELINE_NAME_SUFFIX%
+set PIPELINE=subscription%DEVOPS_PIPELINE_NAME_SUFFIX%
 echo.
 echo Running the [%PIPELINE%] pipeline from this script is not supported at this time.
 goto :Prompt
