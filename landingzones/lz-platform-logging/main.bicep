@@ -187,6 +187,9 @@ param logAnalyticsAutomationAccountName string
 @description('Log Analytics Workspace Data Retention in days.')
 param logAnalyticsRetentionInDays int
 
+@description('Flag to determine whether delete lock should be created on resource group(s).  Default:  true')
+param enableDeleteLockOnResourceGroup bool = true
+
 // Telemetry - Azure customer usage attribution
 // Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 var telemetry = json(loadTextContent('../../config/telemetry.json'))
@@ -199,6 +202,12 @@ resource rgLogging 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: logAnalyticsResourceGroupName
   location: location
   tags: resourceTags
+}
+
+// Delete lock on resource group
+module rgLoggingDeleteLock '../../azresources/util/delete-lock.bicep' = if (enableDeleteLockOnResourceGroup) {
+  name: 'deploy-delete-lock-${rgLogging.name}'
+  scope: rgLogging
 }
 
 // Create Log Analytics Workspace
