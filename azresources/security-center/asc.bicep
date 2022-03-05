@@ -50,6 +50,7 @@ var azureDefenderServices = [
   'Arm'
   'AppServices'
   'Containers'
+  'CosmosDbs'
   'Dns'
   'KeyVaults'
   'OpenSourceRelationalDatabases'

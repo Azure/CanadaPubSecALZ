@@ -9,6 +9,11 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy definition.')
+param policyDefinitionManagementGroupId string
+
+var customPolicyDefinitionMgScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)
+
 resource ascAzureDefender 'Microsoft.Authorization/policySetDefinitions@2020-03-01' = {
   name: 'custom-enable-azure-defender'
   properties: {
@@ -162,6 +167,14 @@ resource ascAzureDefender 'Microsoft.Authorization/policySetDefinitions@2020-03-
         ]
         policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/c9ddb292-b203-4738-aead-18e2716e858f'
         policyDefinitionReferenceId: toLower(replace('Configure Microsoft Defender for Containers to be enabled', ' ', '-'))
+        parameters: {}
+      }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'DefenderForCloud-Deploy-DefenderPlan-CosmosDB')
+        policyDefinitionReferenceId: toLower(replace('Configure Microsoft Defender for Cosmos DB to be enabled', ' ', '-'))
         parameters: {}
       }
     ]
