@@ -261,7 +261,7 @@ Run the `create-pipelines.bat` script to create the landing zone pipelines:
 - platform-connectivity-hub-nva-ci
 - platform-connectivity-hub-azfw-ci
 - platform-connectivity-hub-azfw-policy-ci
-- subscriptions-ci
+- subscription-ci
 
 If you would rather perform these steps manually, detailed guidance is available in the following sections of the [Azure DevOps Pipelines Onboarding Guide](./azure-devops-pipelines.md):
 
@@ -296,7 +296,7 @@ Detailed guidance on these configuration requirements is available in the [Azure
 
 ### Run pipelines
 
-Run the `run-pipelines.bat` script to interactively run individual landing zone pipelines. Note that at present time the `subscriptions-ci` pipeline is not included in the list of runnable pipelines as the script requires additional work to enable that capability.
+Run the `run-pipelines.bat` script to interactively run individual landing zone pipelines. Note that at present time the `subscription-ci` pipeline is not included in the list of runnable pipelines as the script requires additional work to enable that capability.
 
 ### Clear environment variables used by scripts
 
