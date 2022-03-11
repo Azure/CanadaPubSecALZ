@@ -23,6 +23,7 @@ steps:
       ### newer 'var-managementgroup-hierarchy' variable, if it is defined.
       ### -------------------------------------------------------------------------------------------------
       hierarchyJson='${{ variables['var-managementgroup-hierarchy'] }}'
+      echo $hierarchyJson
       if [[ -n $hierarchyJson ]]; then
         echo "The new 'var-managementgroup-hierarchy' variable IS defined."
         echo "REMAPPING 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName' variables."
