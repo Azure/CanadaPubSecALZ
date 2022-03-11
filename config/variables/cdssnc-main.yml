@@ -24,7 +24,9 @@ variables:
   # Management Groups
   var-parentManagementGroupId: 221ca1d3-b3f2-4346-8abc-88f802495c7d
   var-topLevelManagementGroupName: pubsec
-
+  #work around for v0.9.0 bug https://github.com/Azure/CanadaPubSecALZ/issues/210#issuecomment-1065293025
+  var-managementgroup-hierarchy:
+  
   # Logging
   var-logging-managementGroupId: pubsecPlatform
   var-logging-subscriptionId: f27b081a-aa54-4ab4-9f26-a4c5375dc8fa
