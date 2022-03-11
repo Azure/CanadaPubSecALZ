@@ -19,10 +19,10 @@ steps:
 
       ### -------------------------------------------------------------------------------------------------
       ### Create the 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName'
-      ### variables (used in YAML pipeilne definitions) based on information extracted from the
+      ### variables (used in YAML pipeline definitions) based on information extracted from the
       ### newer 'var-managementgroup-hierarchy' variable, if it is defined.
       ### -------------------------------------------------------------------------------------------------
-      hierarchyJson='${{ variables["var-managementgroup-hierarchy"] }}'
+      hierarchyJson='$['var-managementgroup-hierarchy"]'
       echo $hierarchyJson
       if [[ -n $hierarchyJson ]]; then
         echo "The new 'var-managementgroup-hierarchy' variable IS defined."
