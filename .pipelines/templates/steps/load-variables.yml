@@ -12,7 +12,7 @@ steps:
 # Load Variables
 - task: Bash@3
   condition: ne(variables['var-managementgroup-hierarchy'], '')
-  displayName: Load variables from Management Group Hierarchy
+  displayName: Load variables from Management Group hierarchy
   inputs:
     targetType: inline
     script: |
