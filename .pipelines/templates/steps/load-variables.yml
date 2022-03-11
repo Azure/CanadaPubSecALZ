@@ -27,13 +27,16 @@ steps:
       
       if [[ -n $hierarchyJson ]]; then
         echo "The new 'var-managementgroup-hierarchy' variable IS defined."
-        echo "REMAPPING 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName' variables."
+        echo "SETTING 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName' variables."
 
         parentManagementGroupId=`echo $hierarchyJson | jq -r '.id'`
         topLevelManagementGroupName=`echo $hierarchyJson | jq -r '.children[0].id'`
         
         echo "##vso[task.setvariable variable=var-parentManagementGroupId]$parentManagementGroupId"
         echo "##vso[task.setvariable variable=var-topLevelManagementGroupName]$topLevelManagementGroupName"
+
+        echo "var-parentManagementGroupId=$parentManagementGroupId"
+        echo "var-topLevelManagementGroupName=$topLevelManagementGroupName"
       fi
 
       ### -------------------------------------------------------------------------------------------------
