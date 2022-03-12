@@ -11,7 +11,8 @@ steps:
 
 # Load Variables
 - task: Bash@3
-  displayName: Load Variables
+  condition: ne(variables['var-managementgroup-hierarchy'], '')
+  displayName: Load variables from Management Group hierarchy
   inputs:
     targetType: inline
     script: |
@@ -19,27 +20,30 @@ steps:
 
       ### -------------------------------------------------------------------------------------------------
       ### Create the 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName'
-      ### variables (used in YAML pipeilne definitions) based on information extracted from the
+      ### variables (used in YAML pipeline definitions) based on information extracted from the
       ### newer 'var-managementgroup-hierarchy' variable, if it is defined.
       ### -------------------------------------------------------------------------------------------------
       hierarchyJson='$(var-managementgroup-hierarchy)'
+      
       if [[ -n $hierarchyJson ]]; then
         echo "The new 'var-managementgroup-hierarchy' variable IS defined."
-        echo "REMAPPING 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName' variables."
+        echo "SETTING 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName' variables."
+
         parentManagementGroupId=`echo $hierarchyJson | jq -r '.id'`
         topLevelManagementGroupName=`echo $hierarchyJson | jq -r '.children[0].id'`
+        
         echo "##vso[task.setvariable variable=var-parentManagementGroupId]$parentManagementGroupId"
         echo "##vso[task.setvariable variable=var-topLevelManagementGroupName]$topLevelManagementGroupName"
-      else
-        echo "The new 'var-managementgroup-hierarchy' variable IS NOT defined."
-        echo "USING existing 'var-parentManagementGroupId' and 'var-topLevelManagementGroupName' variables."
+
+        echo "var-parentManagementGroupId=$parentManagementGroupId"
+        echo "var-topLevelManagementGroupName=$topLevelManagementGroupName"
       fi
 
       ### -------------------------------------------------------------------------------------------------
-      ### Add more scripts here to remap other variables. For example, if you refactor for existing (flat)
-      ### variables to represent them in JSON notation (objects), then this is a useful approach to
-      ### maintaining backward compatibility while supporting a newer and improved configuration schema.
+      ### Add more scripts here to remap other variables using management group hierarchy. For example,
+      ### if you refactor for existing (flat) variables to represent them in JSON notation (objects), then
+      ### this is a useful approach to maintaining backward compatibility while supporting a newer and improved
+      ### configuration schema.
       ### -------------------------------------------------------------------------------------------------
-
 
       $(var-bashPostInjectScript)
