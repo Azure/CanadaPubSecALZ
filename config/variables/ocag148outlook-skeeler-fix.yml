@@ -47,8 +47,8 @@ variables:
               "name": "LandingZones", "id": "pubsecLandingZones",
               "children": [
                 { "name": "DevTest", "id": "pubsecLandingZonesDevTest", "children": [] },
-                { "name": "QA", "id": "pubsecLandingZonesQA", "children": [] },
-                { "name": "Prod", "id": "pubsecLandingZonesProd", "children": [] }
+                { "name": "Prod", "id": "pubsecLandingZonesProd", "children": [] },
+                { "name": "UAT", "id": "pubsecLandingZonesUAT", "children": [] }
               ]
             },
             {
