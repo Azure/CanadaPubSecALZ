@@ -88,7 +88,6 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Key Management | Azure Key Vault - Centralized cloud storage of secrets and keys | Private Endpoint | [Azure Docs](https://docs.microsoft.com/azure/key-vault/general/overview)
 | Monitoring | Application Insights - Application performance and monitoring cloud service | - | [Azure Docs](https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview)
 
-
 The intended cloud service workflows and data movements for this archetype include:
 
 1. Data can be ingested from various sources using Data Factory, which uses managed virtual network for its Azure hosted integration runtime.
@@ -171,7 +170,6 @@ Since all traffic is redirected through the NVA / Firewall, the following destin
  | `dc.services.visualstudio.com` ; `*.ods.opinsights.azure.com` ; `*.oms.opinsights.azure.com` ; `*.monitoring.azure.com` ; `data.policy.core.windows.net` ; `store.policy.core.windows.net` | HTTPS | 443 | AKS Addons required FQDNs|
  | `security.ubuntu.com` ; `azure.archive.ubuntu.com` ; `changelogs.ubuntu.com` | HTTP | 80 | AKS Optional recommended FQDNs |
 
-
 ## Testing
 
 Test scripts are provided to verify end to end integration. These tests are not automated so minor modifications are needed to set up and run.
@@ -253,6 +251,8 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Azure SQL Managed Instances](../../schemas/latest/landingzones/types/sqlmi.json)
 
 ### Deployment Scenarios
+
+> Sample deployment scenarios are based on the latest JSON parameters file schema definition.  If you have an older version of this repository, please use the examples from your repository.
 
 | Scenario | Example JSON Parameters | Notes |
 |:-------- |:----------------------- |:----- |
