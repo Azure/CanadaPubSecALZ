@@ -16,6 +16,7 @@
     - [Test Scenarios](#test-scenarios)
   - [Azure Deployment](#azure-deployment)
     - [Schema Definition](#schema-definition)
+    - [Delete Locks](#delete-locks)
     - [Deployment Scenarios](#deployment-scenarios)
     - [Example Deployment Parameters](#example-deployment-parameters)
     - [Deployment Instructions](#deployment-instructions)
@@ -249,6 +250,12 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Azure Key Vault](../../schemas/latest/landingzones/types/keyVault.json)
     * [Azure SQL Database](../../schemas/latest/landingzones/types/sqldb.json)
     * [Azure SQL Managed Instances](../../schemas/latest/landingzones/types/sqlmi.json)
+
+### Delete Locks
+
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+
+**This archetype does not use `CanNotDelete` nor `ReadOnly` locks as part of the deployment.  You may customize the deployment templates when it's required for your environment.**
 
 ### Deployment Scenarios
 
