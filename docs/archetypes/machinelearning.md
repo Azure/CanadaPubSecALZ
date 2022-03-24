@@ -16,6 +16,7 @@
     - [Test Scenarios](#test-scenarios)
   - [Azure Deployment](#azure-deployment)
     - [Schema Definition](#schema-definition)
+    - [Delete Locks](#delete-locks)
     - [Deployment Scenarios](#deployment-scenarios)
     - [Example Deployment Parameters](#example-deployment-parameters)
     - [Deployment Instructions](#deployment-instructions)
@@ -87,7 +88,6 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | SQL Storage | Azure SQL Database - Fully managed cloud database engine | Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/azure-sql/database/sql-database-paas-overview) |
 | Key Management | Azure Key Vault - Centralized cloud storage of secrets and keys | Private Endpoint | [Azure Docs](https://docs.microsoft.com/azure/key-vault/general/overview)
 | Monitoring | Application Insights - Application performance and monitoring cloud service | - | [Azure Docs](https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview)
-
 
 The intended cloud service workflows and data movements for this archetype include:
 
@@ -171,7 +171,6 @@ Since all traffic is redirected through the NVA / Firewall, the following destin
  | `dc.services.visualstudio.com` ; `*.ods.opinsights.azure.com` ; `*.oms.opinsights.azure.com` ; `*.monitoring.azure.com` ; `data.policy.core.windows.net` ; `store.policy.core.windows.net` | HTTPS | 443 | AKS Addons required FQDNs|
  | `security.ubuntu.com` ; `azure.archive.ubuntu.com` ; `changelogs.ubuntu.com` | HTTP | 80 | AKS Optional recommended FQDNs |
 
-
 ## Testing
 
 Test scripts are provided to verify end to end integration. These tests are not automated so minor modifications are needed to set up and run.
@@ -252,7 +251,15 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Azure SQL Database](../../schemas/latest/landingzones/types/sqldb.json)
     * [Azure SQL Managed Instances](../../schemas/latest/landingzones/types/sqlmi.json)
 
+### Delete Locks
+
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+
+**This archetype does not use `CanNotDelete` nor `ReadOnly` locks as part of the deployment.  You may customize the deployment templates when it's required for your environment.**
+
 ### Deployment Scenarios
+
+> Sample deployment scenarios are based on the latest JSON parameters file schema definition.  If you have an older version of this repository, please use the examples from your repository.
 
 | Scenario | Example JSON Parameters | Notes |
 |:-------- |:----------------------- |:----- |
@@ -453,7 +460,7 @@ This example configures:
         ],
         "subnets": {
           "oz": {
-            "comments": "Foundational Elements Zone (OZ)",
+            "comments": "App Management Zone (OZ)",
             "name": "oz",
             "addressPrefix": "10.4.1.0/25"
           },

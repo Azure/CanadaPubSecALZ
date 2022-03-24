@@ -12,7 +12,7 @@
 * [Required Routes](#required-routes)
 * [Firewall configuration details](#firewall-configuration-details)
 * [Fortigate Licences](#fortigate-licences)
-
+* [Delete Locks](#delete-locks)
 
 ## Overview
 
@@ -63,7 +63,7 @@ Network design will require 3 IP blocks:
 
 ## Management Restricted Zone Virtual Network
 
-* Management Access Zone (OZ) - to host any privileged access workstations (PAW), with Management Public IPs forwarded via the hub's firewall. 
+* Management Access Zone (OZ) - to host any privileged access workstations (PAW), with Management Public IPs forwarded via the hub's firewall.
 * Management (OZ) – hosting the management servers (domain controllers).
 * Infrastructure (OZ) – hosting other common infrastructure, like file shares.
 * Security Management (OZ) – hosting security, proxies and patching servers.
@@ -82,11 +82,13 @@ Application Gateway can have either public or private frontends (also with [RFC 
 The Backend URL should map to a VIP and Port mapping in the firewall's External network. In the future, Backend URLs could be directly pointed to the Frontend subnets in the spoke. The firewall performs DNAT and sends to the webserver, which will answer to the source IP (Application Gateway's internal IP), which means the webserver may need a UDR to force traffic destined to Application Gateway to re-traverse the firewall (next-hop), which is considered asymmetric routing ([other example topologies](https://docs.microsoft.com/azure/architecture/example-scenario/gateway/firewall-application-gateway#application-gateway-before-firewall)).
 
 ## User Defined Routes
+
 All traffic to be sent to the Hub's firewall via the Internal Load Balancer in the Int_Prod Zone (or for Dev Landing Zones, the Int_Dev ILB) Private Endpoints and Private DNS Design.
 
 Azure supports connecting to PaaS services using [RFC 1918][rfc1918] private IPs, avoiding all traffic from the internet and only allowing connections from designated private endpoints as a special kind of NICs in the subnet of choice. Private DNS resolution must be implemented so the PaaS service URLs properly translate to the individual private IP of the private endpoint.
 
 ## Network Security Groups
+
 Below is a list of requirements for the NSGs in each subnet:
 
 * Hub Virtual Network
@@ -218,18 +220,19 @@ The 4 NICs will be mapped as follows (IPs shown for firewall 1 and 2, and the VI
 | PAZ (via Public) | NIC 1 | NIC 1 | - | NIC 1 |
 | Internal (LZ Spokes) | NIC 3 | NIC 3 | NIC 3 | -
 
-
 ## Fortigate Licences
 
 The Fortigate firewall can be consumed in two modes: bring-your-own-license (BYOL) or pay-as-you-go (PAYG), where the hourly fee includes the fortigate license premium. Both require acceptance of the Fortigate license and billing plans, which can be automated with the following CLI:
 
 **Bring your own license (BYOL)**
-```
+
+```bash
 az vm image accept-terms --plan fortinet_fw-vm --offer fortinet_fortiweb-vm_v5 --publish fortinet --subscription XXX
 ```
 
 **Pay as you go license (PAYG)**
-```
+
+```bash
 az vm image accept-terms --plan fortinet_fw-vm-payg_20190624 --offer fortinet_fortiweb-vm_v5 --publish fortinet --subscription XXX
 ```
 
@@ -241,6 +244,16 @@ For that reason, it's recommended to boot a Windows management VM in the MRZ (Ma
 
 * https://portal.azure.com/#create/fortinet.fortigatengfw-high-availabilityfortigate-ha
 
+## Delete Locks
+
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+
+By default, this archetype deploys `CanNotDelete` lock to prevent accidental deletion at:
+
+* Hub Virtual Network resource group
+* Management Restricted Zone resource group
+* Public Access Zone resource group
+* DDoS resource group (when enabled)
 
 
 [itsg22]: https://www.cyber.gc.ca/sites/default/files/publications/itsg-22-eng.pdf
