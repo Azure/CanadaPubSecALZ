@@ -51,7 +51,7 @@ param hubNetwork object
 //       ],
 //       "subnets": {
 //           "oz": {
-//               "comments": "Foundational Elements Zone (OZ)",
+//               "comments": "App Management Zone (OZ)",
 //               "name": "oz",
 //               "addressPrefix": "10.2.1.0/25",
 //               "nsg": {
@@ -131,7 +131,7 @@ param hubNetwork object
 //   ]
 //   subnets: {
 //     oz: {
-//       comments: 'Foundational Elements Zone (OZ)'
+//       comments: 'App Management Zone (OZ)'
 //       name: 'oz'
 //       addressPrefix: '10.2.1.0/25'
 //       nsg: {
