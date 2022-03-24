@@ -126,20 +126,3 @@ stages:
         deployOperation: ${{ variables['deployOperation'] }}
         policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
         workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
-
-    - template: templates/steps/assign-policy.yml
-      parameters:
-        description: 'Assign Policy Set'
-        deployTemplates: [asb]
-        deployOperation: ${{ variables['deployOperation'] }}
-        policyAssignmentManagementGroupScope: pubsecLandingZones
-        workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
-
-    - template: templates/steps/assign-policy.yml
-      parameters:
-        description: 'Assign Policy Set'
-        deployTemplates: [asb]
-        deployOperation: ${{ variables['deployOperation'] }}
-        policyAssignmentManagementGroupScope: pubsecLandingZonesDevTest
-        workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
-
