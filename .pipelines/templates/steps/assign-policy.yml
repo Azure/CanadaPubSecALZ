@@ -39,14 +39,12 @@ steps:
 
         if [ -f '${{ policy }}-${{ parameters.policyAssignmentManagementGroupScope }}.parameters.json' ]
         then
-          echo "Using templated parameters based on policy assignment management group scope: ${{ parameters.policyAssignmentManagementGroupScope }}"
           parameterFileName='${{ policy }}-${{ parameters.policyAssignmentManagementGroupScope }}.parameters.json'
         else
-          echo "Using default templated parameters"
           parameterFileName='${{ policy }}.parameters.json'
         fi
 
-        echo "Populating templated parameters in $parameterFileName"
+        echo "Populating templated parameters: $parameterFileName"
 
         cp $parameterFileName ${{ policy }}.populated.parameters.json
 
