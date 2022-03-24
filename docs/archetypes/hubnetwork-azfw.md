@@ -11,6 +11,7 @@
 * [Required Routes](#required-routes)
 * [Azure Firewall Rules](#azure-firewall-rules)
 * [Log Analytics Integration](#log-analytics-integration)
+* [Delete Locks](#delete-locks)
 
 ## Overview
 
@@ -187,17 +188,19 @@ Below are sample queries that can also be used to query Log Analytics Workspace 
 
 **Sample Firewall Logs Query**
 
-```
+```none
 AzureDiagnostics 
 | where Category contains "AzureFirewall"
 | where msg_s contains "Deny"
 | project TimeGenerated, msg_s
 | order by TimeGenerated desc
 ```
+
 ![Sample DNS Logs](../media/architecture/hubnetwork-azfw/azfw-logs-fw.jpg)
 
 **Sample DNS Logs Query**
-```
+
+```none
 AzureDiagnostics
 | where Category == "AzureFirewallDnsProxy"
 | where msg_s !contains "NOERROR"
@@ -207,7 +210,6 @@ AzureDiagnostics
 
 ![Sample DNS Logs](../media/architecture/hubnetwork-azfw/azfw-logs-dns.jpg)
 
-
 [itsg22]: https://www.cyber.gc.ca/sites/default/files/publications/itsg-22-eng.pdf
 [cloudUsageProfiles]: https://github.com/canada-ca/cloud-guardrails/blob/master/EN/00_Applicable-Scope.md
 [rfc1918]: https://tools.ietf.org/html/rfc1918
@@ -215,3 +217,14 @@ AzureDiagnostics
 [nsgAzureLoadBalancer]: https://docs.microsoft.com/azure/virtual-network/network-security-groups-overview#allowazureloadbalancerinbound
 [nsgAzureBastion]: https://docs.microsoft.com/azure/bastion/bastion-nsg#apply
 [nsgAppGatewayV2]: https://docs.microsoft.com/azure/application-gateway/configuration-infrastructure#network-security-groups
+
+## Delete Locks
+
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+
+By default, this archetype deploys `CanNotDelete` lock to prevent accidental deletion at:
+
+* Hub Virtual Network resource group
+* Management Restricted Zone resource group
+* Public Access Zone resource group
+* DDoS resource group (when enabled)

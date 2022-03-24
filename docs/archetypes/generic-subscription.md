@@ -7,6 +7,7 @@
   - [Overview](#overview)
   - [Azure Deployment](#azure-deployment)
     - [Schema Definition](#schema-definition)
+    - [Delete Locks](#delete-locks)
     - [Deployment Scenarios](#deployment-scenarios)
     - [Example Deployment Parameters](#example-deployment-parameters)
   - [Recommended Parameter Property Updates](#recommended-parameter-property-updates)
@@ -87,7 +88,15 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Backup Recovery Vault](../../schemas/latest/landingzones/types/backupRecoveryVault.json)
     * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
 
+### Delete Locks
+
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+
+**This archetype does not use `CanNotDelete` nor `ReadOnly` locks as part of the deployment.  You may customize the deployment templates when it's required for your environment.**
+
 ### Deployment Scenarios
+
+> Sample deployment scenarios are based on the latest JSON parameters file schema definition.  If you have an older version of this repository, please use the examples from your repository.
 
 | Scenario | Example JSON Parameters | Notes |
 |:-------- |:----------------------- |:----- |
@@ -256,7 +265,7 @@ This example configures:
                 ],
                 "subnets": {
                     "oz": {
-                        "comments": "Foundational Elements Zone (OZ)",
+                        "comments": "App Management Zone (OZ)",
                         "name": "oz",
                         "addressPrefix": "10.2.1.0/25",
                         "nsg": {

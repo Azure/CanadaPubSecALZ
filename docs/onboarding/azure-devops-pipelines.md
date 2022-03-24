@@ -463,7 +463,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 ## Step 6 - Configure Azure Policies
 
-1. Pipeline definition for Azure Policies. Overview of Azure Policy and definitions deployed refer to [readme.md under `/docs/policy`](../../docs/policy/readme.md)
+1. Pipeline definition for Azure Policies.
 
     *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
@@ -476,7 +476,54 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     7. Save the pipeline (don't run it yet)
     8. Rename the pipeline to `policy-ci`
 
-2. Run pipeline and wait for completion.
+2. By default, the pipeline will configure built-in policy assignments (i.e. `PBMM`, `NIST 800-53 Rev 4`, `NIST 800-53 Rev 5`, `HIPAA`, etc.) and custom policy assignments (i.e. `Log Analytics`, `Defender for Cloud`, `Networking`, `Tag Governance`, etc.).  The assignments are scoped to the top management group (i.e. `pubsec`).  These policy sets are documented in [Azure Policy for Guardrails](../policy) and you may choose to customize them for your Azure environment.  To customize:
+
+    1. Edit [/.pipelines/policy.yml](../../.pipelines/policy.yml)
+    2. Update custom policy definitions & assignments
+        1. Navigate to the `CustomPolicyJob` Job definition
+        2. Navigate to the `Define Policy Set` Step definition and remove the policy definition name from the `deployTemplates` array parameter
+
+              ```yaml
+                  - template: templates/steps/define-policyset.yml
+                    parameters:
+                      description: 'Define Policy Set'
+                      deployTemplates: [AKS, DefenderForCloud, LogAnalytics, Network, DNSPrivateEndpoints, Tags]
+                      deployOperation: ${{ variables['deployOperation'] }}
+                      workingDir: $(System.DefaultWorkingDirectory)/policy/custom/definitions/policyset
+                    
+              ```
+
+        3. Navigate to the `Assign Policy Set` Step definition and remove the policy assignment name from the `deployTemplates` array parameter
+
+            ```yaml
+                - template: templates/steps/assign-policy.yml
+                  parameters:
+                    description: 'Assign Policy Set'
+                    deployTemplates: [AKS, DefenderForCloud, LogAnalytics, Network, Tags]
+                    deployOperation: ${{ variables['deployOperation'] }}
+                    policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
+                    workingDir: $(System.DefaultWorkingDirectory)/policy/custom/assignments
+            ```
+
+    3. Update built-in policy assignments
+
+        1. Navigate to the `BuiltInPolicyJob` Job definition
+        2. Navigate to the `Assign Policy Set` Step definition
+        3. Remove the policy set assignment from the `deployTemplates` array parameter
+
+            ```yaml
+                - template: templates/steps/assign-policy.yml
+                  parameters:
+                    description: 'Assign Policy Set'
+                    deployTemplates: [asb, cis-msft-130, location, nist80053r4, nist80053r5, pbmm, hitrust-hipaa, fedramp-moderate]
+                    deployOperation: ${{ variables['deployOperation'] }}
+                    policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
+                    workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
+            ```
+
+3. Commit the changes to git repository.
+
+4. Run pipeline and wait for completion.
 
 ---
 
