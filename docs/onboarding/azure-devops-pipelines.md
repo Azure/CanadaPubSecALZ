@@ -85,7 +85,7 @@ This deployment diagram describes the steps for deploying one, many or all modul
     CustomRoles: Custom Roles
     Logging: Logging
 
-    Policy: Azure Policy as Guardrails
+    Policy: Azure Policy
     DeployCustomPolicies: Deploy Custom Policies
     DeployCustomPolicySets: Deploy Custom Policy Sets
     AssignCustomPolicySets: Assign Custom Policy Sets
