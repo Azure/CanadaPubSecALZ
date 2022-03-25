@@ -74,11 +74,11 @@ This deployment diagram describes the steps for deploying one, many or all modul
     DeployMachineLearningArchetype: Machine Learning
     DeployHealthcareArchetype: Healthcare
     
-    [*] --> ManagementGroups: management-groups-ci
-    ManagementGroups --> CustomRoles: roles-ci
-    ManagementGroups-->Logging: platform-logging-ci
-    CustomRoles --> Logging: platform-logging-ci
-    Logging --> Policy: policy-ci
+    [*] --> ManagementGroups
+    ManagementGroups --> CustomRoles
+    ManagementGroups-->Logging
+    CustomRoles --> Logging
+    Logging --> Policy
 
     state Policy {
         [*] --> DeployCustomPolicies
@@ -94,12 +94,12 @@ This deployment diagram describes the steps for deploying one, many or all modul
     Policy --> HubNetworking
 
     state HubNetworking {
-        [*] --> DeployWithNetworkVirtualAppliance: platform-connectivity-hub-nva-ci
+        [*] --> DeployWithNetworkVirtualAppliance
         [*] --> DeployWithAzureFirewall
 
         state DeployWithAzureFirewall {
-            [*] --> DeployAzureFirewallPolicy: platform-connectivity-hub-azfw-policy-ci
-            DeployAzureFirewallPolicy --> DeployAzureFirewall: platform-connectivity-hub-azfw-ci
+            [*] --> DeployAzureFirewallPolicy
+            DeployAzureFirewallPolicy --> DeployAzureFirewall
             DeployAzureFirewall --> [*]
         }
 
