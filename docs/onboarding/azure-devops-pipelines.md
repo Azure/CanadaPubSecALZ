@@ -49,10 +49,40 @@ If you don't wish to send usage data to Microsoft, you can set the `customerUsag
 
 This deployment diagram describes the steps for deploying one, many or all modules in your environment.
 
+### High Level Flow
+
+```mermaid
+  stateDiagram-v2
+
+    ManagementGroups: Management Groups
+    CustomRoles: Custom Roles
+    Logging: Logging
+    Policy: Azure Policy
+    HubNetworking: Hub Networking (NVAs or Azure Firewall)
+    Archetypes: Archetypes (Spokes)
+
+    [*] --> ManagementGroups
+    ManagementGroups --> CustomRoles
+    ManagementGroups-->Logging
+    CustomRoles --> Logging
+    Logging --> Policy
+
+    Policy --> HubNetworking
+    Policy --> Archetypes
+
+    HubNetworking --> Archetypes
+
+    Policy --> [*]
+    HubNetworking --> [*]
+    Archetypes --> [*]
+```
+
+### Detailed Flow
+
 ```mermaid
   stateDiagram-v2
     ManagementGroups: Management Groups
-    CustomRoles: [Optional] Custom Roles
+    CustomRoles: Custom Roles
     Logging: Logging
 
     Policy: Azure Policy as Guardrails
@@ -69,7 +99,7 @@ This deployment diagram describes the steps for deploying one, many or all modul
     AssignDDOSPolicy: [Optional] Assign Azure Policy for linking DDoS Standard Plan to virtual network
     AssignPrivateDNSZonesPolicy: [Optional] Assign Azure Policies for centrally managing private DNS zones
 
-    Archetypes: Archetypes (deployed many times as needed)
+    Archetypes: Archetypes (Spokes)
     DeployGenericSubscriptionArchetype: Generic Subscription
     DeployMachineLearningArchetype: Machine Learning
     DeployHealthcareArchetype: Healthcare
