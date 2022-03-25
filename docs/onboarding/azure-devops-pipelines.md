@@ -91,7 +91,7 @@ This deployment diagram describes the steps for deploying one, many or all modul
         AssignBuiltInPolicySets --> [*]
     }
 
-    Policy --> HubNetworking
+    Policy --> HubNetworking: When Hub Networking is required
     Policy --> Archetypes: When existing Hub Networking is in place
 
     state HubNetworking {
@@ -116,7 +116,7 @@ This deployment diagram describes the steps for deploying one, many or all modul
         AssignPrivateDNSZonesPolicy --> [*]
     }
 
-    HubNetworking --> Archetypes
+    HubNetworking --> Archetypes: When archetypes are deployed in spoke subscriptions
 
     state Archetypes {
         state ArchetypeChoice <<choice>>
@@ -128,7 +128,7 @@ This deployment diagram describes the steps for deploying one, many or all modul
         ArchetypeChoice --> DeployHealthcareArchetype: Healthcare pattern
     }
 
-    Policy --> [*]
+    Policy --> [*]: MVP deployment and enables Microsoft Sentinel & Log Analytics
     HubNetworking --> [*]
     Archetypes --> [*]
 ```
