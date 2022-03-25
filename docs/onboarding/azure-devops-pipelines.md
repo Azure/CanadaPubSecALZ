@@ -92,7 +92,7 @@ This deployment diagram describes the steps for deploying one, many or all modul
     }
 
     Policy --> HubNetworking
-    Policy --> Archetypes: when existing Hub Networking is in place
+    Policy --> Archetypes: When existing Hub Networking is in place
 
     state HubNetworking {
         state HubNetworkTechChoice <<choice>>
