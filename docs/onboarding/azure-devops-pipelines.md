@@ -94,8 +94,12 @@ This deployment diagram describes the steps for deploying one, many or all modul
     Policy --> HubNetworking
 
     state HubNetworking {
-        [*] --> DeployWithNetworkVirtualAppliance
-        [*] --> DeployWithAzureFirewall
+        state HubNetworkTechChoice <<choice>>
+        
+        [*] --> HubNetworkTechChoice 
+
+        HubNetworkTechChoice --> DeployWithNetworkVirtualAppliance: When NVAs like Fortinet are used
+        HubNetworkTechChoice --> DeployWithAzureFirewall:  When Azure Firewall is used
 
         state DeployWithAzureFirewall {
             [*] --> DeployAzureFirewallPolicy
@@ -114,9 +118,13 @@ This deployment diagram describes the steps for deploying one, many or all modul
     HubNetworking --> Archetypes
 
     state Archetypes {
-        [*] --> DeployGenericSubscriptionArchetype
-        [*] --> DeployMachineLearningArchetype
-        [*] --> DeployHealthcareArchetype 
+        state ArchetypeChoice <<choice>>
+
+        [*] --> ArchetypeChoice
+
+        ArchetypeChoice --> DeployGenericSubscriptionArchetype: Simple subscription pattern
+        ArchetypeChoice --> DeployMachineLearningArchetype: Machine learning pattern
+        ArchetypeChoice --> DeployHealthcareArchetype: Healthcare pattern
     }
 
     Policy --> [*]
