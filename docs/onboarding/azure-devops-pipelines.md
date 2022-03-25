@@ -69,7 +69,7 @@ This deployment diagram describes the steps for deploying one, many or all modul
     AssignDDOSPolicy: [Optional] Assign Azure Policy for linking DDoS Standard Plan to virtual network
     AssignPrivateDNSZonesPolicy: [Optional] Assign Azure Policies for centrally managing private DNS zones
 
-    Archetypes: Archetypes (deployed many times)
+    Archetypes: Archetypes (deployed many times as needed)
     DeployGenericSubscriptionArchetype: Generic Subscription
     DeployMachineLearningArchetype: Machine Learning
     DeployHealthcareArchetype: Healthcare
@@ -92,6 +92,7 @@ This deployment diagram describes the steps for deploying one, many or all modul
     }
 
     Policy --> HubNetworking
+    Policy --> Archetypes: when existing Hub Networking is in place
 
     state HubNetworking {
         state HubNetworkTechChoice <<choice>>
