@@ -84,10 +84,10 @@ This deployment diagram describes the steps for deploying one, many or all modul
         [*] --> DeployCustomPolicies
         DeployCustomPolicies --> DeployCustomPolicySets
         DeployCustomPolicySets --> AssignCustomPolicySets
-
+        AssignCustomPolicySets --> [*]
+        --
         [*] --> AssignBuiltInPolicySets
 
-        AssignCustomPolicySets --> [*]
         AssignBuiltInPolicySets --> [*]
     }
 
