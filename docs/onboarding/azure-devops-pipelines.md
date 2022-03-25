@@ -49,6 +49,25 @@ If you don't wish to send usage data to Microsoft, you can set the `customerUsag
 
 ```mermaid
   stateDiagram-v2
+    ManagementGroups: Management Groups
+    CustomRoles: Custom Roles
+    Logging: Logging
+    Policy: Policy
+    DeployCustomPolicies: Deploy Custom Policies
+    DeployCustomPolicySets: Deploy Custom Policy Sets
+    AssignCustomPolicySets: Assign Custom Policy Sets
+    AssignBuiltInPolicySets:  Assign Built-In Policy Sets
+    HubNetworking: Hub Networking
+    DeployWithNetworkVirtualAppliance:  Hub Networking with Virtual Appliance
+    DeployWithAzureFirewall: Hub Networking with Azure Firewall
+    DeployAzureFirewallPolicy: Deploy Azure Firewall Policy
+    DeployAzureFirewall: Deploy Azure Firewall
+    AssignDDOSPolicy: [Optional] Assign Azure Policy for linking DDoS Standard Plan to virtual network
+    AssignPrivateDNSZonesPolicy: [Optional] Assign Azure Policies for centrally managing private DNS zones
+    DeployGenericSubscriptionArchetype: Generic Subscription
+    DeployMachineLearningArchetype: Machine Learning
+    DeployHealthcareArchetype: Healthcare
+    
     [*] --> ManagementGroups: management-groups-ci
     ManagementGroups --> CustomRoles: roles-ci
     ManagementGroups-->Logging: platform-logging-ci
