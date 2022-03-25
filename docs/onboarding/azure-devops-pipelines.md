@@ -45,13 +45,69 @@ If you don't wish to send usage data to Microsoft, you can set the `customerUsag
 
 ---
 
+## Deployment Flow
+
+```mermaid
+  stateDiagram-v2
+    [*] --> ManagementGroups: management-groups-ci
+    ManagementGroups --> CustomRoles: roles-ci
+    ManagementGroups-->Logging: platform-logging-ci
+    CustomRoles --> Logging: platform-logging-ci
+    Logging --> Policy: policy-ci
+
+    state Policy {
+        [*] --> DeployCustomPolicies
+        DeployCustomPolicies --> DeployCustomPolicySets
+        DeployCustomPolicySets --> AssignCustomPolicySets
+
+        [*] --> AssignBuiltInPolicySets
+
+        AssignCustomPolicySets --> [*]
+        AssignBuiltInPolicySets --> [*]
+    }
+
+    Policy --> HubNetworking
+
+    state HubNetworking {
+        [*] --> DeployWithNetworkVirtualAppliance: platform-connectivity-hub-nva-ci
+        [*] --> DeployWithAzureFirewall
+
+        state DeployWithAzureFirewall {
+            [*] --> DeployAzureFirewallPolicy: platform-connectivity-hub-azfw-policy-ci
+            DeployAzureFirewallPolicy --> DeployAzureFirewall: platform-connectivity-hub-azfw-ci
+            DeployAzureFirewall --> [*]
+        }
+
+        DeployWithNetworkVirtualAppliance --> AssignDDOSPolicy
+        DeployWithAzureFirewall --> AssignDDOSPolicy
+
+        AssignDDOSPolicy --> AssignPrivateDNSZonesPolicy
+
+        AssignPrivateDNSZonesPolicy --> [*]
+    }
+
+    HubNetworking --> Archetypes
+
+    state Archetypes {
+        [*] --> DeployGenericSubscriptionArchetype
+        [*] --> DeployMachineLearningArchetype
+        [*] --> DeployHealthcareArchetype 
+    }
+
+    Policy --> [*]
+    HubNetworking --> [*]
+    Archetypes --> [*]
+```
+
+---
+
 ## Instructions
 
 * [Step 1 - Create Service Principal Account & Assign RBAC](#step-1---create-service-principal-account--assign-rbac)
 * [Step 2 - Configure Azure DevOps](#step-2---configure-azure-devops)
 * [Step 3 - Configure Management Groups](#step-3---configure-management-groups)
 * [Step 4 - Configure Custom Roles](#step-4---configure-custom-roles)
-* [Step 5 - Configure Logging](#step-5--configure-logging)
+* [Step 5 - Configure Logging](#step-5---configure-logging)
 * [Step 6 - Configure Azure Policies](#step-6---configure-azure-policies)
 * [Step 7 - Configure Hub Networking](#step-7---configure-hub-networking)
 * [Step 8 - Configure Subscription Archetypes](#step-8---configure-subscription-archetypes)
