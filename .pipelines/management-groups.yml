@@ -7,16 +7,16 @@
 # OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 # ----------------------------------------------------------------------------------
 
-trigger: 
-  batch: true
-  branches:
-    include:
-     - main
-  paths:
-    include:
-      - management-groups
-      - .pipelines/management-groups.yml
-      - .pipelines/templates/steps/deploy-management-groups.yml
+trigger: none
+#  batch: true
+#  branches:
+#    include:
+#     - main
+#  paths:
+#    include:
+#      - management-groups
+#      - .pipelines/management-groups.yml
+#      - .pipelines/templates/steps/deploy-management-groups.yml
 
 pr: none
 
