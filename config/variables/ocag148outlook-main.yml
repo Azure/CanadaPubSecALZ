@@ -33,26 +33,25 @@ variables:
       "children": [
         {
           "name": "Azure Landing Zones for Canadian Public Sector",
-          "id": "pubsec",
+          "id": "MyOrganization",
           "children": [
             {
-              "name": "Platform", "id": "pubsecPlatform",
+              "name": "Platform", "id": "Platform",
               "children": [
-                { "name": "Identity", "id": "pubsecPlatformIdentity", "children": [] },
-                { "name": "Connectivity", "id": "pubsecPlatformConnectivity", "children": [] },
-                { "name": "Management", "id": "pubsecPlatformManagement", "children": [] }
+                { "name": "Identity", "id": "Identity", "children": [] },
+                { "name": "Connectivity", "id": "Connectivity", "children": [] },
+                { "name": "Management", "id": "Management", "children": [] }
               ]
             },
             {
-              "name": "LandingZones", "id": "pubsecLandingZones",
+              "name": "LandingZones", "id": "LandingZones",
               "children": [
-                { "name": "DevTest", "id": "pubsecLandingZonesDevTest", "children": [] },
-                { "name": "Prod", "id": "pubsecLandingZonesProd", "children": [] },
-                { "name": "UAT", "id": "pubsecLandingZonesUAT", "children": [] }
+                { "name": "DevTest", "id": "DevTest", "children": [] },
+                { "name": "Prod", "id": "Prod", "children": [] }
               ]
             },
             {
-              "name": "Sandbox", "id": "pubsecSandbox",
+              "name": "Sandbox", "id": "Sandbox",
               "children": []
             }
           ]
