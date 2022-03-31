@@ -2,8 +2,9 @@
 
 - [GC Cloud Guardrails](#gc-cloud-guardrails)
   - [Overview](#overview)
-  - [Azure Active Directory Required Configuration](#azure-active-directory-required-configuration)
+  - [Azure Active Directory Required Configuration and Recommendations](#azure-active-directory-required-configuration-and-recommendations)
     - [Azure AD Logging and Monitoring](#azure-ad-logging-and-monitoring)
+    - [Azure AD Recommendations](#azure-ad-recommendations)
     - [ALZCPS Identity Management Policies](#alzcps-identity-management-policies)
   - [Guardrails](#guardrails)
     - [1. Protect Root / Global Admins Account](#1-protect-root--global-admins-account)
@@ -29,24 +30,63 @@ As part of the Government of Canada (GC) Cloud Operationalization Framework, the
 
 This document identifies the key considerations as part of each guardrail and provides information on how an Azure Landing Zones for Canadian Public Sector (ALZCPS) deployment meets (or could meet) each consideration.
 
-## Azure Active Directory Required Configuration
+## Azure Active Directory Required Configuration and Recommendations
 
 Many of the guardrails contain identity and access management requirements. However, configuration of Azure Active Directory (Azure AD) is a prerequisite to deploying a landing zone using the ALZCPS project. Key configuration information is contained within our [architecture documentation](./architecture.md#4-identity). 
 
-> When Azure AD is configured appropriately, 34% of the guardrail considerations are covered.
+> With an appropriately configured Azure AD, 34% of the guardrail considerations are covered.
 
 ### Azure AD Logging and Monitoring
 
 When configuring your Azure AD tenant, ensure that:
-- [Sign-in logs are being sent to Log Analytics](https://docs.microsoft.com/azure/active-directory/reports-monitoring/concept-activity-logs-azure-monitor)
-- [Sign-in logs are being sent to Microsoft Sentinel](https://docs.microsoft.com/azure/sentinel/data-connectors-reference#azure-active-directory)
+- [Azure AD logs are being sent to Log Analytics](https://docs.microsoft.com/azure/active-directory/reports-monitoring/howto-integrate-activity-logs-with-log-analytics)
+- [Azure AD logs are being sent to Microsoft Sentinel](https://docs.microsoft.com/azure/sentinel/connect-azure-active-directory)
+> NOTE: Azure AD P1/P2 is required to ingest sign-in logs to Microsoft Sentinel.
+
+To create alerts from sign-in logs, refer to:
+- [Create, view, and manage log alerts using Azure Monitor](https://docs.microsoft.com/azure/azure-monitor/alerts/alerts-log)
+- [Microsoft Sentinel: Create custom analytics rules to detect threats](https://docs.microsoft.com/azure/sentinel/detect-threats-custom)
+
+### Azure AD Recommendations
+
+The following features provide native solutions to several guardrails, including:
+- Protect Root / Global Admins Account
+- Management of Administrative Privileges
+- Cloud Console Access
+- Enterprise Monitoring Accounts
+
+#### Azure AD Conditional Access (Azure AD P1/P2 Required)
+
+Consider implementing [Azure AD Conditional Access](https://docs.microsoft.com/azure/active-directory/conditional-access/overview) to create fine-tuned access policies with contextual factors such as user, device, location, and real-time risk information to control what a specific user can access, and how and when they have access.
+
+Refer to [Plan a Conditional Access deployment](https://docs.microsoft.com/azure/active-directory/conditional-access/plan-conditional-access) to get started.
+
+#### Azure AD Identity Protection (Azure AD P2 Required)
+
+Consider implementing [Azure AD Identity Protection](https://docs.microsoft.com/azure/active-directory/identity-protection/overview-identity-protection) to detect, investigate, and remediate suspicious user and sign-in behavior in your environment.
+
+When configuring Azure AD Identity Protection, ensure that:
 - [Azure AD Identity Protection alerts are configured](https://docs.microsoft.com/azure/active-directory/identity-protection/howto-identity-protection-configure-notifications)
 - [Azure AD Identity Protection logs are being sent to Log Analytics](https://docs.microsoft.com/azure/active-directory/identity-protection/howto-export-risk-data) 
 - [Azure AD Identity Protection logs are being sent to Microsoft Sentinel](https://docs.microsoft.com/azure/sentinel/data-connectors-reference#azure-active-directory-identity-protection).
-- [Privileged Identity Management (PIM) is deployed](https://docs.microsoft.com/azure/active-directory/privileged-identity-management/pim-deployment-plan)
-- [Privileged Identity Management alerts are configured](https://docs.microsoft.com/azure/active-directory/privileged-identity-management/pim-how-to-configure-security-alerts)
 
-Within Microsoft Sentinel, it is recommended that organizations leverage [User and Entity Behavioral Analytics](https://docs.microsoft.com/azure/sentinel/identify-threats-with-entity-behavior-analytics) to enhance anomalous entity detection.
+#### Azure AD Privileged Identity Management (Azure AD P2 Required)
+
+Consider implementing [Azure AD Privileged Identity Management (PIM)](https://docs.microsoft.com/azure/active-directory/privileged-identity-management/pim-configure) to provide time-based and approval-based role activation to mitigate the risks of excessive, unnecessary, or misused access to important resources in your organization
+
+When configuring Azure AD PIM, ensure that [Azure AD PIM alerts are configured](https://docs.microsoft.com/azure/active-directory/privileged-identity-management/pim-how-to-configure-security-alerts).
+
+Refer to [Plan a Privileged Identity Management deployment](https://docs.microsoft.com/azure/active-directory/privileged-identity-management/pim-deployment-plan) to get started.
+
+#### Azure AD Access Reviews (Azure AD P2 Required)
+
+Consider implementing [Azure AD Access Reviews](https://docs.microsoft.com/azure/active-directory/governance/access-reviews-overview) to efficiently manage group memberships, access to enterprise applications, and role assignments. User's access can be reviewed on a regular basis to make sure only the right people have continued access.
+
+Refer to [Plan an Azure Active Directory access reviews deployment](https://docs.microsoft.com/azure/active-directory/governance/deploy-access-reviews) to get started.
+
+#### User and Entity Behavioral Analytics
+
+Consider enabling [User and Entity Behavioral Analytics](https://docs.microsoft.com/azure/sentinel/identify-threats-with-entity-behavior-analytics) within Microsoft Sentinel to identify anomalous activity and help you determine if an asset has been compromised (usage fees apply).
 
 ### ALZCPS Identity Management Policies
 
@@ -80,10 +120,13 @@ The following policies related to identity management are enabled by default in 
 
 #### 1.1 Implement multi-factor authentication (MFA) mechanism for root/master account.
 
-This consideration can be met by appropriately configuring your Azure AD instance. Multi-factor authentication controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+This consideration can be met by appropriately configuring your Azure AD instance. Review the following tutorial: [Secure user sign-in events with Azure AD Multi-Factor Authentication](https://docs.microsoft.com/azure/active-directory/authentication/tutorial-enable-azure-mfa)
+
+[Azure AD Conditional Access](#azure-ad-conditional-access-azure-ad-p1-required) is a native solution that can help to meet this consideration.
+
+Multi-factor authentication controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 Relevant Links:
-- [Tutorial: Secure user sign-in events with Azure AD Multi-Factor Authentication](https://docs.microsoft.com/azure/active-directory/authentication/tutorial-enable-azure-mfa)
 - [Conditional Access: Require MFA for administrators](https://docs.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-admin-mfa)
 
 #### 1.2 Document a break glass emergency account management procedure. Including names of users with root or master account access.
@@ -102,7 +145,14 @@ Relevant Links:
 
 #### 1.4 Implement a mechanism for enforcing access authorizations.
 
-This consideration can be met by appropriately configuring your Azure AD instance. Specifically, creating and assigning users to appropriate Azure AD groups and then granting permissions to those groups. Access authorization controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+This consideration can be met by appropriately configuring your Azure AD instance. Specifically, creating and assigning users to appropriate Azure AD groups and then granting permissions to those groups. 
+
+The following native solutions can help to meet this consideration:
+- [Azure AD Access Reviews](#azure-ad-access-reviews-azure-ad-p2-required)
+- [Azure AD Conditional Access](#azure-ad-conditional-access-azure-ad-p1-required)
+- [Azure AD PIM](#azure-ad-privileged-identity-management-azure-ad-p2-required)
+
+Access authorization controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 Relevant Links:
 - [Authorization with Azure AD](https://docs.microsoft.com/azure/architecture/framework/security/design-identity-authorization)
@@ -111,15 +161,15 @@ Relevant Links:
 
 #### 1.5 Configure appropriate alerts on root/master accounts to detect a potential compromise, in accordance with the GC Event Logging Guidance.
 
-This consideration can be met by appropriately configuring your Azure AD instance. See [Azure AD Logging and Monitoring](#azure-ad-logging-and-monitoring)
+This consideration can be met by appropriately configuring your Azure AD instance. See [Azure AD Logging and Monitoring](#azure-ad-logging-and-monitoring) and the [GC Event Logging Guidance](https://www.canada.ca/en/government/system/digital-government/online-security-privacy/event-logging-guidance.html). 
 
-GC intranet users can reference the [GC Event Logging Guidance](https://www.gcpedia.gc.ca/gcwiki/images/e/e3/GC_Event_Logging_Strategy.pdf).
+The following native solutions can help to meet this consideration:
+- [Azure AD Identity Protection](#azure-ad-identity-protection-azure-ad-p2-required)
+- [User and Entity Behavioral Analytics (UEBA)](#azure-ad-privileged-identity-management-azure-ad-p2-required)
 
-Relevant Links:
-
-- [What is Identity Protection?](https://docs.microsoft.com/azure/active-directory/identity-protection/overview-identity-protection)
-- [What is Azure AD Privileged Identity Management?](https://docs.microsoft.com/azure/active-directory/privileged-identity-management/pim-configure)
-- [What is User and Entity Behavior Analytics (UEBA)?](https://docs.microsoft.com/azure/sentinel/identify-threats-with-entity-behavior-analytics#what-is-user-and-entity-behavior-analytics-ueba)
+Related Links:
+- [Azure Active Directory Identity Protection notifications](https://docs.microsoft.com/azure/active-directory/identity-protection/howto-identity-protection-configure-notifications)
+- [Identity Protection - How To: Export risk data](https://docs.microsoft.com/azure/active-directory/identity-protection/howto-export-risk-data)
 
 ---
 
@@ -131,13 +181,24 @@ Relevant Links:
 
 Documentation exercises are out of scope.
 
+The following native solutions can help to meet this consideration:
+- [Azure AD Access Reviews](#azure-ad-access-reviews-azure-ad-p2-required)
+- [Azure AD PIM](#azure-ad-privileged-identity-management-azure-ad-p2-required)
+
 Relevant Links:
 - [SPIN 2017-01 Subsection 6.2.3](https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/cloud-services/direction-secure-use-commercial-cloud-services-spin.html#toc6-2-3)
 - [Enhance security with the principle of least privilege](https://docs.microsoft.com/azure/active-directory/develop/secure-least-privileged-access)
 
 #### 2.2 Implement a mechanism for enforcing access authorizations.
 
-This consideration can be met by appropriately configuring your Azure AD instance. Specifically, creating and assigning users to appropriate Azure AD groups and then granting permissions to those groups. Access authorization controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+This consideration can be met by appropriately configuring your Azure AD instance. Specifically, creating and assigning users to appropriate Azure AD groups and then granting permissions to those groups.
+
+The following native solutions can help to meet this consideration:
+- [Azure AD Access Reviews](#azure-ad-access-reviews-azure-ad-p2-required)
+- [Azure AD Conditional Access](#azure-ad-conditional-access-azure-ad-p1-required)
+- [Azure AD PIM](#azure-ad-privileged-identity-management-azure-ad-p2-required)
+
+Access authorization controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 Relevant Links:
 - [Authorization with Azure AD](https://docs.microsoft.com/azure/architecture/framework/security/design-identity-authorization)
@@ -146,7 +207,9 @@ Relevant Links:
 
 #### 2.3 Implement a mechanism for uniquely identifying and authenticating organizational users, non-organizational users (if applicable), and processes (for example, username and password).
 
-This consideration can be met by appropriately configuring your Azure AD instance. Controls for authenticating organizational users, non-organizational users, and processes re implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+This consideration can be met by appropriately configuring your Azure AD instance. 
+
+Controls for authenticating organizational users, non-organizational users, and processes are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 Relevant Links:
 - [Azure Active Directory Authentication management operations reference guide](https://docs.microsoft.com/azure/active-directory/fundamentals/active-directory-ops-guide-auth)
@@ -155,15 +218,20 @@ Relevant Links:
 
 #### 2.4 Implement a multi-factor authentication mechanism for privileged accounts (for example, username, password and one-time password) and for external facing interfaces.
 
-This consideration can be met by appropriately configuring your Azure AD instance. Multi-factor authentication controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+This consideration can be met by appropriately configuring your Azure AD instance. Review the following tutorial: [Secure user sign-in events with Azure AD Multi-Factor Authentication](https://docs.microsoft.com/azure/active-directory/authentication/tutorial-enable-azure-mfa)
+
+[Azure AD Conditional Access](#azure-ad-conditional-access-azure-ad-p1-required) is a native solution that can help to meet this consideration.
+
+Multi-factor authentication controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 Relevant Links:
-- [Tutorial: Secure user sign-in events with Azure AD Multi-Factor Authentication](https://docs.microsoft.com/azure/active-directory/authentication/tutorial-enable-azure-mfa)
-- [Plan a Conditional Access deployment](https://docs.microsoft.com/azure/active-directory/conditional-access/plan-conditional-access)
+- [Conditional Access: Require MFA for administrators](https://docs.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-admin-mfa)
 
 #### 2.5 Change default passwords.
 
-This consideration can be met by appropriately configuring your Azure AD instance. Password controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+This consideration can be met by appropriately configuring your Azure AD instance. 
+
+Password controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 Relevant Links:
 - [Combined password policy and weak password check in Azure Active Directory](https://docs.microsoft.com/azure/active-directory/authentication/concept-password-ban-bad-combined-policy)
@@ -177,10 +245,11 @@ However, this is not truly a "subscription owner", as it has limited permissions
 
 Role-related controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
-
 #### 2.7 Configure password policy in accordance with GC Password Guidance.
 
-This consideration can be met by appropriately configuring your Azure AD instance. Password controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+This consideration can be met by appropriately configuring your Azure AD instance. 
+
+Password controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 Relevant Links:
 - [GC Password Guidance](https://www.canada.ca/en/government/system/digital-government/online-security-privacy/password-guidance.html)
@@ -195,11 +264,14 @@ Relevant Links:
 
 #### 2.9 Determine access restrictions and configuration requirements for GC-issued endpoint devices, including those of non-privileged and privileged users, and configure access restrictions for endpoint devices accordingly. Note: Some service providers may offer configuration options to restrict endpoint device access. Alternatively, organizational policy and procedural instruments can be implemented to restrict access.
 
-This consideration can be met by appropriately configuring your Azure AD instance. Specifically, deployment of [Azure AD Conditional Access](https://docs.microsoft.com/azure/active-directory/conditional-access/plan-conditional-access) which provides the ability to restrict endpoint device access. Access restriction controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+This consideration can be met by appropriately configuring your Azure AD instance. 
 
-Relevant Links:
-- [What is Conditional Access?](https://docs.microsoft.com/azure/active-directory/conditional-access/overview)
-- [Conditional Access: Require compliant or hybrid Azure AD joined device](https://docs.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-compliant-device)
+The following native solutions can help to meet this consideration:
+- [Azure AD Access Reviews](#azure-ad-access-reviews-azure-ad-p2-required)
+- [Azure AD Conditional Access](#azure-ad-conditional-access-azure-ad-p1-required)
+- [Azure AD PIM](#azure-ad-privileged-identity-management-azure-ad-p2-required)
+
+Access restriction controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 ---
 
@@ -209,32 +281,49 @@ Relevant Links:
 
 #### 3.1 Implement multi-factor authentication mechanism for privileged accounts and remote network (cloud) access.
 
-This consideration can be met by appropriately configuring your Azure AD instance. Multi-factor authentication controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+This consideration can be met by appropriately configuring your Azure AD instance. Review the following tutorial: [Secure user sign-in events with Azure AD Multi-Factor Authentication](https://docs.microsoft.com/azure/active-directory/authentication/tutorial-enable-azure-mfa)
+
+[Azure AD Conditional Access](#azure-ad-conditional-access-azure-ad-p1-required) is a native solution that can help to meet this consideration.
+
+Multi-factor authentication controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 Relevant Links:
-- [Tutorial: Secure user sign-in events with Azure AD Multi-Factor Authentication](https://docs.microsoft.com/azure/active-directory/authentication/tutorial-enable-azure-mfa)
-- [Plan a Conditional Access deployment](https://docs.microsoft.com/azure/active-directory/conditional-access/plan-conditional-access)
 - [Conditional Access: Require MFA for administrators](https://docs.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-admin-mfa)
 
 #### 3.2 Determine access restrictions and configuration requirements for GC managed devices, including those of non-privileged and privileged users, and configure access restrictions for endpoint devices accordingly.
 
-This consideration can be met by appropriately configuring your Azure AD instance. Access restriction controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+This consideration can be met by appropriately configuring your Azure AD instance. 
 
-Relevant Links:
-- [Plan a Conditional Access deployment](https://docs.microsoft.com/azure/active-directory/conditional-access/plan-conditional-access)
-- [Conditional Access: Require compliant or hybrid Azure AD joined device](https://docs.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-compliant-device)
+The following native solutions can help to meet this consideration:
+- [Azure AD Access Reviews](#azure-ad-access-reviews-azure-ad-p2-required)
+- [Azure AD Conditional Access](#azure-ad-conditional-access-azure-ad-p1-required)
+- [Azure AD PIM](#azure-ad-privileged-identity-management-azure-ad-p2-required)
+
+Access restriction controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 #### 3.3 Ensure that administrative actions are performed by authorized users following a process approved by Chief Security Officer (CSO) (or delegate) and designated official for cyber security. This process should incorporate the use of trusted devices and a risk-based conditional access control policy with appropriate logging and monitoring enabled.
 
-Conditional access control policies, including device compliance requirements, can be configured within your Azure AD instance. For logging and monitoring requirements, see [Azure AD Logging and Monitoring](#azure-ad-logging-and-monitoring). Access-control controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+The following native solutions can help to meet this consideration:
+- [Azure AD Conditional Access](#azure-ad-conditional-access-azure-ad-p1-required) 
+- [Azure AD Identity Protection](#azure-ad-identity-protection-azure-ad-p2-required)
+
+For logging and monitoring, see [Azure AD Logging and Monitoring](#azure-ad-logging-and-monitoring). 
+
+Access-control controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 Relevant Links:
-- [Plan a Conditional Access deployment](https://docs.microsoft.com/azure/active-directory/conditional-access/plan-conditional-access)
 - [Conditional Access: Require compliant or hybrid Azure AD joined device](https://docs.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-compliant-device)
 
 #### 3.4 Implement a mechanism for enforcing access authorizations.
 
-This consideration can be met by appropriately configuring your Azure AD instance. Specifically, creating and assigning users to appropriate Azure AD groups and then granting permissions to those groups. Access authorization controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+This consideration can be met by appropriately configuring your Azure AD instance. Specifically, creating and assigning users to appropriate Azure AD groups and then granting permissions to those groups. 
+
+The following native solutions can help to meet this consideration:
+- [Azure AD Access Reviews](#azure-ad-access-reviews-azure-ad-p2-required)
+- [Azure AD Conditional Access](#azure-ad-conditional-access-azure-ad-p1-required)
+- [Azure AD PIM](#azure-ad-privileged-identity-management-azure-ad-p2-required)
+
+Access authorization controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 Relevant Links:
 - [Authorization with Azure AD](https://docs.microsoft.com/azure/architecture/framework/security/design-identity-authorization)
@@ -243,7 +332,9 @@ Relevant Links:
 
 #### 3.5 Implement password protection mechanisms to protect against password brute force attacks.
 
-This consideration can be met by appropriately configuring your Azure AD instance. Specifically, [configuring Azure AD smart lockout](https://docs.microsoft.com/azure/active-directory/authentication/howto-password-smart-lockout) or, ideally, implementing a [passwordless authentication deployment](https://docs.microsoft.com/azure/active-directory/authentication/howto-authentication-passwordless-deployment). Password controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+This consideration can be met by appropriately configuring your Azure AD instance. Specifically, [configuring Azure AD smart lockout](https://docs.microsoft.com/azure/active-directory/authentication/howto-password-smart-lockout) or by implementing a [passwordless authentication deployment](https://docs.microsoft.com/azure/active-directory/authentication/howto-authentication-passwordless-deployment). 
+
+Password controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 Relevant Links:
 - [What authentication and verification methods are available in Azure Active Directory?](https://docs.microsoft.com/azure/active-directory/authentication/concept-authentication-methods)
@@ -259,14 +350,18 @@ Relevant Links:
 
 #### 4.1 Assign roles to approved GC stakeholders to enable enterprise visibility. Roles include billing reader, policy contributor/reader, security reader, and global reader.
 
-This consideration can be met by appropriately configuring your Azure AD instance. Specifically, by assigning the appropriate [RBAC roles](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles). Role-related controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
+This consideration can be met by appropriately configuring your Azure AD instance. Specifically, by assigning the appropriate [RBAC roles](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles). 
+
+Role-related controls are implemented as listed in [ALZCPS Identity Management Policies](#alzcps-identity-management-policies).
 
 Relevant Links:
 - [Steps to assign an Azure role](https://docs.microsoft.com/azure/role-based-access-control/role-assignments-steps)
 
 #### 4.2 Ensure that multi-factor authentication mechanism for enterprise monitoring accounts is enabled.
 
-This consideration can be met by appropriately configuring your Azure AD instance. 
+This consideration can be met by appropriately configuring your Azure AD instance. Review the following tutorial: [Secure user sign-in events with Azure AD Multi-Factor Authentication](https://docs.microsoft.com/azure/active-directory/authentication/tutorial-enable-azure-mfa)
+
+[Azure AD Conditional Access](#azure-ad-conditional-access-azure-ad-p1-required) is a native solution that can help to meet this consideration.
 
 Relevant Links:
 - [Tutorial: Secure user sign-in events with Azure AD Multi-Factor Authentication](https://docs.microsoft.com/azure/active-directory/authentication/tutorial-enable-azure-mfa)
@@ -329,8 +424,8 @@ The following policies related to approved cryptographic algorithms are enabled 
 - [Azure Policy - NIST SP 800-53 Rev. 5 SC-28 (1): Cryptographic Protection](https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r5#cryptographic-protection-1)
 
 Relevant Links:
-- [ITSP.40.111: Cryptographic Algorithms for UNCLASSIFIED, PROTECTED A, and PROTECTED B Information](https://cyber.gc.ca/en/guidance/cryptographic-algorithms-unclassified-protected-and-protected-b-information-itsp40111)
-- [ITSP.40.062: Guidance on Securely Configuring Network Protocols](https://cyber.gc.ca/en/guidance/guidance-securely-configuring-network-protocols-itsp40062)
+- [ITSP.40.111: Cryptographic Algorithms for UNCLASSIFIED, PROTECTED A, and PROTECTED B Information](https://cyber.gc.ca/guidance/cryptographic-algorithms-unclassified-protected-and-protected-b-information-itsp40111)
+- [ITSP.40.062: Guidance on Securely Configuring Network Protocols](https://cyber.gc.ca/guidance/guidance-securely-configuring-network-protocols-itsp40062)
 - [Azure encryption overview](https://docs.microsoft.com/azure/security/fundamentals/encryption-overview)
 
 #### 6.4 Implement key management procedures.
@@ -381,12 +476,13 @@ Relevant Links:
 #### 7.3 Encryption of data in transit by default (e.g. TLS v1.2, etc.) for all publicly accessible sites and external communications as per the direction on Implementing HTTPS for Secure Web Connections (ITPIN 2018-01).
 
 TLS 1.2 is set as the minimum TLS version in the following deployed resources:
-- AppService
+- App Service
 - SQL Database
 - Storage
 
 The following policies related to encryption of data in transit for publicly accessible sites and external communications are enabled by default in ALZCPS deployments:
-- [Canada Federal PBMM SC8(1): Transmission Confidentiality and Integrity | Cryptographic or Alternate Physical Protection](https://docs.microsoft.com/azure/governance/policy/samples/canada-federal-pbmm#transmission-confidentiality-and-integrity--cryptographic-or-alternate-physical-protection)
+- [Azure Policy - Canada Federal PBMM SC8(1): Transmission Confidentiality and Integrity | Cryptographic or Alternate Physical Protection](https://docs.microsoft.com/azure/governance/policy/samples/canada-federal-pbmm#transmission-confidentiality-and-integrity--cryptographic-or-alternate-physical-protection)
+- [Azure Policy - NIST SP 800-53 Rev. 5 SC-8(1): Cryptographic Protection](https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r5#cryptographic-protection)
 
 Relevant Links:
 - [ITPIN 2018-01: Implementing HTTPS for Secure Web Connections](https://www.canada.ca/en/government/system/digital-government/modern-emerging-technologies/policy-implementation-notices/implementing-https-secure-web-connections-itpin.html)
@@ -405,7 +501,7 @@ Relevant Links:
 
 #### 7.5 Consider encryption for internal zone communication in the cloud based on risk profile and as per the direction in CCCS network security zoning guidance in ITSG-22 and ITSG-38.
 
-For client applications, this is specific to the application architecture and determined risk profiles. Azure PaaS services can be audited for compliance via Azure Policy. [Azure offers many mechanisms for keeping data private as it moves from one location to another.](https://docs.microsoft.com/azure/security/fundamentals/encryption-overview#encryption-of-data-in-transit). 
+For client applications, this is specific to the application architecture and determined risk profiles. Azure PaaS services can be audited for compliance via Azure Policy. [Azure offers many mechanisms for keeping data private as it moves from one location to another](https://docs.microsoft.com/azure/security/fundamentals/encryption-overview#encryption-of-data-in-transit). 
 
 As an additional layer of protection, [Azure Private Link](https://docs.microsoft.com/azure/private-link/private-link-overview) enables access to Azure PaaS Services (for example, Azure Storage and SQL Database) and Azure hosted customer-owned/partner services over a private endpoint in your virtual network. Azure Private Link is enabled on all supported PaaS services in an ALZCPS deployment.
 
@@ -415,7 +511,7 @@ The following policies related to information flow enforcement are enabled by de
 
 Relevant Links:
 - [ITSG-22: Baseline Security Requirements for Network Security Zones in the Government of Canada](https://www.cyber.gc.ca/sites/default/files/publications/itsg-22-eng.pdf)
-- [ITSG-38: Network Security Zoning - Design Considerations for Placement of Services within Zones](https://cyber.gc.ca/en/guidance/network-security-zoning-design-considerations-placement-services-within-zones-itsg-38)
+- [ITSG-38: Network Security Zoning - Design Considerations for Placement of Services within Zones](https://cyber.gc.ca/guidance/network-security-zoning-design-considerations-placement-services-within-zones-itsg-38)
 - [What is Azure Private Link?](https://docs.microsoft.com/azure/private-link/private-link-overview)
 
 #### 7.6 Implement key management procedures.
@@ -448,7 +544,7 @@ The following policies related to network security are enabled by default in ALZ
 
 Relevant Links:
 - [ITSG-22: Baseline Security Requirements for Network Security Zones in the Government of Canada](https://www.cyber.gc.ca/sites/default/files/publications/itsg-22-eng.pdf)
-- [ITSG-38: Network Security Zoning - Design Considerations for Placement of Services within Zones](https://cyber.gc.ca/en/guidance/network-security-zoning-design-considerations-placement-services-within-zones-itsg-38)
+- [ITSG-38: Network Security Zoning - Design Considerations for Placement of Services within Zones](https://cyber.gc.ca/guidance/network-security-zoning-design-considerations-placement-services-within-zones-itsg-38)
  - [Archetype: Hub Networking with Azure Firewall](./archetypes/hubnetwork-azfw.md)
  - [Archetype: Hub Networking with Fortigate Firewalls](./archetypes/hubnetwork-nva-fortigate.md)
 
@@ -511,8 +607,8 @@ The following policies related to perimeter security services are enabled by def
 
 Relevant Links:
 - [ITSG-22: Baseline Security Requirements for Network Security Zones in the Government of Canada](https://www.cyber.gc.ca/sites/default/files/publications/itsg-22-eng.pdf)
-- [ITSG-38: Network Security Zoning - Design Considerations for Placement of Services within Zones](https://cyber.gc.ca/en/guidance/network-security-zoning-design-considerations-placement-services-within-zones-itsg-38)
-- [What is Microsoft Defender for Cloud?](https://docs.microsoft.com/en-us/azure/defender-for-cloud/defender-for-cloud-introduction)
+- [ITSG-38: Network Security Zoning - Design Considerations for Placement of Services within Zones](https://cyber.gc.ca/guidance/network-security-zoning-design-considerations-placement-services-within-zones-itsg-38)
+- [What is Microsoft Defender for Cloud?](https://docs.microsoft.com/azure/defender-for-cloud/defender-for-cloud-introduction)
 - [What is Microsoft Sentinel?](https://docs.microsoft.com/azure/sentinel/overview)
 - [Azure DDoS Protection Standard overview](https://docs.microsoft.com/azure/ddos-protection/ddos-protection-overview)
 - [Azure Firewall Premium features](https://docs.microsoft.com/azure/firewall/premium-features)
@@ -538,7 +634,7 @@ Relevant Links:
 This is out of scope.
 
 Relevant Links:
-- [CCCS - Contact Us](https://www.cyber.gc.ca/en/contact-us)
+- [CCCS - Contact Us](https://www.cyber.gc.ca/contact-us)
 
 #### 10.2 Implement cyber defense services where available.
 
