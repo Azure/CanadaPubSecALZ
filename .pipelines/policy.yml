@@ -126,4 +126,3 @@ stages:
         deployOperation: ${{ variables['deployOperation'] }}
         policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
         workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
-
