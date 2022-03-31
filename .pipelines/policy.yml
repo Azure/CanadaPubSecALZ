@@ -75,9 +75,13 @@ stages:
 
     steps:
 
-    - template: templates/steps/load-log-analytics-vars.yml
-
     - template: templates/steps/load-variables.yml
+
+    - template: templates/steps/load-log-analytics-vars.yml
+      parameters:
+        logAnalyticsSubscriptionId: $(var-logging-subscriptionId)
+        logAnalyticsResourceGroupName: $(var-logging-logAnalyticsResourceGroupName)
+        logAnalyticsWorkspaceName: $(var-logging-logAnalyticsWorkspaceName)
 
     - template: templates/steps/show-variables.yml
       parameters:
@@ -111,9 +115,13 @@ stages:
 
     steps:
 
-    - template: templates/steps/load-log-analytics-vars.yml
-
     - template: templates/steps/load-variables.yml
+
+    - template: templates/steps/load-log-analytics-vars.yml
+      parameters:
+        logAnalyticsSubscriptionId: $(var-logging-subscriptionId)
+        logAnalyticsResourceGroupName: $(var-logging-logAnalyticsResourceGroupName)
+        logAnalyticsWorkspaceName: $(var-logging-logAnalyticsWorkspaceName)
 
     - template: templates/steps/show-variables.yml
       parameters:
