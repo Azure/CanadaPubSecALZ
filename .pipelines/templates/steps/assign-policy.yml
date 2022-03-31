@@ -35,9 +35,18 @@ steps:
       inlineScript: |
         $(var-bashPreInjectScript)
 
-        echo "Populating templated parameters in ${{ policy }}.parameters.json"
+        parameterFileName=''
 
-        cp ${{ policy }}.parameters.json ${{ policy }}.populated.parameters.json
+        if [ -f '${{ policy }}-${{ parameters.policyAssignmentManagementGroupScope }}.parameters.json' ]
+        then
+          parameterFileName='${{ policy }}-${{ parameters.policyAssignmentManagementGroupScope }}.parameters.json'
+        else
+          parameterFileName='${{ policy }}.parameters.json'
+        fi
+
+        echo "Populating templated parameters: $parameterFileName"
+
+        cp $parameterFileName ${{ policy }}.populated.parameters.json
 
         sed -i 's~{{var-topLevelManagementGroupName}}~$(var-topLevelManagementGroupName)~g' ${{ policy }}.populated.parameters.json
 
