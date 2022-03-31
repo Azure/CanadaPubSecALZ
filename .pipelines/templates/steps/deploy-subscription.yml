@@ -41,6 +41,10 @@ steps:
     workingDir: $(Build.SourcesDirectory)/$(subscriptionsPathFromRoot)/${{ parameters.relativePath }}
 
 - template: ./load-log-analytics-vars.yml
+  parameters:
+    logAnalyticsSubscriptionId: $(var-logging-subscriptionId)
+    logAnalyticsResourceGroupName: $(var-logging-logAnalyticsResourceGroupName)
+    logAnalyticsWorkspaceName: $(var-logging-logAnalyticsWorkspaceName)
 
 - task: AzureCLI@2
   displayName: Register Azure Provider Features

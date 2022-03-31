@@ -122,31 +122,31 @@
                     "groupId": "dfs_secondary"
                 },
                 {
-                    "privateLinkServiceNamespace": "Microsoft.AzureCosmosDB/databaseAccounts",
+                    "privateLinkServiceNamespace": "Microsoft.DocumentDB/databaseAccounts",
                     "zone": "privatelink.documents.azure.com",
                     "filterLocationLike": "*",
                     "groupId": "SQL"
                 },
                 {
-                    "privateLinkServiceNamespace": "Microsoft.AzureCosmosDB/databaseAccounts",
+                    "privateLinkServiceNamespace": "Microsoft.DocumentDB/databaseAccounts",
                     "zone": "privatelink.mongo.cosmos.azure.com",
                     "filterLocationLike": "*",
                     "groupId": "MongoDB"
                 },
                 {
-                    "privateLinkServiceNamespace": "Microsoft.AzureCosmosDB/databaseAccounts",
+                    "privateLinkServiceNamespace": "Microsoft.DocumentDB/databaseAccounts",
                     "zone": "privatelink.cassandra.cosmos.azure.com",
                     "filterLocationLike": "*",
                     "groupId": "Cassandra"
                 },
                 {
-                    "privateLinkServiceNamespace": "Microsoft.AzureCosmosDB/databaseAccounts",
+                    "privateLinkServiceNamespace": "Microsoft.DocumentDB/databaseAccounts",
                     "zone": "privatelink.gremlin.cosmos.azure.com",
                     "filterLocationLike": "*",
                     "groupId": "Gremlin"
                 },
                 {
-                    "privateLinkServiceNamespace": "Microsoft.AzureCosmosDB/databaseAccounts",
+                    "privateLinkServiceNamespace": "Microsoft.DocumentDB/databaseAccounts",
                     "zone": "privatelink.table.cosmos.azure.com",
                     "filterLocationLike": "*",
                     "groupId": "Table"
