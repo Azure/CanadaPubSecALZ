@@ -378,7 +378,9 @@ in case a different prefix besides **pubsec** was used to conform to a specific 
 ### Deployment Instructions
 
 ### Virtual Appliance IP
-To ensure traffic is routed/filtered via the firewall, please validate or update the “egressVirtualApplianceIp” value to the Firewall IP if it is an Azure Firewall or the internal load-balancer IP in the case of the Fortigate Firewalls (item **1**)
+To ensure traffic is routed/filtered via the firewall, please validate or update the "egressVirtualApplianceIp" value to the firewall IP in your environment: 
+  - For Azure Firewall, use the firewall IP address
+  - For Network Virtual Appliances (i.e. Fortigate firewalls), use the internal load-balancer IP (item **1**)
 ![Generic Subscription:Egress Virtual Appliance IP](../../docs/media/archetypes/egressvirtualApplianceIP.jpg)
 
 Please see [archetype authoring guide for deployment instructions](authoring-guide.md#deployment-instructions).
