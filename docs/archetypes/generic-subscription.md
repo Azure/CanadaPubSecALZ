@@ -374,6 +374,11 @@ The rest of the segments for the **virtualNetworkId** string must also match the
 in case a different prefix besides **pubsec** was used to conform to a specific and preferred naming convention or organization prefix (item **2**), or the default VNET name of hub-vnet was also changed to something else,
 (**item 3**) - again based on a specific and preferred naming convention that may have been used before when the actual hub VNET was deployed.
 
+> Each subnet in the spoke Vnets has its own User Defined Routes, this is to allow scenarios in which subnets can have different routing if necessary.  A single User Defined Route can be created and associated with the spokes subnet. 
 ### Deployment Instructions
+
+### Virtual Appliance IP
+To ensure traffic is routed/filtered via the firewall, please validate or update the “egressVirtualApplianceIp” value to the Firewall IP if it is an Azure Firewall or the internal load-balancer IP in the case of the Fortigate Firewalls (item **1**)
+![Generic Subscription:Egress Virtual Appliance IP](../../docs/media/archetypes/egressvirtualApplianceIP.jpg)
 
 Please see [archetype authoring guide for deployment instructions](authoring-guide.md#deployment-instructions).
