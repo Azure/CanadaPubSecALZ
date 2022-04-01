@@ -328,7 +328,7 @@ Following the nomenclature of [ITSG-22][itsg22], these would be the default subn
 * App Management Zone (OZ), an optional network for app management servers in the spoke.
 * All zones would allow management traffic from the Management Access Zone (OZ).
 
-> The code deploys generic NSGs without the above traffic flow restrictions; however, this can be customized to control subnet-to-subnet traffic within a vnet. Each subnet in the spoke Vnets has its own User Defined Routes, this is to allow scenarios in which subnets can have different routing if necessary.  A single User Defined Route can be created and associated with the spokes subnet. 
+> Automation code deploys generic network security groups (NSGs) without the above traffic flow restrictions as they are dependent on the application architecture.  The NSG rules can be customized to control subnet-to-subnet traffic within a virtual network by customizing the automation code. Each subnet in the spoke virtual network has its own User Defined Route (UDR).  This allows for scenarios in which subnets can have different routing rules. It is possible for a single User Defined Route to be associated with many spoke subnets by customizing the automation code.
 
 ---
 
