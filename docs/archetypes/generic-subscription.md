@@ -374,7 +374,7 @@ The rest of the segments for the **virtualNetworkId** string must also match the
 in case a different prefix besides **pubsec** was used to conform to a specific and preferred naming convention or organization prefix (item **2**), or the default VNET name of hub-vnet was also changed to something else,
 (**item 3**) - again based on a specific and preferred naming convention that may have been used before when the actual hub VNET was deployed.
 
-> Each subnet in the spoke Vnets has its own User Defined Routes, this is to allow scenarios in which subnets can have different routing if necessary.  A single User Defined Route can be created and associated with the spokes subnet. 
+> Each subnet in the spoke virtual network has its own User Defined Route (UDR).  This allows for scenarios in which subnets can have different routing rules. It is possible for a single User Defined Route to be associated with many spoke subnets by customizing the automation code.
 ### Deployment Instructions
 
 ### Virtual Appliance IP
