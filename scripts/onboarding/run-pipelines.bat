@@ -32,8 +32,8 @@ echo   [R] roles
 echo   [L] platform-logging
 echo   [P] policy
 echo   [N] platform-connectivity-hub-nva
-echo   [Y] platform-connectivity-hub-azfw
-echo   [Z] platform-connectivity-hub-azfw-policy
+echo   [Y] platform-connectivity-hub-azfw-policy
+echo   [Z] platform-connectivity-hub-azfw
 echo   [S] subscriptions
 echo   [X] exit
 echo.
@@ -61,11 +61,11 @@ set PIPELINE=platform-connectivity-hub-nva%DEVOPS_PIPELINE_NAME_SUFFIX%
 goto :RunPipeline
 
 :case_6
-set PIPELINE=platform-connectivity-hub-azfw%DEVOPS_PIPELINE_NAME_SUFFIX%
+set PIPELINE=platform-connectivity-hub-azfw-policy%DEVOPS_PIPELINE_NAME_SUFFIX%
 goto :RunPipeline
 
 :case_7
-set PIPELINE=platform-connectivity-hub-azfw-policy%DEVOPS_PIPELINE_NAME_SUFFIX%
+set PIPELINE=platform-connectivity-hub-azfw%DEVOPS_PIPELINE_NAME_SUFFIX%
 goto :RunPipeline
 
 :case_8
