@@ -7,6 +7,14 @@
 # OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 # ----------------------------------------------------------------------------------
 
+parameters:
+  - name: logAnalyticsSubscriptionId
+    type: string
+  - name: logAnalyticsResourceGroupName
+    type: string
+  - name: logAnalyticsWorkspaceName
+    type: string
+
 steps:
 
 - task: AzureCLI@2
@@ -19,8 +27,12 @@ steps:
       $(var-bashPreInjectScript)
 
       # Get workspace info via Azure CLI
-      echo 'Retrieving log analytics workspace info via Azure CLI...'
-      workspaceInfo=`az monitor log-analytics workspace show --subscription $(var-logging-subscriptionId) -g $(var-logging-logAnalyticsResourceGroupName) -n $(var-logging-logAnalyticsWorkspaceName) --query '{workspaceResourceId:id,workspaceId:customerId}' -o json`
+      echo 'Retrieving log analytics workspace info via Azure CLI ...'
+      echo 'Subscription: ${{ parameters.logAnalyticsSubscriptionId }}'
+      echo 'Resource Group: ${{ parameters.logAnalyticsResourceGroupName }}'
+      echo 'Log Analytics Workspace: ${{ parameters.logAnalyticsWorkspaceName }}'
+      
+      workspaceInfo=`az monitor log-analytics workspace show --subscription ${{ parameters.logAnalyticsSubscriptionId }} -g ${{ parameters.logAnalyticsResourceGroupName }} -n ${{ parameters.logAnalyticsWorkspaceName }} --query '{workspaceResourceId:id,workspaceId:customerId}' -o json`
     
       # Set local environment variables
       LOG_ANALYTICS_WORKSPACE_RESOURCE_ID=`echo $workspaceInfo | jq -r .workspaceResourceId`
