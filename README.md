@@ -19,6 +19,12 @@ Deployment to Azure is supported using Azure DevOps Pipelines and can be adopted
 
 The automation is built with [Project Bicep](https://github.com/Azure/bicep/blob/main/README.md) and Azure Resource Manager template.
 
+## GC 30-Day Cloud Guardrails
+
+As part of the Government of Canada (GC) Cloud Operationalization Framework, the GC has provided a set of [minimum guardrails](https://canada-ca.github.io/cloud-guardrails) to be implemented within the first 30-days of standing up a cloud environment.
+
+See [GC 30-Day Cloud Guardrails](docs/gc-30-day-cloud-guardrails.md) to find out how the reference implementations meet (or can meet) these requirements.
+
 ## Onboarding to Azure DevOps
 
 See the following onboarding guides for setup instructions:
