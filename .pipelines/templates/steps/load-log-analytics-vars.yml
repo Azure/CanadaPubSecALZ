@@ -10,9 +10,7 @@
 parameters:
   - name: logAnalyticsSubscriptionId
     type: string
-  - name: logAnalyticsResourceGroupName
-    type: string
-  - name: logAnalyticsWorkspaceName
+  - name: logAnalyticsConfigurationFile
     type: string
 
 steps:
@@ -26,13 +24,18 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
+      echo 'Using ${{ parameters.logAnalyticsConfigurationFile }} to load configuration'
+      LOG_ANALYTICS_RESOURCE_GROUP=`jq -r .parameters.logAnalyticsResourceGroupName.value ${{ parameters.logAnalyticsConfigurationFile }}`
+      LOG_ANALYTICS_WORKSPACE_NAME=`jq -r .parameters.logAnalyticsWorkspaceName.value ${{ parameters.logAnalyticsConfigurationFile }}`
+      LOG_ANALYTICS_WORKSPACE_RETENTION_IN_DAYS=`jq -r .parameters.logAnalyticsRetentionInDays.value ${{ parameters.logAnalyticsConfigurationFile }}`
+
       # Get workspace info via Azure CLI
       echo 'Retrieving log analytics workspace info via Azure CLI ...'
       echo 'Subscription: ${{ parameters.logAnalyticsSubscriptionId }}'
-      echo 'Resource Group: ${{ parameters.logAnalyticsResourceGroupName }}'
-      echo 'Log Analytics Workspace: ${{ parameters.logAnalyticsWorkspaceName }}'
+      echo 'Resource Group: $LOG_ANALYTICS_RESOURCE_GROUP'
+      echo 'Log Analytics Workspace: $LOG_ANALYTICS_WORKSPACE_NAME'
       
-      workspaceInfo=`az monitor log-analytics workspace show --subscription ${{ parameters.logAnalyticsSubscriptionId }} -g ${{ parameters.logAnalyticsResourceGroupName }} -n ${{ parameters.logAnalyticsWorkspaceName }} --query '{workspaceResourceId:id,workspaceId:customerId}' -o json`
+      workspaceInfo=`az monitor log-analytics workspace show --subscription ${{ parameters.logAnalyticsSubscriptionId }} -g $LOG_ANALYTICS_RESOURCE_GROUP -n $LOG_ANALYTICS_WORKSPACE_NAME --query '{workspaceResourceId:id,workspaceId:customerId}' -o json`
     
       # Set local environment variables
       LOG_ANALYTICS_WORKSPACE_RESOURCE_ID=`echo $workspaceInfo | jq -r .workspaceResourceId`
@@ -41,10 +44,12 @@ steps:
       # Show found workspace info
       echo "  log analytics workspace resource ID: $LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
       echo "  log analytics workspace ID: $LOG_ANALYTICS_WORKSPACE_ID"
+      echo "  log analytics retention in days: $LOG_ANALYTICS_WORKSPACE_RETENTION_IN_DAYS"
 
       # Set pipeline environment variables
-      echo 'Storing workspace info in pipeline variables: var-logging-logAnalyticsWorkspaceResourceId, var-logging-logAnalyticsWorkspaceId...'
+      echo 'Storing workspace info in pipeline variables: var-logging-logAnalyticsWorkspaceResourceId, var-logging-logAnalyticsWorkspaceId, var-logging-logAnalyticsRetentionInDays ...'
       echo "##vso[task.setvariable variable=var-logging-logAnalyticsWorkspaceResourceId]$LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
       echo "##vso[task.setvariable variable=var-logging-logAnalyticsWorkspaceId]$LOG_ANALYTICS_WORKSPACE_ID"
+      echo "##vso[task.setvariable variable=var-logging-logAnalyticsRetentionInDays]$LOG_ANALYTICS_WORKSPACE_RETENTION_IN_DAYS"
 
       $(var-bashPostInjectScript)
