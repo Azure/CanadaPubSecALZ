@@ -14,6 +14,7 @@ variables:
   vmImage: ubuntu-latest
   deployOperation: create  # valid options: 'create', 'what-if'
   subscriptionsPathFromRoot: 'config/subscriptions'
+  loggingPathFromRoot: 'config/logging'
   var-bashPreInjectScript: 'set -E; function catch { echo "##vso[task.logissue type=error]Caller: $(caller), LineNo: $LINENO, Command: $BASH_COMMAND" ; exit 1 ; } ; echo ; echo "Current working directory: $(pwd)" ; echo ; trap catch ERR'
   var-bashPostInjectScript: ':'
   var-TriggerSubscriptionDeployOn: 'A'  # A=added, M=modified, D=deleted
