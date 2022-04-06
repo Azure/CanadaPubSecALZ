@@ -1119,22 +1119,22 @@ Migration process:
         "contentVersion": "1.0.0.0",
         "parameters": {
           "serviceHealthAlerts": {
-            "value": <valuefromvar-logging-serviceHealthAlerts>
+            "value": < value from var-logging-serviceHealthAlerts >
           },
           "securityCenter": {
-            "value": <valuefromvar-logging-securityCenter>
+            "value": < value from var-logging-securityCenter >
           },
           "subscriptionRoleAssignments": {
-            "value": <valuefromvar-logging-subscriptionRoleAssignment>
+            "value": < value from var-logging-subscriptionRoleAssignment >
           },
           "subscriptionBudget": {
-            "value": <valuefromvar-logging-subscriptionBudget>
+            "value": < value from var-logging-subscriptionBudget >
           },
           "subscriptionTags": {
-            "value": <valuefromvar-logging-subscriptionTags>
+            "value": < value from var-logging-subscriptionTags >
           },
           "resourceTags": {
-            "value": <valuefromvar-logging-resourceTags>
+            "value": < value from var-logging-resourceTags >
           },
           "logAnalyticsResourceGroupName": {
             "value": "< value from var-logging-logAnalyticsResourceGroupName >"
@@ -1143,7 +1143,7 @@ Migration process:
             "value": "< value from var-logging-logAnalyticsWorkspaceName >"
           },
           "logAnalyticsRetentionInDays": {
-            "value": <valuefromvar-logging-logAnalyticsRetentionInDays>
+            "value": < value from var-logging-logAnalyticsRetentionInDays >
           },
           "logAnalyticsAutomationAccountName": {
             "value": "< value from var-logging-logAnalyticsAutomationAccountName >"
