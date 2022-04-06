@@ -29,6 +29,10 @@ parameters:
   - name: sublocation
     type: string
 
+variables:
+- name: logging-config-directory
+  value: $(System.DefaultWorkingDirectory)/$(loggingPathFromRoot)/${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}
+
 steps:
 
 - template: ./load-log-analytics-vars.yml
