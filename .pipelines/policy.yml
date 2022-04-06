@@ -59,7 +59,7 @@ stages:
 
   jobs:
 
-  - deployment: EnvionmentApprovalsAndChecks
+  - deployment: EnvironmentApprovalsAndChecks
     displayName: Environment Approvals and Checks
     environment: ${{ variables['Build.SourceBranchName'] }}
     strategy:
@@ -72,8 +72,8 @@ stages:
   - job: CustomPolicyJob
     displayName: Custom Policy Job
     dependsOn:
-      - EnvionmentApprovalsAndChecks
-    condition: succeeded('EnvionmentApprovalsAndChecks')
+      - EnvironmentApprovalsAndChecks
+    condition: succeeded('EnvironmentApprovalsAndChecks')
 
     steps:
 
@@ -111,8 +111,8 @@ stages:
   - job: BuiltInPolicyJob
     displayName: Built In Policy Job
     dependsOn:
-      - EnvionmentApprovalsAndChecks
-    condition: succeeded('EnvionmentApprovalsAndChecks')
+      - EnvironmentApprovalsAndChecks
+    condition: succeeded('EnvironmentApprovalsAndChecks')
 
     steps:
 
