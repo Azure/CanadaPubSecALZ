@@ -179,12 +179,19 @@ Instructions:
 
     ```yaml
     variables:
-    
       deploymentRegion: canadacentral
       serviceConnection: spn-azure-platform-ops
+
       vmImage: ubuntu-latest
-      deployOperation: create
-    
+      deployOperation: create  # valid options: 'create', 'what-if'
+
+      loggingPathFromRoot: 'config/logging'
+      subscriptionsPathFromRoot: 'config/subscriptions'
+
+      var-bashPreInjectScript: 'set -E; function catch { echo "##vso[task.logissue type=error]Caller: $(caller), LineNo: $LINENO, Command: $BASH_COMMAND" ; exit 1 ; } ; echo ; echo "Current working directory: $(pwd)" ; echo ; trap catch ERR'
+      var-bashPostInjectScript: ':'
+
+      var-TriggerSubscriptionDeployOn: 'A'  # A=added, M=modified, D=deleted
     ```
 
 ### Step 3.2:  Update environment config file in git repository
@@ -328,99 +335,142 @@ This role assignment is used to grant users access to the logging subscription b
 >
 > When a Log Analytics Workspace & Automation account already exists - set the following:
 >
->- Subscription ID
->- Resource Group
->- Log Analytics Workspace name
->- Automation account name  
+>* Subscription ID
+>* Resource Group
+>* Log Analytics Workspace name
+>* Automation account name  
 >
 > **The deployment automation will update the existing resources instead of creating new.**
 
-1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
+1. Create directory `./config/logging`.
+2. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaESLZ-main` to create path `./config/logging/CanadaESLZ-main/`).
+3. Create JSON parameters file with name `logging.parameters.json` (any name can be used) in directory created on step 2 (i.e. `./config/logging/CanadaESLZ-main/logging.parameters.json`).
+4. define deployment parameters based on example below.
 
-    * Update **var-logging-managementGroupId** with the logging management group:
+    * Set valid contact information for the Azure Service Health Alerts: email and phone number.
+    * Set the values for the Azure tags that would be applied to the logging resources.
+    * Set preferred names for resource group, Log Analytics Workspace and Automation Account.
+    * Set Log Analytics Workspace retention period.
+    * Set Billing Alerts.
+    * Set **subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  When there aren't any role assignments, configuration must be set as:
+
+        ```json
+          "subscriptionRoleAssignments": {
+               "value": []
+          }
+        ```
+
+    **Example**
+
+    ```json
+        {
+         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+         "contentVersion": "1.0.0.0",
+         "parameters": {
+          "serviceHealthAlerts": {
+           "value": {
+            "resourceGroupName": "pubsec-service-health",
+            "incidentTypes": [ "Incident", "Security" ],
+            "regions": [ "Global", "Canada East", "Canada Central" ],
+            "receivers": {
+             "app": [ "alzcanadapubsec@microsoft.com" ],
+             "email": [ "alzcanadapubsec@microsoft.com" ],
+             "sms": [
+              { "countryCode": "1", "phoneNumber": "5555555555" }
+             ],
+             "voice": [
+              { "countryCode": "1", "phoneNumber": "5555555555" }
+             ]
+            },
+            "actionGroupName": "ALZ action group",
+            "actionGroupShortName": "alz-alert",
+            "alertRuleName": "ALZ alert rule",
+            "alertRuleDescription": "Alert rule for Azure Landing Zone"
+           }
+          },
+          "securityCenter": {
+           "value": {
+            "email": "alzcanadapubsec@microsoft.com",
+            "phone": "5555555555"
+           }
+          },
+          "subscriptionRoleAssignments": {
+           "value": [
+            {
+             "comments": "Built-in Contributor Role",
+             "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+             "securityGroupObjectIds": [
+              "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+             ]
+            }
+           ]
+          },
+          "subscriptionBudget": {
+           "value": {
+            "createBudget": false,
+            "name": "MonthlySubscriptionBudget",
+            "amount": 1000,
+            "timeGrain": "Monthly",
+            "contactEmails": [
+             "alzcanadapubsec@microsoft.com"
+            ]
+           }
+          },
+          "subscriptionTags": {
+           "value": {
+            "ISSO": "isso-tbd"
+           }
+          },
+          "resourceTags": {
+           "value": {
+            "ClientOrganization": "client-organization-tag",
+            "CostCenter": "cost-center-tag",
+            "DataSensitivity": "data-sensitivity-tag",
+            "ProjectContact": "project-contact-tag",
+            "ProjectName": "project-name-tag",
+            "TechnicalContact": "technical-contact-tag"
+           }
+          },
+          "logAnalyticsResourceGroupName": {
+           "value": "pubsec-central-logging-rg"
+          },
+          "logAnalyticsWorkspaceName": {
+           "value": "log-analytics-workspace"
+          },
+          "logAnalyticsRetentionInDays": {
+           "value": 730
+          },
+          "logAnalyticsAutomationAccountName": {
+           "value": "automation-account"
+          }
+         }
+        }
+    ```
+
+5. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
+
+    * Set `var-logging-managementGroupId` with the logging management group:
       * For **CanadaPubSecALZ v0.9.0 or later**, this will be the management id that represents the Logging Management Group in the defined hierarchy.
       * For **CanadaPubSecALZ v0.8.0 or earlier**, this is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-logging-managementGroupId` will be `contosoPlatformManagement`.
 
-    * Update **var-logging-subscriptionRoleAssignments** with the object ID of the AAD security group from step 5.1.  If role assignments are not required, you must change the example provided with the following setting:
-
-    ```yml
-        var-logging-subscriptionRoleAssignments: >
-            []
-    ```
-
-      * Update **var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix** provide unique prefix to generate a unique storage account name. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
-
-      * Update with valid contact information for the Azure Service Health Alerts: email and phone number.
-
-      * Set the values for the Azure tags that would be applied to the logging resources.
+     * Set `var-logging-subscriptionId` with subscription id for logging.
+     * Set `var-logging-configurationFileName` with the file name of the logging configuration.  i.e. `logging.parameters.json`
+     * Set `var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix` to provide unique prefix to generate storage account. This parameter is only used for `HIPAA/HITRUST Policy Assignment`.
 
       **Sample environment YAML (Logging section only)**
 
       ```yml
           variables:
               # Logging
+              var-logging-region: $(deploymentRegion)
               var-logging-managementGroupId: pubsecPlatformManagement
               var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
-              var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
-              var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
-              var-logging-logAnalyticsRetentionInDays: 730
-              var-logging-logAnalyticsAutomationAccountName: automation-account
+              var-logging-configurationFileName: logging.parameters.json
+
               var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
-              var-logging-serviceHealthAlerts: >
-                  {
-                      "resourceGroupName": "pubsec-service-health",
-                      "incidentTypes": [ "Incident", "Security" ],
-                      "regions": [ "Global", "Canada East", "Canada Central" ],
-                      "receivers": {
-                          "app": [ "alzcanadapubsec@microsoft.com" ],
-                          "email": [ "alzcanadapubsec@microsoft.com" ],
-                          "sms": [
-                              { "countryCode": "1", "phoneNumber": "5555555555" }
-                          ],
-                          "voice": [
-                              { "countryCode": "1", "phoneNumber": "5555555555" }
-                          ]
-                      }
-                  }
-              var-logging-securityCenter: >
-                  {
-                      "email": "alzcanadapubsec@microsoft.com",
-                      "phone": "5555555555"
-                  }
-              var-logging-subscriptionRoleAssignments: >
-                  [
-                      {
-                          "comments": "Built-in Contributor Role",
-                          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-                          "securityGroupObjectIds": [
-                              "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-                          ]
-                      }
-                  ]
-              var-logging-subscriptionBudget: >
-                  {
-                      "createBudget": false,
-                      "name": "MonthlySubscriptionBudget",
-                      "amount": 1000,
-                      "timeGrain": "Monthly",
-                      "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
-                  }
-              var-logging-subscriptionTags: >
-                  {
-                      "ISSO": "isso-tbd"
-                  }
-              var-logging-resourceTags: >
-                  {
-                      "ClientOrganization": "client-organization-tag",
-                      "CostCenter": "cost-center-tag",
-                      "DataSensitivity": "data-sensitivity-tag",
-                      "ProjectContact": "project-contact-tag",
-                      "ProjectName": "project-name-tag",
-                      "TechnicalContact": "technical-contact-tag"
-                  }
       ```
 
-2. Commit the changes to git repository.
+6. Commit the changes to git repository.
 
 ### Step 5.3:  Configure Azure DevOps Pipeline
 
@@ -893,7 +943,7 @@ You can migrate to the management group hierarchy implemented in v0.9.0 by popul
 
     ```bash
     # Replace this value with your environment.  This id is the same as Azure Active Directory ID.
-    TENANT_ROOT_GROUP_ID='<< TENANT ROOT GROUP ID >>'
+    TENANT_ROOT_GROUP_ID='< TENANT ROOT GROUP ID >'
     
     az account management-group show --name $TENANT_ROOT_GROUP_ID -e -r | jq 'recurse(.children[]?) |= del(select(.type == "/subscriptions")) | del(..|nulls) | recurse(.children[]?) |= {"id":.name, "name":.displayName, "children": (.children // [] )}'
     ```
@@ -901,7 +951,7 @@ You can migrate to the management group hierarchy implemented in v0.9.0 by popul
     **Windows Shell**
 
     ```bash
-    set TENANT_ROOT_GROUP_ID=<< TENANT ROOT GROUP ID >>
+    set TENANT_ROOT_GROUP_ID=< TENANT ROOT GROUP ID >
     
     az account management-group show --name %TENANT_ROOT_GROUP_ID% -e -r | jq "recurse(.children[]?) |= del(select(.type == \"/subscriptions\")) | del(..|nulls) | recurse(.children[]?) |= {\"id\":.name, \"name\":.displayName, \"children\": (.
     children // [] )}"
@@ -919,7 +969,7 @@ You can migrate to the management group hierarchy implemented in v0.9.0 by popul
 
     ```json
     {
-      "id": "<< TENANT ROOT GROUP ID >>",
+      "id": "< TENANT ROOT GROUP ID >",
       "name": "Tenant Root Group",
       "children": [
         {
@@ -1026,3 +1076,91 @@ You can migrate to the management group hierarchy implemented in v0.9.0 by popul
           ]
         }
         ```
+
+### Migrate Logging configuration to JSON parameters file
+
+As of v0.10.0, we have migrated logging configuration to JSON parameters file.  This change enables for customers to deploy more than one Log Analytics Workspace (in same region or different) for workloads.
+
+We have not removed any parameters, so the exercise is:
+
+1. Create directory `./config/logging`.
+2. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaESLZ-main` to create path `./config/logging/CanadaESLZ-main/`).
+3. Create JSON parameters file with name `logging.parameters.json` (any name can be used) in directory created on step 2 (i.e. `./config/logging/CanadaESLZ-main/logging.parameters.json`).
+4. Define deployment parameters based on example below.
+
+    **Template to use for logging.parameters.json**
+
+    ```json
+        {
+         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+         "contentVersion": "1.0.0.0",
+         "parameters": {
+          "serviceHealthAlerts": {
+           "value": < value from var-logging-serviceHealthAlerts >
+          },
+          "securityCenter": {
+           "value": < value from var-logging-securityCenter >
+          },
+          "subscriptionRoleAssignments": {
+           "value": < value from var-logging-subscriptionRoleAssignment >
+          },
+          "subscriptionBudget": {
+           "value": < value from var-logging-subscriptionBudget >
+          },
+          "subscriptionTags": {
+           "value": < value from var-logging-subscriptionTags >
+          },
+          "resourceTags": {
+           "value": < value from var-logging-resourceTags >
+          },
+          "logAnalyticsResourceGroupName": {
+           "value": "< value from var-logging-logAnalyticsResourceGroupName >"
+          },
+          "logAnalyticsWorkspaceName": {
+           "value": "< value from var-logging-logAnalyticsWorkspaceName >"
+          },
+          "logAnalyticsRetentionInDays": {
+           "value": < value from var-logging-logAnalyticsRetentionInDays >
+          },
+          "logAnalyticsAutomationAccountName": {
+           "value": "< value from var-logging-logAnalyticsAutomationAccountName >"
+          }
+         }
+        }
+    ```
+
+5. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git and define the following parameters.
+
+      * Delete Azure DevOps variables (these have been moved the JSON parameters files):
+        * var-logging-logAnalyticsResourceGroupName
+        * var-logging-logAnalyticsWorkspaceName
+        * var-logging-logAnalyticsRetentionInDays
+        * var-logging-logAnalyticsAutomationAccountName
+        * var-logging-serviceHealthAlerts
+        * var-logging-securityCenter
+        * var-logging-subscriptionRoleAssignments
+        * var-logging-subscriptionBudget
+        * var-logging-subscriptionTags
+        * var-logging-resourceTags
+      * Add Azure DevOps variables:
+        * var-logging-region (value of your preferred region)
+        * var-logging-configurationFileName (path to the logging JSON parameters file)
+      * Keep Azure DevOps variables:
+        * var-logging-managementGroupId
+        * var-logging-subscriptionId
+        * var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix
+
+      **Sample environment YAML (Logging section only)**
+
+      ```yml
+          variables:
+              # Logging
+              var-logging-region: $(deploymentRegion)
+              var-logging-managementGroupId: pubsecPlatformManagement
+              var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
+              var-logging-configurationFileName: logging.parameters.json
+
+              var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
+      ```
+
+6. Commit the changes to git repository.
