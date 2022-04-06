@@ -45,6 +45,11 @@ stages:
 
   jobs:
 
+  - template: templates/steps/load-log-analytics-vars.yml
+    parameters:
+      logAnalyticsSubscriptionId: $(var-logging-subscriptionId)
+      logAnalyticsConfigurationFile: ${{ variables['logging-config-directory'] }}/$(var-logging-configurationFileName)
+
   # This job is run when the CI trigger is fired based on a change to one or more
   # subscription configuration files *OR* when the pipeline is run manually and the
   # default empty array value is passed for the 'subscriptions' suparameter. 
