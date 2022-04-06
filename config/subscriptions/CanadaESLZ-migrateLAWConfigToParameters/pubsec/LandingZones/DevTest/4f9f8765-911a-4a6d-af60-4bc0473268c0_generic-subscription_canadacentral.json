@@ -5,6 +5,9 @@
     "location": {
         "value": "canadacentral"
     },
+    "logAnalyticsWorkspaceResourceId": {
+        "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
+    },
     "serviceHealthAlerts": {
             "value": {
                 "resourceGroupName": "pubsec-service-health",
