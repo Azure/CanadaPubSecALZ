@@ -51,7 +51,7 @@ If you don't wish to send usage data to Microsoft, you can set the `customerUsag
 * [Step 2 - Configure Azure DevOps](#step-2---configure-azure-devops)
 * [Step 3 - Configure Management Groups](#step-3---configure-management-groups)
 * [Step 4 - Configure Custom Roles](#step-4---configure-custom-roles)
-* [Step 5 - Configure Logging](#step-5--configure-logging)
+* [Step 5 - Configure Logging](#step-5---configure-logging)
 * [Step 6 - Configure Azure Policies](#step-6---configure-azure-policies)
 * [Step 7 - Configure Hub Networking](#step-7---configure-hub-networking)
 * [Step 8 - Configure Subscription Archetypes](#step-8---configure-subscription-archetypes)
