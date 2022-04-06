@@ -31,6 +31,11 @@ parameters:
 
 steps:
 
+- template: templates/steps/load-log-analytics-vars.yml
+  parameters:
+    logAnalyticsSubscriptionId: $(var-logging-subscriptionId)
+    logAnalyticsConfigurationFile: ${{ variables['logging-config-directory'] }}/$(var-logging-configurationFileName)
+
 - template: ./move-subscription.yml
   parameters:
     managementGroup: ${{ parameters.mgmtgroup }}
