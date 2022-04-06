@@ -84,4 +84,5 @@ stages:
         config: ${{ variables['subscriptionsPathFromRoot'] }}
         enviro: ${{ variables['environment'] }}
         subscription: ${{ subscription }}
-
+        logAnalyticsSubscriptionId: $(var-logging-subscriptionId)
+        logAnalyticsConfigurationFile: ${{ variables['logging-config-directory'] }}/$(var-logging-configurationFileName)

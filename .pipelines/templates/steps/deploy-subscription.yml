@@ -28,13 +28,17 @@ parameters:
     type: string
   - name: sublocation
     type: string
+  - name: logAnalyticsSubscriptionId
+    type: string
+  - name: logAnalyticsConfigurationFile
+    type: string
 
 steps:
 
 - template: ./load-log-analytics-vars.yml
   parameters:
-    logAnalyticsSubscriptionId: $(var-logging-subscriptionId)
-    logAnalyticsConfigurationFile: ${{ variables['logging-config-directory'] }}/$(var-logging-configurationFileName)
+    logAnalyticsSubscriptionId: ${{ parameters.logAnalyticsSubscriptionId }}
+    logAnalyticsConfigurationFile: ${{ parameters.logAnalyticsConfigurationFile }}
 
 - template: ./move-subscription.yml
   parameters:
