@@ -1096,7 +1096,11 @@ You can migrate to the management group hierarchy implemented in v0.9.0 by popul
 
 ### Migrate Logging configuration from Azure DevOps variables to JSON parameters file
 
-As of `v0.10.0`, we migrated logging configuration to JSON parameters file.  This change enables for customers to deploy more than one Log Analytics Workspace (in same region or different) for workloads with limited rework in the pipelines.
+As of `v0.10.0`, we migrated logging configuration to JSON parameters file.  This change enables:
+
+* Path for deploying logging without Azure DevOps such as using Azure CLI/PowerShell, etc.
+* Separates Azure DevOps pipeline variables from ARM deployment parameters.
+* Simplifies support for multiple Log Analytics Workspaces in an Azure tenant (i.e. LAWs deployed by region or workload)
 
 We added a new parameter to `common.yml` to set the folder for logging configuration.  This folder is used by Azure DevOps Pipelines to create a fully qualified file path for logging configuration.  A fully qualified path will have the following structure: `<loggingPathFromRoot>`/`<devops-org-name>-<branch-name>`/`logging.parameters.json`.  For example:  `config/logging/CanadaESLZ-main/logging.parameters.json`
 
