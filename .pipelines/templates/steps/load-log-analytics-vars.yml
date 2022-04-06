@@ -24,7 +24,7 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      echo 'Using ${{ parameters.logAnalyticsConfigurationFile }} to load configuration'
+      echo 'Using ${{ parameters.logAnalyticsConfigurationFile }} to load log analytics configuration'
       LOG_ANALYTICS_RESOURCE_GROUP=`jq -r .parameters.logAnalyticsResourceGroupName.value ${{ parameters.logAnalyticsConfigurationFile }}`
       LOG_ANALYTICS_WORKSPACE_NAME=`jq -r .parameters.logAnalyticsWorkspaceName.value ${{ parameters.logAnalyticsConfigurationFile }}`
       LOG_ANALYTICS_WORKSPACE_RETENTION_IN_DAYS=`jq -r .parameters.logAnalyticsRetentionInDays.value ${{ parameters.logAnalyticsConfigurationFile }}`
