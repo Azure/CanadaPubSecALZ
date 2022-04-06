@@ -55,6 +55,9 @@
         "resourceTags": {
           "$ref": "types/resourceTags.json#/definitions/ResourceTags"
         },
+        "logAnalyticsWorkspaceResourceId": {
+          "$ref": "types/logAnalyticsWorkspaceId.json#/definitions/LogAnalyticsWorkspaceId"
+        },
         "resourceGroups": {
           "$ref": "#/definitions/ResourceGroups"
         },
