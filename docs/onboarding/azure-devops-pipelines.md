@@ -57,6 +57,7 @@ If you don't wish to send usage data to Microsoft, you can set the `customerUsag
 * [Step 8 - Configure Subscription Archetypes](#step-8---configure-subscription-archetypes)
 * [Appendix](#appendix)
   * [Populate management group hierarchy from your environment](#populate-management-group-hierarchy-from-your-environment)
+  * [Migrate Logging configuration from Azure DevOps variables to JSON parameters file](#migrate-logging-configuration-from-azure-devops-variables-to-json-parameters-file)
 
 ---
 
