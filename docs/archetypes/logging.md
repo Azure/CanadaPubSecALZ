@@ -5,6 +5,7 @@
 * [Overview](#overview)
 * [Schema Definition](#schema-definition)
 * [Delete Locks](#delete-locks)
+* [Deployment Scenarios](#deployment-scenarios)
 * [Example Deployment Parameters](#example-deployment-parameters)
 * [Deployment Instructions](#deployment-instructions)
 
@@ -60,6 +61,19 @@ Reference implementation uses parameter files with `object` parameters to consol
 As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
 
 By default, this archetype deploys `CanNotDelete` lock to prevent accidental deletion on all resource groups it creates.
+
+## Deployment Scenarios
+
+> Sample deployment scenarios are based on the latest JSON parameters file schema definition.  If you have an older version of this repository, please use the examples from your repository.
+
+| Scenario | Example JSON Parameters | Notes |
+|:-------- |:----------------------- |:----- |
+| Full Deployment | [tests/schemas/lz-platform-logging/FullDeployment.json](../../tests/schemas/lz-platform-logging/FullDeployment.json) | - |
+| Deployment with Location | [tests/schemas/tests/schemas/lz-platform-logging/FullDeployment-With-Location.json](../../tests/schemas/lz-platform-logging/FullDeployment-With-Location.json) | `parameters.location.value` is `canadacentral` |
+| Deployment without subscription budget | [tests/schemas/tests/schemas/lz-platform-logging/BudgetIsFalse.json](../../tests/schemas/lz-platform-logging/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
+| Deployment without resource tags | [tests/schemas/tests/schemas/lz-platform-logging/EmptyResourceTags.json](../../tests/schemas/lz-platform-logging/EmptyResourceTags.json) | `parameters.resourceTags.value` is an empty object. |
+| Deployment without subscription tags | [tests/schemas/tests/schemas/lz-platform-logging/EmptySubscriptionTags.json](../../tests/schemas/lz-platform-logging/EmptySubscriptionTags.json) | `parameters.subscriptionTags.value` is an empty object. |
+| Deployment without subscription role assignments | [tests/schemas/tests/schemas/lz-platform-logging/WithoutSubscriptionRoleAssignments.json](../../tests/schemas/lz-platform-logging/WithoutSubscriptionRoleAssignments.json) | `parameters.subscriptionRoleAssignments.value` is an empty array. |
 
 ## Example Deployment Parameters
 
