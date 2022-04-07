@@ -1,4 +1,4 @@
-# Archetype:  Central Logging
+# Archetype:  Logging
 
 ## Table of Contents
 
@@ -12,7 +12,7 @@
 
 Centralized logging landing zone allows a common subscription for managing Log Analytics Workspace & Automation Account.  This landing zone will be in the `pubsecPlatformManagement` management group.
 
-![Archetype:  Central Logging](../media/architecture/archetype-logging.jpg)
+![Archetype:  Logging](../media/architecture/archetype-logging.jpg)
 
 **Workflow**
 

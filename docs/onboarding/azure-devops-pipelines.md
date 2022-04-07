@@ -492,7 +492,7 @@ This role assignment is used to grant users access to the logging subscription b
 
 ### Step 5.3:  Configure Azure DevOps Pipeline
 
-1. Pipeline definition for Central Logging.
+1. Pipeline definition for Logging.
 
     *Note: Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.*
 
