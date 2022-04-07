@@ -27,6 +27,18 @@ parameters:
 
 steps:
 
+- task: PowerShell@2
+  displayName: Validate Logging Parameters
+  inputs:
+    targetType: 'inline'
+    script: |
+      $schemaFile="$(Build.SourcesDirectory)/schemas/latest/landingzones/lz-platform-logging.json"
+
+      Write-Host "Parameters File: ${{ parameters.loggingConfigurationPath }}"
+      Write-Host "Schema File: ${schemaFile}"
+
+      Get-Content -Raw "${{ parameters.loggingConfigurationPath }}" | Test-Json -SchemaFile "${schemaFile}"
+
 - template: ./move-subscription.yml
   parameters:
     managementGroup: ${{ parameters.loggingManagementGroupId }}
