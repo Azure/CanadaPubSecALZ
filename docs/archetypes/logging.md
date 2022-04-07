@@ -45,6 +45,8 @@ Reference implementation uses parameter files with `object` parameters to consol
 
 * Schema (version: `latest`)
 
+  * [Logging deployment parameters definition](../../schemas/latest/landingzones/lz-platform-logging.json)
+
   * Common
     * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
     * [Microsoft Defender for Cloud](../../schemas/latest/landingzones/types/securityCenter.json)
