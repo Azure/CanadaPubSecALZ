@@ -2,6 +2,10 @@
 
 ## Landing Zone Schemas
 
+### April 7, 2022
+
+Schema definition for Logging archetype.  See [documentation](../../docs/archetypes/logging.md).
+
 ### April 6, 2022
 
 Added `logAnalyticsWorkspaceResourceId` to archetypes.  This is an optional parameter in the JSON file as it can be set at runtime.
