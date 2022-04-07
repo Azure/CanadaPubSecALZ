@@ -1,99 +1,93 @@
 {
- "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
- "contentVersion": "1.0.0.0",
- "parameters": {
-  "serviceHealthAlerts": {
-   "value": {
-    "resourceGroupName": "pubsec-service-health",
-    "incidentTypes": [
-     "Incident",
-     "Security"
-    ],
-    "regions": [
-     "Global",
-     "Canada East",
-     "Canada Central"
-    ],
-    "receivers": {
-     "app": [
-      "skeeler@m365incanada.onmicrosoft.com"
-     ],
-     "email": [
-      "skeeler@m365incanada.onmicrosoft.com"
-     ],
-     "sms": [
-      {
-       "countryCode": "1",
-       "phoneNumber": "5555555555"
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serviceHealthAlerts": {
+      "value": {
+        "resourceGroupName": "pubsec-service-health",
+        "incidentTypes": [
+          "Incident",
+          "Security"
+        ],
+        "regions": [
+          "Global",
+          "Canada East",
+          "Canada Central"
+        ],
+        "receivers": {
+          "app": [
+            "skeeler@m365incanada.onmicrosoft.com"
+          ],
+          "email": [
+            "skeeler@m365incanada.onmicrosoft.com"
+          ],
+          "sms": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "5555555555"
+            }
+          ],
+          "voice": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "5555555555"
+            }
+          ]
+        },
+        "actionGroupName": "ALZ action group",
+        "actionGroupShortName": "alz-alert",
+        "alertRuleName": "ALZ alert rule",
+        "alertRuleDescription": "Alert rule for Azure Landing Zone"
       }
-     ],
-     "voice": [
-      {
-       "countryCode": "1",
-       "phoneNumber": "5555555555"
-      }
-     ]
     },
-    "actionGroupName": "ALZ action group",
-    "actionGroupShortName": "alz-alert",
-    "alertRuleName": "ALZ alert rule",
-    "alertRuleDescription": "Alert rule for Azure Landing Zone"
-   }
-  },
-  "securityCenter": {
-   "value": {
-    "email": "skeeler@m365incanada.onmicrosoft.com",
-    "phone": "5555555555"
-   }
-  },
-  "subscriptionRoleAssignments": {
-   "value": [
-    {
-     "comments": "Built-in Contributor Role",
-     "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-     "securityGroupObjectIds": [
-      "ae712826-a993-4819-a167-4045d965b5a5"
-     ]
+    "securityCenter": {
+      "value": {
+        "email": "skeeler@m365incanada.onmicrosoft.com",
+        "phone": "5555555555"
+      }
+    },
+    "subscriptionRoleAssignments": {
+      "value": [
+        {
+          "comments": "Built-in Contributor Role",
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+          "securityGroupObjectIds": [
+            "ae712826-a993-4819-a167-4045d965b5a5"
+          ]
+        }
+      ]
+    },
+    "subscriptionBudget": {
+      "value": {
+        "createBudget": false
+      }
+    },
+    "subscriptionTags": {
+      "value": {
+        "ISSO": "isso-tbd"
+      }
+    },
+    "resourceTags": {
+      "value": {
+        "ClientOrganization": "client-organization-tag",
+        "CostCenter": "cost-center-tag",
+        "DataSensitivity": "data-sensitivity-tag",
+        "ProjectContact": "project-contact-tag",
+        "ProjectName": "project-name-tag",
+        "TechnicalContact": "technical-contact-tag"
+      }
+    },
+    "logAnalyticsResourceGroupName": {
+      "value": "pubsec-central-logging-rg"
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "log-analytics-workspace"
+    },
+    "logAnalyticsRetentionInDays": {
+      "value": 730
+    },
+    "logAnalyticsAutomationAccountName": {
+      "value": "automation-account"
     }
-   ]
-  },
-  "subscriptionBudget": {
-   "value": {
-    "createBudget": false,
-    "name": "MonthlySubscriptionBudget",
-    "amount": 1000,
-    "timeGrain": "Monthly",
-    "contactEmails": [
-     "skeeler@m365incanada.onmicrosoft.com"
-    ]
-   }
-  },
-  "subscriptionTags": {
-   "value": {
-    "ISSO": "isso-tbd"
-   }
-  },
-  "resourceTags": {
-   "value": {
-    "ClientOrganization": "client-organization-tag",
-    "CostCenter": "cost-center-tag",
-    "DataSensitivity": "data-sensitivity-tag",
-    "ProjectContact": "project-contact-tag",
-    "ProjectName": "project-name-tag",
-    "TechnicalContact": "technical-contact-tag"
-   }
-  },
-  "logAnalyticsResourceGroupName": {
-   "value": "pubsec-central-logging-rg"
-  },
-  "logAnalyticsWorkspaceName": {
-   "value": "log-analytics-workspace"
-  },
-  "logAnalyticsRetentionInDays": {
-   "value": 730
-  },
-  "logAnalyticsAutomationAccountName": {
-   "value": "automation-account"
   }
- }
 }
