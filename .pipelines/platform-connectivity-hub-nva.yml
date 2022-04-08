@@ -23,6 +23,8 @@ pr: none
 variables:
 - name: devops-org-name
   value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: logging-config-directory
+  value: $(System.DefaultWorkingDirectory)/$(loggingPathFromRoot)/${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}
 - name: variable-template-file
   value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
 - template: ../config/variables/common.yml
@@ -53,8 +55,7 @@ stages:
           - template: templates/steps/load-log-analytics-vars.yml
             parameters:
               logAnalyticsSubscriptionId: $(var-logging-subscriptionId)
-              logAnalyticsResourceGroupName: $(var-logging-logAnalyticsResourceGroupName)
-              logAnalyticsWorkspaceName: $(var-logging-logAnalyticsWorkspaceName)
+              logAnalyticsConfigurationFile: ${{ variables['logging-config-directory'] }}/$(var-logging-configurationFileName)
 
           - template: templates/steps/show-variables.yml
             parameters:

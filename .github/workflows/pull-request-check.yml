@@ -10,6 +10,7 @@ on:
       - "**.json"
 env:
   SCHEMA_FOLDER: schemas/latest/landingzones
+  LOGGING_PATH_FROM_ROOT: config/logging
   SUBSCRIPTIONS_PATH_FROM_ROOT: config/subscriptions
 
 jobs:
@@ -50,6 +51,14 @@ jobs:
         run: |
           # Validate existing subscription archetype parameter files
           Write-Host "Validate existing subscription archetype parameter files..."
+
+          $LoggingFileFilter="*.json"
+          $LoggingSchemaFile="${{env.SCHEMA_FOLDER}}/lz-platform-logging.json"
+
+          Get-ChildItem -Recurse -Filter $LoggingFileFilter -Path "${{env.LOGGING_PATH_FROM_ROOT}}" | ForEach-Object {
+              Write-Host "Validating: $_ with $LoggingSchemaFile"
+              Get-Content -Raw $_ | Test-Json -SchemaFile $LoggingSchemaFile
+          }
 
           $GenericSubscriptionFileFilter="*generic-subscription*.json"
           $GenericSubscriptionSchemaFile="${{env.SCHEMA_FOLDER}}/lz-generic-subscription.json"
