@@ -58,6 +58,14 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
     scope: scope
     notScopes: []
     parameters: {
+      'logsEnabled-7f89b1eb-583c-429a-8828-af049802c1d9': {
+        value: true
+      }
+      
+      'metricsEnabled-7f89b1eb-583c-429a-8828-af049802c1d9': {
+        value: false
+      }
+
       // A semicolon-separated list of the names of the applications that should be installed.
       // e.g. 'Microsoft SQL Server 2014 (64-bit); Microsoft Visual Studio Code' or 'Microsoft SQL Server 2014*'
       // (to match any application starting with 'Microsoft SQL Server 2014')
