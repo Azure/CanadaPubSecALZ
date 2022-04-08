@@ -19,6 +19,9 @@
         },
         "certificateThumbprints": {
             "value": "__tbd__implementation_specific__"
+        },
+        "requiredRetentionDays": {
+            "value": "{{var-logging-logAnalyticsRetentionInDays}}"
         }
     }
 }

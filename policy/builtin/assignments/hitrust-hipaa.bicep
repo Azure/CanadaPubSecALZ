@@ -34,6 +34,9 @@ param deployDiagnosticSettingsforNetworkSecurityGroupsRgName string
 @description('A semicolon-separated list of certificate thumbprints that should exist under the Trusted Root certificate store (Cert:\\LocalMachine\\Root). e.g. THUMBPRINT1;THUMBPRINT2;THUMBPRINT3')
 param certificateThumbprints string
 
+@description('Log Analytics Workspace Data Retention in days.')
+param requiredRetentionDays string
+
 var policyId = 'a169a624-5599-4385-a696-c8d643089fab' // HITRUST/HIPAA
 var assignmentName = 'HITRUST/HIPAA'
 
@@ -76,6 +79,67 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
       // (Cert:\LocalMachine\Root). e.g. THUMBPRINT1;THUMBPRINT2;THUMBPRINT3      
       CertificateThumbprints: {
         value: certificateThumbprints
+      }
+
+      requiredRetentionDays: {
+        value: requiredRetentionDays
+      }
+
+      listOfResourceTypes: {
+        value: [
+          'Microsoft.AnalysisServices/servers'
+          'Microsoft.ApiManagement/service'
+          'Microsoft.Network/applicationGateways'
+          'Microsoft.Automation/automationAccounts'
+          // 'Microsoft.ContainerInstance/containerGroups'  # Removed since it doesn't have any logs
+          'Microsoft.ContainerRegistry/registries'
+          'Microsoft.ContainerService/managedClusters'
+          'Microsoft.Batch/batchAccounts'
+          'Microsoft.Cdn/profiles/endpoints'
+          'Microsoft.CognitiveServices/accounts'
+          'Microsoft.DocumentDB/databaseAccounts'
+          'Microsoft.DataFactory/factories'
+          'Microsoft.DataLakeAnalytics/accounts'
+          'Microsoft.DataLakeStore/accounts'
+          'Microsoft.EventGrid/systemTopics'
+          'Microsoft.EventGrid/eventSubscriptions'
+          'Microsoft.EventGrid/topics'
+          'Microsoft.EventHub/namespaces'
+          'Microsoft.Network/expressRouteCircuits'
+          'Microsoft.Network/azureFirewalls'
+          'Microsoft.HDInsight/clusters'
+          'Microsoft.Devices/IotHubs'
+          'Microsoft.KeyVault/vaults'
+          'Microsoft.Network/loadBalancers'
+          'Microsoft.Logic/integrationAccounts'
+          'Microsoft.Logic/workflows'
+          'Microsoft.DBforMySQL/servers'
+          //'Microsoft.Network/networkInterfaces' # Removed since it doesn't have any logs
+          'Microsoft.Network/networkSecurityGroups'
+          'Microsoft.Network/bastionHosts'
+          'Microsoft.Kusto/clusters'
+          'Microsoft.DBForMariaDB/servers'
+          'Microsoft.DBforPostgreSQL/servers'
+          'Microsoft.PowerBIDedicated/capacities'
+          'Microsoft.Network/publicIPAddresses'
+          'Microsoft.RecoveryServices/vaults'
+          'Microsoft.Cache/redis'
+          'Microsoft.Relay/namespaces'
+          'Microsoft.Search/searchServices'
+          'Microsoft.ServiceBus/namespaces'
+          'Microsoft.SignalRService/SignalR'
+          'Microsoft.Sql/servers/databases'
+          //'Microsoft.Sql/servers/elasticPools' # Removed since it doesn't have any logs
+          'Microsoft.StreamAnalytics/streamingjobs'
+          'Microsoft.TimeSeriesInsights/environments'
+          'Microsoft.Network/trafficManagerProfiles'
+          //'Microsoft.Compute/virtualMachines' # Logs are collected through Microsoft Monitoring Agent
+          //'Microsoft.Compute/virtualMachineScaleSets' Removed since it is not supported
+          'Microsoft.Network/virtualNetworks'
+          'Microsoft.Network/virtualNetworkGateways'
+          'Microsoft.Web/sites'
+          'Microsoft.Media/mediaservices'
+        ]
       }
     }
     enforcementMode: enforcementMode
