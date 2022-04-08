@@ -84,7 +84,6 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
           'Microsoft.DataFactory/factories'
           'Microsoft.DataLakeAnalytics/accounts'
           'Microsoft.DataLakeStore/accounts'
-          'Microsoft.EventGrid/systemTopics'
           'Microsoft.EventGrid/eventSubscriptions'
           'Microsoft.EventGrid/topics'
           'Microsoft.EventHub/namespaces'
@@ -117,7 +116,7 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
           //'Microsoft.Compute/virtualMachineScaleSets' Removed since it is not supported
           'Microsoft.Network/virtualNetworks'
           'Microsoft.Network/virtualNetworkGateways'
-        ]
+         ]
        }
     }
     enforcementMode: enforcementMode

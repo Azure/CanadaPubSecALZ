@@ -101,7 +101,6 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
           'Microsoft.DataFactory/factories'
           'Microsoft.DataLakeAnalytics/accounts'
           'Microsoft.DataLakeStore/accounts'
-          'Microsoft.EventGrid/systemTopics'
           'Microsoft.EventGrid/eventSubscriptions'
           'Microsoft.EventGrid/topics'
           'Microsoft.EventHub/namespaces'
