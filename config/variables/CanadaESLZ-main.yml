@@ -63,6 +63,7 @@ variables:
   var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
   var-logging-configurationFileName: logging.parameters.json
 
+  ## This parameter is only used for HIPAA/HITRUST Policy Assignment
   var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
 
   # Hub Networking
