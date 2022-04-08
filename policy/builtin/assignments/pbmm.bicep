@@ -99,9 +99,6 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
           'Microsoft.DBforMySQL/servers'
           //'Microsoft.Network/networkInterfaces' # Removed since it doesn't have any logs
           'Microsoft.Network/networkSecurityGroups'
-          'Microsoft.Network/bastionHosts'
-          'Microsoft.Kusto/clusters'
-          'Microsoft.DBForMariaDB/servers'
           'Microsoft.DBforPostgreSQL/servers'
           'Microsoft.PowerBIDedicated/capacities'
           'Microsoft.Network/publicIPAddresses'
@@ -120,8 +117,6 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
           //'Microsoft.Compute/virtualMachineScaleSets' Removed since it is not supported
           'Microsoft.Network/virtualNetworks'
           'Microsoft.Network/virtualNetworkGateways'
-          'Microsoft.Web/sites'
-          'Microsoft.Media/mediaservices'
         ]
        }
     }
