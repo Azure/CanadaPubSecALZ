@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Kubernetes Service Name.')
 param name string
 
@@ -93,11 +96,12 @@ var networkProfile =  {
   dnsServiceIP: dnsServiceIP
   dockerBridgeCidr: dockerBridgeCidr
   networkPolicy: networkPolicy
+  outboundType: 'userDefinedRouting'
 }
 
 resource aks 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
   name: name
-  location: resourceGroup().location
+  location: location
   tags: tags
   properties: {
     nodeResourceGroup: nodeResourceGroupName

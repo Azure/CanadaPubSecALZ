@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 /*
 
 Platform Logging archetype provides infrastructure for centrally managed Log Analytics Workspace & Microsoft Sentinel that includes:
@@ -184,6 +187,9 @@ param logAnalyticsAutomationAccountName string
 @description('Log Analytics Workspace Data Retention in days.')
 param logAnalyticsRetentionInDays int
 
+@description('Flag to determine whether delete lock should be created on resource group(s).  Default:  true')
+param enableDeleteLockOnResourceGroup bool = true
+
 // Telemetry - Azure customer usage attribution
 // Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 var telemetry = json(loadTextContent('../../config/telemetry.json'))
@@ -194,8 +200,14 @@ module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-u
 // Create Log Analytics Workspace Resource Group
 resource rgLogging 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: logAnalyticsResourceGroupName
-  location: deployment().location
+  location: location
   tags: resourceTags
+}
+
+// Delete lock on resource group
+module rgLoggingDeleteLock '../../azresources/util/delete-lock.bicep' = if (enableDeleteLockOnResourceGroup) {
+  name: 'deploy-delete-lock-${rgLogging.name}'
+  scope: rgLogging
 }
 
 // Create Log Analytics Workspace
@@ -203,9 +215,12 @@ module logAnalytics '../../azresources/monitor/log-analytics.bicep' = {
   name: logAnalyticsWorkspaceName
   scope: rgLogging
   params: {
+    location: location
+
     workspaceName: logAnalyticsWorkspaceName
     workspaceRetentionInDays: logAnalyticsRetentionInDays
     automationAccountName: logAnalyticsAutomationAccountName
+
     tags: resourceTags
   }
 }
@@ -224,6 +239,8 @@ module subScaffold '../scaffold-subscription.bicep' = {
   name: 'subscription-scaffold'
   scope: subscription()
   params: {
+    location: location
+    
     serviceHealthAlerts: serviceHealthAlerts
     subscriptionRoleAssignments: subscriptionRoleAssignments
     subscriptionBudget: subscriptionBudget    

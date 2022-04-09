@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Event Grid Topic to Log Analytics Workspaces",
+    "mode": "indexed"
+}

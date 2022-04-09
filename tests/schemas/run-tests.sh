@@ -4,6 +4,8 @@ sudo apt-get install powershell -y
 
 pwsh -File ./test-all.ps1 -TestFolder . -SchemaFolder ../../schemas/latest/landingzones
 
+pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/latest/landingzones/lz-platform-logging.json' -TestFolder '../../config/logging/' -FileFilter '*.json'
+
 pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/latest/landingzones/lz-generic-subscription.json' -TestFolder '../../config/subscriptions/' -FileFilter '*generic-subscription*.json'
 
 pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/latest/landingzones/lz-machinelearning.json' -TestFolder '../../config/subscriptions/' -FileFilter '*machinelearning*.json'

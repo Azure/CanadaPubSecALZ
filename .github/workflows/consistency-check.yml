@@ -1,0 +1,91 @@
+name: Consistency Check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # every day at midnight
+
+env:
+  SCHEMA_FOLDER: schemas/latest/landingzones
+  LOGGING_PATH_FROM_ROOT: config/logging
+  SUBSCRIPTIONS_PATH_FROM_ROOT: config/subscriptions
+
+jobs:
+  consistency_check:
+    name: Consistency Check Job
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Run schema test cases
+        shell: pwsh
+        working-directory: ${{env.working-directory}}
+        run: |
+          # Validate schema test cases
+          $SchemaTestsFolder="tests/schemas"
+
+          Write-Host "Validating schema test cases..."
+
+          Write-Host "Schema Test Folder: $SchemaTestsFolder"
+          Write-Host "Schema Folder: ${{env.SCHEMA_FOLDER}}"
+
+          Get-ChildItem -Directory -Path $SchemaTestsFolder | Foreach-Object {
+              $archetypeName = $_.BaseName
+
+              Write-Host "Archetype: $archetypeName"
+
+            Get-ChildItem -Recurse -Filter '*.json' -Path "$SchemaTestsFolder/$archetypeName" | ForEach-Object {
+                Write-Host "   Validating: $_ with ${{env.SCHEMA_FOLDER}}/$archetypeName.json"
+                Get-Content -Raw $_ | Test-Json -SchemaFile "${{env.SCHEMA_FOLDER}}/$archetypeName.json"
+            }
+          }
+
+      - name: Validate existing subscription archetype parameter files
+        shell: pwsh
+        working-directory: ${{env.working-directory}}
+        run: |
+          # Validate existing subscription archetype parameter files
+          Write-Host "Validate existing subscription archetype parameter files..."
+
+          $LoggingFileFilter="*.json"
+          $LoggingSchemaFile="${{env.SCHEMA_FOLDER}}/lz-platform-logging.json"
+
+          Get-ChildItem -Recurse -Filter $LoggingFileFilter -Path "${{env.LOGGING_PATH_FROM_ROOT}}" | ForEach-Object {
+              Write-Host "Validating: $_ with $LoggingSchemaFile"
+              Get-Content -Raw $_ | Test-Json -SchemaFile $LoggingSchemaFile
+          }
+
+          $GenericSubscriptionFileFilter="*generic-subscription*.json"
+          $GenericSubscriptionSchemaFile="${{env.SCHEMA_FOLDER}}/lz-generic-subscription.json"
+
+          Get-ChildItem -Recurse -Filter $GenericSubscriptionFileFilter -Path "${{env.SUBSCRIPTIONS_PATH_FROM_ROOT}}" | ForEach-Object {
+              Write-Host "Validating: $_ with $GenericSubscriptionSchemaFile"
+              Get-Content -Raw $_ | Test-Json -SchemaFile $GenericSubscriptionSchemaFile
+          }
+
+          $MachineLearningFileFilter="*machinelearning*.json"
+          $MachineLearningSchemaFile="${{env.SCHEMA_FOLDER}}/lz-machinelearning.json"
+
+          Get-ChildItem -Recurse -Filter $MachineLearningFileFilter -Path "${{env.SUBSCRIPTIONS_PATH_FROM_ROOT}}" | ForEach-Object {
+              Write-Host "Validating: $_ with $MachineLearningSchemaFile"
+              Get-Content -Raw $_ | Test-Json -SchemaFile $MachineLearningSchemaFile
+          }
+
+          $HealthcareFileFilter="*healthcare*.json"
+          $HealthcareSchemaFile="${{env.SCHEMA_FOLDER}}/lz-healthcare.json"
+
+          Get-ChildItem -Recurse -Filter $HealthcareFileFilter -Path "${{env.SUBSCRIPTIONS_PATH_FROM_ROOT}}" | ForEach-Object {
+              Write-Host "Validating: $_ with $HealthcareSchemaFile"
+              Get-Content -Raw $_ | Test-Json -SchemaFile $HealthcareSchemaFile
+          }
+
+      - name: Validate Bicep Templates using latest version of Bicep
+        shell: bash
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+          az bicep upgrade
+          az version
+          az bicep version
+          find . -type f -name '*.bicep' | xargs -tn1 az bicep build -f 

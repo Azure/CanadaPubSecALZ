@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Databricks Name.')
 param name string
 
@@ -44,7 +47,7 @@ param loadBalancerBackendPoolName string
 resource databricks 'Microsoft.Databricks/workspaces@2018-04-01' = {
   name: name
   tags: tags
-  location: resourceGroup().location
+  location: location
   sku: {
     name: pricingTier
   }

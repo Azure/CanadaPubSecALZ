@@ -90,12 +90,15 @@
                 "TechnicalContact": "technical-contact-tag"
             }
         },
+        "logAnalyticsWorkspaceResourceId": {
+            "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
+        },
         "resourceGroups": {
             "value": {
                 "automation": "rgAutomation092021W3",
                 "networking": "rgVnet092021W3",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecovervyVault102021W1"
+                "backupRecoveryVault":"rgRecoveryVault"
             }
         },
         "automation": {
@@ -131,7 +134,7 @@
                 ],
                 "subnets": {
                     "oz": {
-                        "comments": "Foundational Elements Zone (OZ)",
+                        "comments": "App Management Zone (OZ)",
                         "name": "oz",
                         "addressPrefix": "10.2.1.0/25",
                         "nsg": {

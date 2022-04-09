@@ -11,6 +11,7 @@
 * [Required Routes](#required-routes)
 * [Azure Firewall Rules](#azure-firewall-rules)
 * [Log Analytics Integration](#log-analytics-integration)
+* [Delete Locks](#delete-locks)
 
 ## Overview
 
@@ -25,7 +26,7 @@ The recommended network design achieves the purpose of hosting [**Protected B** 
 * Hub links to a spoke MRZ Virtual Network (Management Restricted Zone) for management, security, and shared infrastructure purposes (i.e. Domain Controllers, Secure Jumpbox, Software Management, Log Relays, etc.).
 * Spokes contains RZ (Restricted Zone) for line of business workloads, including dedicated PAZ (Public Access Zone), App RZ (Restricted Zone), and Data RZ (Data Restricted Zone).
 * All ingress traffic traverses the hub's firewall, and all egress to internet routed to the firewall for complete traffic inspection for virtual machines. PaaS and Managed IaaS services will have direct communication with the Azure control plane to avoid asymmetric routing.
-* No public IPs allowed in the landing zone spokes for virtual machines. Public IPs for landing zones are only allowed in the external area network (EAN).  Azure Policy is in place to present Public IPs from being directly attached to Virtual Machines NICs.
+* No public IPs allowed in the landing zone spokes for virtual machines. Public IPs for landing zones are only allowed in the external area network (EAN).  Azure Policy is in place to prevent Public IPs from being directly attached to Virtual Machines NICs.
 * Spokes have network segmentation and security rules to filter East-West traffic and Spoke-to-Spoke traffic will be denied by default in the firewall.
 * Most network operations in the spokes, as well as all operations in the hub, are centrally managed by networking team.
 * In this initial design, the hub is in a single region, no BCDR plan yet.
@@ -187,17 +188,19 @@ Below are sample queries that can also be used to query Log Analytics Workspace 
 
 **Sample Firewall Logs Query**
 
-```
+```none
 AzureDiagnostics 
 | where Category contains "AzureFirewall"
 | where msg_s contains "Deny"
 | project TimeGenerated, msg_s
 | order by TimeGenerated desc
 ```
+
 ![Sample DNS Logs](../media/architecture/hubnetwork-azfw/azfw-logs-fw.jpg)
 
 **Sample DNS Logs Query**
-```
+
+```none
 AzureDiagnostics
 | where Category == "AzureFirewallDnsProxy"
 | where msg_s !contains "NOERROR"
@@ -207,7 +210,6 @@ AzureDiagnostics
 
 ![Sample DNS Logs](../media/architecture/hubnetwork-azfw/azfw-logs-dns.jpg)
 
-
 [itsg22]: https://www.cyber.gc.ca/sites/default/files/publications/itsg-22-eng.pdf
 [cloudUsageProfiles]: https://github.com/canada-ca/cloud-guardrails/blob/master/EN/00_Applicable-Scope.md
 [rfc1918]: https://tools.ietf.org/html/rfc1918
@@ -215,3 +217,14 @@ AzureDiagnostics
 [nsgAzureLoadBalancer]: https://docs.microsoft.com/azure/virtual-network/network-security-groups-overview#allowazureloadbalancerinbound
 [nsgAzureBastion]: https://docs.microsoft.com/azure/bastion/bastion-nsg#apply
 [nsgAppGatewayV2]: https://docs.microsoft.com/azure/application-gateway/configuration-infrastructure#network-security-groups
+
+## Delete Locks
+
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+
+By default, this archetype deploys `CanNotDelete` lock to prevent accidental deletion at:
+
+* Hub Virtual Network resource group
+* Management Restricted Zone resource group
+* Public Access Zone resource group
+* DDoS resource group (when enabled)

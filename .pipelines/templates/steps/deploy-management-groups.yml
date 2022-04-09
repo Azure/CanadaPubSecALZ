@@ -23,8 +23,55 @@ parameters:
 
 steps:
 
+# Modern step for deploying management group structure based on 'var-managementgroup-hierarchy' YAML variable
 - task: AzureCLI@2
-  displayName: ${{ parameters.description }}
+  condition: ne(variables['var-managementgroup-hierarchy'], '')
+  displayName: ${{ parameters.description }} (modern)
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      templateFile=structure-v2.bicep
+
+      echo "Deploying $templateFile using ${{ parameters.deployOperation }} operation"
+
+      hierarchyJson='$(var-managementgroup-hierarchy)'
+      declare -a groups=()
+      readarray -t groups < <(echo $hierarchyJson | jq -r 'recurse | [.id] + [.name] + ( .children?[] | [.id] + [.name] ) | @sh')
+
+      echo "Found ${#groups[@]} management groups to deploy in configuration file"
+
+      for group in "${groups[@]}"
+      do
+        declare -a "parts=($group)"
+        parentManagementGroupId=${parts[0]}
+        parentManagementGroupName=${parts[1]}
+        childManagementGroupId=${parts[2]}
+        childManagementGroupName=${parts[3]}
+          
+        echo "   Deploying new child management group [id=$childManagementGroupId, name=$childManagementGroupName] of parent management group [id=$parentManagementGroupId, name=$parentManagementGroupName]"
+
+        az deployment mg ${{ parameters.deployOperation }} \
+          --location $(deploymentRegion) \
+          --management-group-id $(var-parentManagementGroupId) \
+          --template-file $templateFile \
+          --parameters \
+              topLevelManagementGroupName='$(var-topLevelManagementGroupName)' \
+              parentManagementGroupId="$parentManagementGroupId" \
+              childManagementGroupId="$childManagementGroupId" \
+              childManagementGroupName="$childManagementGroupName"
+      done
+
+      $(var-bashPostInjectScript)
+    workingDirectory: '${{ parameters.workingDir }}'
+
+# Legacy step for deploying management group structure hard-coded in management-groups/structure.bicep
+- task: AzureCLI@2
+  condition: eq(variables['var-managementgroup-hierarchy'], '')
+  displayName: ${{ parameters.description }} (legacy)
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'

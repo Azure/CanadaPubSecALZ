@@ -3,7 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "policyAssignmentManagementGroupId": {
-            "value": "{{var-topLevelManagementGroupName}}"
+            "value": "{{var-policyAssignmentManagementGroupId}}"
+        },
+        "enforcementMode": {
+            "value": "Default"
         },
         "deployDiagnosticSettingsforNetworkSecurityGroupsStoragePrefix": {
             "value": "{{var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix}}"
@@ -16,6 +19,9 @@
         },
         "certificateThumbprints": {
             "value": "__tbd__implementation_specific__"
+        },
+        "requiredRetentionDays": {
+            "value": "{{var-logging-logAnalyticsRetentionInDays}}"
         }
     }
 }

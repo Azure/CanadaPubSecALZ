@@ -2,12 +2,21 @@
 
 ## Table of Contents
 
-* [Overview](#overview)
-* [Azure Deployment](#azure-deployment)
-  * [Schema Definition](#schema-definition)
-  * [Deployment Scenarios](#deployment-scenarios)
-  * [Example Deployment Parameters](#example-deployment-parameters)
-  * [Deployment Instructions](#deployment-instructions)
+- [Archetype: Generic Subscription](#archetype-generic-subscription)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Azure Deployment](#azure-deployment)
+    - [Schema Definition](#schema-definition)
+    - [Delete Locks](#delete-locks)
+    - [Deployment Scenarios](#deployment-scenarios)
+    - [Example Deployment Parameters](#example-deployment-parameters)
+  - [Recommended Parameter Property Updates](#recommended-parameter-property-updates)
+    - [Service Health Alerts](#service-health-alerts)
+    - [Security Center](#security-center)
+    - [Subscription Role Assignments](#subscription-role-assignments)
+    - [Resource Tags and Preferred Naming Convention](#resource-tags-and-preferred-naming-convention)
+    - [Hub Virtual Network ID](#hub-virtual-network-id)
+    - [Deployment Instructions](#deployment-instructions)
 
 ## Overview
 
@@ -66,23 +75,34 @@ Reference implementation uses parameter files with `object` parameters to consol
   * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-generic-subscription.json)
 
   * Common types
+    * [Location](../../schemas/latest/landingzones/types/location.json)
     * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
     * [Microsoft Defender for Cloud](../../schemas/latest/landingzones/types/securityCenter.json)
     * [Subscription Role Assignments](../../schemas/latest/landingzones/types/subscriptionRoleAssignments.json)
     * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
     * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
     * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
+    * [Log Analytics Workspace](../../schemas/latest/landingzones/types/logAnalyticsWorkspaceId.json)
 
   * Spoke types
     * [Automation](../../schemas/latest/landingzones/types/automation.json)
     * [Backup Recovery Vault](../../schemas/latest/landingzones/types/backupRecoveryVault.json)
     * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
 
+### Delete Locks
+
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+
+**This archetype does not use `CanNotDelete` nor `ReadOnly` locks as part of the deployment.  You may customize the deployment templates when it's required for your environment.**
+
 ### Deployment Scenarios
+
+> Sample deployment scenarios are based on the latest JSON parameters file schema definition.  If you have an older version of this repository, please use the examples from your repository.
 
 | Scenario | Example JSON Parameters | Notes |
 |:-------- |:----------------------- |:----- |
 | Deployment with Hub Virtual Network | [tests/schemas/lz-generic-subscription/FullDeployment-With-Hub.json](../../tests/schemas/lz-generic-subscription/FullDeployment-With-Hub.json) | - |
+| Deployment with Location | [tests/schemas/lz-generic-subscription/FullDeployment-With-Location.json](../../tests/schemas/lz-generic-subscription/FullDeployment-With-Location.json) | `parameters.location.value` is `canadacentral` |
 | Deployment without Hub Virtual Network | [tests/schemas/lz-generic-subscription/FullDeployment-Without-Hub.json](../../tests/schemas/lz-generic-subscription/FullDeployment-Without-Hub.json) | `parameters.hubNetwork.value.*` fields are empty & `parameters.network.value.peerToHubVirtualNetwork` is false. |
 | Deployment with subscription budget | [tests/schemas/lz-generic-subscription/BudgetIsTrue.json](../../tests/schemas/lz-generic-subscription/BudgetIsTrue.json) | `parameters.subscriptionBudget.value.createBudget` is set to `true` and budget information filled in. |
 | Deployment without subscription budget | [tests/schemas/lz-generic-subscription/BudgetIsFalse.json](../../tests/schemas/lz-generic-subscription/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
@@ -104,9 +124,10 @@ This example configures:
 4. Subscription Budget with $1000
 5. Subscription Tags
 6. Resource Tags (aligned to the default tags defined in [Policies](../../policy/custom/definitions/policyset/Tags.parameters.json))
-7. Automation Account
-8. Backup Recovery Vault
-9. Spoke Virtual Network with Hub-managed DNS, Virtual Network Peering, 4 required subnets (zones) and 1 additional subnet `web`.
+7. Log Analytics Workspace integration through Azure Defender for Cloud
+8. Automation Account
+9. Backup Recovery Vault
+10. Spoke Virtual Network with Hub-managed DNS, Virtual Network Peering, 4 required subnets (zones) and 1 additional subnet `web`.
 
 
 ```json
@@ -114,6 +135,9 @@ This example configures:
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "location": {
+            "value": "canadacentral"
+        },
         "serviceHealthAlerts": {
             "value": {
                 "resourceGroupName": "pubsec-service-health",
@@ -202,12 +226,15 @@ This example configures:
                 "TechnicalContact": "technical-contact-tag"
             }
         },
+        "logAnalyticsWorkspaceResourceId": {
+            "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
+        },
         "resourceGroups": {
             "value": {
-                "automation": "rgAutomation092021W3",
-                "networking": "rgVnet092021W3",
+                "automation": "rgAutomation",
+                "networking": "rgVnet",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecovervyVault102021W1"
+                "backupRecoveryVault":"rgRecoveryVault"
             }
         },
         "automation": {
@@ -243,7 +270,7 @@ This example configures:
                 ],
                 "subnets": {
                     "oz": {
-                        "comments": "Foundational Elements Zone (OZ)",
+                        "comments": "App Management Zone (OZ)",
                         "name": "oz",
                         "addressPrefix": "10.2.1.0/25",
                         "nsg": {
@@ -309,33 +336,56 @@ This example configures:
 }
 ```
 
+## Recommended Parameter Property Updates
+
+### Service Health Alerts
+
+Update the **serviceHealthAlerts** properties with specific email addresses and phone numbers as required.
+
+![Generic Subscription: Service Health Alerts](../../docs/media/archetypes/service-health-alerts-receivers.jpg)
+
+### Security Center
+
+Change the **securityCenter** properties with specific email and address values to reflect your actual point of contact.
+
+![Generic Subscription: Security Center](../../docs/media/archetypes/security-center-contact-info.jpg)
+
+### Subscription Role Assignments
+
+Modify the two **subscriptionRoleAssignments** properties with your specific unique object ids of the respective groups for the **Contributor** built-in
+and **Custom Role: Landing Zone Application Owner** roles for this landing zone subscription. These assignments are optional and can be 0 or more role assignments using either Built-In or Custom roles and security groups.
+
+![Generic Subscription: Subscription Role Assignments](../../docs/media/archetypes/subscription-role-assignments.jpg)
+
+### Resource Tags and Preferred Naming Convention
+
+1. Specify the desired custom values for the **resourceTags** properties.
+You may also include any additional name value pairs of tags required. Generally, these tags can be modified and even replaced as required, and should also align to the Tagging policy set paramters at: [Tag Policy](https://github.com/Azure/CanadaPubSecALZ/blob/main/policy/custom/definitions/policyset/Tags.parameters.json).
+
+2. Addtionally, you can customize default resources and resource group names with any specific preferred naming convention, as indicated by the item **2** circles shown below.
+   
+
+![Generic Subscription: Tags and Naming Conventions](../../docs/media/archetypes/resource-tags-and-naming-conventions.jpg)
+
+### Hub Virtual Network ID
+
+**IMPORTANT**
+
+To avoid a failure when running any of the connectivity pipelines, the subscriptionId segment value of the **hubNetwork** string (item **1**), must be updated from it's default value to the specific hubNetwork subscriptionId that was actually deployed previously, so that the virtual network in this spoke subscription can be VNET Peered to the Hub Network.
+
+![Generic Subscription: Hub Virtual Network ID](../../docs/media/archetypes/virtual-network-id.jpg)
+
+The rest of the segments for the **virtualNetworkId** string must also match the actual resources that were deployed from the connectivity pipeline, such as the name of the resource group,
+in case a different prefix besides **pubsec** was used to conform to a specific and preferred naming convention or organization prefix (item **2**), or the default VNET name of hub-vnet was also changed to something else,
+(**item 3**) - again based on a specific and preferred naming convention that may have been used before when the actual hub VNET was deployed.
+
+> Each subnet in the spoke virtual network has its own User Defined Route (UDR).  This allows for scenarios in which subnets can have different routing rules. It is possible for a single User Defined Route to be associated with many spoke subnets by customizing the automation code.
 ### Deployment Instructions
 
-> Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Generic Subscription.
+### Virtual Appliance IP
+To ensure traffic is routed/filtered via the firewall, please validate or update the "egressVirtualApplianceIp" value to the firewall IP in your environment: 
+  - For Azure Firewall, use the firewall IP address
+  - For Network Virtual Appliances (i.e. Fortigate firewalls), use the internal load-balancer IP (item **1**)
+![Generic Subscription:Egress Virtual Appliance IP](../../docs/media/archetypes/egressvirtualApplianceIP.jpg)
 
-Parameter files for archetype deployment are configured in [config/subscription folder](../../config/subscriptions).  The directory hierarchy is comprised of the following elements, from this directory downward:
-
-1. A environment directory named for the Azure DevOps Org and Git Repo branch name, e.g. 'CanadaESLZ-main'.
-2. The management group hierarchy defined for your environment, e.g. pubsec/Platform/LandingZone/Prod. The location of the config file represents which Management Group the subscription is a member of.
-
-For example, if your Azure DevOps organization name is 'CanadaESLZ', you have two Git Repo branches named 'main' and 'dev', and you have top level management group named 'pubsec' with the standard structure, then your path structure would look like this:
-
-```
-/config/subscriptions
-    /CanadaESLZ-main           <- Your environment, e.g. CanadaESLZ-main, CanadaESLZ-dev, etc.
-        /pubsec                <- Your top level management root group name
-            /LandingZones
-                /Prod
-                    /xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx_generic-subscription.json
-```
-
-The JSON config file name is in one of the following two formats:
-
-- [AzureSubscriptionGUID]\_[TemplateName].json
-- [AzureSubscriptionGUID]\_[TemplateName]\_[DeploymentLocation].json
-
-The subscription GUID is needed by the pipeline; since it's not available in the file contents, it is specified in the config file name.
-
-The template name/type is a text fragment corresponding to a path name (or part of a path name) under the '/landingzones' top level path. It indicates which Bicep templates to run on the subscription. For example, the generic subscription path is `/landingzones/lz-generic-subscription`, so we remove the `lz-` prefix and use `generic-subscription` to specify this type of landing zone.
-
-The deployment location is the short name of an Azure deployment location, which may be used to override the `deploymentRegion` YAML variable. The allowable values for this value can be determined by looking at the `Name` column output of the command: `az account list-locations -o table`.
+Please see [archetype authoring guide for deployment instructions](authoring-guide.md#deployment-instructions).

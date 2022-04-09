@@ -21,74 +21,50 @@
 #         currently executing pipeline.
 
 variables:
+
   # Management Groups
-  var-parentManagementGroupId: 80fabd0e-d9f9-4261-97f0-37b9244e12c1
-  var-topLevelManagementGroupName: pubsec
+  var-managementgroup-hierarchy: >
+    {
+      "name": "Tenant Root Group",
+      "id": "80fabd0e-d9f9-4261-97f0-37b9244e12c1",
+      "children": [
+        {
+          "name": "Azure Landing Zones for Canadian Public Sector",
+          "id": "pubsec",
+          "children": [
+            {
+              "name": "Platform", "id": "pubsecPlatform",
+              "children": [
+                { "name": "Identity", "id": "pubsecPlatformIdentity", "children": [] },
+                { "name": "Connectivity", "id": "pubsecPlatformConnectivity", "children": [] },
+                { "name": "Management", "id": "pubsecPlatformManagement", "children": [] }
+              ]
+            },
+            {
+              "name": "LandingZones", "id": "pubsecLandingZones",
+              "children": [
+                { "name": "DevTest", "id": "pubsecLandingZonesDevTest", "children": [] },
+                { "name": "QA", "id": "pubsecLandingZonesQA", "children": [] },
+                { "name": "Prod", "id": "pubsecLandingZonesProd", "children": [] }
+              ]
+            },
+            {
+              "name": "Sandbox", "id": "pubsecSandbox",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
 
   # Logging
+  var-logging-region: $(deploymentRegion)
   var-logging-managementGroupId: pubsecPlatformManagement
   var-logging-subscriptionId: 1a7025c7-f492-4eb9-9cf6-12c7889e4dfd
-  var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
-  var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
-  var-logging-logAnalyticsRetentionInDays: 730
-  var-logging-logAnalyticsAutomationAccountName: automation-account
+  var-logging-configurationFileName: logging.parameters.json
+  
+  ## This parameter is only used for HIPAA/HITRUST Policy Assignment
   var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
-  var-logging-serviceHealthAlerts: >
-    {
-      "resourceGroupName": "pubsec-service-health",
-      "incidentTypes": [ "Incident", "Security" ],
-      "regions": [ "Global", "Canada East", "Canada Central" ],
-      "receivers": {
-          "app": [ "skeeler@m365incanada.onmicrosoft.com" ],
-          "email": [ "skeeler@m365incanada.onmicrosoft.com" ],
-          "sms": [
-              { "countryCode": "1", "phoneNumber": "5555555555" }
-          ],
-          "voice": [
-              { "countryCode": "1", "phoneNumber": "5555555555" }
-          ]
-      },
-      "actionGroupName": "ALZ action group",
-      "actionGroupShortName": "alz-alert",
-      "alertRuleName": "ALZ alert rule",
-      "alertRuleDescription": "Alert rule for Azure Landing Zone"
-    }
-  var-logging-securityCenter: >
-    {
-      "email": "skeeler@m365incanada.onmicrosoft.com",
-      "phone": "5555555555"
-    }
-  var-logging-subscriptionRoleAssignments: >
-    [
-      {
-          "comments": "Built-in Contributor Role",
-          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-          "securityGroupObjectIds": [
-              "ae712826-a993-4819-a167-4045d965b5a5"
-          ]
-      }
-    ]
-  var-logging-subscriptionBudget: >
-    {
-      "createBudget": false,
-      "name": "MonthlySubscriptionBudget",
-      "amount": 1000,
-      "timeGrain": "Monthly",
-      "contactEmails": [ "skeeler@m365incanada.onmicrosoft.com" ]
-    }
-  var-logging-subscriptionTags: >
-    {
-      "ISSO": "isso-tbd"
-    }
-  var-logging-resourceTags: >
-    {
-      "ClientOrganization": "client-organization-tag",
-      "CostCenter": "cost-center-tag",
-      "DataSensitivity": "data-sensitivity-tag",
-      "ProjectContact": "project-contact-tag",
-      "ProjectName": "project-name-tag",
-      "TechnicalContact": "technical-contact-tag"
-    }
 
   # Hub Networking
   var-hubnetwork-managementGroupId: pubsecPlatformConnectivity

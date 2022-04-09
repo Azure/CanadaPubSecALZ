@@ -9,6 +9,9 @@
 
 targetScope = 'subscription'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 /*
 
 For accepted parameter values, see:
@@ -65,6 +68,10 @@ param keyVault object
 @description('Azure Kubernetes Service configuration.  Includes version.')
 param aks object
 
+// Azure App Service
+@description('Azure App Service Linux Container configuration.')
+param appServiceLinuxContainer object
+
 // SQL Database
 @description('SQL Database configuration.  Includes enabled flag and username.')
 param sqldb object
@@ -82,7 +89,7 @@ param aml object
 param hubNetwork object
 
 // Example (JSON)
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks) ')
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, appService) ')
 param network object
 
 // Telemetry - Azure customer usage attribution
@@ -106,6 +113,8 @@ module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
   scope: subscription()
   params: {
+    location: location
+
     serviceHealthAlerts: serviceHealthAlerts
     subscriptionRoleAssignments: subscriptionRoleAssignments
     subscriptionBudget: subscriptionBudget
@@ -123,6 +132,8 @@ module landingZone 'lz.bicep' = {
   name: 'deploy-machinelearning-archetype'
   scope: subscription()
   params: {
+    location: location
+
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
     securityContactEmail: securityCenter.email
@@ -135,6 +146,7 @@ module landingZone 'lz.bicep' = {
     automation: automation
     keyVault: keyVault
     aks: aks
+    appServiceLinuxContainer: appServiceLinuxContainer
     sqldb: sqldb
     sqlmi: sqlmi
     aml: aml

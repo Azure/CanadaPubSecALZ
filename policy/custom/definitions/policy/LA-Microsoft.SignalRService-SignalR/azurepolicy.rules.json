@@ -1,0 +1,126 @@
+{
+  "if": {
+    "allOf": [
+      {
+        "field": "type",
+        "equals": "Microsoft.SignalRService/SignalR"
+      },
+      {
+        "field": "location",
+        "in": "[parameters('AzureRegions')]"
+      },
+      {
+        "field": "kind",
+        "equals": "SignalR"
+      }
+    ]
+  },
+  "then": {
+    "effect": "deployIfNotExists",
+    "details": {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "existenceCondition": {
+        "allOf": [
+          {
+            "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+            "equals": "[parameters('LogsEnabled')]"
+          },
+          {
+            "field": "Microsoft.Insights/diagnosticSettings/metrics.enabled",
+            "equals": "[parameters('MetricsEnabled')]"
+          },
+          {
+            "field": "Microsoft.Insights/diagnosticSettings/workspaceId",
+            "equals": "[parameters('logAnalytics')]"
+          }
+        ]
+      },
+      "roleDefinitionIds": [
+        "/providers/Microsoft.Authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
+      ],
+      "deployment": {
+        "properties": {
+          "mode": "incremental",
+          "template": {
+            "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+              "name": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              },
+              "logAnalytics": {
+                "type": "string"
+              },
+              "metricsEnabled": {
+                "type": "string"
+              },
+              "logsEnabled": {
+                "type": "string"
+              },
+              "profileName": {
+                "type": "string"
+              }
+            },
+            "variables": {},
+            "resources": [
+              {
+                "type": "Microsoft.SignalRService/SignalR/providers/diagnosticSettings",
+                "apiVersion": "2017-05-01-preview",
+                "name": "[concat(parameters('name'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
+                "location": "[parameters('location')]",
+                "properties": {
+                  "workspaceId": "[parameters('logAnalytics')]",
+                  "metrics": [
+                    {
+                      "category": "AllMetrics",
+                      "enabled": "[parameters('metricsEnabled')]",
+                      "retentionPolicy": {
+                        "enabled": false,
+                        "days": 0
+                      }
+                    }
+                  ],
+                  "logs": [
+                    {
+                      "category": "AllLogs",
+                      "enabled": "[parameters('logsEnabled')]"
+                    }
+                  ]
+                }
+              }
+            ],
+            "outputs": {
+              "policy": {
+                "type": "string",
+                "value": "[concat(parameters('logAnalytics'), 'configured for diagnostic logs for ', ': ', parameters('name'))]"
+              }
+            }
+          },
+          "parameters": {
+            "logAnalytics": {
+              "value": "[parameters('logAnalytics')]"
+            },
+            "location": {
+              "value": "[field('location')]"
+            },
+            "name": {
+              "value": "[field('name')]"
+            },
+            "metricsEnabled": {
+              "value": "[parameters('metricsEnabled')]"
+            },
+            "logsEnabled": {
+              "value": "[parameters('logsEnabled')]"
+            },
+            "profileName": {
+              "value": "[parameters('profileName')]"
+            }
+          }
+        }
+      }
+    }
+  }
+}

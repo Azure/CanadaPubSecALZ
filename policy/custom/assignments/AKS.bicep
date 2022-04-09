@@ -9,11 +9,21 @@
 
 targetScope = 'managementGroup'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 @description('Management Group scope for the policy definition.')
 param policyDefinitionManagementGroupId string
 
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
+
+@allowed([
+  'Default'
+  'DoNotEnforce'
+])
+@description('Policy set assignment enforcement mode.  Possible values are { Default, DoNotEnforce }.  Default value:  Default')
+param enforcementMode string = 'Default'
 
 var policyId = 'custom-aks'
 var assignmentName = 'Custom - Azure Kubernetes Service'
@@ -36,12 +46,12 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
     scope: scope
     notScopes: []
     parameters: {}
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }
 
 resource podSecurityRestrictedStandardsPolicySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
@@ -52,12 +62,12 @@ resource podSecurityRestrictedStandardsPolicySetAssignment 'Microsoft.Authorizat
     scope: scope
     notScopes: []
     parameters: {}
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }
 
 resource podSecurityBaselineStandardsPolicySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
@@ -68,12 +78,12 @@ resource podSecurityBaselineStandardsPolicySetAssignment 'Microsoft.Authorizatio
     scope: scope
     notScopes: []
     parameters: {}
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }
 
 // These role assignments are required to allow Policy Assignment to remediate.

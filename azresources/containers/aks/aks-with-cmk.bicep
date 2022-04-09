@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Kubernetes Service Name.')
 param name string
 
@@ -99,6 +102,7 @@ var networkProfile =  {
   dnsServiceIP: dnsServiceIP
   dockerBridgeCidr: dockerBridgeCidr
   networkPolicy: networkPolicy
+  outboundType: 'userDefinedRouting'
 }
 
 resource akv 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
@@ -117,7 +121,7 @@ module akvKey '../../security/key-vault-key-rsa2048.bicep' = {
 
 resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2020-12-01' = {
   name: '${name}-disk-encryption-set'
-  location: resourceGroup().location
+  location: location
   identity: {
       type: 'SystemAssigned'
   }
@@ -147,7 +151,7 @@ resource aks 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
   ]
 
   name: name
-  location: resourceGroup().location
+  location: location
   tags: tags
   properties: {
     nodeResourceGroup: nodeResourceGroupName

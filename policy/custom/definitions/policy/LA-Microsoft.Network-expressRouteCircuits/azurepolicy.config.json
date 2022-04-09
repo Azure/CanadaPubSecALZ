@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Express Route Circuit to Log Analytics Workspaces",
+    "mode": "indexed"
+}

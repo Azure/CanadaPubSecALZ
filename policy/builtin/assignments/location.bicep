@@ -9,8 +9,18 @@
 
 targetScope = 'managementGroup'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
+
+@allowed([
+  'Default'
+  'DoNotEnforce'
+])
+@description('Policy set assignment enforcement mode.  Possible values are { Default, DoNotEnforce }.  Default value:  Default')
+param enforcementMode string = 'Default'
 
 @description('An array of allowed Azure Regions.')
 param allowedLocations array
@@ -36,9 +46,9 @@ resource rgLocationAssignment 'Microsoft.Authorization/policyAssignments@2020-03
         value: allowedLocations
       }
     }
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
-  location: deployment().location
+  location: location
 }
 
 resource resourceLocationAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
@@ -53,7 +63,7 @@ resource resourceLocationAssignment 'Microsoft.Authorization/policyAssignments@2
         value: allowedLocations
       }
     }
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
-  location: deployment().location
+  location: location
 }

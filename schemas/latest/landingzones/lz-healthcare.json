@@ -34,6 +34,9 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "location": {
+          "$ref": "types/location.json#/definitions/Location"
+        },
         "serviceHealthAlerts": {
           "$ref": "types/serviceHealthAlerts.json#/definitions/ServiceHealthAlerts"
         },
@@ -51,6 +54,9 @@
         },
         "resourceTags": {
           "$ref": "types/resourceTags.json#/definitions/ResourceTags"
+        },
+        "logAnalyticsWorkspaceResourceId": {
+          "$ref": "types/logAnalyticsWorkspaceId.json#/definitions/LogAnalyticsWorkspaceId"
         },
         "useCMK": {
           "$ref": "#/definitions/UseCMK"

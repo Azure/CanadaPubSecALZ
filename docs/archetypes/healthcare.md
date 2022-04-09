@@ -12,6 +12,7 @@
 * [Testing](#testing)
 * [Azure Deployment](#azure-deployment)
   * [Schema Definition](#schema-definition)
+  * [Delete Locks](#delete-locks)
   * [Deployment Scenarios](#deployment-scenarios)
   * [Example Deployment Parameters](#example-deployment-parameters)
   * [Deployment Instructions](#deployment-instructions)
@@ -26,13 +27,13 @@ Azure Policies are used to provide governance, compliance and protection while e
 
 **CloudOps team will be required for**
 
-1.	Establishing connectivity to Hub virtual network (required for egress traffic flow & Azure Bastion).
-2.	Creating App Registrations (required for service principal accounts).  This is optional based on whether App Registrations are disabled for all users or not.
+1.  Establishing connectivity to Hub virtual network (required for egress traffic flow & Azure Bastion).
+2.  Creating App Registrations (required for service principal accounts).  This is optional based on whether App Registrations are disabled for all users or not.
 
 **Workflow**
 
-*	A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
-*	The subscription will automatically be assigned to the **pubsecSandbox** management group.
+*  A new subscription is created through existing process (either via ea.azure.com or Azure Portal).
+*  The subscription will automatically be assigned to the **pubsecSandbox** management group.
 * CloudOps will create a Service Principal Account (via App Registration) that will be used for future DevOps automation.
 * CloudOps will scaffold the subscription with baseline configuration.
 * CloudOps will hand over the subscription to requesting team.
@@ -92,14 +93,14 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 
 The intended cloud service workflows and data movements for this archetype include:
 
-1.	Data can be ingested from data sources using Data Factory with managed virtual network for its Azure hosted integration runtime
-2.	Streaming data can be ingested using Event Hub and Stream Analytics
-3.	The data would be stored in Azure Data Lake Gen 2.
-4.	Healthcare providers can connect to existing data sources with FHIR API.
-5.	Data engineering and transformation tasks can be done with Spark using Azure Databricks. Transformed data would be stored back in the data lake.
-6.	End to end analytics and data warehousing can be done with Azure Synapse Analytics.
-7.	Machine learning would be done using Azure Machine Learning.
-8.	Monitoring and logging would be through Application Insights.
+1.  Data can be ingested from data sources using Data Factory with managed virtual network for its Azure hosted integration runtime
+2.  Streaming data can be ingested using Event Hub and Stream Analytics
+3.  The data would be stored in Azure Data Lake Gen 2.
+4.  Healthcare providers can connect to existing data sources with FHIR API.
+5.  Data engineering and transformation tasks can be done with Spark using Azure Databricks. Transformed data would be stored back in the data lake.
+6.  End to end analytics and data warehousing can be done with Azure Synapse Analytics.
+7.  Machine learning would be done using Azure Machine Learning.
+8.  Monitoring and logging would be through Application Insights.
 
 ## Access Control
 
@@ -123,7 +124,7 @@ Once the machine learning archetype is deployed and available to use, access con
 | Azure Key Vault | Network ACL Deny | Private endpoint on `vault` + DNS registration to either hub or spoke | `privateEndpoints`|
 | SQL Database | Deny public network access | Private endpoint on `sqlserver` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Data Lake Gen 2 | Network ACL deny | Private endpoint on `blob`, `dfs` + DNS registration to either hub or spoke | `privateEndpoints`|
-| Synapse | Disabled public network access; managed virtual network | *	Managed Private Endpoints & Synapse Studio Private Link Hub. Private endpoint DNS registration. | `privateEndpoints` |
+| Synapse | Disabled public network access; managed virtual network | *  Managed Private Endpoints & Synapse Studio Private Link Hub. Private endpoint DNS registration. | `privateEndpoints` |
 | Azure Databricks | No public IP enabled (secure cluster connectivity), load balancer for egress with IP and outbound rules, virtual network ibjection | N/A |  `databricksPrivate`, `databricksPublic`|
 | Azure Machine Learning | No public workspace access | Private endpoint on `amlWorkspace` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Storage Account for Azure ML | Network ACL deny | Private endpoint on `blob`, `file` + DNS registration to either hub or spoke | `privateEndpoints`|
@@ -184,13 +185,13 @@ The scripts are:
     * Upload some data to the default ADLS Gen 2 of Synapse
     * Run the integration tests for Synapse SQL Serverless Pool
   * Spark pool connectivity to data lake
-    *	Ensure the user has storage blob data contributor role for the data lake
-    *	Upload some data to the default ADLS Gen 2 of Synapse
-    *	Run the integration tests for Synapse Spark Pool
+    *  Ensure the user has storage blob data contributor role for the data lake
+    *  Upload some data to the default ADLS Gen 2 of Synapse
+    *  Run the integration tests for Synapse Spark Pool
   * Dedicated SQL (SQL Data warehouse)
-    *	Ensure the user identity has a SQL Login (e.g. the admin user could be assigned the SQL AD admin)
-    *	Upload some data to the default ADLS Gen 2 of Synapse
-    *	Run the integration tests for Synapse SQL Dedicated Pool (DW)
+    *  Ensure the user identity has a SQL Login (e.g. the admin user could be assigned the SQL AD admin)
+    *  Upload some data to the default ADLS Gen 2 of Synapse
+    *  Run the integration tests for Synapse SQL Dedicated Pool (DW)
 
 ### Test Scenarios
 
@@ -233,12 +234,14 @@ Reference implementation uses parameter files with `object` parameters to consol
   * [Spoke deployment parameters definition](../../schemas/latest/landingzones/lz-healthcare.json)
 
   * Common types
+    * [Location](../../schemas/latest/landingzones/types/location.json)
     * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
     * [Microsoft Defender for Cloud](../../schemas/latest/landingzones/types/securityCenter.json)
     * [Subscription Role Assignments](../../schemas/latest/landingzones/types/subscriptionRoleAssignments.json)
     * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
     * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
     * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
+    * [Log Analytics Workspace](../../schemas/latest/landingzones/types/logAnalyticsWorkspaceId.json)
   * Spoke types
     * [Automation](../../schemas/latest/landingzones/types/automation.json)
     * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
@@ -246,11 +249,20 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Azure SQL Database](../../schemas/latest/landingzones/types/sqldb.json)
     * [Azure Synapse Analytics](../../schemas/latest/landingzones/types/synapse.json)
 
+### Delete Locks
+
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+
+**This archetype does not use `CanNotDelete` nor `ReadOnly` locks as part of the deployment.  You may customize the deployment templates when it's required for your environment.**
+
 ### Deployment Scenarios
+
+> Sample deployment scenarios are based on the latest JSON parameters file schema definition.  If you have an older version of this repository, please use the examples from your repository.
 
 | Scenario | Example JSON Parameters | Notes |
 |:-------- |:----------------------- |:----- |
 | Deployment with Hub Virtual Network | [tests/schemas/lz-healthcare/FullDeployment-With-Hub.json](../../tests/schemas/lz-healthcare/FullDeployment-With-Hub.json) | - |
+| Deployment with Location | [tests/schemas/lz-healthcare/FullDeployment-With-Location.json](../../tests/schemas/lz-healthcare/FullDeployment-With-Location.json) | `parameters.location.value` is `canadacentral` |
 | Deployment without Hub Virtual Network | [tests/schemas/lz-healthcare/FullDeployment-Without-Hub.json](../../tests/schemas/lz-healthcare/FullDeployment-Without-Hub.json) | `parameters.hubNetwork.value.*` fields are empty & `parameters.network.value.peerToHubVirtualNetwork` is false. |
 | Deployment with subscription budget | [tests/schemas/lz-healthcare/BudgetIsTrue.json](../../tests/schemas/lz-healthcare/BudgetIsTrue.json) | `parameters.subscriptionBudget.value.createBudget` is set to `true` and budget information filled in. |
 | Deployment without subscription budget | [tests/schemas/lz-healthcare/BudgetIsFalse.json](../../tests/schemas/lz-healthcare/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
@@ -272,9 +284,10 @@ This example configures:
 4. Subscription Budget with $1000
 5. Subscription Tags
 6. Resource Tags (aligned to the default tags defined in [Policies](../../policy/custom/definitions/policyset/Tags.parameters.json))
-7. Automation Account
-8. Spoke Virtual Network with Hub-managed DNS, Hub-managed private endpoint DNS Zones, Virtual Network Peering and all required subnets (zones).
-9. Deploys Azure resources with Customer Managed Keys.
+7. Log Analytics Workspace integration through Azure Defender for Cloud
+8. Automation Account
+9. Spoke Virtual Network with Hub-managed DNS, Hub-managed private endpoint DNS Zones, Virtual Network Peering and all required subnets (zones).
+10. Deploys Azure resources with Customer Managed Keys.
 
 > **Note 1:**  Azure Automation Account is not deployed with Customer Managed Key as it requires an Azure Key Vault instance with public network access.
 
@@ -352,6 +365,9 @@ This example configures:
                 "TechnicalContact": "technical-contact-tag"
             }
         },
+        "logAnalyticsWorkspaceResourceId": {
+            "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
+        },
         "resourceGroups": {
             "value": {
                 "automation": "healthcare-Automation",
@@ -383,7 +399,7 @@ This example configures:
               "aadLoginName":"DBA Group",
               "aadLoginObjectID":"4e4ea47c-ee21-4add-ad2f-a75d0d8014e0",
               "aadLoginType":"Group"
-        	}
+          }
         },
         "synapse": {
             "value": {
@@ -414,7 +430,7 @@ This example configures:
                 ],
                 "subnets": {
                     "oz": {
-                        "comments": "Foundational Elements Zone (OZ)",
+                        "comments": "App Management Zone (OZ)",
                         "name": "oz",
                         "addressPrefix": "10.5.1.0/25"
                     },
@@ -462,31 +478,4 @@ This example configures:
 
 ### Deployment Instructions
 
-> Use the [Onboarding Guide for Azure DevOps](../onboarding/ado.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Healthcare.
-
-Parameter files for archetype deployment are configured in [config/subscription folder](../../config/subscriptions).  The directory hierarchy is comprised of the following elements, from this directory downward:
-
-1. A environment directory named for the Azure DevOps Org and Git Repo branch name, e.g. 'CanadaESLZ-main'.
-2. The management group hierarchy defined for your environment, e.g. pubsec/Platform/LandingZone/Prod. The location of the config file represents which Management Group the subscription is a member of.
-
-For example, if your Azure DevOps organization name is 'CanadaESLZ', you have two Git Repo branches named 'main' and 'dev', and you have top level management group named 'pubsec' with the standard structure, then your path structure would look like this:
-
-```
-/config/subscriptions
-    /CanadaESLZ-main           <- Your environment, e.g. CanadaESLZ-main, CanadaESLZ-dev, etc.
-        /pubsec                <- Your top level management root group name
-            /LandingZones
-                /Prod
-                    /xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx_healthcare.json
-```
-
-The JSON config file name is in one of the following two formats:
-
-- [AzureSubscriptionGUID]\_[TemplateName].json
-- [AzureSubscriptionGUID]\_[TemplateName]\_[DeploymentLocation].json
-
-The subscription GUID is needed by the pipeline; since it's not available in the file contents, it is specified in the config file name.
-
-The template name/type is a text fragment corresponding to a path name (or part of a path name) under the '/landingzones' top level path. It indicates which Bicep templates to run on the subscription. For example, the machine learning path is `/landingzones/lz-healthcare`, so we remove the `lz-` prefix and use `healthcare` to specify this type of landing zone.
-
-The deployment location is the short name of an Azure deployment location, which may be used to override the `deploymentRegion` YAML variable. The allowable values for this value can be determined by looking at the `Name` column output of the command: `az account list-locations -o table`.
+Please see [archetype authoring guide for deployment instructions](authoring-guide.md#deployment-instructions).

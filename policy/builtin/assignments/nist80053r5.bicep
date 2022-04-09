@@ -9,8 +9,18 @@
 
 targetScope = 'managementGroup'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
+
+@allowed([
+  'Default'
+  'DoNotEnforce'
+])
+@description('Policy set assignment enforcement mode.  Possible values are { Default, DoNotEnforce }.  Default value:  Default')
+param enforcementMode string = 'Default'
 
 @description('Log Analytics Workspace Data Retention in days.')
 param requiredRetentionDays string
@@ -41,12 +51,12 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
         value: requiredRetentionDays
       }
     }
-    enforcementMode: 'Default'
+    enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }
 
 // These role assignments are required to allow Policy Assignment to remediate.

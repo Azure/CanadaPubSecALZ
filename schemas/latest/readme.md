@@ -2,6 +2,75 @@
 
 ## Landing Zone Schemas
 
+### April 7, 2022
+
+Schema definition for Logging archetype.  See [documentation](../../docs/archetypes/logging.md).
+
+### April 6, 2022
+
+Added `logAnalyticsWorkspaceResourceId` to archetypes.  This is an optional parameter in the JSON file as it can be set at runtime.
+
+**Example**
+
+```json
+    "logAnalyticsWorkspaceResourceId": {
+        "value": "LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
+    }
+```
+
+### February 14, 2022
+
+Added location schema object.  This is an optional setting for archetypes.  This setting will default to `deployment().location`.
+
+**Example**
+
+```json
+    "location": {
+        "value": "canadacentral"
+    }
+```
+
+### January 16, 2021
+Changed `appServiceLinuxContainer` schema object to support optional inbound private endpoint.
+
+**Example**
+```json
+"appServiceLinuxContainer": {
+  "value": {
+    "enablePrivateEndpoint": true
+  }
+}
+```
+
+### December 30, 2021
+
+Changed `aks` schema object to support optional deployment of AKS using the `enabled` key as a required field.
+
+**Example**
+```json
+"aks": {
+  "value": {
+    "enabled": true
+  }
+}
+```
+
+Added `appServiceLinuxContainer` schema object to support optional deployment of App Service (for model deployments) using the `enabled` key as a required field. Sku name and tier are also required fields.
+
+**Example**
+```json
+"appServiceLinuxContainer": {
+  "value": {
+    "enabled": true,
+    "skuName": "P1V2",
+    "skuTier": "Premium"
+  }
+}
+```
+
+Added required `appService` subnet as well as the `appServiceLinuxContainer` object in machine learning schema json file.
+
+
 ### November 27, 2021
 
 Change in `aks` schema object to support Options for the creation of AKS Cluster with one of the following three scenarios:

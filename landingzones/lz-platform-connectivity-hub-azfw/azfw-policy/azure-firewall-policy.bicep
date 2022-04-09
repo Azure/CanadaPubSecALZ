@@ -3,12 +3,15 @@
 // EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Firewall Policy Name')
 param name string
 
 resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
   name: name
-  location: resourceGroup().location
+  location: location
   properties: {
     sku: {
       tier: 'Premium'
@@ -760,10 +763,133 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
     }
   }
 
+  // AKS required FQDNs 
+  // https://docs.microsoft.com/en-us/azure/aks/limit-egress-traffic
+  resource AKSCollectionGroup 'ruleCollectionGroups@2021-02-01' = {
+    dependsOn: [
+      windowsCollectionGroup
+    ]
+    name: 'Aks'
+    properties: {
+      priority: 1200
+      ruleCollections: [
+        {
+          ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+          name: 'Ubuntu NTP'
+          action: {
+            type: 'Allow'
+          }
+          priority: 100
+          rules: [
+            {
+              ruleType: 'NetworkRule'
+              name: 'Ubuntu NTP - FQDN'
+              destinationAddresses: [
+                'ntp.ubuntu.com'
+              ]
+              destinationPorts: [
+                '123'
+              ]
+              ipProtocols: [
+                'UDP'
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+            }
+          ]
+        }
+        {
+          ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+          name: 'AKS Azure Global required FQDNs'
+          action: {
+            type: 'Allow'
+          }
+          priority: 150
+          rules: [
+            {
+              ruleType: 'ApplicationRule'
+              name: 'AKS required FQDNs'
+              targetFqdns: [
+                '*.hcp.canadacentral.azmk8s.io'
+                'mcr.microsoft.com'
+                '*.data.mcr.microsoft.com'
+                'management.azure.com'
+                'login.microsoftonline.com'
+                'packages.microsoft.com'
+                'acs-mirror.azureedge.net'
+                'canadacentral.dp.kubernetesconfiguration.azure.com'
+                'canadaeast.dp.kubernetesconfiguration.azure.com'
+              ]
+              protocols: [
+                {
+                  port: 443
+                  protocolType: 'Https'
+                }
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+            }
+            {
+              ruleType: 'ApplicationRule'
+              name: 'AKS Addons required FQDNs'
+              targetFqdns: [
+                'dc.services.visualstudio.com'
+                '*.ods.opinsights.azure.com'
+                '*.oms.opinsights.azure.com'
+                '*.monitoring.azure.com'
+                'data.policy.core.windows.net'
+                'store.policy.core.windows.net'
+              ]
+              protocols: [
+                {
+                  port: 443
+                  protocolType: 'Https'
+                }
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+            }
+          ]
+        }
+        {
+          ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+          name: 'AKS Optional recommended FQDNs'
+          action: {
+            type: 'Allow'
+          }
+          priority: 200
+          rules: [
+            {
+              ruleType: 'ApplicationRule'
+              name: 'AKS Optional recommended FQDNs'
+              targetFqdns: [
+                'security.ubuntu.com'
+                'azure.archive.ubuntu.com'
+                'changelogs.ubuntu.com'
+              ]
+              protocols: [
+                {
+                  port: 80
+                  protocolType: 'Http'
+                }
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+            }
+          ]
+        }
+      ]        
+    }
+  }  
+
   // RedHat / Priority: 2000
   resource redhatCollectionGroup 'ruleCollectionGroups@2021-02-01' = {
     dependsOn: [
-      windowsCollectionGroup
+      AKSCollectionGroup
     ]
 
     name: 'RedHat'

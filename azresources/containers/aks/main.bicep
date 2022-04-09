@@ -7,8 +7,14 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Kubernetes Service Name.')
 param name string
+
+@description('Azure Kubernetes Service UDR Name.')
+param udrName string
 
 @description('Azure Kubernetes Service Version.')
 param version string
@@ -108,6 +114,7 @@ module identity '../../iam/user-assigned-identity.bicep' = {
   name: 'deploy-aks-identity'
   params: {
     name: '${name}-managed-identity'
+    location: location
   }
 }
 
@@ -132,6 +139,16 @@ module rbacNetworkContributor '../../iam/resource/virtual-network-role-assignmen
   }
 }
 
+module rbacUdrContributor '../../iam/resource/route-table-role-assignment-to-sp.bicep' = {
+  name: 'rbac-udr-contributor-${name}'
+  scope: resourceGroup(virtualNetworkResourceGroup)
+  params: {
+    udrName: udrName
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7') // Network Contributor
+    resourceSPObjectIds: array(identity.outputs.identityPrincipalId)
+  }
+}
+
 module aksWithoutCMK 'aks-without-cmk.bicep' = if (!useCMK) {
   dependsOn: [
     rbacPrivateDnsZoneContributor
@@ -142,6 +159,7 @@ module aksWithoutCMK 'aks-without-cmk.bicep' = if (!useCMK) {
   params: {
     name: name
     version: version
+    location: location
 
     userAssignedIdentityId: identity.outputs.identityId
 
@@ -189,6 +207,7 @@ module aksWithCMK 'aks-with-cmk.bicep' = if (useCMK) {
   params: {
     name: name
     version: version
+    location: location
 
     userAssignedIdentityId: identity.outputs.identityId
 

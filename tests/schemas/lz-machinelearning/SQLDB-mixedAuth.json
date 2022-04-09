@@ -92,13 +92,13 @@
     },
     "resourceGroups": {
       "value": {
-        "automation": "azmlcmk102021W1Automation",
-        "compute": "azmlcmk102021W1Compute",
-        "monitor": "azmlcmk102021W1Monitor",
-        "networking": "azmlcmk102021W1Network",
+        "automation": "azmlcmkAutomation",
+        "compute": "azmlcmkCompute",
+        "monitor": "azmlcmkMonitor",
+        "networking": "azmlcmkNetwork",
         "networkWatcher": "NetworkWatcherRG",
-        "security": "azmlcmk102021W1Security",
-        "storage": "azmlcmk102021W1Storage"
+        "security": "azmlcmkSecurity",
+        "storage": "azmlcmkStorage"
       }
     },
     "useCMK": {
@@ -106,7 +106,7 @@
     },
     "automation": {
       "value": {
-        "name": "azmlcmk102021W1automation"
+        "name": "azmlcmkautomation"
       }
     },
     "keyVault": {
@@ -117,12 +117,21 @@
     "aks": {
       "value": {
         "version": "1.21.2",
+        "enabled": true,
         "networkPlugin": "kubenet" ,
         "networkPolicy": "calico",
         "podCidr": "11.0.0.0/16",
         "serviceCidr": "20.0.0.0/16" ,
         "dnsServiceIP": "20.0.0.10",
         "dockerBridgeCidr": "30.0.0.1/16"
+      }
+    },
+    "appServiceLinuxContainer": {
+      "value": {
+        "enabled": true,
+        "skuName": "P1V2",
+        "skuTier": "Premium",
+        "enablePrivateEndpoint": true
       }
     },
     "sqldb": {
@@ -161,7 +170,7 @@
       "value": {
         "peerToHubVirtualNetwork": true,
         "useRemoteGateway": false,
-        "name": "azmlcmk102021W1vnet",
+        "name": "azmlcmkvnet",
         "dnsServers": [
           "10.18.1.4"
         ],
@@ -170,7 +179,7 @@
         ],
         "subnets": {
           "oz": {
-            "comments": "Foundational Elements Zone (OZ)",
+            "comments": "App Management Zone (OZ)",
             "name": "oz",
             "addressPrefix": "10.1.1.0/25"
           },
@@ -213,6 +222,11 @@
             "comments": "AKS Subnet",
             "name": "aks",
             "addressPrefix": "10.1.9.0/25"
+          },
+          "appService": {
+            "comments": "App Service Subnet",
+            "name": "appService",
+            "addressPrefix": "10.1.10.0/25"
           }
         }
       }

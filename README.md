@@ -19,10 +19,19 @@ Deployment to Azure is supported using Azure DevOps Pipelines and can be adopted
 
 The automation is built with [Project Bicep](https://github.com/Azure/bicep/blob/main/README.md) and Azure Resource Manager template.
 
+## GC 30-Day Cloud Guardrails
+
+As part of the Government of Canada (GC) Cloud Operationalization Framework, the GC has provided a set of [minimum guardrails](https://canada-ca.github.io/cloud-guardrails) to be implemented within the first 30-days of standing up a cloud environment.
+
+See [GC 30-Day Cloud Guardrails](docs/gc-30-day-cloud-guardrails.md) to find out how the reference implementations meet (or can meet) these requirements.
+
 ## Onboarding to Azure DevOps
 
-See [onboarding guide for Azure DevOps](docs/onboarding/ado.md) for setup instructions.
+See the following onboarding guides for setup instructions:
 
+* [Azure DevOps Setup](docs/onboarding/azure-devops-setup.md) provides guidance on considerations and recommended practices when creating and configuring your Azure DevOps Services environment.
+* [Azure DevOps Scripts](docs/onboarding/azure-devops-scripts.md) provides guidance on the scripts available to help simplify the onboarding process to Azure Landing Zones design using Azure DevOps pipelines.
+* [Azure DevOps Pipelines](docs/onboarding/azure-devops-pipelines.md) provides guidance on the manual steps for onboarding to the Azure Landing Zones design using Azure DevOps Pipelines.
 
 ## Goals
 
@@ -55,7 +64,7 @@ See [Contributing Reference Implementation](CONTRIBUTING.md) for information on 
 
 > Microsoft can identify the deployments of the Azure Resource Manager and Bicep templates with the deployed Azure resources. Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business.  The telemetry is collected through [customer usage attribution](https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution). The data is collected and governed by Microsoft's privacy policies, located at [https://www.microsoft.com/trustcenter](https://www.microsoft.com/trustcenter).
 >
-> If you don’t wish to send usage data to Microsoft, you can set the `customerUsageAttribution.enabled` setting to `false` in `config/telemetry.json`.  Learn more in our [onboarding guide](docs/onboarding/ado.md#telemetry).
+> If you don't wish to send usage data to Microsoft, you can set the `customerUsageAttribution.enabled` setting to `false` in `config/telemetry.json`.  Learn more in our [Azure DevOps Pipelines](docs/onboarding/azure-devops-pipelines.md#telemetry) onboarding guide.
 > 
 > Project Bicep [collects telemetry in some scenarios](https://github.com/Azure/bicep/blob/main/README.md#telemetry) as part of improving the product.
 
@@ -72,4 +81,4 @@ Super-Linter in this project is provided as an example for enabling source code 
 
 ## Trademark
 
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks). Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party’s policies.
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks). Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party's policies.

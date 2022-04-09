@@ -14,6 +14,7 @@ param assignableMgId string
 
 var scope = tenantResourceId('Microsoft.Management/managementGroups', assignableMgId)
 var roleName = 'Custom - Log Analytics - Read Only for VM Insights'
+var roleDescription = 'Read only access to Log Analytics for VM Insights.'
 
 // Telemetry - Azure customer usage attribution
 // Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
@@ -27,7 +28,7 @@ resource roleDefn 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' =
   scope: managementGroup()
   properties: {
     roleName: roleName
-    description: ''
+    description: roleDescription
     permissions: [
       {
         actions: [
