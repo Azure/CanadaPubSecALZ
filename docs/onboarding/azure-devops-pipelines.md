@@ -18,7 +18,9 @@ The automation is instrumented to identify the modules that are being deployed. 
 
 If you don't wish to send usage data to Microsoft, you can set the `customerUsageAttribution.enabled` setting to `false` in `config/telemetry.json`.
 
-**Example with telemetry disabled**
+Example configuration with telemetry disabled:
+<details>
+  <summary>Expand/collapse</summary>
 
 ```json
 {
@@ -42,6 +44,7 @@ If you don't wish to send usage data to Microsoft, you can set the `customerUsag
   }
 }
 ```
+</details>
 
 ---
 
@@ -87,8 +90,6 @@ az ad sp create-for-rbac --name spn-azure-platform-ops --role Owner --scopes /pr
 
 ```
 
-**Sample Output**
-
 Note down the `appId`, `tenant` and `password`.  These will be required to for setting up a Service Connection in Azure DevOps.  The default password expiry is **1 Year**.
 
 ```json
@@ -100,7 +101,7 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
   "tenant": "<your tenant id>"
 }
 ```
-
+  
 ---
 
 ## Step 2 - Configure Azure DevOps
@@ -344,7 +345,7 @@ This role assignment is used to grant users access to the logging subscription b
 > **The deployment automation will update the existing resources instead of creating new.**
 
 1. Create directory `./config/logging`.
-2. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaESLZ-main` to create path `./config/logging/CanadaESLZ-main/`).
+2. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (e.g. `CanadaESLZ-main` to create path `./config/logging/CanadaESLZ-main/`).
 3. Create JSON parameters file with name `logging.parameters.json` (any name can be used) in directory created on step 2 (i.e. `./config/logging/CanadaESLZ-main/logging.parameters.json`).
 4. Define deployment parameters based on example below.
 
@@ -361,110 +362,113 @@ This role assignment is used to grant users access to the logging subscription b
           }
         ```
 
-    **Example**
+    * Example deployment parameters file:
+      <details>
+        <summary>Expand/collapse</summary>
 
-    ```json
-      {
-        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-        "contentVersion": "1.0.0.0",
-        "parameters": {
-          "serviceHealthAlerts": {
-            "value": {
-              "resourceGroupName": "pubsec-service-health",
-              "incidentTypes": [
-                "Incident",
-                "Security"
-              ],
-              "regions": [
-                "Global",
-                "Canada East",
-                "Canada Central"
-              ],
-              "receivers": {
-                "app": [
+      ```json
+        {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "serviceHealthAlerts": {
+              "value": {
+                "resourceGroupName": "pubsec-service-health",
+                "incidentTypes": [
+                  "Incident",
+                  "Security"
+                ],
+                "regions": [
+                  "Global",
+                  "Canada East",
+                  "Canada Central"
+                ],
+                "receivers": {
+                  "app": [
+                    "alzcanadapubsec@microsoft.com"
+                  ],
+                  "email": [
+                    "alzcanadapubsec@microsoft.com"
+                  ],
+                  "sms": [
+                    {
+                      "countryCode": "1",
+                      "phoneNumber": "5555555555"
+                    }
+                  ],
+                  "voice": [
+                    {
+                      "countryCode": "1",
+                      "phoneNumber": "5555555555"
+                    }
+                  ]
+                },
+                "actionGroupName": "ALZ action group",
+                "actionGroupShortName": "alz-alert",
+                "alertRuleName": "ALZ alert rule",
+                "alertRuleDescription": "Alert rule for Azure Landing Zone"
+              }
+            },
+            "securityCenter": {
+              "value": {
+                "email": "alzcanadapubsec@microsoft.com",
+                "phone": "5555555555"
+              }
+            },
+            "subscriptionRoleAssignments": {
+              "value": [
+                {
+                  "comments": "Built-in Contributor Role",
+                  "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                  "securityGroupObjectIds": [
+                    "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+                  ]
+                }
+              ]
+            },
+            "subscriptionBudget": {
+              "value": {
+                "createBudget": false,
+                "name": "MonthlySubscriptionBudget",
+                "amount": 1000,
+                "timeGrain": "Monthly",
+                "contactEmails": [
                   "alzcanadapubsec@microsoft.com"
-                ],
-                "email": [
-                  "alzcanadapubsec@microsoft.com"
-                ],
-                "sms": [
-                  {
-                    "countryCode": "1",
-                    "phoneNumber": "5555555555"
-                  }
-                ],
-                "voice": [
-                  {
-                    "countryCode": "1",
-                    "phoneNumber": "5555555555"
-                  }
-                ]
-              },
-              "actionGroupName": "ALZ action group",
-              "actionGroupShortName": "alz-alert",
-              "alertRuleName": "ALZ alert rule",
-              "alertRuleDescription": "Alert rule for Azure Landing Zone"
-            }
-          },
-          "securityCenter": {
-            "value": {
-              "email": "alzcanadapubsec@microsoft.com",
-              "phone": "5555555555"
-            }
-          },
-          "subscriptionRoleAssignments": {
-            "value": [
-              {
-                "comments": "Built-in Contributor Role",
-                "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-                "securityGroupObjectIds": [
-                  "38f33f7e-a471-4630-8ce9-c6653495a2ee"
                 ]
               }
-            ]
-          },
-          "subscriptionBudget": {
-            "value": {
-              "createBudget": false,
-              "name": "MonthlySubscriptionBudget",
-              "amount": 1000,
-              "timeGrain": "Monthly",
-              "contactEmails": [
-                "alzcanadapubsec@microsoft.com"
-              ]
+            },
+            "subscriptionTags": {
+              "value": {
+                "ISSO": "isso-tbd"
+              }
+            },
+            "resourceTags": {
+              "value": {
+                "ClientOrganization": "client-organization-tag",
+                "CostCenter": "cost-center-tag",
+                "DataSensitivity": "data-sensitivity-tag",
+                "ProjectContact": "project-contact-tag",
+                "ProjectName": "project-name-tag",
+                "TechnicalContact": "technical-contact-tag"
+              }
+            },
+            "logAnalyticsResourceGroupName": {
+              "value": "pubsec-central-logging-rg"
+            },
+            "logAnalyticsWorkspaceName": {
+              "value": "log-analytics-workspace"
+            },
+            "logAnalyticsRetentionInDays": {
+              "value": 730
+            },
+            "logAnalyticsAutomationAccountName": {
+              "value": "automation-account"
             }
-          },
-          "subscriptionTags": {
-            "value": {
-              "ISSO": "isso-tbd"
-            }
-          },
-          "resourceTags": {
-            "value": {
-              "ClientOrganization": "client-organization-tag",
-              "CostCenter": "cost-center-tag",
-              "DataSensitivity": "data-sensitivity-tag",
-              "ProjectContact": "project-contact-tag",
-              "ProjectName": "project-name-tag",
-              "TechnicalContact": "technical-contact-tag"
-            }
-          },
-          "logAnalyticsResourceGroupName": {
-            "value": "pubsec-central-logging-rg"
-          },
-          "logAnalyticsWorkspaceName": {
-            "value": "log-analytics-workspace"
-          },
-          "logAnalyticsRetentionInDays": {
-            "value": 730
-          },
-          "logAnalyticsAutomationAccountName": {
-            "value": "automation-account"
           }
         }
-      }
-    ```
-
+      ```
+      </details>
+  
 5. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
 
     * Set `var-logging-managementGroupId` with the logging management group:
@@ -599,8 +603,8 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.  
     Update networking section of the configuration file to deploy one of the two options:
-     1. [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
-     2. [Hub Networking with Fortinet Firewall (NVA)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
+      * [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
+      * [Hub Networking with Fortinet Firewall (NVA)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
 
     Depending on the preference, you may optionally delete/comment the configuration that is not required. For example, when deploying option 1 (Azure Firewall) - remove/comment section of the configuration file titled "Hub Networking with Fortinet Firewalls".
 
@@ -609,8 +613,8 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     only the _Azure Firewall_ option will be deployed, not the _NVA_ option.
 
     * Update **var-hubnetwork-managementGroupId** with the networking management group:
-        * For **CanadaPubSecALZ v0.9.0 or later**, this will be the management id that represents the Networking Management Group in the defined hierarchy.
-        * For **CanadaPubSecALZ v0.8.0 or earlier**, this is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-hubnetwork-managementGroupId` will be `contosoPlatformConnectivity`.
+      * For **CanadaPubSecALZ v0.9.0 or later**, this will be the management id that represents the Networking Management Group in the defined hierarchy.
+      * For **CanadaPubSecALZ v0.8.0 or earlier**, this is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-hubnetwork-managementGroupId` will be `contosoPlatformConnectivity`.
 
     * Update **var-hubnetwork-subscriptionRoleAssignments** based on Azure AD security group's object ID responsible for managing Azure networking. If role assignments are not required, you must change the example provided with the following setting:
 
@@ -620,223 +624,228 @@ In order to configure audit stream for Azure Monitor, identify the following inf
       ```
 
     * Valid contact information for the Azure Service Health Alerts: email and phone number
+
     * Values for Azure resource tags
+
     * IP ranges for the virtual networks
+
     * Enable/Disable Azure DDOS Standard
 
-    **Sample environment YAML (Hub Networking section only)**
+    * Sample environment YAML (Hub Networking section only):
+      <details>
+      <summary>Expand/collapse</summary>
 
       ```yml
-          variables:
-              # Hub Networking
-              var-hubnetwork-managementGroupId: pubsecPlatformConnectivity
-              var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
-              var-hubnetwork-serviceHealthAlerts: >
-                {
-                  "resourceGroupName": "pubsec-service-health",
-                  "incidentTypes": [ "Incident", "Security" ],
-                  "regions": [ "Global", "Canada East", "Canada Central" ],
-                  "receivers": {
-                      "app": [ "alzcanadapubsec@microsoft.com" ],
-                      "email": [ "alzcanadapubsec@microsoft.com" ],
-                      "sms": [
-                          { "countryCode": "1", "phoneNumber": "5555555555" }
-                      ],
-                      "voice": [
-                          { "countryCode": "1", "phoneNumber": "5555555555" }
-                      ]
-                  },
-                  "actionGroupName": "ALZ action group",
-                  "actionGroupShortName": "alz-alert",
-                  "alertRuleName": "ALZ alert rule",
-                  "alertRuleDescription": "Alert rule for Azure Landing Zone"
-                }
-              var-hubnetwork-securityCenter: >
-                {
-                  "email": "alzcanadapubsec@microsoft.com",
-                  "phone": "5555555555"
-                }
-              var-hubnetwork-subscriptionRoleAssignments: >
-                [
-                  {
-                      "comments": "Built-in Contributor Role",
-                      "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-                      "securityGroupObjectIds": [
-                          "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-                      ]
-                  }
-                ]
-              var-hubnetwork-subscriptionBudget: >
-                {
-                  "createBudget": false,
-                  "name": "MonthlySubscriptionBudget",
-                  "amount": 1000,
-                  "timeGrain": "Monthly",
-                  "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
-                }
-              var-hubnetwork-subscriptionTags: >
-                {
-                  "ISSO": "isso-tbd"
-                }
-              var-hubnetwork-resourceTags: >
-                {
-                  "ClientOrganization": "client-organization-tag",
-                  "CostCenter": "cost-center-tag",
-                  "DataSensitivity": "data-sensitivity-tag",
-                  "ProjectContact": "project-contact-tag",
-                  "ProjectName": "project-name-tag",
-                  "TechnicalContact": "technical-contact-tag"
-                }
-    
-              ## Hub Networking - Private Dns Zones
-              var-hubnetwork-deployPrivateDnsZones: true
-              var-hubnetwork-rgPrivateDnsZonesName: pubsec-dns-rg
-    
-              ## Hub Networking - DDOS
-              var-hubnetwork-deployDdosStandard: false
-              var-hubnetwork-rgDdosName: pubsec-ddos-rg
-              var-hubnetwork-ddosPlanName: ddos-plan
-    
-              ## Hub Networking - Public Zone
-              var-hubnetwork-rgPazName: pubsec-public-access-zone-rg
-    
-              ## Hub Networking - Management Restricted Zone Virtual Network
-              var-hubnetwork-rgMrzName: pubsec-management-restricted-zone-rg
-              var-hubnetwork-mrzVnetName: management-restricted-vnet
-              var-hubnetwork-mrzVnetAddressPrefixRFC1918: 10.18.4.0/22
-    
-              var-hubnetwork-mrzMazSubnetName: MazSubnet
-              var-hubnetwork-mrzMazSubnetAddressPrefix: 10.18.4.0/25
-    
-              var-hubnetwork-mrzInfSubnetName: InfSubnet
-              var-hubnetwork-mrzInfSubnetAddressPrefix: 10.18.4.128/25
-    
-              var-hubnetwork-mrzSecSubnetName: SecSubnet
-              var-hubnetwork-mrzSecSubnetAddressPrefix: 10.18.5.0/26
-    
-              var-hubnetwork-mrzLogSubnetName: LogSubnet
-              var-hubnetwork-mrzLogSubnetAddressPrefix: 10.18.5.64/26
-    
-              var-hubnetwork-mrzMgmtSubnetName: MgmtSubnet
-              var-hubnetwork-mrzMgmtSubnetAddressPrefix: 10.18.5.128/26
-    
-              var-hubnetwork-bastionName: bastion
-              var-hubnetwork-bastionSku: Standard
-              var-hubnetwork-bastionScaleUnits: 2
-    
-              ####################################################################################
-              ### Hub Networking with Azure Firewall                                           ###
-              ####################################################################################
-              var-hubnetwork-azfw-rgPolicyName: pubsec-azure-firewall-policy-rg
-              var-hubnetwork-azfw-policyName: pubsecAzureFirewallPolicy
-    
-              var-hubnetwork-azfw-rgHubName: pubsec-hub-networking-rg
-              var-hubnetwork-azfw-hubVnetName: hub-vnet
-              var-hubnetwork-azfw-hubVnetAddressPrefixRFC1918: 10.18.0.0/22
-              var-hubnetwork-azfw-hubVnetAddressPrefixRFC6598: 100.60.0.0/16
-              var-hubnetwork-azfw-hubVnetAddressPrefixBastion: 192.168.0.0/16
-    
-              var-hubnetwork-azfw-hubPazSubnetName: PAZSubnet
-              var-hubnetwork-azfw-hubPazSubnetAddressPrefix: 100.60.1.0/24
-    
-              var-hubnetwork-azfw-hubGatewaySubnetPrefix: 10.18.0.0/27
-              var-hubnetwork-azfw-hubAzureFirewallSubnetAddressPrefix: 10.18.1.0/24
-              var-hubnetwork-azfw-hubAzureFirewallManagementSubnetAddressPrefix: 10.18.2.0/26
-              var-hubnetwork-azfw-hubBastionSubnetAddressPrefix: 192.168.0.0/24
-    
-              var-hubnetwork-azfw-azureFirewallName: pubsecAzureFirewall
-              var-hubnetwork-azfw-azureFirewallZones: '["1", "2", "3"]'
-              var-hubnetwork-azfw-azureFirewallForcedTunnelingEnabled: false
-              var-hubnetwork-azfw-azureFirewallForcedTunnelingNextHop: 10.17.1.4
-    
-              ####################################################################################
-              ### Hub Networking with Fortinet Firewalls                                       ###
-              ####################################################################################
-    
-              ## Hub Networking - Core Virtual Network
-              var-hubnetwork-nva-rgHubName: pubsec-hub-networking-rg
-              var-hubnetwork-nva-hubVnetName: hub-vnet
-              var-hubnetwork-nva-hubVnetAddressPrefixRFC1918: 10.18.0.0/22
-              var-hubnetwork-nva-hubVnetAddressPrefixRFC6598: 100.60.0.0/16
-              var-hubnetwork-nva-hubVnetAddressPrefixBastion: 192.168.0.0/16
-    
-              var-hubnetwork-nva-hubEanSubnetName: EanSubnet
-              var-hubnetwork-nva-hubEanSubnetAddressPrefix: 10.18.0.0/27
-    
-              var-hubnetwork-nva-hubPublicSubnetName: PublicSubnet
-              var-hubnetwork-nva-hubPublicSubnetAddressPrefix: 100.60.0.0/24
-    
-              var-hubnetwork-nva-hubPazSubnetName: PAZSubnet
-              var-hubnetwork-nva-hubPazSubnetAddressPrefix: 100.60.1.0/24
-    
-              var-hubnetwork-nva-hubDevIntSubnetName: DevIntSubnet
-              var-hubnetwork-nva-hubDevIntSubnetAddressPrefix: 10.18.0.64/27
-    
-              var-hubnetwork-nva-hubProdIntSubnetName: PrdIntSubnet
-              var-hubnetwork-nva-hubProdIntSubnetAddressPrefix: 10.18.0.32/27
-    
-              var-hubnetwork-nva-hubMrzIntSubnetName: MrzSubnet
-              var-hubnetwork-nva-hubMrzIntSubnetAddressPrefix: 10.18.0.96/27
-    
-              var-hubnetwork-nva-hubHASubnetName: HASubnet
-              var-hubnetwork-nva-hubHASubnetAddressPrefix: 10.18.0.128/28
-    
-              var-hubnetwork-nva-hubGatewaySubnetPrefix: 10.18.1.0/27
-    
-              var-hubnetwork-nva-hubBastionSubnetAddressPrefix: 192.168.0.0/24
-    
-              ## Hub Networking - Firewall Virtual Appliances
-              var-hubnetwork-nva-deployFirewallVMs: false
-              var-hubnetwork-nva-useFortigateFW: false
-    
-              ### Hub Networking - Firewall Virtual Appliances - For Non-production Traffic
-              var-hubnetwork-nva-fwDevILBName: pubsecDevFWILB
-              var-hubnetwork-nva-fwDevVMSku: Standard_D8s_v4
-              var-hubnetwork-nva-fwDevVM1Name: pubsecDevFW1
-              var-hubnetwork-nva-fwDevVM2Name: pubsecDevFW2
-              var-hubnetwork-nva-fwDevILBExternalFacingIP: 100.60.0.7
-              var-hubnetwork-nva-fwDevVM1ExternalFacingIP: 100.60.0.8
-              var-hubnetwork-nva-fwDevVM2ExternalFacingIP: 100.60.0.9
-              var-hubnetwork-nva-fwDevVM1MrzIntIP: 10.18.0.104
-              var-hubnetwork-nva-fwDevVM2MrzIntIP: 10.18.0.105
-              var-hubnetwork-nva-fwDevILBDevIntIP: 10.18.0.68
-              var-hubnetwork-nva-fwDevVM1DevIntIP: 10.18.0.69
-              var-hubnetwork-nva-fwDevVM2DevIntIP: 10.18.0.70
-              var-hubnetwork-nva-fwDevVM1HAIP: 10.18.0.134
-              var-hubnetwork-nva-fwDevVM2HAIP: 10.18.0.135
-    
-              ### Hub Networking - Firewall Virtual Appliances - For Production Traffic
-              var-hubnetwork-nva-fwProdILBName: pubsecProdFWILB
-              var-hubnetwork-nva-fwProdVMSku: Standard_F8s_v2
-              var-hubnetwork-nva-fwProdVM1Name: pubsecProdFW1
-              var-hubnetwork-nva-fwProdVM2Name: pubsecProdFW2
-              var-hubnetwork-nva-fwProdILBExternalFacingIP: 100.60.0.4
-              var-hubnetwork-nva-fwProdVM1ExternalFacingIP: 100.60.0.5
-              var-hubnetwork-nva-fwProdVM2ExternalFacingIP: 100.60.0.6
-              var-hubnetwork-nva-fwProdVM1MrzIntIP: 10.18.0.101
-              var-hubnetwork-nva-fwProdVM2MrzIntIP: 10.18.0.102
-              var-hubnetwork-nva-fwProdILBPrdIntIP: 10.18.0.36
-              var-hubnetwork-nva-fwProdVM1PrdIntIP: 10.18.0.37
-              var-hubnetwork-nva-fwProdVM2PrdIntIP: 10.18.0.38
-              var-hubnetwork-nva-fwProdVM1HAIP: 10.18.0.132
-              var-hubnetwork-nva-fwProdVM2HAIP: 10.18.0.133
+        variables:
+          # Hub Networking
+          var-hubnetwork-managementGroupId: pubsecPlatformConnectivity
+          var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
+          var-hubnetwork-serviceHealthAlerts: >
+            {
+              "resourceGroupName": "pubsec-service-health",
+              "incidentTypes": [ "Incident", "Security" ],
+              "regions": [ "Global", "Canada East", "Canada Central" ],
+              "receivers": {
+                  "app": [ "alzcanadapubsec@microsoft.com" ],
+                  "email": [ "alzcanadapubsec@microsoft.com" ],
+                  "sms": [
+                      { "countryCode": "1", "phoneNumber": "5555555555" }
+                  ],
+                  "voice": [
+                      { "countryCode": "1", "phoneNumber": "5555555555" }
+                  ]
+              },
+              "actionGroupName": "ALZ action group",
+              "actionGroupShortName": "alz-alert",
+              "alertRuleName": "ALZ alert rule",
+              "alertRuleDescription": "Alert rule for Azure Landing Zone"
+            }
+          var-hubnetwork-securityCenter: >
+            {
+              "email": "alzcanadapubsec@microsoft.com",
+              "phone": "5555555555"
+            }
+          var-hubnetwork-subscriptionRoleAssignments: >
+            [
+              {
+                  "comments": "Built-in Contributor Role",
+                  "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                  "securityGroupObjectIds": [
+                      "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+                  ]
+              }
+            ]
+          var-hubnetwork-subscriptionBudget: >
+            {
+              "createBudget": false,
+              "name": "MonthlySubscriptionBudget",
+              "amount": 1000,
+              "timeGrain": "Monthly",
+              "contactEmails": [ "alzcanadapubsec@microsoft.com" ]
+            }
+          var-hubnetwork-subscriptionTags: >
+            {
+              "ISSO": "isso-tbd"
+            }
+          var-hubnetwork-resourceTags: >
+            {
+              "ClientOrganization": "client-organization-tag",
+              "CostCenter": "cost-center-tag",
+              "DataSensitivity": "data-sensitivity-tag",
+              "ProjectContact": "project-contact-tag",
+              "ProjectName": "project-name-tag",
+              "TechnicalContact": "technical-contact-tag"
+            }
+
+          ## Hub Networking - Private Dns Zones
+          var-hubnetwork-deployPrivateDnsZones: true
+          var-hubnetwork-rgPrivateDnsZonesName: pubsec-dns-rg
+
+          ## Hub Networking - DDOS
+          var-hubnetwork-deployDdosStandard: false
+          var-hubnetwork-rgDdosName: pubsec-ddos-rg
+          var-hubnetwork-ddosPlanName: ddos-plan
+
+          ## Hub Networking - Public Zone
+          var-hubnetwork-rgPazName: pubsec-public-access-zone-rg
+
+          ## Hub Networking - Management Restricted Zone Virtual Network
+          var-hubnetwork-rgMrzName: pubsec-management-restricted-zone-rg
+          var-hubnetwork-mrzVnetName: management-restricted-vnet
+          var-hubnetwork-mrzVnetAddressPrefixRFC1918: 10.18.4.0/22
+
+          var-hubnetwork-mrzMazSubnetName: MazSubnet
+          var-hubnetwork-mrzMazSubnetAddressPrefix: 10.18.4.0/25
+
+          var-hubnetwork-mrzInfSubnetName: InfSubnet
+          var-hubnetwork-mrzInfSubnetAddressPrefix: 10.18.4.128/25
+
+          var-hubnetwork-mrzSecSubnetName: SecSubnet
+          var-hubnetwork-mrzSecSubnetAddressPrefix: 10.18.5.0/26
+
+          var-hubnetwork-mrzLogSubnetName: LogSubnet
+          var-hubnetwork-mrzLogSubnetAddressPrefix: 10.18.5.64/26
+
+          var-hubnetwork-mrzMgmtSubnetName: MgmtSubnet
+          var-hubnetwork-mrzMgmtSubnetAddressPrefix: 10.18.5.128/26
+
+          var-hubnetwork-bastionName: bastion
+          var-hubnetwork-bastionSku: Standard
+          var-hubnetwork-bastionScaleUnits: 2
+
+          ####################################################################################
+          ### Hub Networking with Azure Firewall                                           ###
+          ####################################################################################
+          var-hubnetwork-azfw-rgPolicyName: pubsec-azure-firewall-policy-rg
+          var-hubnetwork-azfw-policyName: pubsecAzureFirewallPolicy
+
+          var-hubnetwork-azfw-rgHubName: pubsec-hub-networking-rg
+          var-hubnetwork-azfw-hubVnetName: hub-vnet
+          var-hubnetwork-azfw-hubVnetAddressPrefixRFC1918: 10.18.0.0/22
+          var-hubnetwork-azfw-hubVnetAddressPrefixRFC6598: 100.60.0.0/16
+          var-hubnetwork-azfw-hubVnetAddressPrefixBastion: 192.168.0.0/16
+
+          var-hubnetwork-azfw-hubPazSubnetName: PAZSubnet
+          var-hubnetwork-azfw-hubPazSubnetAddressPrefix: 100.60.1.0/24
+
+          var-hubnetwork-azfw-hubGatewaySubnetPrefix: 10.18.0.0/27
+          var-hubnetwork-azfw-hubAzureFirewallSubnetAddressPrefix: 10.18.1.0/24
+          var-hubnetwork-azfw-hubAzureFirewallManagementSubnetAddressPrefix: 10.18.2.0/26
+          var-hubnetwork-azfw-hubBastionSubnetAddressPrefix: 192.168.0.0/24
+
+          var-hubnetwork-azfw-azureFirewallName: pubsecAzureFirewall
+          var-hubnetwork-azfw-azureFirewallZones: '["1", "2", "3"]'
+          var-hubnetwork-azfw-azureFirewallForcedTunnelingEnabled: false
+          var-hubnetwork-azfw-azureFirewallForcedTunnelingNextHop: 10.17.1.4
+
+          ####################################################################################
+          ### Hub Networking with Fortinet Firewalls                                       ###
+          ####################################################################################
+
+          ## Hub Networking - Core Virtual Network
+          var-hubnetwork-nva-rgHubName: pubsec-hub-networking-rg
+          var-hubnetwork-nva-hubVnetName: hub-vnet
+          var-hubnetwork-nva-hubVnetAddressPrefixRFC1918: 10.18.0.0/22
+          var-hubnetwork-nva-hubVnetAddressPrefixRFC6598: 100.60.0.0/16
+          var-hubnetwork-nva-hubVnetAddressPrefixBastion: 192.168.0.0/16
+
+          var-hubnetwork-nva-hubEanSubnetName: EanSubnet
+          var-hubnetwork-nva-hubEanSubnetAddressPrefix: 10.18.0.0/27
+
+          var-hubnetwork-nva-hubPublicSubnetName: PublicSubnet
+          var-hubnetwork-nva-hubPublicSubnetAddressPrefix: 100.60.0.0/24
+
+          var-hubnetwork-nva-hubPazSubnetName: PAZSubnet
+          var-hubnetwork-nva-hubPazSubnetAddressPrefix: 100.60.1.0/24
+
+          var-hubnetwork-nva-hubDevIntSubnetName: DevIntSubnet
+          var-hubnetwork-nva-hubDevIntSubnetAddressPrefix: 10.18.0.64/27
+
+          var-hubnetwork-nva-hubProdIntSubnetName: PrdIntSubnet
+          var-hubnetwork-nva-hubProdIntSubnetAddressPrefix: 10.18.0.32/27
+
+          var-hubnetwork-nva-hubMrzIntSubnetName: MrzSubnet
+          var-hubnetwork-nva-hubMrzIntSubnetAddressPrefix: 10.18.0.96/27
+
+          var-hubnetwork-nva-hubHASubnetName: HASubnet
+          var-hubnetwork-nva-hubHASubnetAddressPrefix: 10.18.0.128/28
+
+          var-hubnetwork-nva-hubGatewaySubnetPrefix: 10.18.1.0/27
+
+          var-hubnetwork-nva-hubBastionSubnetAddressPrefix: 192.168.0.0/24
+
+          ## Hub Networking - Firewall Virtual Appliances
+          var-hubnetwork-nva-deployFirewallVMs: false
+          var-hubnetwork-nva-useFortigateFW: false
+
+          ### Hub Networking - Firewall Virtual Appliances - For Non-production Traffic
+          var-hubnetwork-nva-fwDevILBName: pubsecDevFWILB
+          var-hubnetwork-nva-fwDevVMSku: Standard_D8s_v4
+          var-hubnetwork-nva-fwDevVM1Name: pubsecDevFW1
+          var-hubnetwork-nva-fwDevVM2Name: pubsecDevFW2
+          var-hubnetwork-nva-fwDevILBExternalFacingIP: 100.60.0.7
+          var-hubnetwork-nva-fwDevVM1ExternalFacingIP: 100.60.0.8
+          var-hubnetwork-nva-fwDevVM2ExternalFacingIP: 100.60.0.9
+          var-hubnetwork-nva-fwDevVM1MrzIntIP: 10.18.0.104
+          var-hubnetwork-nva-fwDevVM2MrzIntIP: 10.18.0.105
+          var-hubnetwork-nva-fwDevILBDevIntIP: 10.18.0.68
+          var-hubnetwork-nva-fwDevVM1DevIntIP: 10.18.0.69
+          var-hubnetwork-nva-fwDevVM2DevIntIP: 10.18.0.70
+          var-hubnetwork-nva-fwDevVM1HAIP: 10.18.0.134
+          var-hubnetwork-nva-fwDevVM2HAIP: 10.18.0.135
+
+          ### Hub Networking - Firewall Virtual Appliances - For Production Traffic
+          var-hubnetwork-nva-fwProdILBName: pubsecProdFWILB
+          var-hubnetwork-nva-fwProdVMSku: Standard_F8s_v2
+          var-hubnetwork-nva-fwProdVM1Name: pubsecProdFW1
+          var-hubnetwork-nva-fwProdVM2Name: pubsecProdFW2
+          var-hubnetwork-nva-fwProdILBExternalFacingIP: 100.60.0.4
+          var-hubnetwork-nva-fwProdVM1ExternalFacingIP: 100.60.0.5
+          var-hubnetwork-nva-fwProdVM2ExternalFacingIP: 100.60.0.6
+          var-hubnetwork-nva-fwProdVM1MrzIntIP: 10.18.0.101
+          var-hubnetwork-nva-fwProdVM2MrzIntIP: 10.18.0.102
+          var-hubnetwork-nva-fwProdILBPrdIntIP: 10.18.0.36
+          var-hubnetwork-nva-fwProdVM1PrdIntIP: 10.18.0.37
+          var-hubnetwork-nva-fwProdVM2PrdIntIP: 10.18.0.38
+          var-hubnetwork-nva-fwProdVM1HAIP: 10.18.0.132
+          var-hubnetwork-nva-fwProdVM2HAIP: 10.18.0.133
       ```
+      </details>
 
 2. Configure Variable Group:  firewall-secrets **(required for Fortinet Firewall deployment)**
 
     * In Azure DevOps, go to Pipelines -> Library
-    * Select + Variable group
-    * Set Variable group name:  firewall-secrets
+    * Create a new variable group by clicking the `+ Variable group` button
+    * Set Variable group name:  `firewall-secrets`
     * Add two variables:
+      * `var-hubnetwork-nva-fwUsername`
+      * `var-hubnetwork-nva-fwPassword`
 
       These two variables are used when creating Firewall virtual machines.  These are temporary passwords and recommended to be changed after creation. The same username and password are used for all virtual machines.
 
       When creating both variables, toggle the lock icon to make it a secret.  This ensures that the values are not shown in logs nor to Azure DevOps users.
 
       Write down the username and password as it's not retrievable once saved.
-
-        * var-hubnetwork-nva-fwUsername
-        * var-hubnetwork-nva-fwPassword
 
     * Click Save
 
