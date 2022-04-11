@@ -8,8 +8,6 @@
 # ----------------------------------------------------------------------------------
 
 parameters:
-  - name: description
-    type: string
   - name: deployOperation
     type: string
     default: create
@@ -28,7 +26,7 @@ parameters:
 steps:
 
 - task: PowerShell@2
-  displayName: Validate Logging Parameters
+  displayName: Validate Logging Parameters - ${{ parameters.loggingRegion }}
   inputs:
     targetType: 'inline'
     script: |
@@ -49,7 +47,7 @@ steps:
     workingDir: $(System.DefaultWorkingDirectory)/landingzones/utils/mg-move
 
 - task: AzureCLI@2
-  displayName: Register Resource Providers
+  displayName: Register Resource Providers - ${{ parameters.loggingRegion }}
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
@@ -65,7 +63,7 @@ steps:
 
 
 - task: AzureCLI@2
-  displayName: Configure Logging
+  displayName: Configure Logging - ${{ parameters.loggingRegion }}
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
@@ -76,6 +74,7 @@ steps:
       echo "Deploying logging using ${{ parameters.deployOperation}} operation with ${{ parameters.loggingConfigurationPath }} to ${{ parameters.loggingSubscriptionId }} ..."
 
       az deployment sub ${{ parameters.deployOperation }} \
+        --name 'main-${{ parameters.loggingRegion }}' \
         --location ${{ parameters.loggingRegion }} \
         --subscription ${{ parameters.loggingSubscriptionId }} \
         --template-file main.bicep \

@@ -67,7 +67,6 @@ stages:
 
           - template: templates/steps/deploy-platform-logging.yml
             parameters:
-              description: 'Deploy Logging'
               deployOperation: ${{ variables['deployOperation'] }}
               loggingManagementGroupId: $(var-logging-managementGroupId)
               loggingSubscriptionId: $(var-logging-subscriptionId)
