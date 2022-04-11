@@ -194,7 +194,7 @@ param enableDeleteLockOnResourceGroup bool = true
 // Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 var telemetry = json(loadTextContent('../../config/telemetry.json'))
 module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-usage-attribution-subscription.bicep' = if (telemetry.customerUsageAttribution.enabled) {
-  name: 'pid-${telemetry.customerUsageAttribution.modules.logging}'
+  name: 'pid-${telemetry.customerUsageAttribution.modules.logging}-${uniqueString(location)}'
 }
 
 // Create Log Analytics Workspace Resource Group
@@ -236,7 +236,7 @@ module logAnalytics '../../azresources/monitor/log-analytics.bicep' = {
     * Subscription Tags
 */
 module subScaffold '../scaffold-subscription.bicep' = {
-  name: 'subscription-scaffold'
+  name: 'subscription-scaffold-${uniqueString(location)}'
   scope: subscription()
   params: {
     location: location
