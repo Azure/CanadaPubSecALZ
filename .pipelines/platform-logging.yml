@@ -72,11 +72,3 @@ stages:
               loggingSubscriptionId: $(var-logging-subscriptionId)
               loggingConfigurationPath: ${{ variables['logging-config-directory'] }}/$(var-logging-configurationFileName)
               loggingRegion: $(var-logging-region)
-
-          - template: templates/steps/deploy-platform-logging.yml
-            parameters:
-              deployOperation: ${{ variables['deployOperation'] }}
-              loggingManagementGroupId: $(var-logging-canadaeast-managementGroupId)
-              loggingSubscriptionId: $(var-logging-canadaeast-subscriptionId)
-              loggingConfigurationPath: ${{ variables['logging-config-directory'] }}/$(var-logging-canadaeast-configurationFileName)
-              loggingRegion: $(var-logging-canadaeast-region)
