@@ -33,6 +33,8 @@ resources:
 variables:
 - name: devops-org-name
   value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: logging-config-directory
+  value: $(System.DefaultWorkingDirectory)/$(loggingPathFromRoot)/${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}
 - name: variable-template-file
   value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
 - template: ../config/variables/common.yml
@@ -66,7 +68,8 @@ stages:
           - template: templates/steps/deploy-platform-logging.yml
             parameters:
               description: 'Deploy Logging'
-              moveTemplate: move-subscription.bicep
-              configTemplate: main.bicep
               deployOperation: ${{ variables['deployOperation'] }}
-              workingDir: $(System.DefaultWorkingDirectory)/landingzones
+              loggingManagementGroupId: $(var-logging-managementGroupId)
+              loggingSubscriptionId: $(var-logging-subscriptionId)
+              loggingConfigurationPath: ${{ variables['logging-config-directory'] }}/$(var-logging-configurationFileName)
+              loggingRegion: $(var-logging-region)
