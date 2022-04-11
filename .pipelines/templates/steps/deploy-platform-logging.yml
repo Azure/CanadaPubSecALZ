@@ -8,7 +8,7 @@
 # ----------------------------------------------------------------------------------
 
 parameters:
-  - name: description
+  - name: displayName
     type: string
   - name: deployOperation
     type: string
@@ -28,7 +28,7 @@ parameters:
 steps:
 
 - task: PowerShell@2
-  displayName: Validate Logging Parameters
+  displayName: ${{ parameters.displayName }} - Validate Logging Parameters
   inputs:
     targetType: 'inline'
     script: |
@@ -49,7 +49,7 @@ steps:
     workingDir: $(System.DefaultWorkingDirectory)/landingzones/utils/mg-move
 
 - task: AzureCLI@2
-  displayName: Register Resource Providers
+  displayName: ${{ parameters.displayName }} - Register Resource Providers
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
@@ -65,7 +65,7 @@ steps:
 
 
 - task: AzureCLI@2
-  displayName: Configure Logging
+  displayName: ${{ parameters.displayName }}
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'

@@ -67,7 +67,7 @@ stages:
 
           - template: templates/steps/deploy-platform-logging.yml
             parameters:
-              description: 'Deploy Logging'
+              displayName: 'Deploy Logging'
               deployOperation: ${{ variables['deployOperation'] }}
               loggingManagementGroupId: $(var-logging-managementGroupId)
               loggingSubscriptionId: $(var-logging-subscriptionId)
@@ -76,7 +76,7 @@ stages:
 
           - template: templates/steps/deploy-platform-logging.yml
             parameters:
-              description: 'Deploy Logging - Canada East'
+              displayName: 'Deploy Logging - Canada East'
               deployOperation: ${{ variables['deployOperation'] }}
               loggingManagementGroupId: $(var-logging-canadaeast-managementGroupId)
               loggingSubscriptionId: $(var-logging-canadaeast-subscriptionId)
