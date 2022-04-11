@@ -76,6 +76,7 @@ steps:
       echo "Deploying logging using ${{ parameters.deployOperation}} operation with ${{ parameters.loggingConfigurationPath }} to ${{ parameters.loggingSubscriptionId }} ..."
 
       az deployment sub ${{ parameters.deployOperation }} \
+        --name 'main-${{ parameters.loggingRegion }}' \
         --location ${{ parameters.loggingRegion }} \
         --subscription ${{ parameters.loggingSubscriptionId }} \
         --template-file main.bicep \
