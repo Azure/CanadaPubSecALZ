@@ -142,7 +142,27 @@
                       {
                         "category": "mlflowAcledArtifact",
                         "enabled": "[parameters('logsEnabled')]"
-                      }
+                      },
+                      {
+                        "category": "databrickssql",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "deltaPipelines",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "modelRegistry",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "repos",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "unityCatalog",
+                        "enabled": "[parameters('logsEnabled')]"
+                      }                      
                     ]
                   }
                 }
