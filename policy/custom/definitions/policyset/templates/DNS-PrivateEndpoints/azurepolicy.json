@@ -142,9 +142,9 @@
                           "name": "privateDnsZoneConfigs",
                           "count": "[length(parameters('privateDnsZoneConfigs'))]",
                           "input": {
-                            "name": "[replace(concat(variables('dnsZoneResourceIdPrefix'), parameters('privateDnsZoneConfigs')[copyIndex()], '.', '_'))]",
+                            "name": "[replace(concat(variables('dnsZoneResourceIdPrefix'), parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')]), '.', '_')]",
                             "properties": {
-                              "privateDnsZoneId": "[concat(variables('dnsZoneResourceIdPrefix'), parameters('privateDnsZoneConfigs')[copyIndex()])]"
+                              "privateDnsZoneId": "[concat(variables('dnsZoneResourceIdPrefix'), parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')])]"
                             }
                           }
                         }
