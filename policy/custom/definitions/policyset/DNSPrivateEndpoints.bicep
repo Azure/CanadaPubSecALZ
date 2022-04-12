@@ -18,14 +18,20 @@ Format of the array of objects
   {
     privateLinkServiceNamespace: 'Microsoft.AzureCosmosDB/databaseAccounts'
     zone: 'privatelink.documents.azure.com'
-    filterLocationLike: "*" // when Private DNS Zone is not scoped to a region
+    filterLocationLike: '*' // when Private DNS Zone is not scoped to a region
     groupId: 'SQL'
+    privateDnsZoneConfigs: [
+      'privatelink.documents.azure.com'
+    ]
   }
   {
     privateLinkServiceNamespace: 'Microsoft.ContainerService/managedCluster'
     zone: 'privatelink.canadacentral.azmk8s.io'
-    filterLocationLike: "canadacentral" // when Private DNS Zone is scoped to a region
+    filterLocationLike: 'canadacentral' // when Private DNS Zone is scoped to a region
     groupId: 'management'
+    privateDnsZoneConfigs: [
+      'privatelink.canadacentral.azmk8s.io'
+    ]
   }
 ]
 */
@@ -57,6 +63,15 @@ var policySetDefinitionsPrivateDNSZonesDINE = [for (privateDNSZone, i) in privat
     filterLocationLike: {
       value: privateDNSZone.filterLocationLike
     }
+    privateDnsZoneSubscriptionId: {
+      value: '[[parameters(\'privateDNSZoneSubscriptionId\')]'
+    }
+    privateDnsZoneResourceGroupName: {
+      value: '[[parameters(\'privateDNSZoneResourceGroupName\')]'
+    }
+    privateDnsZoneConfigs: {
+      value: privateDNSZone.privateDnsZoneConfigs
+    }
   }
 }]
 
@@ -82,6 +97,7 @@ resource policy 'Microsoft.Authorization/policyDefinitions@2020-09-01' = [for pr
       zone: privateDNSZone.zone
       groupId: privateDNSZone.groupId
       filterLocationLike: privateDNSZone.filterLocationLike
+      privateDnsZoneConfigs: privateDNSZone.privateDnsZoneConfigs
     }
     displayName: '${customPolicyDefinition.properties.displayName} - ${privateDNSZone.zone} - ${privateDNSZone.privateLinkServiceNamespace} - ${privateDNSZone.groupId}'
     mode: customPolicyDefinition.properties.mode
