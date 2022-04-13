@@ -12,7 +12,7 @@ trigger: none
 variables:
 - name: devops-org-name
   value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
-- name: network-config-directory
+- name: networking-config-directory
   value: $(System.DefaultWorkingDirectory)/$(networkPathFromRoot)/${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}
 - name: variable-template-file
   value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
