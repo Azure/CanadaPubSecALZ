@@ -141,7 +141,7 @@ steps:
                 policyAssignmentManagementGroupId='$(var-topLevelManagementGroupName)' \
                 policyDefinitionManagementGroupId='$(var-topLevelManagementGroupName)' \
                 privateDNSZoneSubscriptionId='${{ parameters.networkingSubscriptionId }}' \
-                privateDNSZoneResourceGroupName='$PRIVATE_DNS_ZONES_RESOURCE_GROUP'
+                privateDNSZoneResourceGroupName="$PRIVATE_DNS_ZONES_RESOURCE_GROUP"
           ;;
         (*)
           echo "Hub Network will not manage private dns zones.  Azure Policy assignment will be skipped."
