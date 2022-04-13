@@ -25,6 +25,18 @@ parameters:
 
 steps:
 
+- task: PowerShell@2
+  displayName: Validate Azure Firewall Policy Parameters
+  inputs:
+    targetType: 'inline'
+    script: |
+      $schemaFile="$(Build.SourcesDirectory)/schemas/latest/landingzones/lz-platform-connectivity-hub-azfw-policy.json"
+
+      Write-Host "Parameters File: ${{ parameters.azureFirewallPolicyConfigurationPath }}"
+      Write-Host "Schema File: ${schemaFile}"
+
+      Get-Content -Raw "${{ parameters.azureFirewallPolicyConfigurationPath }}" | Test-Json -SchemaFile "${schemaFile}"
+
 - task: AzureCLI@2
   displayName: Configure Azure Firewall Policy
   inputs:
