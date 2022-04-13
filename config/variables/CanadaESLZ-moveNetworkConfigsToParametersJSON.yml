@@ -71,9 +71,9 @@ variables:
   var-hubnetwork-managementGroupId: pubsecPlatformConnectivity
   var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
 
-  ## Hub Network configuration using Azure Firewall
+  ## Hub Network configuration using Azure Firewall - required when Azure Firewall is used
   var-hubnetwork-azfwPolicy-configurationFileName: hub-azfw-policy/azure-firewall-policy.parameters.json
   var-hubnetwork-azfw-configurationFileName: hub-azfw/hub-network.parameters.json
 
-  ## Hub Network configuration using Network Virtual Appliance (NVA)
+  ## Hub Network configuration using Network Virtual Appliance (NVA) - required when Network Virtual Appliance (NVA) like Fortigate Firewalls are used
   var-hubnetwork-nva-configurationFileName: hub-nva/hub-network.parameters.json
