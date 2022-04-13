@@ -12,7 +12,7 @@
         "TechnicalContact": "technical-contact-tag"
       }
     },
-    "rgPolicyName": {
+    "resourceGroupName": {
       "value": "pubsec-azure-firewall-policy-rg"
     },
     "policyName": {
