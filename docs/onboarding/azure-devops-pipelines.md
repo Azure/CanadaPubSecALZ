@@ -604,7 +604,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 ## Step 7 - Configure Hub Networking
 
-> Update networking section of the configuration file to deploy one of the two options:
+> Configure Hub Networking to deploy one of the two options:
 > * [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
 > * [Hub Networking with Fortigate Firewall (NVA)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
 
@@ -613,7 +613,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 1. When using Hub Networking with Azure Firewall
 
     1. Create subdirectory: `hub-azfw-policy` (i.e. `./config/networking/CanadaESLZ-main/hub-azfw-policy`)
-    1. Create JSON parameters file with name `azure-firewall-policy.parameters.json` (any name can be used) in directory created on step 1 (i.e. `./config/networking/CanadaESLZ-main/hub-azfw-policy/azure-firewall-policy.parameters.json`).
+    1. Create JSON parameters file with name `azure-firewall-policy.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaESLZ-main/hub-azfw-policy/azure-firewall-policy.parameters.json`).
     1. Define deployment parameters based on example below.
 
         * Set the values for the Azure tags that would be applied to the logging resources.
@@ -648,7 +648,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
         ```
 
     1. Create subdirectory: `hub-azfw` (i.e. `./config/networking/CanadaESLZ-main/hub-azfw`)
-    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in directory created on step 4 (i.e. `./config/networking/CanadaESLZ-main/hub-azfw/hub-network.json`).
+    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaESLZ-main/hub-azfw/hub-network.json`).
     1. Define deployment parameters based on example below.
 
         * Set valid contact information for the Azure Service Health Alerts: email and phone number.
@@ -667,6 +667,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
           <details>
             <summary>Expand/collapse</summary>
+
             ```json
               {
               "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
@@ -865,12 +866,13 @@ In order to configure audit stream for Azure Monitor, identify the following inf
               }
             }
             ```
+
           </details>
 
 1. When using Hub Networking with Fortigate Firewall (NVA)
 
     1. Create subdirectory: `hub-nva` (i.e. `./config/networking/CanadaESLZ-main/hub-nva`)
-    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in directory created on step 1 (i.e. `./config/networking/CanadaESLZ-main/hub-nva/hub-network.parameters.json`).
+    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaESLZ-main/hub-nva/hub-network.parameters.json`).
     1. Define deployment parameters based on example below.
 
         * Set valid contact information for the Azure Service Health Alerts: email and phone number.
@@ -889,6 +891,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
           <details>
             <summary>Expand/collapse</summary>
+
             ```json
                 {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
@@ -1191,6 +1194,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                   }
                 }
             ```
+
           </details>
 
 1. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.  
@@ -1219,7 +1223,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                   var-hubnetwork-azfw-configurationFileName: hub-azfw/hub-network.parameters.json
           ```
 
-     * When using Hub Networking with Fortigate
+     * When using Hub Networking with Fortigate Firewall
         * Set `var-hubnetwork-nva-configurationFileName` with the file name of the Hub Networking configuration.  i.e. `hub-nva/hub-network.parameters.json`
 
           **Sample environment YAML (Networking section only)**
@@ -1525,7 +1529,7 @@ Migration process:
 
 1. Create directory `./config/logging`.
 2. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaESLZ-main` to create path `./config/logging/CanadaESLZ-main/`).
-3. Create JSON parameters file with name `logging.parameters.json` (any name can be used) in directory created on step 2 (i.e. `./config/logging/CanadaESLZ-main/logging.parameters.json`).
+3. Create JSON parameters file with name `logging.parameters.json` (any name can be used) in the directory (i.e. `./config/logging/CanadaESLZ-main/logging.parameters.json`).
 4. Define deployment parameters based on example below.
 
     **Template to use for logging.parameters.json**
@@ -1626,7 +1630,7 @@ Migration process:
 3. When using Hub Networking with Azure Firewall
 
     1. Create subdirectory: `hub-azfw-policy` (i.e. `./config/networking/CanadaESLZ-main/hub-azfw-policy`)
-    1. Create JSON parameters file with name `azure-firewall-policy.parameters.json` (any name can be used) in directory created on step 1 (i.e. `./config/networking/CanadaESLZ-main/hub-azfw-policy/azure-firewall-policy.parameters.json`).
+    1. Create JSON parameters file with name `azure-firewall-policy.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaESLZ-main/hub-azfw-policy/azure-firewall-policy.parameters.json`).
     1. Define deployment parameters based on example below.
 
         **Template to use for azure-firewall-policy.parameters.json**
@@ -1650,7 +1654,7 @@ Migration process:
         ```
 
     1. Create subdirectory: `hub-azfw` (i.e. `./config/networking/CanadaESLZ-main/hub-azfw`)
-    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in directory created on step 4 (i.e. `./config/networking/CanadaESLZ-main/hub-azfw/hub-network.json`).
+    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaESLZ-main/hub-azfw/hub-network.json`).
     1. Define deployment parameters based on example below.
 
         **Template to use for hub-network.parameters.json**
@@ -1796,7 +1800,7 @@ Migration process:
 4. When using Hub Networking with Azure Firewall
 
     1. Create subdirectory: `hub-nva` (i.e. `./config/networking/CanadaESLZ-main/hub-nva`)
-    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in directory created on step 1 (i.e. `./config/networking/CanadaESLZ-main/hub-nva/hub-network.parameters.json`).
+    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaESLZ-main/hub-nva/hub-network.parameters.json`).
     1. Define deployment parameters based on example below.
 
         **Template to use for hub-network.parameters.json**
