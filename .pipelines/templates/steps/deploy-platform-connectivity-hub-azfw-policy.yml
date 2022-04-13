@@ -8,18 +8,20 @@
 # ----------------------------------------------------------------------------------
 
 parameters:
-  - name: description
-    type: string
-  - name: templateFile
-    type: string
-  - name: workingDir
-    type: string
   - name: deployOperation
     type: string
     default: create
     values:
       - create
       - what-if
+  - name: networkingSubscriptionId
+    type: string
+  - name: networkingConfigurationPath
+    type: string
+  - name: networkingRegion
+    type: string
+  - name: workingDir
+    type: string
 
 steps:
 
@@ -32,16 +34,13 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      echo "Deploying ${{ parameters.templateFile }} using ${{ parameters.deployOperation}} operation..."
+      echo "Deploying main-azfw-policy.bicep using ${{ parameters.deployOperation}} operation using ${{ parameters.networkingConfigurationPath }}..."
       
       az deployment sub ${{ parameters.deployOperation }} \
-      --location $(deploymentRegion) \
-      --subscription $(var-hubnetwork-subscriptionId) \
-      --template-file ${{ parameters.templateFile }} \
-      --parameters \
-          resourceTags='$(var-hubnetwork-resourceTags)' \
-          resourceGroupName='$(var-hubnetwork-azfw-rgPolicyName)' \
-          policyName='$(var-hubnetwork-azfw-policyName)'
+      --location ${{ parameters.networkingRegion }} \
+      --subscription ${{ parameters.networkingSubscriptionId }} \
+      --template-file main-azfw-policy.bicep \
+      --parameters @${{ parameters.networkingConfigurationPath }}
           
       $(var-bashPostInjectScript)
     workingDirectory: '${{ parameters.workingDir }}/lz-platform-connectivity-hub-azfw'
