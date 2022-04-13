@@ -16,7 +16,7 @@ parameters:
       - what-if
   - name: networkingSubscriptionId
     type: string
-  - name: networkingConfigurationPath
+  - name: azureFirewallPolicyConfigurationFile
     type: string
   - name: networkingRegion
     type: string
@@ -34,13 +34,13 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      echo "Deploying main-azfw-policy.bicep using ${{ parameters.deployOperation}} operation using ${{ parameters.networkingConfigurationPath }}..."
+      echo "Deploying main-azfw-policy.bicep using ${{ parameters.deployOperation}} operation using ${{ parameters.azureFirewallPolicyConfigurationFile }}..."
       
       az deployment sub ${{ parameters.deployOperation }} \
       --location ${{ parameters.networkingRegion }} \
       --subscription ${{ parameters.networkingSubscriptionId }} \
       --template-file main-azfw-policy.bicep \
-      --parameters @${{ parameters.networkingConfigurationPath }}
+      --parameters @${{ parameters.azureFirewallPolicyConfigurationFile }}
           
       $(var-bashPostInjectScript)
     workingDirectory: '${{ parameters.workingDir }}/lz-platform-connectivity-hub-azfw'
