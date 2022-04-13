@@ -1400,7 +1400,7 @@ Migration process:
     1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in directory created on step 1 (i.e. `./config/networking/CanadaESLZ-main/hub-nva/hub-network.parameters.json`).
     1. Define deployment parameters based on example below.
 
-        **Template to use for azure-firewall-policy.parameters.json**
+        **Template to use for hub-network.parameters.json**
 
         ```json
         {
