@@ -44,6 +44,7 @@ Example configuration with telemetry disabled:
   }
 }
 ```
+
 </details>
 
 ---
@@ -61,6 +62,7 @@ Example configuration with telemetry disabled:
 * [Appendix](#appendix)
   * [Populate management group hierarchy from your environment](#populate-management-group-hierarchy-from-your-environment)
   * [Migrate Logging configuration from Azure DevOps variables to JSON parameters file](#migrate-logging-configuration-from-azure-devops-variables-to-json-parameters-file)
+  * [Migrate Hub Networking configuration from Azure DevOps variables to JSON parameters file](#migrate-hub-networking-configuration-from-azure-devops-variables-to-json-parameters-file)
 
 ---
 
@@ -467,6 +469,7 @@ This role assignment is used to grant users access to the logging subscription b
           }
         }
       ```
+
       </details>
   
 5. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git.  This configuration file was created in Step 3.
@@ -610,7 +613,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
     > Note: Even deleting or commenting out the variables that are not required, either for the **Hub Networking with Azure Firewall** or the **Hub Networking with Fortinet Firewall (NVA)**
     is optional since the deployment will be based on the pipeline you configure anyway. So if you configured the **platform-connectivity-hub-azfw-policy-ci** and the **platform-connectivity-hub-azfw-ci** pipelines,
-    only the _Azure Firewall_ option will be deployed, not the _NVA_ option.
+    only the *Azure Firewall* option will be deployed, not the *NVA* option.
 
     * Update **var-hubnetwork-managementGroupId** with the networking management group:
       * For **CanadaPubSecALZ v0.9.0 or later**, this will be the management id that represents the Networking Management Group in the defined hierarchy.
@@ -830,6 +833,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
           var-hubnetwork-nva-fwProdVM1HAIP: 10.18.0.132
           var-hubnetwork-nva-fwProdVM2HAIP: 10.18.0.133
       ```
+
       </details>
 
 2. Configure Variable Group:  firewall-secrets **(required for Fortinet Firewall deployment)**
@@ -857,21 +861,21 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
     2. New Pipeline
 
-      1. Choose Azure Repos Git
-      2. Select Repository
-      3. Select Existing Azure Pipeline YAML file
-      4. Identify the pipeline in `.pipelines/platform-connectivity-hub-azfw-policy.yml`.
-      6. Save the pipeline (don't run it yet)
-      7. Rename the pipeline to `platform-connectivity-hub-azfw-policy-ci`
+    1. Choose Azure Repos Git
+    2. Select Repository
+    3. Select Existing Azure Pipeline YAML file
+    4. Identify the pipeline in `.pipelines/platform-connectivity-hub-azfw-policy.yml`.
+    6. Save the pipeline (don't run it yet)
+    7. Rename the pipeline to `platform-connectivity-hub-azfw-policy-ci`
 
     3. New Pipeline
 
-      1. Choose Azure Repos Git
-      2. Select Repository
-      3. Select Existing Azure Pipeline YAML file
-      4. Identify the pipeline in `.pipelines/platform-connectivity-hub-azfw.yml`.
-      6. Save the pipeline (don't run it yet)
-      7. Rename the pipeline to `platform-connectivity-hub-azfw-ci`
+    1. Choose Azure Repos Git
+    2. Select Repository
+    3. Select Existing Azure Pipeline YAML file
+    4. Identify the pipeline in `.pipelines/platform-connectivity-hub-azfw.yml`.
+    6. Save the pipeline (don't run it yet)
+    7. Rename the pipeline to `platform-connectivity-hub-azfw-ci`
 
 4. Configure Pipeline for Platform – Hub Networking using NVAs (only if Fortinet Firewall based Hub Networking is used)
 
@@ -1106,7 +1110,7 @@ You can migrate to the management group hierarchy implemented in v0.9.0 by popul
 
 ### Migrate Logging configuration from Azure DevOps variables to JSON parameters file
 
-As of `v0.10.0`, we migrated logging configuration to JSON parameters file.  This change enables:
+As of `v0.10.0`, logging configuration have been migrated to JSON parameters file.  This change enables:
 
 * Path for deploying logging without Azure DevOps such as using Azure CLI/PowerShell, etc.
 * Separates Azure DevOps pipeline variables from ARM deployment parameters.
@@ -1198,6 +1202,480 @@ Migration process:
               var-logging-configurationFileName: logging.parameters.json
 
               var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
+      ```
+
+6. Commit the changes to git repository.
+
+### Migrate Hub Networking configuration from Azure DevOps variables to JSON parameters file
+
+As of `v0.10.0`, hub networking configuration have been migrated to JSON parameters file.  This change enables:
+
+* Path for deploying hub networking without Azure DevOps such as using Azure CLI/PowerShell, etc.
+* Separates Azure DevOps pipeline variables from ARM deployment parameters.
+* Simplifies support for multiple Hub Networks in an Azure tenant (i.e. Hub Network deployed by region)
+
+We added a new parameter to `common.yml` to set the folder for logging configuration.  This folder is used by Azure DevOps Pipelines to create a fully qualified file path for logging configuration.  A fully qualified path will have the following structure: `<networkPathFromRoot>`/`<devops-org-name>-<branch-name>`/`hub-capability-type`/`hub-network.parameters.json`.  For example:  `config/networking/CanadaESLZ-main/hub-azfw/hub-network.parameters.json`
+
+```yaml
+  networkPathFromRoot: 'config/networking'
+```
+
+Migration process:
+
+1. Create directory `./config/networking`.
+2. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaESLZ-main` to create path `./config/networking/CanadaESLZ-main/`).
+3. When using Hub Networking with Azure Firewall
+
+    1. Create subdirectory: `hub-azfw-policy` (i.e. `./config/networking/CanadaESLZ-main/hub-azfw-policy`)
+    1. Create JSON parameters file with name `azure-firewall-policy.parameters.json` (any name can be used) in directory created on step 1 (i.e. `./config/networking/CanadaESLZ-main/hub-azfw-policy/azure-firewall-policy.parameters.json`).
+    1. Define deployment parameters based on example below.
+
+        **Template to use for azure-firewall-policy.parameters.json**
+
+        ```json
+        {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "resourceTags": {
+              "value": < value from var-hubnetwork-resourceTags >
+            },
+            "resourceGroupName": {
+              "value": "< value from var-hubnetwork-azfw-rgPolicyName >"
+            },
+            "policyName": {
+              "value": "< value from var-hubnetwork-azfw-policyName >"
+            }
+          }
+        }
+        ```
+
+    1. Create subdirectory: `hub-azfw` (i.e. `./config/networking/CanadaESLZ-main/hub-azfw`)
+    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in directory created on step 4 (i.e. `./config/networking/CanadaESLZ-main/hub-azfw/hub-network.json`).
+    1. Define deployment parameters based on example below.
+
+        **Template to use for hub-network.parameters.json**
+
+        ```json
+        {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "serviceHealthAlerts": {
+              "value": < value from var-hubnetwork-serviceHealthAlerts>
+            },
+            "securityCenter": {
+              "value": < value from var-hubnetwork-securityCenter >
+            },
+            "subscriptionRoleAssignments": {
+              "value": < value from var-hubnetwork-subscriptionRoleAssignments >
+            },
+            "subscriptionBudget": {
+              "value": < value from var-hubnetwork-subscriptionBudget >
+            },
+            "subscriptionTags": {
+              "value": < value from var-hubnetwork-subscriptionTags >
+            },
+            "resourceTags": {
+              "value": < value from var-hubnetwork-resourceTags >
+            },
+            "deployPrivateDnsZones": {
+              "value": < value from var-hubnetwork-deployPrivateDnsZones >
+            },
+            "rgPrivateDnsZonesName": {
+              "value": "< value from var-hubnetwork-rgPrivateDnsZonesName >"
+            },
+            "deployDdosStandard": {
+              "value": < value from var-hubnetwork-deployDdosStandard >
+            },
+            "rgDdosName": {
+              "value": "< value from var-hubnetwork-rgDdosName >"
+            },
+            "ddosPlanName": {
+              "value": "< value from var-hubnetwork-ddosPlanName >"
+            },
+            "bastionName": {
+              "value": "< value from var-hubnetwork-bastionName >"
+            },
+            "bastionSku": {
+              "value": "< value from var-hubnetwork-bastionSku >"
+            },
+            "bastionScaleUnits": {
+              "value": < value from var-hubnetwork-bastionScaleUnits>
+            },
+            "rgPazName": {
+              "value": "< value from var-hubnetwork-rgPazName >"
+            },
+            "rgMrzName": {
+              "value": "< value from var-hubnetwork-rgMrzName >"
+            },
+            "mrzVnetName": {
+              "value": "< value from var-hubnetwork-mrzVnetName >"
+            },
+            "mrzVnetAddressPrefixRFC1918": {
+              "value": "< value from var-hubnetwork-mrzVnetAddressPrefixRFC1918 >"
+            },
+            "mrzMazSubnetName": {
+              "value": "< value from var-hubnetwork-mrzMazSubnetName >"
+            },
+            "mrzMazSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-mrzMazSubnetAddressPrefix >"
+            },
+            "mrzInfSubnetName": {
+              "value": "< value from var-hubnetwork-mrzInfSubnetName >"
+            },
+            "mrzInfSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-mrzInfSubnetAddressPrefix >"
+            },
+            "mrzSecSubnetName": {
+              "value": "< value from var-hubnetwork-mrzSecSubnetName >"
+            },
+            "mrzSecSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-mrzSecSubnetAddressPrefix >"
+            },
+            "mrzLogSubnetName": {
+              "value": "< value from var-hubnetwork-mrzLogSubnetName >"
+            },
+            "mrzLogSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-mrzLogSubnetAddressPrefix >"
+            },
+            "mrzMgmtSubnetName": {
+              "value": "< value from var-hubnetwork-mrzMgmtSubnetName >"
+            },
+            "mrzMgmtSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-mrzMgmtSubnetAddressPrefix >"
+            },
+            "rgHubName": {
+              "value": "< value from var-hubnetwork-azfw-rgHubName >"
+            },
+            "hubVnetName": {
+              "value": "< value from var-hubnetwork-azfw-hubVnetName >"
+            },
+            "hubVnetAddressPrefixRFC1918": {
+              "value": "< value from var-hubnetwork-azfw-hubVnetAddressPrefixRFC1918 >"
+            },
+            "hubVnetAddressPrefixRFC6598": {
+              "value": "< value from var-hubnetwork-azfw-hubVnetAddressPrefixRFC6598 >"
+            },
+            "hubVnetAddressPrefixBastion": {
+              "value": "< value from var-hubnetwork-azfw-hubVnetAddressPrefixBastion >"
+            },
+            "hubPazSubnetName": {
+              "value": "< value from var-hubnetwork-azfw-hubPazSubnetName >"
+            },
+            "hubPazSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-azfw-hubPazSubnetAddressPrefix >"
+            },
+            "hubGatewaySubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-azfw-hubGatewaySubnetPrefix >"
+            },
+            "hubAzureFirewallSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-azfw-hubAzureFirewallSubnetAddressPrefix >"
+            },
+            "hubAzureFirewallManagementSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-azfw-hubAzureFirewallManagementSubnetAddressPrefix >"
+            },
+            "hubBastionSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-azfw-hubBastionSubnetAddressPrefix >"
+            },
+            "azureFirewallName": {
+              "value": "< value from var-hubnetwork-azfw-azureFirewallName >"
+            },
+            "azureFirewallZones": {
+              "value": < value from var-hubnetwork-azfw-azureFirewallZones >
+            },
+            "azureFirewallForcedTunnelingEnabled": {
+              "value": < value from var-hubnetwork-azfw-azureFirewallForcedTunnelingEnabled >
+            },
+            "azureFirewallForcedTunnelingNextHop": {
+              "value": "< value from var-hubnetwork-azfw-azureFirewallForcedTunnelingNextHop >"
+            }
+          }
+        }
+        ```
+
+4. When using Hub Networking with Azure Firewall
+
+    1. Create subdirectory: `hub-nva` (i.e. `./config/networking/CanadaESLZ-main/hub-nva`)
+    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in directory created on step 1 (i.e. `./config/networking/CanadaESLZ-main/hub-nva/hub-network.parameters.json`).
+    1. Define deployment parameters based on example below.
+
+        **Template to use for azure-firewall-policy.parameters.json**
+
+        ```json
+        {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "serviceHealthAlerts": {
+              "value": < value from var-hubnetwork-serviceHealthAlerts>
+            },
+            "securityCenter": {
+              "value": < value from var-hubnetwork-securityCenter >
+            },
+            "subscriptionRoleAssignments": {
+              "value": < value from var-hubnetwork-subscriptionRoleAssignments >
+            },
+            "subscriptionBudget": {
+              "value": < value from var-hubnetwork-subscriptionBudget >
+            },
+            "subscriptionTags": {
+              "value": < value from var-hubnetwork-subscriptionTags >
+            },
+            "resourceTags": {
+              "value": < value from var-hubnetwork-resourceTags >
+            },
+            "deployPrivateDnsZones": {
+              "value": < value from var-hubnetwork-deployPrivateDnsZones >
+            },
+            "rgPrivateDnsZonesName": {
+              "value": "< value from var-hubnetwork-rgPrivateDnsZonesName >"
+            },
+            "deployDdosStandard": {
+              "value": < value from var-hubnetwork-deployDdosStandard >
+            },
+            "rgDdosName": {
+              "value": "< value from var-hubnetwork-rgDdosName >"
+            },
+            "ddosPlanName": {
+              "value": "< value from var-hubnetwork-ddosPlanName >"
+            },
+            "bastionName": {
+              "value": "< value from var-hubnetwork-bastionName >"
+            },
+            "bastionSku": {
+              "value": "< value from var-hubnetwork-bastionSku >"
+            },
+            "bastionScaleUnits": {
+              "value": < value from var-hubnetwork-bastionScaleUnits>
+            },
+            "rgPazName": {
+              "value": "< value from var-hubnetwork-rgPazName >"
+            },
+            "rgMrzName": {
+              "value": "< value from var-hubnetwork-rgMrzName >"
+            },
+            "mrzVnetName": {
+              "value": "< value from var-hubnetwork-mrzVnetName >"
+            },
+            "mrzVnetAddressPrefixRFC1918": {
+              "value": "< value from var-hubnetwork-mrzVnetAddressPrefixRFC1918 >"
+            },
+            "mrzMazSubnetName": {
+              "value": "< value from var-hubnetwork-mrzMazSubnetName >"
+            },
+            "mrzMazSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-mrzMazSubnetAddressPrefix >"
+            },
+            "mrzInfSubnetName": {
+              "value": "< value from var-hubnetwork-mrzInfSubnetName >"
+            },
+            "mrzInfSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-mrzInfSubnetAddressPrefix >"
+            },
+            "mrzSecSubnetName": {
+              "value": "< value from var-hubnetwork-mrzSecSubnetName >"
+            },
+            "mrzSecSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-mrzSecSubnetAddressPrefix >"
+            },
+            "mrzLogSubnetName": {
+              "value": "< value from var-hubnetwork-mrzLogSubnetName >"
+            },
+            "mrzLogSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-mrzLogSubnetAddressPrefix >"
+            },
+            "mrzMgmtSubnetName": {
+              "value": "< value from var-hubnetwork-mrzMgmtSubnetName >"
+            },
+            "mrzMgmtSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-mrzMgmtSubnetAddressPrefix >"
+            },
+            "rgHubName": {
+              "value": "< value from var-hubnetwork-azfw-rgHubName >"
+            },
+            "hubVnetName": {
+              "value": "< value from var-hubnetwork-azfw-hubVnetName >"
+            },
+            "hubVnetAddressPrefixRFC1918": {
+              "value": "< value from var-hubnetwork-azfw-hubVnetAddressPrefixRFC1918 >"
+            },
+            "hubVnetAddressPrefixRFC6598": {
+              "value": "< value from var-hubnetwork-azfw-hubVnetAddressPrefixRFC6598 >"
+            },
+            "hubVnetAddressPrefixBastion": {
+              "value": "< value from var-hubnetwork-azfw-hubVnetAddressPrefixBastion >"
+            },
+            "hubEanSubnetName": {
+              "value": "< value from var-hubnetwork-nva-hubEanSubnetName >"
+            },
+            "hubEanSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-nva-hubEanSubnetAddressPrefix >"
+            },
+            "hubPublicSubnetName": {
+              "value": "< value from var-hubnetwork-nva-hubPublicSubnetName >"
+            },
+            "hubPublicSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-nva-hubPublicSubnetAddressPrefix >"
+            },
+            "hubPazSubnetName": {
+              "value": "< value from var-hubnetwork-nva-hubPazSubnetName >"
+            },
+            "hubPazSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-nva-hubPazSubnetAddressPrefix"
+            },
+            "hubDevIntSubnetName": {
+              "value": "< value from var-hubnetwork-nva-hubDevIntSubnetName >"
+            },
+            "hubDevIntSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-nva-hubDevIntSubnetAddressPrefix >"
+            },
+            "hubProdIntSubnetName": {
+              "value": "< value from var-hubnetwork-nva-hubProdIntSubnetName >"
+            },
+            "hubProdIntSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-nva-hubProdIntSubnetAddressPrefix >"
+            },
+            "hubMrzIntSubnetName": {
+              "value": "< value from var-hubnetwork-nva-hubMrzIntSubnetName >"
+            },
+            "hubMrzIntSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-nva-hubMrzIntSubnetAddressPrefix >"
+            },
+            "hubHASubnetName": {
+              "value": "< value from var-hubnetwork-nva-hubHASubnetName >"
+            },
+            "hubHASubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-nva-hubHASubnetAddressPrefix >"
+            },
+            "hubGatewaySubnetPrefix": {
+              "value": "< value from var-hubnetwork-nva-hubGatewaySubnetPrefix >"
+            },
+            "hubBastionSubnetAddressPrefix": {
+              "value": "< value from var-hubnetwork-nva-hubBastionSubnetAddressPrefix >"
+            },
+            "deployFirewallVMs": {
+              "value": < value from var-hubnetwork-nva-deployFirewallVMs >
+            },
+            "useFortigateFW": {
+              "value": < value from var-hubnetwork-nva-useFortigateFW >
+            },
+            "fwDevILBName": {
+              "value": "< value from var-hubnetwork-nva-fwDevILBName >"
+            },
+            "fwDevVMSku": {
+              "value": "< value from var-hubnetwork-nva-fwDevVMSku >"
+            },
+            "fwDevVM1Name": {
+              "value": "< value from var-hubnetwork-nva-fwDevVM1Name >"
+            },
+            "fwDevVM2Name": {
+              "value": "< value from var-hubnetwork-nva-fwDevVM2Name >"
+            },
+            "fwDevILBExternalFacingIP": {
+              "value": "< value from var-hubnetwork-nva-fwDevILBExternalFacingIP >"
+            },
+            "fwDevVM1ExternalFacingIP": {
+              "value": "< value from var-hubnetwork-nva-fwDevVM1ExternalFacingIP >"
+            },
+            "fwDevVM2ExternalFacingIP": {
+              "value": "< value from var-hubnetwork-nva-fwDevVM2ExternalFacingIP >"
+            },
+            "fwDevVM1MrzIntIP": {
+              "value": "< value from var-hubnetwork-nva-fwDevVM1MrzIntIP >"
+            },
+            "fwDevVM2MrzIntIP": {
+              "value": "< value from var-hubnetwork-nva-fwDevVM2MrzIntIP >"
+            },
+            "fwDevILBDevIntIP": {
+              "value": "< value from var-hubnetwork-nva-fwDevILBDevIntIP >"
+            },
+            "fwDevVM1DevIntIP": {
+              "value": "< value from var-hubnetwork-nva-fwDevVM1DevIntIP >"
+            },
+            "fwDevVM2DevIntIP": {
+              "value": "< value from var-hubnetwork-nva-fwDevVM2DevIntIP >"
+            },
+            "fwDevVM1HAIP": {
+              "value": "< value from var-hubnetwork-nva-fwDevVM1HAIP >"
+            },
+            "fwDevVM2HAIP": {
+              "value": "< value from var-hubnetwork-nva-fwDevVM2HAIP >"
+            },
+            "fwProdILBName": {
+              "value": "< value from var-hubnetwork-nva-fwProdILBName >"
+            },
+            "fwProdVMSku": {
+              "value": "< value from var-hubnetwork-nva-fwProdVMSku >"
+            },
+            "fwProdVM1Name": {
+              "value": "< value from var-hubnetwork-nva-fwProdVM1Name >"
+            },
+            "fwProdVM2Name": {
+              "value": "< value from var-hubnetwork-nva-fwProdVM2Name >"
+            },
+            "fwProdILBExternalFacingIP": {
+              "value": "< value from var-hubnetwork-nva-fwProdILBExternalFacingIP >"
+            },
+            "fwProdVM1ExternalFacingIP": {
+              "value": "< value from var-hubnetwork-nva-fwProdVM1ExternalFacingIP >"
+            },
+            "fwProdVM2ExternalFacingIP": {
+              "value": "< value from var-hubnetwork-nva-fwProdVM2ExternalFacingIP >"
+            },
+            "fwProdVM1MrzIntIP": {
+              "value": "< value from var-hubnetwork-nva-fwProdVM1MrzIntIP >"
+            },
+            "fwProdVM2MrzIntIP": {
+              "value": "< value from var-hubnetwork-nva-fwProdVM2MrzIntIP >"
+            },
+            "fwProdILBPrdIntIP": {
+              "value": "< value from var-hubnetwork-nva-fwProdILBPrdIntIP >"
+            },
+            "fwProdVM1PrdIntIP": {
+              "value": "< value from var-hubnetwork-nva-fwProdVM1PrdIntIP >"
+            },
+            "fwProdVM2PrdIntIP": {
+              "value": "< value from var-hubnetwork-nva-fwProdVM2PrdIntIP >"
+            },
+            "fwProdVM1HAIP": {
+              "value": "< value from var-hubnetwork-nva-fwProdVM1HAIP >"
+            },
+            "fwProdVM2HAIP": {
+              "value": "< value from var-hubnetwork-nva-fwProdVM2HAIP >"
+            }
+          }
+        }
+        ```
+
+5. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git and define the following parameters.
+
+      * Delete all hub network Azure DevOps variables (i.e. var-hubnetwork-*) **except for**:
+        * var-hubnetwork-managementGroupId
+        * var-hubnetwork-subscriptionId
+      * Add Azure DevOps variables:
+        * var-hubnetwork-region (value of your preferred region)
+        * When using Azure Firewall, add
+            * var-hubnetwork-azfwPolicy-configurationFileName (file path to configuration, i.e. `hub-azfw-policy/azure-firewall-policy.parameters.json`)
+            * var-hubnetwork-azfw-configurationFileName (file path to configuration, i.e. `hub-azfw/hub-network.parameters.json`)
+        * When using Network Virtual Appliance, add
+            * var-hubnetwork-nva-configurationFileName (file path to configuration, i.e. `hub-nva/hub-network.parameters.json`)
+
+      **Sample environment YAML (Networking section only)**
+
+      ```yml
+          variables:
+              # Hub Networking
+              var-hubnetwork-region: $(deploymentRegion)
+              var-hubnetwork-managementGroupId: pubsecPlatformConnectivity
+              var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
+            
+              ## Hub Network configuration using Azure Firewall - required when Azure Firewall is used
+              var-hubnetwork-azfwPolicy-configurationFileName: hub-azfw-policy/azure-firewall-policy.parameters.json
+              var-hubnetwork-azfw-configurationFileName: hub-azfw/hub-network.parameters.json
+            
+              ## Hub Network configuration using Network Virtual Appliance (NVA) - required when Network Virtual Appliance (NVA) like Fortigate Firewalls are used
+              var-hubnetwork-nva-configurationFileName: hub-nva/hub-network.parameters.json
       ```
 
 6. Commit the changes to git repository.
