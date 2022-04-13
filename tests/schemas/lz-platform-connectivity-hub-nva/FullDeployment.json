@@ -213,10 +213,10 @@
       "value": "192.168.0.0/24"
     },
     "deployFirewallVMs": {
-      "value": false
+      "value": true
     },
     "useFortigateFW": {
-      "value": false
+      "value": true
     },
     "fwDevILBName": {
       "value": "pubsecDevFWILB"
