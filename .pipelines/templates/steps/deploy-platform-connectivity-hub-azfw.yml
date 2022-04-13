@@ -86,7 +86,7 @@ steps:
         echo "Azure Firewall Policy Id: $AZURE_FIREWALL_POLICY_ID"
 
         # use jq to update the json parameter file
-        echo "$( jq '.parameters.azureFirewallExistingPolicyId.value = "$AZURE_FIREWALL_POLICY_ID"' ${{ parameters.networkingConfigurationPath }} )" > ${{ parameters.networkingConfigurationPath }}
+        echo "$( jq '.parameters.azureFirewallExistingPolicyId.value = "'$AZURE_FIREWALL_POLICY_ID'"' ${{ parameters.networkingConfigurationPath }} )" > ${{ parameters.networkingConfigurationPath }}
       fi
 
       # Check if the log analytics workspace id is provided in the parameters json.
