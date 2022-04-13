@@ -50,6 +50,6 @@ stages:
             parameters:
               deployOperation: ${{ variables['deployOperation'] }}
               networkingSubscriptionId: $(var-hubnetwork-subscriptionId)
-              azureFirewallPolicyConfigurationFile: ${{ variables['networking-config-directory'] }}/$(var-hubnetwork-azfwPolicy-configurationFileName)
+              azureFirewallPolicyConfigurationPath: ${{ variables['networking-config-directory'] }}/$(var-hubnetwork-azfwPolicy-configurationFileName)
               networkingRegion: $(var-hubnetwork-region)
               workingDir: $(System.DefaultWorkingDirectory)/landingzones
