@@ -76,4 +76,4 @@ variables:
   var-hubnetwork-azfw-configurationFileName: hub-azfw/hub-network.parameters.json
 
   ## Hub Network configuration using Network Virtual Appliance (NVA)
-  var-hubnetwork-nva-configurationFileName: hub-nva/hub-network.parameters.json
+  var-hubnetwork-nva-configurationFileName: hub-nva/hub-network-test.parameters.json
