@@ -164,7 +164,7 @@
     "hubPazSubnetAddressPrefix": {
       "value": "100.60.1.0/24"
     },
-    "hubGatewaySubnetPrefix": {
+    "hubGatewaySubnetAddressPrefix": {
       "value": "10.18.0.0/27"
     },
     "hubAzureFirewallSubnetAddressPrefix": {

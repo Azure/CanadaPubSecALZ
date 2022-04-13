@@ -89,6 +89,20 @@ steps:
         echo "$( jq '.parameters.azureFirewallExistingPolicyId.value = "$AZURE_FIREWALL_POLICY_ID"' ${{ parameters.networkingConfigurationPath }} )" > ${{ parameters.networkingConfigurationPath }}
       fi
 
+      # Check if the log analytics workspace id is provided in the parameters json.
+      # If present, then do no change it.  Otherwise add it to the json parameter file.
+      LOG_ANALYTICS_WORKSPACE_RESOURCE_ID_IN_PARAMETERS=`jq -r .parameters.logAnalyticsWorkspaceResourceId.value ${{ parameters.networkingConfigurationPath }}`   
+
+      if [[ $LOG_ANALYTICS_WORKSPACE_RESOURCE_ID_IN_PARAMETERS != null && "$LOG_ANALYTICS_WORKSPACE_RESOURCE_ID_IN_PARAMETERS" != "" ]];
+      then
+        echo "Log Analytics Workspace Resource ID is set in ${{ parameters.networkingConfigurationPath }} to $LOG_ANALYTICS_WORKSPACE_RESOURCE_ID_IN_PARAMETERS"
+      else
+        echo "Log Analytics Workspace Resource ID is not set in ${{ parameters.networkingConfigurationPath }}.  Updating ${{ parameters.networkingConfigurationPath }} with $(var-logging-logAnalyticsWorkspaceResourceId)"
+
+        # use jq to update the json parameter file
+        echo "$( jq '.parameters.logAnalyticsWorkspaceResourceId.value = "$(var-logging-logAnalyticsWorkspaceResourceId)"' ${{ parameters.networkingConfigurationPath }} )" > ${{ parameters.networkingConfigurationPath }}
+      fi
+
       echo "Deploying main.bicep using ${{ parameters.deployOperation}} operation using ${{ parameters.networkingConfigurationPath  }}..."
       
       az deployment sub ${{ parameters.deployOperation }} \
