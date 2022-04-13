@@ -1214,7 +1214,7 @@ As of `v0.10.0`, hub networking configuration have been migrated to JSON paramet
 * Separates Azure DevOps pipeline variables from ARM deployment parameters.
 * Simplifies support for multiple Hub Networks in an Azure tenant (i.e. Hub Network deployed by region)
 
-We added a new parameter to `common.yml` to set the folder for logging configuration.  This folder is used by Azure DevOps Pipelines to create a fully qualified file path for logging configuration.  A fully qualified path will have the following structure: `<networkPathFromRoot>`/`<devops-org-name>-<branch-name>`/`hub-capability-type`/`hub-network.parameters.json`.  For example:  `config/networking/CanadaESLZ-main/hub-azfw/hub-network.parameters.json`
+We added a new parameter to `common.yml` to set the folder for networking configuration.  This folder is used by Azure DevOps Pipelines to create a fully qualified file path for networking configuration.  A fully qualified path will have the following structure: `<networkPathFromRoot>`/`<devops-org-name>-<branch-name>`/`hub-capability`/`hub-network.parameters.json`.  For example:  `config/networking/CanadaESLZ-main/hub-azfw/hub-network.parameters.json`
 
 ```yaml
   networkPathFromRoot: 'config/networking'
