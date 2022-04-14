@@ -430,7 +430,7 @@ This role assignment is used to grant users access to the logging subscription b
             },
             "subscriptionBudget": {
               "value": {
-                "createBudget": false,
+                "createBudget": true,
                 "name": "MonthlySubscriptionBudget",
                 "amount": 1000,
                 "timeGrain": "Monthly",
