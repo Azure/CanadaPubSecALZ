@@ -2,6 +2,13 @@
 
 ## Landing Zone Schemas
 
+### April 14, 2022
+
+Schema definition for Hub Networking archetypes (Azure Firewall & NVA).  See documentation:
+
+* [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
+* [Hub Networking with Fortigate Firewalls](../../docs/archetypes/hubnetwork-nva-fortigate.md)
+
 ### April 7, 2022
 
 Schema definition for Logging archetype.  See [documentation](../../docs/archetypes/logging.md).
