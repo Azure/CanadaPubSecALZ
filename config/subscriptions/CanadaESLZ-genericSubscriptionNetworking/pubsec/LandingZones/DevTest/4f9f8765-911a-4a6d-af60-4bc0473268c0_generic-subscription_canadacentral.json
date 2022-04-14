@@ -2,19 +2,40 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-    "location": {
-        "value": "canadacentral"
-    },
-    "serviceHealthAlerts": {
+        "location": {
+            "value": "canadacentral"
+        },
+        "serviceHealthAlerts": {
             "value": {
                 "resourceGroupName": "pubsec-service-health",
-                "incidentTypes": [ "Incident", "Security" ],
-                "regions": [ "Global", "Canada East", "Canada Central" ],
+                "incidentTypes": [
+                    "Incident",
+                    "Security"
+                ],
+                "regions": [
+                    "Global",
+                    "Canada East",
+                    "Canada Central"
+                ],
                 "receivers": {
-                    "app": [ "alzcanadapubsec@microsoft.com" ],
-                    "email": [ "alzcanadapubsec@microsoft.com" ],
-                    "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-                    "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                    "app": [
+                        "alzcanadapubsec@microsoft.com"
+                    ],
+                    "email": [
+                        "alzcanadapubsec@microsoft.com"
+                    ],
+                    "sms": [
+                        {
+                            "countryCode": "1",
+                            "phoneNumber": "5555555555"
+                        }
+                    ],
+                    "voice": [
+                        {
+                            "countryCode": "1",
+                            "phoneNumber": "5555555555"
+                        }
+                    ]
                 },
                 "actionGroupName": "Sub1 ALZ action group",
                 "actionGroupShortName": "sub1-alert",
@@ -71,7 +92,7 @@
                 "automation": "rgAutomation2022Q1",
                 "networking": "rgVnet2022Q1",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecoveryVault2022Q1"
+                "backupRecoveryVault": "rgRecoveryVault2022Q1"
             }
         },
         "automation": {
@@ -79,10 +100,10 @@
                 "name": "automation"
             }
         },
-        "backupRecoveryVault":{
+        "backupRecoveryVault": {
             "value": {
-                "enabled":true,
-                "name":"bkupvault"
+                "enabled": true,
+                "name": "bkupvault"
             }
         },
         "hubNetwork": {
@@ -105,66 +126,7 @@
                 "addressPrefixes": [
                     "10.2.0.0/16"
                 ],
-                "subnets": [
-                    {
-                        "comments": "App Management Zone (OZ)",
-                        "name": "appManagement",
-                        "addressPrefix": "10.2.1.0/25",
-                        "nsg": {
-                            "enabled": true
-                        },
-                        "udr": {
-                            "enabled": true
-                        }
-                    },
-                    {
-                        "comments": "Presentation Zone (PAZ)",
-                        "name": "web",
-                        "addressPrefix": "10.2.2.0/25",
-                        "nsg": {
-                            "enabled": true
-                        },
-                        "udr": {
-                            "enabled": true
-                        }
-                    },
-                    {
-                        "comments": "Application Zone (RZ)",
-                        "name": "app",
-                        "addressPrefix": "10.2.3.0/25",
-                        "nsg": {
-                            "enabled": true
-                        },
-                        "udr": {
-                            "enabled": true
-                        }
-                    },
-                    {
-                        "comments": "Data Zone (HRZ)",
-                        "name": "data",
-                        "addressPrefix": "10.2.4.0/25",
-                        "nsg": {
-                            "enabled": true
-                        },
-                        "udr": {
-                            "enabled": true
-                        }
-                    },
-                    {
-                        "comments": "App Service",
-                        "name": "appservice",
-                        "addressPrefix": "10.2.5.0/25",
-                        "nsg": {
-                            "enabled": false
-                        },
-                        "udr": {
-                            "enabled": false
-                        },
-                        "delegations": {
-                            "serviceName": "Microsoft.Web/serverFarms"
-                        }
-                    }
-                ]
+                "subnets": []
             }
         }
     }
