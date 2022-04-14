@@ -2,6 +2,10 @@
 
 ## Landing Zone Schemas
 
+### April 14, 2022
+
+Removed 4 subnets from Healthcare archetype's virtual network: `oz`, `paz`, `rz` and `hrz`.
+
 ### April 7, 2022
 
 Schema definition for Logging archetype.  See [documentation](../../docs/archetypes/logging.md).
