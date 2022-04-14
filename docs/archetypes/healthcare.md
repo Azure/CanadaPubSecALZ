@@ -223,7 +223,7 @@ The scripts are:
 2. Set up a compute instance and import the provided tests to the workspace
 3. Run the test script, which will build a Docker Azure ML model image, push it to ACR, and then AKS to pull and run the ML model
 
-### Azure Deployment
+## Azure Deployment
 
 ### Schema Definition
 
