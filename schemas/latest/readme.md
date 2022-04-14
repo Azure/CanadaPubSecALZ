@@ -2,6 +2,10 @@
 
 ## Landing Zone Schemas
 
+### April 14, 2022
+
+Schema definition update for Generic Subscription.  Spoke network's subnet configuration is now defined as an array.  The array can have 0 to many subnet definitions.
+
 ### April 7, 2022
 
 Schema definition for Logging archetype.  See [documentation](../../docs/archetypes/logging.md).
