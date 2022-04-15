@@ -29,6 +29,27 @@
         "metadata": {
           "displayName": "filterLocationLike"
         }
+      },
+      "privateDnsZoneSubscriptionId": {
+        "type": "String",
+        "defaultValue": "",
+        "metadata": {
+          "displayName": "privateDnsZoneSubscriptionId"
+        }
+      },
+      "privateDnsZoneResourceGroupName": {
+        "type": "String",
+        "defaultValue": "",
+        "metadata": {
+          "displayName": "privateDnsZoneResourceGroupName"
+        }
+      },
+      "privateDnsZoneConfigs": {
+        "type": "Array",
+        "defaultValue": [],
+        "metadata": {
+          "displayName": "privateDnsZoneConfigs"
+        }
       }
     },
     "policyRule": {
@@ -90,15 +111,24 @@
                 "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                 "contentVersion": "1.0.0.0",
                 "parameters": {
-                  "privateDnsZoneId": {
-                    "type": "string"
-                  },
                   "privateEndpointName": {
                     "type": "string"
+                  },
+                  "privateDnsZoneSubscriptionId": {
+                    "type": "string"
+                  },
+                  "privateDnsZoneResourceGroupName": {
+                    "type": "string"
+                  },
+                  "privateDnsZoneConfigs": {
+                    "type": "array"
                   },
                   "location": {
                     "type": "string"
                   }
+                },
+                "variables": {
+                  "dnsZoneResourceIdPrefix": "[concat('/subscriptions/', parameters('privateDnsZoneSubscriptionId'), '/resourceGroups/', parameters('privateDnsZoneResourceGroupName'), '/providers/Microsoft.Network/privateDnsZones/')]"
                 },
                 "resources": [
                   {
@@ -107,11 +137,15 @@
                     "apiVersion": "2020-03-01",
                     "location": "[parameters('location')]",
                     "properties": {
-                      "privateDnsZoneConfigs": [
+                      "copy": [
                         {
-                          "name": "[replace(parameters('privateDnsZoneId'), '.', '_')]",
-                          "properties": {
-                            "privateDnsZoneId": "[parameters('privateDnsZoneId')]"
+                          "name": "privateDnsZoneConfigs",
+                          "count": "[length(parameters('privateDnsZoneConfigs'))]",
+                          "input": {
+                            "name": "[replace(concat(variables('dnsZoneResourceIdPrefix'), parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')]), '.', '_')]",
+                            "properties": {
+                              "privateDnsZoneId": "[concat(variables('dnsZoneResourceIdPrefix'), parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')])]"
+                            }
                           }
                         }
                       ]
@@ -120,11 +154,17 @@
                 ]
               },
               "parameters": {
-                "privateDnsZoneId": {
-                  "value": "[parameters('privateDnsZoneId')]"
-                },
                 "privateEndpointName": {
                   "value": "[field('name')]"
+                },
+                "privateDnsZoneSubscriptionId": {
+                  "value": "[parameters('privateDnsZoneSubscriptionId')]"
+                },
+                "privateDnsZoneResourceGroupName": {
+                  "value": "[parameters('privateDnsZoneResourceGroupName')]"
+                },
+                "privateDnsZoneConfigs": {
+                  "value": "[parameters('privateDnsZoneConfigs')]"
                 },
                 "location": {
                   "value": "[field('location')]"
