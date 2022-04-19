@@ -49,11 +49,11 @@ param aadLoginType string = 'Group'
 
 @description('Synapse Analytics Username.')
 @secure()
-param sqlAdministratorLogin string
+param sqlAuthenticationUsername string
 
 @description('Synapse Analytics Password.')
 @secure()
-param sqlAdministratorLoginPassword string
+param sqlAuthenticationUsernamePassword string
 
 // Networking
 @description('Private Endpoint Subnet Resource Id.')
@@ -115,9 +115,9 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-06-01' = {
   location: location
   properties: {
     azureADOnlyAuthentication: aadAuthenticationOnly
-    sqlAdministratorLoginPassword: sqlAdministratorLoginPassword
+    sqlAdministratorLoginPassword: sqlAuthenticationUsernamePassword
     managedResourceGroupName: managedResourceGroupName
-    sqlAdministratorLogin: sqlAdministratorLogin
+    sqlAdministratorLogin: sqlAuthenticationUsername
 
     managedVirtualNetwork: 'default'
     managedVirtualNetworkSettings: {
@@ -144,21 +144,34 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-06-01' = {
       }
     }
   }
+}
 
-  resource synapse_audit 'auditingSettings@2021-05-01' = {
-    name: 'default'
-    properties: {
-      isAzureMonitorTargetEnabled: true
-      state: 'Enabled'
-    }
+
+resource synapse_audit 'Microsoft.Synapse/workspaces/auditingSettings@2021-05-01' = {
+  name: '${name}/default'
+  properties: {
+    isAzureMonitorTargetEnabled: true
+    state: 'Enabled'
   }
+}
 
-  resource synapse_securityAlertPolicies 'securityAlertPolicies@2021-05-01' = {
-    name: 'Default'
-    properties: {
-      state: 'Enabled'
-      emailAccountAdmins: false
-    }
+resource synapse_securityAlertPolicies 'Microsoft.Synapse/workspaces/securityAlertPolicies@2021-05-01' = {
+  name: '${name}/Default'
+  properties: {
+    state: 'Enabled'
+    emailAccountAdmins: false
+  }
+}
+
+// Azure AD administrators
+resource synapse_aad_admins 'Microsoft.Synapse/workspaces/administrators@2021-06-01' = if(aadLoginName != '') {
+  name: 'activeDirectory'
+  parent: synapse
+  properties: {
+    administratorType: aadLoginType
+    login: aadLoginName
+    sid: aadLoginObjectID
+    tenantId: subscription().tenantId
   }
 }
 
@@ -166,6 +179,7 @@ resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-
   name: '${synapse.name}/default'
   dependsOn: [
     roleAssignSynapseToSALogging
+    synapse_securityAlertPolicies
   ]
   properties: {
     storageContainerPath: '${sqlVulnerabilityLoggingStoragePath}vulnerability-assessment'

@@ -61,7 +61,7 @@ param hubNetwork object
 param network object
 
 var sqldbPassword = sqldb.enabled && !sqldb.aadAuthenticationOnly  ? '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldb.sqlAuthenticationUsername))}' : ''
-var synapsePassword = '${uniqueString(rgCompute.id)}*${toUpper(uniqueString(synapse.username))}'
+var synapsePassword = !synapse.aadAuthenticationOnly ?  '${uniqueString(rgCompute.id)}*${toUpper(uniqueString(synapse.sqlAuthenticationUsername))}' : ''
 
 var databricksName = 'databricks'
 var databricksEgressLbName = 'egressLb'
@@ -437,8 +437,12 @@ module synapseAnalytics '../../azresources/analytics/synapse/main.bicep' = {
     synapseDevPrivateZoneId: networking.outputs.synapseDevPrivateDnsZoneId
     synapseSqlPrivateZoneId: networking.outputs.synapseSqlPrivateDnsZoneId
     
-    synapseUsername: synapse.username 
-    synapsePassword: synapsePassword
+    aadAuthenticationOnly:synapse.aadAuthenticationOnly
+    aadLoginName: contains(synapse,'aadLoginName') ? synapse.aadLoginName : ''
+    aadLoginObjectID: contains(synapse,'aadLoginObjectID')? synapse.aadLoginObjectID : ''
+    aadLoginType: contains(synapse,'aadLoginType') ? synapse.aadLoginType : 'Group'
+    sqlAuthenticationUsername: contains(synapse,'sqlAuthenticationUsername')? synapse.sqlAuthenticationUsername : ''
+    sqlAuthenticationUsernamePassword: synapsePassword
 
     sqlVulnerabilityLoggingStorageAccounResourceGroupName: rgStorage.name
     sqlVulnerabilityLoggingStorageAccountName: storageLogging.outputs.storageName
@@ -453,7 +457,7 @@ module synapseAnalytics '../../azresources/analytics/synapse/main.bicep' = {
   }
 }
 
-module akvsynapseUsername '../../azresources/security/key-vault-secret.bicep' = {
+module akvsynapseUsername '../../azresources/security/key-vault-secret.bicep' = if(synapse.aadAuthenticationOnly==false){
   dependsOn: [
     akv
   ]
@@ -462,7 +466,7 @@ module akvsynapseUsername '../../azresources/security/key-vault-secret.bicep' = 
   params: {
     akvName: akvName
     secretName: 'synapseUsername'
-    secretValue: synapse.username
+    secretValue: synapse.sqlAuthenticationUsername
     secretExpiryInDays: keyVault.secretExpiryInDays
   }
 }
@@ -495,7 +499,7 @@ module akvSqlDbPassword '../../azresources/security/key-vault-secret.bicep' = if
   }
 }
 
-module akvsynapsePassword '../../azresources/security/key-vault-secret.bicep' = {
+module akvsynapsePassword '../../azresources/security/key-vault-secret.bicep' = if(synapse.aadAuthenticationOnly==false) {
   dependsOn: [
     akv
   ]

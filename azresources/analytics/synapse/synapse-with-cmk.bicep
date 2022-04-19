@@ -49,11 +49,11 @@ param aadLoginType string = 'Group'
 
 @description('Synapse Analytics Username.')
 @secure()
-param sqlAdministratorLogin string
+param sqlAuthenticationUsername string
 
 @description('Synapse Analytics Password.')
 @secure()
-param sqlAdministratorLoginPassword string
+param sqlAuthenticationUsernamePassword string
 
 // Networking
 @description('Private Endpoint Subnet Resource Id.')
@@ -136,9 +136,9 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-06-01' = {
   location: location
   properties: {
     azureADOnlyAuthentication: aadAuthenticationOnly
-    sqlAdministratorLoginPassword: sqlAdministratorLoginPassword
+    sqlAdministratorLoginPassword: sqlAuthenticationUsernamePassword
     managedResourceGroupName: managedResourceGroupName
-    sqlAdministratorLogin: sqlAdministratorLogin
+    sqlAdministratorLogin: sqlAuthenticationUsername
 
     managedVirtualNetwork: 'default'
     managedVirtualNetworkSettings: {
@@ -177,7 +177,7 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-06-01' = {
 }
 
 // Azure AD administrators
-resource synapse_aad_admins 'Microsoft.Synapse/workspaces/administrators@2021-06-01' = {
+resource synapse_aad_admins 'Microsoft.Synapse/workspaces/administrators@2021-06-01' = if(aadLoginName != '') {
   name: 'activeDirectory'
   parent: synapse
   properties: {

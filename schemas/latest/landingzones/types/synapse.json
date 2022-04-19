@@ -18,14 +18,69 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "username": {
-          "type": "string"
+        "value": {
+          "oneOf": [
+            {
+              "sqlAuthenticationUsername": {
+                "type": "string"
+              },
+              "aadAuthenticationOnly": {
+                "type": "boolean",
+                "enum": [
+                  true
+              ]
+              },
+              "aadLoginName": {
+                "type": "string"
+              },
+              "aadLoginObjectID": {
+                "type": "string"
+              },
+              "aadLoginType": {
+                "type": "string",
+                "enum": [
+                  "User",
+                  "Group",
+                  "Application"
+                ]
+              },
+              "required": [
+                "aadAuthenticationOnly",
+                "aadLoginName",
+                "aadLoginObjectID",
+                "aadLoginType"
+            ]
+            },
+            {
+              "sqlAuthenticationUsername": {
+                "type": "string"
+              },
+              "aadAuthenticationOnly": {
+                "type": "boolean",
+                "enum": [
+                  false
+              ]
+              },
+              "aadLoginObjectID": {
+                "type": "string"
+              },
+              "aadLoginType": {
+                "type": "string",
+                "enum": [
+                  "User",
+                  "Group",
+                  "Application"
+                ]
+              },
+              "required": [
+                "aadAuthenticationOnly",
+                "sqlAuthenticationUsername"
+
+            ]
+            }
+          ]
         }
-      },
-      "required": [
-        "username"
-      ],
-      "title": "Value"
+      }
     }
   }
 }

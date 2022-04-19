@@ -49,11 +49,11 @@ param aadLoginType string = 'Group'
 
 @description('Synapse Analytics Username.')
 @secure()
-param sqlAdministratorLogin string
+param sqlAuthenticationUsername string
 
 @description('Synapse Analytics Password.')
 @secure()
-param sqlAdministratorLoginPassword string
+param sqlAuthenticationUsernamePassword string
 
 // Networking
 @description('Private Endpoint Subnet Resource Id.')
@@ -111,8 +111,11 @@ module synapseWithoutCMK 'synapse-without-cmk.bicep' = if (!useCMK) {
     managedResourceGroupName: managedResourceGroupName 
     
     aadAuthenticationOnly: aadAuthenticationOnly
-    sqlAdministratorLogin: sqlAdministratorLogin 
-    sqlAdministratorLoginPassword: sqlAdministratorLoginPassword 
+    aadLoginName: aadLoginName
+    aadLoginObjectID: aadLoginObjectID
+    aadLoginType: aadLoginType
+    sqlAuthenticationUsername: sqlAuthenticationUsername 
+    sqlAuthenticationUsernamePassword: sqlAuthenticationUsernamePassword 
     
     privateEndpointSubnetId: privateEndpointSubnetId 
     synapsePrivateZoneId: synapsePrivateZoneId 
@@ -144,8 +147,8 @@ module synapseWithCMK 'synapse-with-cmk.bicep' = if (useCMK) {
     managedResourceGroupName: managedResourceGroupName 
     
     aadAuthenticationOnly: aadAuthenticationOnly
-    sqlAdministratorLogin: sqlAdministratorLogin 
-    sqlAdministratorLoginPassword: sqlAdministratorLoginPassword 
+    sqlAuthenticationUsername: sqlAuthenticationUsername 
+    sqlAuthenticationUsernamePassword: sqlAuthenticationUsernamePassword 
     
     privateEndpointSubnetId: privateEndpointSubnetId 
     synapsePrivateZoneId: synapsePrivateZoneId 
