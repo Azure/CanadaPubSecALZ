@@ -41,7 +41,7 @@ Azure AD authentication only | Json (used in parameters files)
       "value": {
         "aadAuthenticationOnly": true,
         "aadLoginName": "az.admins",
-        "aadLoginObjectID": "065a3306-1466-465d-ae31-bc7be9e324cc",
+        "aadLoginObjectID": "e0357d81-55d8-44e9-9d9c-ab09dc710785",
         "aadLoginType":"Group"
       }
 ```
@@ -65,7 +65,7 @@ Mixed authentication |  Json (used in parameters files)
         "aadAuthenticationOnly": false,
         "sqlAuthenticationUsername": "azadmin",
         "aadLoginName": "az.admins",
-        "aadLoginObjectID": "065a3306-1466-465d-ae31-bc7be9e324cc",
+        "aadLoginObjectID": "e0357d81-55d8-44e9-9d9c-ab09dc710785",
         "aadLoginType":"Group"
       }
  ```

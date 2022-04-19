@@ -53,7 +53,7 @@ param sqlAuthenticationUsername string
 
 @description('Synapse Analytics Password.')
 @secure()
-param sqlAuthenticationUsernamePassword string
+param sqlAuthenticationPassword string
 
 // Networking
 @description('Private Endpoint Subnet Resource Id.')
@@ -115,7 +115,7 @@ module synapseWithoutCMK 'synapse-without-cmk.bicep' = if (!useCMK) {
     aadLoginObjectID: aadLoginObjectID
     aadLoginType: aadLoginType
     sqlAuthenticationUsername: sqlAuthenticationUsername 
-    sqlAuthenticationUsernamePassword: sqlAuthenticationUsernamePassword 
+    sqlAuthenticationPassword: sqlAuthenticationPassword 
     
     privateEndpointSubnetId: privateEndpointSubnetId 
     synapsePrivateZoneId: synapsePrivateZoneId 
@@ -148,7 +148,7 @@ module synapseWithCMK 'synapse-with-cmk.bicep' = if (useCMK) {
     
     aadAuthenticationOnly: aadAuthenticationOnly
     sqlAuthenticationUsername: sqlAuthenticationUsername 
-    sqlAuthenticationUsernamePassword: sqlAuthenticationUsernamePassword 
+    sqlAuthenticationPassword: sqlAuthenticationPassword 
     
     privateEndpointSubnetId: privateEndpointSubnetId 
     synapsePrivateZoneId: synapsePrivateZoneId 

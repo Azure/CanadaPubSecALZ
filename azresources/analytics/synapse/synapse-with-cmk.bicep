@@ -53,7 +53,7 @@ param sqlAuthenticationUsername string
 
 @description('Synapse Analytics Password.')
 @secure()
-param sqlAuthenticationUsernamePassword string
+param sqlAuthenticationPassword string
 
 // Networking
 @description('Private Endpoint Subnet Resource Id.')
@@ -136,7 +136,7 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-06-01' = {
   location: location
   properties: {
     azureADOnlyAuthentication: aadAuthenticationOnly
-    sqlAdministratorLoginPassword: sqlAuthenticationUsernamePassword
+    sqlAdministratorLoginPassword: sqlAuthenticationPassword
     managedResourceGroupName: managedResourceGroupName
     sqlAdministratorLogin: sqlAuthenticationUsername
 
