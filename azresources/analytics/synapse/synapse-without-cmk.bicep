@@ -148,7 +148,7 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-06-01' = {
 
 
 resource synapse_audit 'Microsoft.Synapse/workspaces/auditingSettings@2021-05-01' = {
-  name: '${name}/default'
+  name: '${synapse.name}/default'
   properties: {
     isAzureMonitorTargetEnabled: true
     state: 'Enabled'
@@ -156,7 +156,7 @@ resource synapse_audit 'Microsoft.Synapse/workspaces/auditingSettings@2021-05-01
 }
 
 resource synapse_securityAlertPolicies 'Microsoft.Synapse/workspaces/securityAlertPolicies@2021-05-01' = {
-  name: '${name}/Default'
+  name: '${synapse.name}/Default'
   properties: {
     state: 'Enabled'
     emailAccountAdmins: false
@@ -175,11 +175,12 @@ resource synapse_aad_admins 'Microsoft.Synapse/workspaces/administrators@2021-06
   }
 }
 
-resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-05-01' = {
+resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-06-01' = {
   name: '${synapse.name}/default'
   dependsOn: [
     roleAssignSynapseToSALogging
     synapse_securityAlertPolicies
+    synapse_audit
   ]
   properties: {
     storageContainerPath: '${sqlVulnerabilityLoggingStoragePath}vulnerability-assessment'

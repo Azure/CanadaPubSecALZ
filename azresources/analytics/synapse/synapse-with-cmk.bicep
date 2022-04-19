@@ -385,7 +385,7 @@ resource cmkActivation 'Microsoft.Synapse/workspaces/keys@2021-06-01-preview' = 
   dependsOn: [
     akvRoleAssignmentForCMK
   ]
-  name: '${name}/cmk-synapse-${name}'
+  name: '${synapse.name}/cmk-synapse-${synapse.name}'
   properties: {
     isActiveCMK: true
     keyVaultUrl: akvKey.outputs.keyUri
@@ -408,7 +408,7 @@ resource synapse_audit 'Microsoft.Synapse/workspaces/auditingSettings@2021-05-01
     cmkActivation
     wait
   ]
-  name: '${name}/default'
+  name: '${synapse.name}/default'
   properties: {
     isAzureMonitorTargetEnabled: true
     state: 'Enabled'
@@ -420,14 +420,14 @@ resource synapse_securityAlertPolicies 'Microsoft.Synapse/workspaces/securityAle
     cmkActivation
     wait
   ]
-  name: '${name}/Default'
+  name: '${synapse.name}/Default'
   properties: {
     state: 'Enabled'
     emailAccountAdmins: false
   }
 }
 
-resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-05-01' = {
+resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-06-01' = {
   dependsOn: [
     cmkActivation
     wait
@@ -435,7 +435,7 @@ resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-
     synapse_securityAlertPolicies
     roleAssignSynapseToSALogging
   ]
-  name: '${name}/default'
+  name: '${synapse.name}/default'
   properties: {
     storageContainerPath: '${sqlVulnerabilityLoggingStoragePath}vulnerability-assessment'
     recurringScans: {
