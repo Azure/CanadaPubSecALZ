@@ -6,7 +6,7 @@
       "additionalProperties": false,
       "properties": {
         "value": {
-          "$ref": "#/definitions/Value"
+          "$ref": "#/definitions/valuedef"
         }
       },
       "required": [
@@ -14,21 +14,21 @@
       ],
       "title": "Synapse"
     },
-    "Value": {
+    "valuedef": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "value": {
           "oneOf": [
             {
-              "sqlAuthenticationUsername": {
-                "type": "string"
-              },
               "aadAuthenticationOnly": {
                 "type": "boolean",
                 "enum": [
                   true
-              ]
+                ]
+              },
+              "sqlAuthenticationUsername": {
+                "type": "string"
               },
               "aadLoginName": {
                 "type": "string"
@@ -49,17 +49,17 @@
                 "aadLoginName",
                 "aadLoginObjectID",
                 "aadLoginType"
-            ]
+              ]
             },
             {
-              "sqlAuthenticationUsername": {
-                "type": "string"
-              },
               "aadAuthenticationOnly": {
                 "type": "boolean",
                 "enum": [
                   false
-              ]
+                ]
+              },
+              "sqlAuthenticationUsername": {
+                "type": "string"
               },
               "aadLoginObjectID": {
                 "type": "string"
@@ -75,12 +75,12 @@
               "required": [
                 "aadAuthenticationOnly",
                 "sqlAuthenticationUsername"
-
-            ]
+              ]
             }
           ]
         }
-      }
+      },
+      "title": "synapse"
     }
   }
 }

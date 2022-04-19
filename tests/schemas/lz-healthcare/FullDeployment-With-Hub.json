@@ -128,9 +128,13 @@
         },
         "synapse": {
             "value": {
-                "username": "azadmin"
+              "aadAuthenticationOnly": false,
+              "sqlAuthenticationUsername": "kubo",
+              "aadLoginName": "az.admins",
+              "aadLoginObjectID": "065a3306-1466-465d-ae31-bc7be9e324cc",
+              "aadLoginType":"Group"
             }
-        },
+          },
         "hubNetwork": {
             "value": {
                 "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
