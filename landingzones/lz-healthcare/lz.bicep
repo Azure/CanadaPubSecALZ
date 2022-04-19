@@ -442,7 +442,7 @@ module synapseAnalytics '../../azresources/analytics/synapse/main.bicep' = {
     aadLoginObjectID: contains(synapse,'aadLoginObjectID')? synapse.aadLoginObjectID : ''
     aadLoginType: contains(synapse,'aadLoginType') ? synapse.aadLoginType : 'Group'
     sqlAuthenticationUsername: contains(synapse,'sqlAuthenticationUsername')? synapse.sqlAuthenticationUsername : ''
-    sqlAuthenticationUsernamePassword: synapsePassword
+    sqlAuthenticationPassword: synapsePassword
 
     sqlVulnerabilityLoggingStorageAccounResourceGroupName: rgStorage.name
     sqlVulnerabilityLoggingStorageAccountName: storageLogging.outputs.storageName
