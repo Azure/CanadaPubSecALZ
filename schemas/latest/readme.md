@@ -4,7 +4,12 @@
 
 ### April 20, 2022
 
-Schema definition update for Generic Subscription.  Spoke network's subnet configuration is now defined as an array.  The array can have 0 to many subnet definitions.
+* Schema definition update for Generic Subscription.  Spoke network's subnet configuration is now defined as an array.  The array can have 0 to many subnet definitions.
+
+* Schema definition for Hub Networking archetypes (Azure Firewall & NVA).  See documentation:
+
+  * [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
+  * [Hub Networking with Fortigate Firewalls](../../docs/archetypes/hubnetwork-nva-fortigate.md)
 
 ### April 18, 2022
 
