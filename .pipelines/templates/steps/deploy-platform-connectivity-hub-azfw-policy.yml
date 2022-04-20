@@ -8,20 +8,34 @@
 # ----------------------------------------------------------------------------------
 
 parameters:
-  - name: description
-    type: string
-  - name: templateFile
-    type: string
-  - name: workingDir
-    type: string
   - name: deployOperation
     type: string
     default: create
     values:
       - create
       - what-if
+  - name: networkingSubscriptionId
+    type: string
+  - name: azureFirewallPolicyConfigurationPath
+    type: string
+  - name: networkingRegion
+    type: string
+  - name: workingDir
+    type: string
 
 steps:
+
+- task: PowerShell@2
+  displayName: Validate Azure Firewall Policy Parameters
+  inputs:
+    targetType: 'inline'
+    script: |
+      $schemaFile="$(Build.SourcesDirectory)/schemas/latest/landingzones/lz-platform-connectivity-hub-azfw-policy.json"
+
+      Write-Host "Parameters File: ${{ parameters.azureFirewallPolicyConfigurationPath }}"
+      Write-Host "Schema File: ${schemaFile}"
+
+      Get-Content -Raw "${{ parameters.azureFirewallPolicyConfigurationPath }}" | Test-Json -SchemaFile "${schemaFile}"
 
 - task: AzureCLI@2
   displayName: Configure Azure Firewall Policy
@@ -32,16 +46,13 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      echo "Deploying ${{ parameters.templateFile }} using ${{ parameters.deployOperation}} operation..."
+      echo "Deploying main-azfw-policy.bicep using ${{ parameters.deployOperation}} operation using ${{ parameters.azureFirewallPolicyConfigurationPath }}..."
       
       az deployment sub ${{ parameters.deployOperation }} \
-      --location $(deploymentRegion) \
-      --subscription $(var-hubnetwork-subscriptionId) \
-      --template-file ${{ parameters.templateFile }} \
-      --parameters \
-          resourceTags='$(var-hubnetwork-resourceTags)' \
-          resourceGroupName='$(var-hubnetwork-azfw-rgPolicyName)' \
-          policyName='$(var-hubnetwork-azfw-policyName)'
+      --location ${{ parameters.networkingRegion }} \
+      --subscription ${{ parameters.networkingSubscriptionId }} \
+      --template-file main-azfw-policy.bicep \
+      --parameters @${{ parameters.azureFirewallPolicyConfigurationPath }}
           
       $(var-bashPostInjectScript)
     workingDirectory: '${{ parameters.workingDir }}/lz-platform-connectivity-hub-azfw'
