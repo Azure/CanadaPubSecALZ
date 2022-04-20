@@ -8,12 +8,6 @@
 # ----------------------------------------------------------------------------------
 
 parameters:
-  - name: description
-    type: string
-  - name: moveTemplate
-    type: string
-  - name: templateFile
-    type: string
   - name: workingDir
     type: string
   - name: deployOperation
@@ -22,14 +16,34 @@ parameters:
     values:
       - create
       - what-if
+  - name: networkingManagementGroupId
+    type: string
+  - name: networkingSubscriptionId
+    type: string
+  - name: networkingRegion
+    type: string
+  - name: networkingConfigurationPath
+    type: string
 
 steps:
 
+- task: PowerShell@2
+  displayName: Validate Hub Networking Parameters
+  inputs:
+    targetType: 'inline'
+    script: |
+      $schemaFile="$(Build.SourcesDirectory)/schemas/latest/landingzones/lz-platform-connectivity-hub-nva.json"
+
+      Write-Host "Parameters File: ${{ parameters.networkingConfigurationPath }}"
+      Write-Host "Schema File: ${schemaFile}"
+
+      Get-Content -Raw "${{ parameters.networkingConfigurationPath }}" | Test-Json -SchemaFile "${schemaFile}"
+
 - template: ./move-subscription.yml
   parameters:
-    managementGroup: $(var-hubnetwork-managementGroupId)
-    subscriptionGuid: $(var-hubnetwork-subscriptionId)
-    subscriptionLocation: $(deploymentRegion)
+    managementGroup: ${{ parameters.networkingManagementGroupId }}
+    subscriptionGuid: ${{ parameters.networkingSubscriptionId }}
+    subscriptionLocation: ${{ parameters.networkingRegion }}
     templateDirectory: $(Build.SourcesDirectory)/landingzones/utils/mg-move
     templateFile: move-subscription.bicep
     workingDir: ${{ parameters.workingDir }}/utils/mg-move
@@ -43,9 +57,8 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      az account set -s $(var-hubnetwork-subscriptionId)
-      
-      az provider register -n Microsoft.ContainerService --subscription '$(var-hubnetwork-subscriptionId)'
+      az account set -s ${{ parameters.networkingSubscriptionId }}     
+      az provider register -n Microsoft.ContainerService --subscription '${{ parameters.networkingSubscriptionId }}'
 
       $(var-bashPostInjectScript)
 
@@ -58,93 +71,27 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      echo "Deploying ${{ parameters.templateFile }} using ${{ parameters.deployOperation}} operation..."
+      # Check if the log analytics workspace id is provided in the parameters json.
+      # If present, then do no change it.  Otherwise add it to the json parameter file.
+      LOG_ANALYTICS_WORKSPACE_RESOURCE_ID_IN_PARAMETERS=`jq -r .parameters.logAnalyticsWorkspaceResourceId.value ${{ parameters.networkingConfigurationPath }}`   
+
+      if [[ $LOG_ANALYTICS_WORKSPACE_RESOURCE_ID_IN_PARAMETERS != null && "$LOG_ANALYTICS_WORKSPACE_RESOURCE_ID_IN_PARAMETERS" != "" ]];
+      then
+        echo "Log Analytics Workspace Resource ID is set in ${{ parameters.networkingConfigurationPath }} to $LOG_ANALYTICS_WORKSPACE_RESOURCE_ID_IN_PARAMETERS"
+      else
+        echo "Log Analytics Workspace Resource ID is not set in ${{ parameters.networkingConfigurationPath }}.  Updating ${{ parameters.networkingConfigurationPath }} with $(var-logging-logAnalyticsWorkspaceResourceId)"
+
+        # use jq to update the json parameter file
+        echo "$( jq '.parameters.logAnalyticsWorkspaceResourceId.value = "$(var-logging-logAnalyticsWorkspaceResourceId)"' ${{ parameters.networkingConfigurationPath }} )" > ${{ parameters.networkingConfigurationPath }}
+      fi
+
+      echo "Deploying main.bicep using ${{ parameters.deployOperation}} operation using ${{ parameters.networkingConfigurationPath  }}..."
       
       az deployment sub ${{ parameters.deployOperation }} \
-      --location $(deploymentRegion) \
-      --subscription $(var-hubnetwork-subscriptionId) \
-      --template-file ${{ parameters.templateFile }} \
-      --parameters \
-          serviceHealthAlerts='$(var-hubnetwork-serviceHealthAlerts)' \
-          securityCenter='$(var-hubnetwork-securityCenter)' \
-          subscriptionRoleAssignments='$(var-hubnetwork-subscriptionRoleAssignments)' \
-          subscriptionBudget='$(var-hubnetwork-subscriptionBudget)' \
-          subscriptionTags='$(var-hubnetwork-subscriptionTags)' \
-          resourceTags='$(var-hubnetwork-resourceTags)' \
-          logAnalyticsWorkspaceResourceId='$(var-logging-logAnalyticsWorkspaceResourceId)' \
-          deployPrivateDnsZones='$(var-hubnetwork-deployPrivateDnsZones)' \
-          rgPrivateDnsZonesName='$(var-hubnetwork-rgPrivateDnsZonesName)' \
-          deployDdosStandard='$(var-hubnetwork-deployDdosStandard)' \
-          rgDdosName='$(var-hubnetwork-rgDdosName)' \
-          ddosPlanName='$(var-hubnetwork-ddosPlanName)' \
-          bastionName='$(var-hubnetwork-bastionName)' \
-          bastionSku='$(var-hubnetwork-bastionSku)' \
-          bastionScaleUnits='$(var-hubnetwork-bastionScaleUnits)' \
-          rgPazName='$(var-hubnetwork-rgPazName)' \
-          rgMrzName='$(var-hubnetwork-rgMrzName)' \
-          mrzVnetName='$(var-hubnetwork-mrzVnetName)' \
-          mrzVnetAddressPrefixRFC1918='$(var-hubnetwork-mrzVnetAddressPrefixRFC1918)' \
-          mrzMazSubnetName='$(var-hubnetwork-mrzMazSubnetName)' \
-          mrzMazSubnetAddressPrefix='$(var-hubnetwork-mrzMazSubnetAddressPrefix)' \
-          mrzInfSubnetName='$(var-hubnetwork-mrzInfSubnetName)' \
-          mrzInfSubnetAddressPrefix='$(var-hubnetwork-mrzInfSubnetAddressPrefix)' \
-          mrzSecSubnetName='$(var-hubnetwork-mrzSecSubnetName)' \
-          mrzSecSubnetAddressPrefix='$(var-hubnetwork-mrzSecSubnetAddressPrefix)' \
-          mrzLogSubnetName='$(var-hubnetwork-mrzLogSubnetName)' \
-          mrzLogSubnetAddressPrefix='$(var-hubnetwork-mrzLogSubnetAddressPrefix)' \
-          mrzMgmtSubnetName='$(var-hubnetwork-mrzMgmtSubnetName)' \
-          mrzMgmtSubnetAddressPrefix='$(var-hubnetwork-mrzMgmtSubnetAddressPrefix)' \
-          rgHubName='$(var-hubnetwork-nva-rgHubName)' \
-          hubVnetName='$(var-hubnetwork-nva-hubVnetName)' \
-          hubVnetAddressPrefixRFC1918='$(var-hubnetwork-nva-hubVnetAddressPrefixRFC1918)' \
-          hubVnetAddressPrefixRFC6598='$(var-hubnetwork-nva-hubVnetAddressPrefixRFC6598)' \
-          hubVnetAddressPrefixBastion='$(var-hubnetwork-nva-hubVnetAddressPrefixBastion)' \
-          hubEanSubnetName='$(var-hubnetwork-nva-hubEanSubnetName)' \
-          hubEanSubnetAddressPrefix='$(var-hubnetwork-nva-hubEanSubnetAddressPrefix)' \
-          hubPublicSubnetName='$(var-hubnetwork-nva-hubPublicSubnetName)' \
-          hubPublicSubnetAddressPrefix='$(var-hubnetwork-nva-hubPublicSubnetAddressPrefix)' \
-          hubPazSubnetName='$(var-hubnetwork-nva-hubPazSubnetName)' \
-          hubPazSubnetAddressPrefix='$(var-hubnetwork-nva-hubPazSubnetAddressPrefix)' \
-          hubDevIntSubnetName='$(var-hubnetwork-nva-hubDevIntSubnetName)' \
-          hubDevIntSubnetAddressPrefix='$(var-hubnetwork-nva-hubDevIntSubnetAddressPrefix)' \
-          hubProdIntSubnetName='$(var-hubnetwork-nva-hubProdIntSubnetName)' \
-          hubProdIntSubnetAddressPrefix='$(var-hubnetwork-nva-hubProdIntSubnetAddressPrefix)' \
-          hubMrzIntSubnetName='$(var-hubnetwork-nva-hubMrzIntSubnetName)' \
-          hubMrzIntSubnetAddressPrefix='$(var-hubnetwork-nva-hubMrzIntSubnetAddressPrefix)' \
-          hubHASubnetName='$(var-hubnetwork-nva-hubHASubnetName)' \
-          hubHASubnetAddressPrefix='$(var-hubnetwork-nva-hubHASubnetAddressPrefix)' \
-          hubGatewaySubnetPrefix='$(var-hubnetwork-nva-hubGatewaySubnetPrefix)' \
-          hubBastionSubnetAddressPrefix='$(var-hubnetwork-nva-hubBastionSubnetAddressPrefix)' \
-          deployFirewallVMs='$(var-hubnetwork-nva-deployFirewallVMs)' \
-          useFortigateFW='$(var-hubnetwork-nva-useFortigateFW)' \
-          fwDevILBName='$(var-hubnetwork-nva-fwDevILBName)' \
-          fwDevVMSku='$(var-hubnetwork-nva-fwDevVMSku)' \
-          fwDevVM1Name='$(var-hubnetwork-nva-fwDevVM1Name)' \
-          fwDevVM2Name='$(var-hubnetwork-nva-fwDevVM2Name)' \
-          fwDevILBExternalFacingIP='$(var-hubnetwork-nva-fwDevILBExternalFacingIP)' \
-          fwDevVM1ExternalFacingIP='$(var-hubnetwork-nva-fwDevVM1ExternalFacingIP)' \
-          fwDevVM2ExternalFacingIP='$(var-hubnetwork-nva-fwDevVM2ExternalFacingIP)' \
-          fwDevVM1MrzIntIP='$(var-hubnetwork-nva-fwDevVM1MrzIntIP)' \
-          fwDevVM2MrzIntIP='$(var-hubnetwork-nva-fwDevVM2MrzIntIP)' \
-          fwDevILBDevIntIP='$(var-hubnetwork-nva-fwDevILBDevIntIP)' \
-          fwDevVM1DevIntIP='$(var-hubnetwork-nva-fwDevVM1DevIntIP)' \
-          fwDevVM2DevIntIP='$(var-hubnetwork-nva-fwDevVM2DevIntIP)' \
-          fwDevVM1HAIP='$(var-hubnetwork-nva-fwDevVM1HAIP)' \
-          fwDevVM2HAIP='$(var-hubnetwork-nva-fwDevVM2HAIP)' \
-          fwProdILBName='$(var-hubnetwork-nva-fwProdILBName)' \
-          fwProdVMSku='$(var-hubnetwork-nva-fwProdVMSku)' \
-          fwProdVM1Name='$(var-hubnetwork-nva-fwProdVM1Name)' \
-          fwProdVM2Name='$(var-hubnetwork-nva-fwProdVM2Name)' \
-          fwProdILBExternalFacingIP='$(var-hubnetwork-nva-fwProdILBExternalFacingIP)' \
-          fwProdVM1ExternalFacingIP='$(var-hubnetwork-nva-fwProdVM1ExternalFacingIP)' \
-          fwProdVM2ExternalFacingIP='$(var-hubnetwork-nva-fwProdVM2ExternalFacingIP)' \
-          fwProdVM1MrzIntIP='$(var-hubnetwork-nva-fwProdVM1MrzIntIP)' \
-          fwProdVM2MrzIntIP='$(var-hubnetwork-nva-fwProdVM2MrzIntIP)' \
-          fwProdILBPrdIntIP='$(var-hubnetwork-nva-fwProdILBPrdIntIP)' \
-          fwProdVM1PrdIntIP='$(var-hubnetwork-nva-fwProdVM1PrdIntIP)' \
-          fwProdVM2PrdIntIP='$(var-hubnetwork-nva-fwProdVM2PrdIntIP)' \
-          fwProdVM1HAIP='$(var-hubnetwork-nva-fwProdVM1HAIP)' \
-          fwProdVM2HAIP='$(var-hubnetwork-nva-fwProdVM2HAIP)' \
+      --location ${{ parameters.networkingRegion }} \
+      --subscription ${{ parameters.networkingSubscriptionId }} \
+      --template-file main.bicep \
+      --parameters @${{ parameters.networkingConfigurationPath }} \
           fwUsername='$(var-hubnetwork-nva-fwUsername)' \
           fwPassword='$(var-hubnetwork-nva-fwPassword)'
           
@@ -152,7 +99,7 @@ steps:
     workingDirectory: '${{ parameters.workingDir }}/lz-platform-connectivity-hub-nva'
 
 - task: AzureCLI@2
-  displayName: Azure Policy - Enable Private DNS Zone Policies (if var-hubnetwork-deployPrivateDnsZones=true)
+  displayName: Azure Policy - Enable Private DNS Zone Policies (if deployPrivateDnsZones=true in config)
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
@@ -160,7 +107,10 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      case $(var-hubnetwork-deployPrivateDnsZones) in
+      DEPLOY_PRIVATE_DNS_ZONES=`jq -r .parameters.deployPrivateDnsZones.value ${{ parameters.networkingConfigurationPath }}`
+      PRIVATE_DNS_ZONES_RESOURCE_GROUP=`jq -r .parameters.rgPrivateDnsZonesName.value ${{ parameters.networkingConfigurationPath }}`   
+
+      case $DEPLOY_PRIVATE_DNS_ZONES in
         (true)
           echo "Hub Network will manage private dns zones, creating Azure Policy assignment to automatically create Private Endpoint DNS Zones"
 
@@ -168,14 +118,14 @@ steps:
           echo "Deploying policy assignment using policy/custom/assignments/DNSPrivateEndpoints.bicep"
 
           az deployment mg ${{ parameters.deployOperation }} \
-            --location $(deploymentRegion) \
+            --location ${{ parameters.networkingRegion }} \
             --management-group-id $(var-topLevelManagementGroupName) \
             --template-file DNSPrivateEndpoints.bicep \
             --parameters \
                 policyAssignmentManagementGroupId='$(var-topLevelManagementGroupName)' \
                 policyDefinitionManagementGroupId='$(var-topLevelManagementGroupName)' \
-                privateDNSZoneSubscriptionId='$(var-hubnetwork-subscriptionId)' \
-                privateDNSZoneResourceGroupName='$(var-hubnetwork-rgPrivateDnsZonesName)'
+                privateDNSZoneSubscriptionId='${{ parameters.networkingSubscriptionId }}' \
+                privateDNSZoneResourceGroupName="$PRIVATE_DNS_ZONES_RESOURCE_GROUP"
           ;;
         (*)
           echo "Hub Network will not manage private dns zones.  Azure Policy assignment will be skipped."
@@ -186,7 +136,7 @@ steps:
     workingDirectory: '$(System.DefaultWorkingDirectory)/policy/custom/assignments'
 
 - task: AzureCLI@2
-  displayName: Azure Policy - Enable DDoS Standard (if var-hubnetwork-deployDdosStandard=true)
+  displayName: Azure Policy - Enable DDoS Standard (if deployDdosStandard=true in config)
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
@@ -194,19 +144,24 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      case $(var-hubnetwork-deployDdosStandard) in
+      DEPLOY_DDOS_STANDARD=`jq -r .parameters.deployDdosStandard.value ${{ parameters.networkingConfigurationPath }}`
+
+      case $DEPLOY_DDOS_STANDARD in
         (true)
           echo "DDoS Standard is enabled, creating Azure Policy assignment to protect for all Virtual Networks in '$(var-topLevelManagementGroupName)' management group."
 
+          DDOS_STANDARD_RESOURCE_GROUP_NAME=`jq -r .parameters.rgDdosName.value ${{ parameters.networkingConfigurationPath }}`
+          DDOS_STANDARD_PLAN_NAME=`jq -r .parameters.ddosPlanName.value ${{ parameters.networkingConfigurationPath }}`
+
           # Identify the Resource Id for DDOS Standard Plan
-          DDOS_PLAN_ID=`az network ddos-protection show -g $(var-hubnetwork-rgDdosName) -n $(var-hubnetwork-ddosPlanName) --subscription $(var-hubnetwork-subscriptionId) --query id -o tsv`
+          DDOS_PLAN_ID=`az network ddos-protection show -g $DDOS_STANDARD_RESOURCE_GROUP_NAME -n $DDOS_STANDARD_PLAN_NAME --subscription ${{ parameters.networkingSubscriptionId }} --query id -o tsv`
           echo "DDoS Standard Plan Id: $DDOS_PLAN_ID"
 
           # Apply the policy assignment
           echo "Deploying policy assignment using policy/custom/assignments/DDoS.bicep"
 
           az deployment mg ${{ parameters.deployOperation }} \
-            --location $(deploymentRegion) \
+            --location ${{ parameters.networkingRegion }} \
             --management-group-id $(var-topLevelManagementGroupName) \
             --template-file DDoS.bicep \
             --parameters \
