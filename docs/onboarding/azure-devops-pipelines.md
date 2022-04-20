@@ -1659,13 +1659,16 @@ Migration process:
 
         **Template to use for hub-network.parameters.json**
 
+        <details>
+            <summary>Expand/collapse</summary>
+
         ```json
         {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
           "contentVersion": "1.0.0.0",
           "parameters": {
             "serviceHealthAlerts": {
-              "value": < value from var-hubnetwork-serviceHealthAlerts>
+              "value": < value from var-hubnetwork-serviceHealthAlerts >
             },
             "securityCenter": {
               "value": < value from var-hubnetwork-securityCenter >
@@ -1704,7 +1707,7 @@ Migration process:
               "value": "< value from var-hubnetwork-bastionSku >"
             },
             "bastionScaleUnits": {
-              "value": < value from var-hubnetwork-bastionScaleUnits>
+              "value": < value from var-hubnetwork-bastionScaleUnits >
             },
             "rgPazName": {
               "value": "< value from var-hubnetwork-rgPazName >"
@@ -1797,6 +1800,8 @@ Migration process:
         }
         ```
 
+        </details>
+
 4. When using Hub Networking with Network Virtual Appliance
 
     1. Create subdirectory: `hub-nva` (i.e. `./config/networking/CanadaESLZ-main/hub-nva`)
@@ -1805,13 +1810,16 @@ Migration process:
 
         **Template to use for hub-network.parameters.json**
 
+        <details>
+            <summary>Expand/collapse</summary>
+
         ```json
         {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
           "contentVersion": "1.0.0.0",
           "parameters": {
             "serviceHealthAlerts": {
-              "value": < value from var-hubnetwork-serviceHealthAlerts>
+              "value": < value from var-hubnetwork-serviceHealthAlerts >
             },
             "securityCenter": {
               "value": < value from var-hubnetwork-securityCenter >
@@ -1850,7 +1858,7 @@ Migration process:
               "value": "< value from var-hubnetwork-bastionSku >"
             },
             "bastionScaleUnits": {
-              "value": < value from var-hubnetwork-bastionScaleUnits>
+              "value": < value from var-hubnetwork-bastionScaleUnits >
             },
             "rgPazName": {
               "value": "< value from var-hubnetwork-rgPazName >"
@@ -2050,6 +2058,8 @@ Migration process:
           }
         }
         ```
+
+        </details>
 
 5. Edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git and define the following parameters.
 
