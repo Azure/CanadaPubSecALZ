@@ -9,7 +9,7 @@
 * Schema definition for Hub Networking archetypes (Azure Firewall & NVA).  See documentation:
 
   * [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
-  * [Hub Networking with Fortigate Firewalls](../../docs/archetypes/hubnetwork-nva-fortigate.md)
+  * [Hub Networking with Network Virtual Appliance (e.g. Fortigate Firewalls)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
 
 ### April 18, 2022
 
