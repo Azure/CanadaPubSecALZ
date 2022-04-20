@@ -4,7 +4,14 @@
 
 ### April 20, 2022
 
-Removed 4 subnets from Machine Learning archetype's virtual network: `oz`, `paz`, `rz` and `hrz`.
+* Schema definition update for Generic Subscription.  Spoke network's subnet configuration is now defined as an array.  The array can have 0 to many subnet definitions.
+
+* Removed 4 subnets from Machine Learning archetype's virtual network: `oz`, `paz`, `rz` and `hrz`.
+
+* Schema definition for Hub Networking archetypes (Azure Firewall & NVA).  See documentation:
+
+  * [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)
+  * [Hub Networking with Network Virtual Appliance (e.g. Fortigate Firewalls)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
 
 ### April 18, 2022
 
