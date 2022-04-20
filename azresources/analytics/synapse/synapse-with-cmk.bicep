@@ -30,13 +30,30 @@ param adlsName string
 param adlsFSName string
 
 // Credentials
+@description('use Azure AD only authentication or mix of both AAD and SQL authentication')
+param aadAuthenticationOnly bool
+
+@description('Azure AD principal name, in the format of firstname last name')
+param aadLoginName string =''
+
+@description('AAD account object id')
+param aadLoginObjectID string=''
+
+@description('AAD account type with options User, Group, Application. Default: Group')
+@allowed([
+  'User'
+  'Group'
+  'Application'
+])
+param aadLoginType string = 'Group'
+
 @description('Synapse Analytics Username.')
 @secure()
-param synapseUsername string
+param sqlAuthenticationUsername string
 
 @description('Synapse Analytics Password.')
 @secure()
-param synapsePassword string
+param sqlAuthenticationPassword string
 
 // Networking
 @description('Private Endpoint Subnet Resource Id.')
@@ -109,7 +126,7 @@ resource synapsePrivateLinkHub 'Microsoft.Synapse/privateLinkHubs@2021-03-01' = 
   location: location
 }
 
-resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
+resource synapse 'Microsoft.Synapse/workspaces@2021-06-01' = {
   dependsOn: [
     dataLakeSynapseFS
   ]
@@ -118,9 +135,10 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
   tags: tags
   location: location
   properties: {
-    sqlAdministratorLoginPassword: synapsePassword
+    azureADOnlyAuthentication: aadAuthenticationOnly
+    sqlAdministratorLoginPassword: sqlAuthenticationPassword
     managedResourceGroupName: managedResourceGroupName
-    sqlAdministratorLogin: synapseUsername
+    sqlAdministratorLogin: sqlAuthenticationUsername
 
     managedVirtualNetwork: 'default'
     managedVirtualNetworkSettings: {
@@ -355,7 +373,7 @@ resource cmkActivation 'Microsoft.Synapse/workspaces/keys@2021-06-01-preview' = 
   dependsOn: [
     akvRoleAssignmentForCMK
   ]
-  name: '${name}/cmk-synapse-${name}'
+  name: '${synapse.name}/cmk-synapse-${synapse.name}'
   properties: {
     isActiveCMK: true
     keyVaultUrl: akvKey.outputs.keyUri
@@ -378,7 +396,7 @@ resource synapse_audit 'Microsoft.Synapse/workspaces/auditingSettings@2021-05-01
     cmkActivation
     wait
   ]
-  name: '${name}/default'
+  name: '${synapse.name}/default'
   properties: {
     isAzureMonitorTargetEnabled: true
     state: 'Enabled'
@@ -390,14 +408,14 @@ resource synapse_securityAlertPolicies 'Microsoft.Synapse/workspaces/securityAle
     cmkActivation
     wait
   ]
-  name: '${name}/Default'
+  name: '${synapse.name}/Default'
   properties: {
     state: 'Enabled'
     emailAccountAdmins: false
   }
 }
 
-resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-05-01' = {
+resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-06-01' = {
   dependsOn: [
     cmkActivation
     wait
@@ -405,7 +423,7 @@ resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-
     synapse_securityAlertPolicies
     roleAssignSynapseToSALogging
   ]
-  name: '${name}/default'
+  name: '${synapse.name}/default'
   properties: {
     storageContainerPath: '${sqlVulnerabilityLoggingStoragePath}vulnerability-assessment'
     recurringScans: {
@@ -415,5 +433,25 @@ resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-
         sqlVulnerabilitySecurityContactEmail
       ]
     }
+  }
+
+
+
+
+
+}
+
+// Azure AD administrators
+resource synapse_aad_admins 'Microsoft.Synapse/workspaces/administrators@2021-06-01' = if(aadLoginName != '') {
+  name: 'activeDirectory'
+  parent: synapse
+  dependsOn:[
+    wait
+  ]
+  properties: {
+    administratorType: aadLoginType
+    login: aadLoginName
+    sid: aadLoginObjectID
+    tenantId: subscription().tenantId
   }
 }

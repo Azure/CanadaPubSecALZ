@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/PlatformConnectivityHubNetworkAzureFirewallPolicy",
+  "definitions": {
+    "PlatformConnectivityHubNetworkAzureFirewallPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": [
+            "https"
+          ],
+          "qt-uri-extensions": [
+            ".json"
+          ]
+        },
+        "contentVersion": {
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/definitions/Parameters"
+        }
+      },
+      "required": [
+        "$schema",
+        "contentVersion",
+        "parameters"
+      ],
+      "title": "PlatformConnectivityHubNetworkAzureFirewallPolicy"
+    },
+    "Parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "$ref": "types/location.json#/definitions/Location"
+        },
+        "resourceTags": {
+          "$ref": "types/resourceTags.json#/definitions/ResourceTags"
+        },
+        "resourceGroupName": {
+          "$ref": "#/definitions/StringValue"
+        },
+        "policyName": {
+          "$ref": "#/definitions/StringValue"
+        }
+      },
+      "required": [
+        "resourceTags",
+        "resourceGroupName",
+        "policyName"
+      ],
+      "title": "Parameters"
+    },
+    "StringValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      },
+      "title": "StringValue"
+    }
+  }
+}

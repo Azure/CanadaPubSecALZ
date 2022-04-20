@@ -53,26 +53,6 @@ param hubNetwork object
 //       "10.2.0.0/16"
 //     ],
 //     "subnets": {
-//       "oz": {
-//         "comments": "App Management Zone (OZ)",
-//         "name": "oz",
-//         "addressPrefix": "10.2.1.0/25"
-//       },
-//       "paz": {
-//         "comments": "Presentation Zone (PAZ)",
-//         "name": "paz",
-//         "addressPrefix": "10.2.2.0/25"
-//       },
-//       "rz": {
-//         "comments": "Application Zone (RZ)",
-//         "name": "rz",
-//         "addressPrefix": "10.2.3.0/25"
-//       },
-//       "hrz": {
-//         "comments": "Data Zone (HRZ)",
-//         "name": "hrz",
-//         "addressPrefix": "10.2.4.0/25"
-//       },
 //       "privateEndpoints": {
 //         "comments": "Private Endpoints Subnet",
 //         "name": "privateendpoints",
@@ -109,26 +89,6 @@ param hubNetwork object
 //     '10.2.0.0/16'
 //   ]
 //   subnets: {
-//     oz: {
-//       comments: 'App Management Zone (OZ)'
-//       name: 'oz'
-//       addressPrefix: '10.21.0/25'
-//     }
-//     paz: {
-//       comments: 'Presentation Zone (PAZ)'
-//       name: 'paz'
-//       addressPrefix: '10.22.0/25'
-//     }
-//     rz: {
-//       comments: 'Application Zone (RZ)'
-//       name: 'rz'
-//       addressPrefix: '10.2.3.0/25'
-//     }
-//     hrz: {
-//       comments: 'Data Zone (HRZ)'
-//       name: 'hrz'
-//       addressPrefix: '10.2.4.0/25'
-//     }
 //     databricksPublic: {
 //       comments: 'Databricks Public Delegated Subnet'
 //       name: 'databrickspublic'
@@ -151,16 +111,17 @@ param hubNetwork object
 //     }
 //   }
 // }
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, databricksPublic, databricksPrivate, web) ')
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (privateEndpoints, databricksPublic, databricksPrivate, web) ')
 param network object
 
 var hubVnetIdSplit = split(hubNetwork.virtualNetworkId, '/')
 var usingCustomDNSServers = length(network.dnsServers) > 0
 
+/*
 var routesToHub = [
   // Force Routes to Hub IPs (RFC1918 range) via FW despite knowing that route via peering
   {
-    name: 'PrdSpokesUdrHubRFC1918FWRoute'
+    name: 'SpokeUdrHubRFC1918FWRoute'
     properties: {
       addressPrefix: hubNetwork.rfc1918IPRange
       nextHopType: 'VirtualAppliance'
@@ -169,7 +130,7 @@ var routesToHub = [
   }
   // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
   {
-    name: 'PrdSpokesUdrHubRFC6598FWRoute'
+    name: 'SpokeUdrHubRFC6598FWRoute'
     properties: {
       addressPrefix: hubNetwork.rfc6598IPRange
       nextHopType: 'VirtualAppliance'
@@ -185,40 +146,9 @@ var routesToHub = [
     }
   }
 ]
+*/
 
 // Network Security Groups
-resource nsgOZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
-  name: '${network.subnets.oz.name}Nsg'
-  location: location
-  properties: {
-    securityRules: []
-  }
-}
-
-resource nsgPAZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
-  name: '${network.subnets.paz.name}Nsg'
-  location: location
-  properties: {
-    securityRules: []
-  }
-}
-
-resource nsgRZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
-  name: '${network.subnets.rz.name}Nsg'
-  location: location
-  properties: {
-    securityRules: []
-  }
-}
-
-resource nsgHRZ 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
-  name: '${network.subnets.hrz.name}Nsg'
-  location: location
-  properties: {
-    securityRules: []
-  }
-}
-
 module nsgDatabricks '../../azresources/network/nsg/nsg-databricks.bicep' = {
   name: 'deploy-nsg-databricks'
   params: {
@@ -241,38 +171,6 @@ module nsgWebApp '../../azresources/network/nsg/nsg-empty.bicep' = {
 }
 
 // Route Tables
-resource udrOZ 'Microsoft.Network/routeTables@2021-02-01' = {
-  name: '${network.subnets.oz.name}Udr'
-  location: location
-  properties: {
-    routes: network.peerToHubVirtualNetwork ? routesToHub : null
-  }
-}
-
-resource udrPAZ 'Microsoft.Network/routeTables@2021-02-01' = {
-  name: '${network.subnets.paz.name}Udr'
-  location: location
-  properties: {
-    routes: network.peerToHubVirtualNetwork ? routesToHub : null
-  }
-}
-
-resource udrRZ 'Microsoft.Network/routeTables@2021-02-01' = {
-  name: '${network.subnets.rz.name}Udr'
-  location: location
-  properties: {
-    routes: network.peerToHubVirtualNetwork ? routesToHub : null
-  }
-}
-
-resource udrHRZ 'Microsoft.Network/routeTables@2021-02-01' = {
-  name: '${network.subnets.hrz.name}Udr'
-  location: location
-  properties: {
-    routes: network.peerToHubVirtualNetwork ? routesToHub : null
-  }
-}
-
 module udrDatabricksPublic '../../azresources/network/udr/udr-databricks-public.bicep' = {
   name: 'deploy-route-table-databricks-public'
   params: {
@@ -313,54 +211,6 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
       addressPrefixes: network.addressPrefixes
     }
     subnets: [
-      {
-        name: network.subnets.oz.name
-        properties: {
-          addressPrefix: network.subnets.oz.addressPrefix
-          routeTable: {
-            id: udrOZ.id
-          }
-          networkSecurityGroup: {
-            id: nsgOZ.id
-          }
-        }
-      }
-      {
-        name: network.subnets.paz.name
-        properties: {
-          addressPrefix: network.subnets.paz.addressPrefix
-          routeTable: {
-            id: udrPAZ.id
-          }
-          networkSecurityGroup: {
-            id: nsgPAZ.id
-          }
-        }
-      }
-      {
-        name: network.subnets.rz.name
-        properties: {
-          addressPrefix: network.subnets.rz.addressPrefix
-          routeTable: {
-            id: udrRZ.id
-          }
-          networkSecurityGroup: {
-            id: nsgRZ.id
-          }
-        }
-      }
-      {
-        name: network.subnets.hrz.name
-        properties: {
-          addressPrefix: network.subnets.hrz.addressPrefix
-          routeTable: {
-            id: udrHRZ.id
-          }
-          networkSecurityGroup: {
-            id: nsgHRZ.id
-          }
-        }
-      }
       {
         name: network.subnets.privateEndpoints.name
         properties: {
@@ -678,10 +528,6 @@ module privatezone_synapse_sql '../../azresources/network/private-dns-zone.bicep
 
 output vnetId string = vnet.id
 
-output ozSubnetId string = '${vnet.id}/subnets/${network.subnets.oz.name}'
-output pazSubnetId string = '${vnet.id}/subnets/${network.subnets.paz.name}'
-output rzSubnetId string = '${vnet.id}/subnets/${network.subnets.rz.name}'
-output hrzId string = '${vnet.id}/subnets/${network.subnets.hrz.name}'
 output privateEndpointSubnetId string = '${vnet.id}/subnets/${network.subnets.privateEndpoints.name}'
 output webAppSubnetId string = '${vnet.id}/subnets/${network.subnets.web.name}'
 

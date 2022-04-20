@@ -73,7 +73,7 @@ param aml object
 @description('Hub Network configuration that includes virtualNetworkId, rfc1918IPRange, rfc6598IPRange, egressVirtualApplianceIp, privateDnsManagedByHub flag, privateDnsManagedByHubSubscriptionId and privateDnsManagedByHubResourceGroupName.')
 param hubNetwork object
 
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, appService) ')
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, appService) ')
 param network object
 
 var sqldbPassword = sqldb.enabled && !sqldb.aadAuthenticationOnly  ? '${uniqueString(rgStorage.id)}*${toUpper(uniqueString(sqldb.sqlAuthenticationUsername))}' : ''

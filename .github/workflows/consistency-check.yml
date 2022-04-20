@@ -8,6 +8,7 @@ on:
 env:
   SCHEMA_FOLDER: schemas/latest/landingzones
   LOGGING_PATH_FROM_ROOT: config/logging
+  NETWORKING_PATH_FROM_ROOT: config/networking
   SUBSCRIPTIONS_PATH_FROM_ROOT: config/subscriptions
 
 jobs:
@@ -55,6 +56,30 @@ jobs:
           Get-ChildItem -Recurse -Filter $LoggingFileFilter -Path "${{env.LOGGING_PATH_FROM_ROOT}}" | ForEach-Object {
               Write-Host "Validating: $_ with $LoggingSchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $LoggingSchemaFile
+          }
+
+          $HubNetworkWithAzureFirewallFileFilter="*.json"
+          $HubNetworkWithAzureFirewallSchemaFile="${{env.SCHEMA_FOLDER}}/lz-platform-connectivity-hub-azfw.json"
+
+          Get-ChildItem -Recurse -Filter $HubNetworkWithAzureFirewallFileFilter -Path "${{env.NETWORKING_PATH_FROM_ROOT}}/*/hub-azfw/" | ForEach-Object {
+              Write-Host "Validating: $_ with $HubNetworkWithAzureFirewallSchemaFile"
+              Get-Content -Raw $_ | Test-Json -SchemaFile $HubNetworkWithAzureFirewallSchemaFile
+          }
+
+          $HubNetworkWithAzureFirewallPolicyFileFilter="*.json"
+          $HubNetworkWithAzureFirewallPolicySchemaFile="${{env.SCHEMA_FOLDER}}/lz-platform-connectivity-hub-azfw-policy.json"
+
+          Get-ChildItem -Recurse -Filter $HubNetworkWithAzureFirewallPolicyFileFilter -Path "${{env.NETWORKING_PATH_FROM_ROOT}}/*/hub-azfw-policy/" | ForEach-Object {
+              Write-Host "Validating: $_ with $HubNetworkWithAzureFirewallPolicySchemaFile"
+              Get-Content -Raw $_ | Test-Json -SchemaFile $HubNetworkWithAzureFirewallPolicySchemaFile
+          }
+
+          $HubNetworkWithNVAFileFilter="*.json"
+          $HubNetworkWithNVASchemaFile="${{env.SCHEMA_FOLDER}}/lz-platform-connectivity-hub-nva.json"
+
+          Get-ChildItem -Recurse -Filter $HubNetworkWithNVAFileFilter -Path "${{env.NETWORKING_PATH_FROM_ROOT}}/*/hub-nva/" | ForEach-Object {
+              Write-Host "Validating: $_ with $HubNetworkWithNVASchemaFile"
+              Get-Content -Raw $_ | Test-Json -SchemaFile $HubNetworkWithNVASchemaFile
           }
 
           $GenericSubscriptionFileFilter="*generic-subscription*.json"
