@@ -137,26 +137,6 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
         '10.2.0.0/16'
       ]
       subnets: {
-        oz: {
-          comments: 'App Management Zone (OZ)'
-          name: 'oz'
-          addressPrefix: '10.2.1.0/25'
-        }
-        paz: {
-          comments: 'Presentation Zone (PAZ)'
-          name: 'paz'
-          addressPrefix: '10.2.2.0/25'
-        }
-        rz: {
-          comments: 'Application Zone (RZ)'
-          name: 'rz'
-          addressPrefix: '10.2.3.0/25'
-        }
-        hrz: {
-          comments: 'Data Zone (HRZ)'
-          name: 'hrz'
-          addressPrefix: '10.2.4.0/25'
-        }
         privateEndpoints: {
           comments: 'Private Endpoints Subnet'
           name: 'privateendpoints'
