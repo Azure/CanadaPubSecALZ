@@ -1797,7 +1797,7 @@ Migration process:
         }
         ```
 
-4. When using Hub Networking with Azure Firewall
+4. When using Hub Networking with Network Virtual Appliance
 
     1. Create subdirectory: `hub-nva` (i.e. `./config/networking/CanadaESLZ-main/hub-nva`)
     1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaESLZ-main/hub-nva/hub-network.parameters.json`).
