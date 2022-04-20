@@ -224,7 +224,7 @@ The scripts are:
 2. Set up a compute instance and import the provided tests to the workspace
 3. Run the test script, which will build a Docker Azure ML model image, push it to ACR, and then AKS to pull and run the ML model
 
-### Azure Deployment
+## Azure Deployment
 
 ### Schema Definition
 
@@ -435,26 +435,6 @@ This example configures:
                     "10.5.0.0/16"
                 ],
                 "subnets": {
-                    "oz": {
-                        "comments": "App Management Zone (OZ)",
-                        "name": "oz",
-                        "addressPrefix": "10.5.1.0/25"
-                    },
-                    "paz": {
-                        "comments": "Presentation Zone (PAZ)",
-                        "name": "paz",
-                        "addressPrefix": "10.5.2.0/25"
-                    },
-                    "rz": {
-                        "comments": "Application Zone (RZ)",
-                        "name": "rz",
-                        "addressPrefix": "10.5.3.0/25"
-                    },
-                    "hrz": {
-                        "comments": "Data Zone (HRZ)",
-                        "name": "hrz",
-                        "addressPrefix": "10.5.4.0/25"
-                    },
                     "databricksPublic": {
                         "comments": "Databricks Public Delegated Subnet",
                         "name": "databrickspublic",

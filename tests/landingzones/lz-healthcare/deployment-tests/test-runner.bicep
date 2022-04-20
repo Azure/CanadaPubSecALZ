@@ -125,26 +125,6 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
         '10.1.0.0/16'
       ]
       subnets: {
-        oz: {
-          comments: 'App Management Zone (OZ)'
-          name: 'oz'
-          addressPrefix: '10.1.1.0/25'
-        }
-        paz: {
-          comments: 'Presentation Zone (PAZ)'
-          name: 'paz'
-          addressPrefix: '10.1.2.0/25'
-        }
-        rz: {
-          comments: 'Application Zone (RZ)'
-          name: 'rz'
-          addressPrefix: '10.1.3.0/25'
-        }
-        hrz: {
-          comments: 'Data Zone (HRZ)'
-          name: 'hrz'
-          addressPrefix: '10.1.4.0/25'
-        }
         databricksPublic: {
           comments: 'Databricks Public Delegated Subnet'
           name: 'databrickspublic'

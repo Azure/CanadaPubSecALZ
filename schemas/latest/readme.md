@@ -8,6 +8,8 @@
 
 * Removed 4 subnets from Machine Learning archetype's virtual network: `oz`, `paz`, `rz` and `hrz`.
 
+* Removed 4 subnets from Healthcare archetype's virtual network: `oz`, `paz`, `rz` and `hrz`.
+
 * Schema definition for Hub Networking archetypes (Azure Firewall & NVA).  See documentation:
 
   * [Hub Networking with Azure Firewall](../../docs/archetypes/hubnetwork-azfw.md)

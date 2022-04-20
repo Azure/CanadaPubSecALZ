@@ -218,18 +218,6 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "oz": {
-          "$ref": "#/definitions/Subnet"
-        },
-        "paz": {
-          "$ref": "#/definitions/Subnet"
-        },
-        "rz": {
-          "$ref": "#/definitions/Subnet"
-        },
-        "hrz": {
-          "$ref": "#/definitions/Subnet"
-        },
         "databricksPublic": {
           "$ref": "#/definitions/Subnet"
         },
@@ -244,10 +232,6 @@
         }
       },
       "required": [
-        "oz",
-        "paz",
-        "rz",
-        "hrz",
         "databricksPublic",
         "databricksPrivate",
         "privateEndpoints",
