@@ -147,6 +147,9 @@ module synapseWithCMK 'synapse-with-cmk.bicep' = if (useCMK) {
     managedResourceGroupName: managedResourceGroupName 
     
     aadAuthenticationOnly: aadAuthenticationOnly
+    aadLoginName: aadLoginName
+    aadLoginObjectID: aadLoginObjectID
+    aadLoginType: aadLoginType
     sqlAuthenticationUsername: sqlAuthenticationUsername 
     sqlAuthenticationPassword: sqlAuthenticationPassword 
     
