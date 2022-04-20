@@ -471,7 +471,7 @@ module akvsynapseUsername '../../azresources/security/key-vault-secret.bicep' = 
   }
 }
 
-module akvSqlDbUsername '../../azresources/security/key-vault-secret.bicep' = if (sqldb.enabled) {
+module akvSqlDbUsername '../../azresources/security/key-vault-secret.bicep' = if (sqldb.enabled && sqldb.aadAuthenticationOnly==false) {
   dependsOn: [
     akv
   ]

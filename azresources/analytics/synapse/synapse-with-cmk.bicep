@@ -176,18 +176,6 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-06-01' = {
   }
 }
 
-// Azure AD administrators
-resource synapse_aad_admins 'Microsoft.Synapse/workspaces/administrators@2021-06-01' = if(aadLoginName != '') {
-  name: 'activeDirectory'
-  parent: synapse
-  properties: {
-    administratorType: aadLoginType
-    login: aadLoginName
-    sid: aadLoginObjectID
-    tenantId: subscription().tenantId
-  }
-}
-
 module roleAssignSynapseToSALogging '../../iam/resource/storage-role-assignment-to-sp.bicep' = {
   name: 'rbac-${synapse.name}-logging-storage-account'
   scope: resourceGroup(sqlVulnerabilityLoggingStorageAccounResourceGroupName)
@@ -445,5 +433,25 @@ resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-
         sqlVulnerabilitySecurityContactEmail
       ]
     }
+  }
+
+
+
+
+
+}
+
+// Azure AD administrators
+resource synapse_aad_admins 'Microsoft.Synapse/workspaces/administrators@2021-06-01' = if(aadLoginName != '') {
+  name: 'activeDirectory'
+  parent: synapse
+  dependsOn:[
+    wait
+  ]
+  properties: {
+    administratorType: aadLoginType
+    login: aadLoginName
+    sid: aadLoginObjectID
+    tenantId: subscription().tenantId
   }
 }
