@@ -96,8 +96,13 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
     }
 
     synapse: {
-      username: 'azadmin'
-    }
+      value: {
+          aadAuthenticationOnly: true
+          aadLoginName: 'synapse.admins'
+          aadLoginObjectID: 'e0357d81-55d8-44e9-9d9c-ab09dc710785'
+          aadLoginType:'Group'
+      }
+  }
 
     hubNetwork: {
       virtualNetworkId: hubVnetId

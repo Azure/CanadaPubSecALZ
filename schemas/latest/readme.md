@@ -2,9 +2,90 @@
 
 ## Landing Zone Schemas
 
-### April 14, 2022
+### April 20, 2022
 
 Removed 4 subnets from Healthcare archetype's virtual network: `oz`, `paz`, `rz` and `hrz`.
+
+### April 18, 2022
+
+Change in `synapse` schema object to support Azure AD authentication.
+
+| Setting | Type | Description |
+| ------- | ---- | ----------- |
+| aadAuthenticationOnly | Boolean | Indicate that either AAD auth only or both AAD & SQL auth (required) |
+| sqlAuthenticationUsername | String | The SQL authentication user name optional, required when `aadAuthenticationOnly` is false |
+| aadLoginName | String | The name of the login or group in the format of first-name last-name |
+| aadLoginObjectID | String | The object id of the Azure AD object whether it's a login or a group |
+| aadLoginType | String | Represent the type of the object, it can be **User**, **Group** or **Application** (in case of service principal) |
+
+**Examples**
+
+SQL authentication only | Json (used in parameter files)
+
+```json
+"synapse": {
+      "value": {
+        "aadAuthenticationOnly": false,
+        "sqlAuthenticationUsername": "azadmin"
+      }
+```
+  
+SQL authentication only | bicep (used when calling bicep module from another)
+  
+```bicep
+{
+  aadAuthenticationOnly: false 
+  sqlAuthenticationUsername: 'azadmin'
+}
+```
+  
+Azure AD authentication only | Json (used in parameters files)
+  
+```json
+   "synapse": {
+      "value": {
+        "aadAuthenticationOnly": true,
+        "aadLoginName": "az.admins",
+        "aadLoginObjectID": "e0357d81-55d8-44e9-9d9c-ab09dc710785",
+        "aadLoginType":"Group"
+      }
+```
+
+Azure AD authentication only | bicep (used when calling bicep module from another)
+  
+```bicep
+{
+  aadAuthenticationOnly: true 
+  aadLoginName:'John Smith',
+  aadLoginObjectID:'88888-888888-888888-888888',
+  aadLoginType:'User'
+}
+```
+  
+Mixed authentication |  Json (used in parameters files)
+
+```json
+     "synapse": {
+      "value": {
+        "aadAuthenticationOnly": false,
+        "sqlAuthenticationUsername": "azadmin",
+        "aadLoginName": "az.admins",
+        "aadLoginObjectID": "e0357d81-55d8-44e9-9d9c-ab09dc710785",
+        "aadLoginType":"Group"
+      }
+ ```
+  
+  Mixed authentication | bicep (used when calling bicep module from another)
+  
+```bicep
+  {
+    aadAuthenticationOnly: false
+    sqlAuthenticationUsername: 'azadmin' 
+    aadLoginName:'John Smith',
+    aadLoginObjectID:'88888-888888-888888-888888',
+    aadLoginType:'User'
+  }
+```
 
 ### April 7, 2022
 
