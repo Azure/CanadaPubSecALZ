@@ -94,11 +94,14 @@
               "aadAuthenticationOnly":false
             }
           },
-        "synapse": {
+          "synapse": {
             "value": {
-                "username": "azadmin"
+              "aadAuthenticationOnly": true,
+              "aadLoginName": "az.admins",
+              "aadLoginObjectID": "e0357d81-55d8-44e9-9d9c-ab09dc710785",
+              "aadLoginType":"Group"
             }
-        },
+          },
         "hubNetwork": {
             "value": {
                 "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
