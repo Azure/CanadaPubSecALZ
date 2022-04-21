@@ -5,13 +5,34 @@
         "serviceHealthAlerts": {
             "value": {
                 "resourceGroupName": "pubsec-service-health",
-                "incidentTypes": [ "Incident", "Security" ],
-                "regions": [ "Global", "Canada East", "Canada Central" ],
+                "incidentTypes": [
+                    "Incident",
+                    "Security"
+                ],
+                "regions": [
+                    "Global",
+                    "Canada East",
+                    "Canada Central"
+                ],
                 "receivers": {
-                    "app": [ "alzcanadapubsec@microsoft.com" ],
-                    "email": [ "alzcanadapubsec@microsoft.com" ],
-                    "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-                    "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                    "app": [
+                        "alzcanadapubsec@microsoft.com"
+                    ],
+                    "email": [
+                        "alzcanadapubsec@microsoft.com"
+                    ],
+                    "sms": [
+                        {
+                            "countryCode": "1",
+                            "phoneNumber": "5555555555"
+                        }
+                    ],
+                    "voice": [
+                        {
+                            "countryCode": "1",
+                            "phoneNumber": "5555555555"
+                        }
+                    ]
                 },
                 "actionGroupName": "Sub2 ALZ action group",
                 "actionGroupShortName": "sub2-alert",
@@ -89,19 +110,19 @@
         },
         "sqldb": {
             "value": {
-              "enabled": true,
-              "sqlAuthenticationUsername": "azadmin",
-              "aadAuthenticationOnly":false
+                "enabled": true,
+                "sqlAuthenticationUsername": "azadmin",
+                "aadAuthenticationOnly": false
             }
-          },
-          "synapse": {
+        },
+        "synapse": {
             "value": {
-              "aadAuthenticationOnly": true,
-              "aadLoginName": "az.admins",
-              "aadLoginObjectID": "e0357d81-55d8-44e9-9d9c-ab09dc710785",
-              "aadLoginType":"Group"
+                "aadAuthenticationOnly": true,
+                "aadLoginName": "az.admins",
+                "aadLoginObjectID": "e0357d81-55d8-44e9-9d9c-ab09dc710785",
+                "aadLoginType": "Group"
             }
-          },
+        },
         "hubNetwork": {
             "value": {
                 "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
@@ -145,33 +166,7 @@
                         "name": "webapp",
                         "addressPrefix": "10.5.8.0/25"
                     },
-                    "optional": [
-                        {
-                            "comments": "Optional Subnet 1",
-                            "name": "virtualMachines",
-                            "addressPrefix": "10.5.9.0/25",
-                            "nsg": {
-                            "enabled": true
-                            },
-                            "udr": {
-                            "enabled": true
-                            }
-                        },
-                        {
-                            "comments": "Optional Subnet 2 with delegation for NetApp Volumes",
-                            "name": "NetappVolumes",
-                            "addressPrefix": "10.5.10.0/25",
-                            "nsg": {
-                            "enabled": false
-                            },
-                            "udr": {
-                            "enabled": false
-                            },
-                            "delegations": {
-                                "serviceName": "Microsoft.NetApp/volumes"
-                            }
-                        }
-                    ]
+                    "optional": []
                 }
             }
         }

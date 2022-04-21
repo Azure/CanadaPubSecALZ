@@ -5,13 +5,34 @@
     "serviceHealthAlerts": {
       "value": {
         "resourceGroupName": "pubsec-service-health",
-        "incidentTypes": [ "Incident", "Security" ],
-        "regions": [ "Global", "Canada East", "Canada Central" ],
+        "incidentTypes": [
+          "Incident",
+          "Security"
+        ],
+        "regions": [
+          "Global",
+          "Canada East",
+          "Canada Central"
+        ],
         "receivers": {
-          "app": [ "alzcanadapubsec@microsoft.com" ],
-          "email": [ "alzcanadapubsec@microsoft.com" ],
-          "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-          "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+          "app": [
+            "alzcanadapubsec@microsoft.com"
+          ],
+          "email": [
+            "alzcanadapubsec@microsoft.com"
+          ],
+          "sms": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "5555555555"
+            }
+          ],
+          "voice": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "5555555555"
+            }
+          ]
         },
         "actionGroupName": "Sub5 ALZ action group",
         "actionGroupShortName": "sub5-alert",
@@ -84,10 +105,10 @@
       "value": {
         "version": "1.22.6",
         "enabled": true,
-        "networkPlugin": "kubenet" ,
+        "networkPlugin": "kubenet",
         "networkPolicy": "calico",
         "podCidr": "11.0.0.0/16",
-        "serviceCidr": "20.0.0.0/16" ,
+        "serviceCidr": "20.0.0.0/16",
         "dnsServiceIP": "20.0.0.10",
         "dockerBridgeCidr": "30.0.0.1/16"
       }
@@ -105,9 +126,9 @@
         "enabled": true,
         "sqlAuthenticationUsername": "azadmin",
         "aadAuthenticationOnly": false,
-        "aadLoginName":"DBA Security Group",
-        "aadLoginObjectID":"e0357d81-55d8-44e9-9d9c-ab09dc710785",
-        "aadLoginType":"Group"
+        "aadLoginName": "DBA Security Group",
+        "aadLoginObjectID": "e0357d81-55d8-44e9-9d9c-ab09dc710785",
+        "aadLoginType": "Group"
       }
     },
     "sqlmi": {
@@ -173,33 +194,7 @@
             "name": "appService",
             "addressPrefix": "10.6.10.0/25"
           },
-          "optional": [
-            {
-              "comments": "Optional Subnet 1",
-              "name": "virtualMachines",
-              "addressPrefix": "10.6.11.0/25",
-              "nsg": {
-                "enabled": true
-              },
-              "udr": {
-                "enabled": true
-              }
-            },
-            {
-              "comments": "Optional Subnet 2 with delegation for NetApp Volumes",
-              "name": "NetappVolumes",
-              "addressPrefix": "10.6.12.0/25",
-              "nsg": {
-                "enabled": false
-              },
-              "udr": {
-                "enabled": false
-              },
-              "delegations": {
-                  "serviceName": "Microsoft.NetApp/volumes"
-              }
-            }
-          ]
+          "optional": []
         }
       }
     }
