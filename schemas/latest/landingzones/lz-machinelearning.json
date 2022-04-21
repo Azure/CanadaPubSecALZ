@@ -55,6 +55,9 @@
         "resourceTags": {
           "$ref": "types/resourceTags.json#/definitions/ResourceTags"
         },
+        "logAnalyticsWorkspaceResourceId": {
+          "$ref": "types/logAnalyticsWorkspaceId.json#/definitions/LogAnalyticsWorkspaceId"
+        },
         "useCMK": {
           "$ref": "#/definitions/UseCMK"
         },
@@ -228,18 +231,6 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "oz": {
-          "$ref": "#/definitions/Subnet"
-        },
-        "paz": {
-          "$ref": "#/definitions/Subnet"
-        },
-        "rz": {
-          "$ref": "#/definitions/Subnet"
-        },
-        "hrz": {
-          "$ref": "#/definitions/Subnet"
-        },
         "sqlmi": {
           "$ref": "#/definitions/Subnet"
         },
@@ -260,10 +251,6 @@
         }
       },
       "required": [
-        "oz",
-        "paz",
-        "rz",
-        "hrz",
         "sqlmi",
         "databricksPublic",
         "databricksPrivate",

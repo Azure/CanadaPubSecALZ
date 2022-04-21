@@ -11,289 +11,435 @@
                     "privateLinkServiceNamespace": "Microsoft.Automation/automationAccounts",
                     "zone": "privatelink.azure-automation.net",
                     "filterLocationLike": "*",
-                    "groupId": "Webhook"
+                    "groupId": "Webhook",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.azure-automation.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Automation/automationAccounts",
                     "zone": "privatelink.azure-automation.net",
                     "filterLocationLike": "*",
-                    "groupId": "DSCAndHybridWorker"
+                    "groupId": "DSCAndHybridWorker",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.azure-automation.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Sql/servers",
                     "zone": "privatelink.database.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "sqlServer"
+                    "groupId": "sqlServer",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.database.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Synapse/workspaces",
                     "zone": "privatelink.sql.azuresynapse.net",
                     "filterLocationLike": "*",
-                    "groupId": "Sql"
+                    "groupId": "Sql",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.sql.azuresynapse.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Synapse/workspaces",
                     "zone": "privatelink.sql.azuresynapse.net",
                     "filterLocationLike": "*",
-                    "groupId": "SqlOnDemand"
+                    "groupId": "SqlOnDemand",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.sql.azuresynapse.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Synapse/workspaces",
                     "zone": "privatelink.dev.azuresynapse.net",
                     "filterLocationLike": "*",
-                    "groupId": "Dev"
+                    "groupId": "Dev",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.dev.azuresynapse.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Synapse/privateLinkHubs",
                     "zone": "privatelink.azuresynapse.net",
                     "filterLocationLike": "*",
-                    "groupId": "Web"
+                    "groupId": "Web",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.azuresynapse.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Storage/storageAccounts",
                     "zone": "privatelink.blob.core.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "blob"
+                    "groupId": "blob",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.blob.core.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Storage/storageAccounts",
                     "zone": "privatelink.blob.core.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "blob_secondary"
+                    "groupId": "blob_secondary",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.blob.core.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Storage/storageAccounts",
                     "zone": "privatelink.table.core.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "table"
+                    "groupId": "table",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.table.core.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Storage/storageAccounts",
                     "zone": "privatelink.table.core.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "table_secondary"
+                    "groupId": "table_secondary",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.table.core.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Storage/storageAccounts",
                     "zone": "privatelink.queue.core.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "queue"
+                    "groupId": "queue",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.queue.core.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Storage/storageAccounts",
                     "zone": "privatelink.queue.core.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "queue_secondary"
+                    "groupId": "queue_secondary",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.queue.core.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Storage/storageAccounts",
                     "zone": "privatelink.file.core.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "file"
+                    "groupId": "file",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.file.core.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Storage/storageAccounts",
                     "zone": "privatelink.file.core.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "file_secondary"
+                    "groupId": "file_secondary",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.file.core.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Storage/storageAccounts",
                     "zone": "privatelink.web.core.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "web"
+                    "groupId": "web",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.web.core.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Storage/storageAccounts",
                     "zone": "privatelink.web.core.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "web_secondary"
+                    "groupId": "web_secondary",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.web.core.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Storage/storageAccounts",
                     "zone": "privatelink.dfs.core.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "dfs"
+                    "groupId": "dfs",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.dfs.core.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Storage/storageAccounts",
                     "zone": "privatelink.dfs.core.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "dfs_secondary"
+                    "groupId": "dfs_secondary",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.dfs.core.windows.net"
+                    ]
                 },
                 {
-                    "privateLinkServiceNamespace": "Microsoft.AzureCosmosDB/databaseAccounts",
+                    "privateLinkServiceNamespace": "Microsoft.DocumentDB/databaseAccounts",
                     "zone": "privatelink.documents.azure.com",
                     "filterLocationLike": "*",
-                    "groupId": "SQL"
+                    "groupId": "SQL",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.documents.azure.com"
+                    ]
                 },
                 {
-                    "privateLinkServiceNamespace": "Microsoft.AzureCosmosDB/databaseAccounts",
+                    "privateLinkServiceNamespace": "Microsoft.DocumentDB/databaseAccounts",
                     "zone": "privatelink.mongo.cosmos.azure.com",
                     "filterLocationLike": "*",
-                    "groupId": "MongoDB"
+                    "groupId": "MongoDB",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.mongo.cosmos.azure.com"
+                    ]
                 },
                 {
-                    "privateLinkServiceNamespace": "Microsoft.AzureCosmosDB/databaseAccounts",
+                    "privateLinkServiceNamespace": "Microsoft.DocumentDB/databaseAccounts",
                     "zone": "privatelink.cassandra.cosmos.azure.com",
                     "filterLocationLike": "*",
-                    "groupId": "Cassandra"
+                    "groupId": "Cassandra",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.cassandra.cosmos.azure.com"
+                    ]
                 },
                 {
-                    "privateLinkServiceNamespace": "Microsoft.AzureCosmosDB/databaseAccounts",
+                    "privateLinkServiceNamespace": "Microsoft.DocumentDB/databaseAccounts",
                     "zone": "privatelink.gremlin.cosmos.azure.com",
                     "filterLocationLike": "*",
-                    "groupId": "Gremlin"
+                    "groupId": "Gremlin",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.gremlin.cosmos.azure.com"
+                    ]
                 },
                 {
-                    "privateLinkServiceNamespace": "Microsoft.AzureCosmosDB/databaseAccounts",
+                    "privateLinkServiceNamespace": "Microsoft.DocumentDB/databaseAccounts",
                     "zone": "privatelink.table.cosmos.azure.com",
                     "filterLocationLike": "*",
-                    "groupId": "Table"
+                    "groupId": "Table",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.table.cosmos.azure.com"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.DBforPostgreSQL/servers",
                     "zone": "privatelink.postgres.database.azure.com",
                     "filterLocationLike": "*",
-                    "groupId": "postgresqlServer"
+                    "groupId": "postgresqlServer",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.postgres.database.azure.com"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.DBforMySQL/servers",
                     "zone": "privatelink.mysql.database.azure.com",
                     "filterLocationLike": "*",
-                    "groupId": "mysqlServer"
+                    "groupId": "mysqlServer",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.mysql.database.azure.com"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.DBforMariaDB/servers",
                     "zone": "privatelink.mariadb.database.azure.com",
                     "filterLocationLike": "*",
-                    "groupId": "mariadbServer"
+                    "groupId": "mariadbServer",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.mariadb.database.azure.com"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.KeyVault/vaults",
                     "zone": "privatelink.vaultcore.azure.net",
                     "filterLocationLike": "*",
-                    "groupId": "vault"
+                    "groupId": "vault",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.vaultcore.azure.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.ContainerService/managedCluster",
                     "zone": "privatelink.canadacentral.azmk8s.io",
                     "filterLocationLike": "canadacentral",
-                    "groupId": "management"
+                    "groupId": "management",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.canadacentral.azmk8s.io"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.ContainerService/managedCluster",
                     "zone": "privatelink.canadaeast.azmk8s.io",
                     "filterLocationLike": "canadaeast",
-                    "groupId": "management"
+                    "groupId": "management",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.canadaeast.azmk8s.io"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Search/searchServices",
                     "zone": "privatelink.search.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "searchService"
+                    "groupId": "searchService",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.search.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.ContainerRegistry/registries",
                     "zone": "privatelink.azurecr.io",
                     "filterLocationLike": "*",
-                    "groupId": "registry"
+                    "groupId": "registry",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.azurecr.io"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.RecoveryServices/vaults",
                     "zone": "privatelink.cnc.backup.windowsazure.com",
                     "filterLocationLike": "canadacentral",
-                    "groupId": "AzureBackup"
+                    "groupId": "AzureBackup",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.cnc.backup.windowsazure.com"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.RecoveryServices/vaults",
                     "zone": "privatelink.cne.backup.windowsazure.com",
                     "filterLocationLike": "canadaeast",
-                    "groupId": "AzureBackup"
+                    "groupId": "AzureBackup",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.cne.backup.windowsazure.com"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.RecoveryServices/vaults",
                     "zone": "privatelink.siterecovery.windowsazure.com",
                     "filterLocationLike": "*",
-                    "groupId": "AzureSiteRecovery"
+                    "groupId": "AzureSiteRecovery",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.siterecovery.windowsazure.com"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.EventHub/namespaces",
                     "zone": "privatelink.servicebus.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "namespace"
+                    "groupId": "namespace",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.servicebus.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.ServiceBus/namespaces",
                     "zone": "privatelink.servicebus.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "namespace"
+                    "groupId": "namespace",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.servicebus.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.EventGrid/topics",
                     "zone": "privatelink.eventgrid.azure.net",
                     "filterLocationLike": "*",
-                    "groupId": "topic"
+                    "groupId": "topic",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.eventgrid.azure.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.EventGrid/domains",
                     "zone": "privatelink.eventgrid.azure.net",
                     "filterLocationLike": "*",
-                    "groupId": "domain"
+                    "groupId": "domain",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.eventgrid.azure.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Web/sites",
                     "zone": "privatelink.azurewebsites.net",
                     "filterLocationLike": "*",
-                    "groupId": "sites"
+                    "groupId": "sites",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.azurewebsites.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.MachineLearningServices/workspaces",
                     "zone": "privatelink.api.azureml.ms",
                     "filterLocationLike": "*",
-                    "groupId": "amlworkspace"
+                    "groupId": "amlworkspace",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.api.azureml.ms",
+                        "privatelink.notebooks.azure.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.MachineLearningServices/workspaces",
                     "zone": "privatelink.notebooks.azure.net",
                     "filterLocationLike": "*",
-                    "groupId": "amlworkspace"
+                    "groupId": "amlworkspace",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.api.azureml.ms",
+                        "privatelink.notebooks.azure.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.CognitiveServices/accounts",
                     "zone": "privatelink.cognitiveservices.azure.com",
                     "filterLocationLike": "*",
-                    "groupId": "account"
+                    "groupId": "account",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.cognitiveservices.azure.com"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.StorageSync/storageSyncServices",
                     "zone": "privatelink.afs.azure.net",
                     "filterLocationLike": "*",
-                    "groupId": "afs"
+                    "groupId": "afs",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.afs.azure.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.DataFactory/factories",
                     "zone": "privatelink.datafactory.azure.net",
                     "filterLocationLike": "*",
-                    "groupId": "dataFactory"
+                    "groupId": "dataFactory",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.datafactory.azure.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Cache/Redis",
                     "zone": "privatelink.redis.cache.windows.net",
                     "filterLocationLike": "*",
-                    "groupId": "redisCache"
+                    "groupId": "redisCache",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.redis.cache.windows.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.Cache/RedisEnterprise",
                     "zone": "privatelink.redisenterprise.cache.azure.net",
                     "filterLocationLike": "*",
-                    "groupId": "redisCache"
+                    "groupId": "redisCache",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.redisenterprise.cache.azure.net"
+                    ]
                 },
                 {
                     "privateLinkServiceNamespace": "Microsoft.HealthcareApis/services",
                     "zone": "privatelink.azurehealthcareapis.com",
                     "filterLocationLike": "*",
-                    "groupId": "fhir"
+                    "groupId": "fhir",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.azurehealthcareapis.com"
+                    ]
                 }
             ]
         }

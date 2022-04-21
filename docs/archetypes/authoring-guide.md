@@ -32,7 +32,7 @@ Archetypes are located in [`landingzones`](../../landingzones) folder and organi
 - Platform archetypes
   - [`lz-platform-connectivity-hub-azfw`](hubnetwork-azfw.md) - configures a Hub Virtual Network with Azure Firewall.
   - [`lz-platform-connectivity-hub-nva`](hubnetwork-nva-fortigate.md) - configures a Hub Virtual Network with Fortinet Firewall.
-  - [`lz-platform-logging`](logging.md) - configures central logging infrastructure using Log Analytics Workspace and Microsoft Sentinel.
+  - [`lz-platform-logging`](logging.md) - configures logging infrastructure using Log Analytics Workspace and Microsoft Sentinel.
 - Spoke archetypes
   - [`lz-generic-subscription`](generic-subscription.md) - configures a subscription for general purpose use.
   - [`lz-healthcare`](healthcare.md) - configures a subscription for healthcare scenarios.

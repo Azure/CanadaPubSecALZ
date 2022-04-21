@@ -23,6 +23,10 @@ pr: none
 variables:
 - name: devops-org-name
   value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: logging-config-directory
+  value: $(System.DefaultWorkingDirectory)/$(loggingPathFromRoot)/${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}
+- name: networking-config-directory
+  value: $(System.DefaultWorkingDirectory)/$(networkPathFromRoot)/${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}
 - name: variable-template-file
   value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
 - template: ../config/variables/common.yml
@@ -47,9 +51,12 @@ stages:
           steps:
           - checkout: self
 
-          - template: templates/steps/load-log-analytics-vars.yml
-
           - template: templates/steps/load-variables.yml
+
+          - template: templates/steps/load-log-analytics-vars.yml
+            parameters:
+              logAnalyticsSubscriptionId: $(var-logging-subscriptionId)
+              logAnalyticsConfigurationFile: ${{ variables['logging-config-directory'] }}/$(var-logging-configurationFileName)
 
           - template: templates/steps/show-variables.yml
             parameters:
@@ -57,8 +64,11 @@ stages:
 
           - template: templates/steps/deploy-platform-connectivity-hub-azfw.yml
             parameters:
-              description: 'Deploy Networking'
-              moveTemplate: move-subscription.bicep
-              templateFile: main.bicep
-              deployOperation: ${{ variables['deployOperation'] }}
               workingDir: $(System.DefaultWorkingDirectory)/landingzones
+              deployOperation: ${{ variables['deployOperation'] }}
+              networkingManagementGroupId: $(var-hubnetwork-managementGroupId)
+              networkingSubscriptionId: $(var-hubnetwork-subscriptionId)
+              networkingRegion: $(var-hubnetwork-region)
+              networkingConfigurationPath: ${{ variables['networking-config-directory'] }}/$(var-hubnetwork-azfw-configurationFileName)
+              azureFirewallPolicyConfigurationPath: ${{ variables['networking-config-directory'] }}/$(var-hubnetwork-azfwPolicy-configurationFileName)
+

@@ -75,7 +75,7 @@ Git for Windows includes Unix utilities (e.g. `cut`, `tr`, etc.) that are used b
 
 Verify that the path to these utilities is included in the `echo %PATH%` output, i.e. it must be part of your system path or user environment path for the user running these scripts. The default installation location for these files is `C:\Program Files\Git\usr\bin`.
 
-> NOTE: In addition to ensuring the path to these utilities is included in your `%PATH%`, you should also verify that it precedes the `C:\Windows\System32` path. This is due to a conflict with the Linux version of the `sort.exe` utility and the Windows version of the `sort.exe` utility. The following script files invoke `sort.exe` and expect the Linux version: `delete-management-groups.bat` and `list-management-groups.bat`.
+> NOTE: In addition to ensuring the path to these utilities is included in your `%PATH%`, you should also verify that it precedes the `C:\Windows\System32` path. This is due to a conflict with the Linux version of the `sort.exe` utility and the Windows version of the `sort.exe` utility. The following script file invokes `sort.exe` and expects the Linux version: `list-management-groups.bat`.
 
 ---
 
@@ -315,11 +315,11 @@ The `/scripts/onboarding/.gitignore` file prevents the `./output` folder (defaul
 | Area | File Name | Description
 | ---- | ---- | ----
 | Azure | `create-security-group.bat` | Create an Azure security group to be used in the `securityGroupObjectIds` values in environment configuration (YAML) files and subscription configuration (JSON) files
-| Azure | `delete-management-groups.bat` | Deletes all management groups in the current tenant, with the exception of the 'Tenant Root Group'. It is useful for resetting the management groups in your Azure AD tenant. Exercise caution when using this script as it will remove **all** management groups in the Azure AD tenant.
+| Azure | `delete-management-groups.bat` | Deletes all management groups in the current tenant, with the exception of the 'Tenant Root Group'. It is useful for resetting the management groups in your Azure AD tenant. Exercise caution when using this script as it will remove some or possibly all management groups in the Azure AD tenant, depending on how it is invoked. Review and ensure you understand the information in [Appendix A - Deleting Management Groups](#appendix-a---deleting-management-groups) before using this script.
 | Azure | `list-management-groups.bat` | List all Management Groups in the current tenant. It is useful for validating the successful deployment of the Management Groups pipeline.
 | Azure DevOps | `create-pipelines.bat` | Create the Azure DevOps pipelines for landing zone deployment.
 | Azure DevOps | `create-service-endpoint.bat` | Create a new Azure DevOps service endpoint for use with Azure Pipelines.
-| Azure DevOps | `create-variable-group.bat` | Create a variable group to store secrets used by the pipelines.
+| Azure DevOps | `create-variable-group.bat` | Create a variable group and variables within that group to store secrets used by the pipelines. The default variable group name used in the example scripts is `firewall-secrets`, and may be configured via the `%DEVOPS_VARIABLES_GROUP_NAME%` environment variable. The default variable names used in the example scripts are `var-hubnetwork-nva-fwUsername` and `var-hubnetwork-nva-fwPassword`. The variable group name may be set to any valid value for an Azure DevOps pipeline variable group. The variable names must remain the same as the example scripts, otherwise the pipeline definitions will need to be updated to match different variable names.
 | Azure DevOps | `delete-pipelines.bat` | Delete the Azure DevOps pipelines.
 | Azure DevOps | `delete-service-endpoint.bat` | Delete the specified service endpoint used by Azure DevOps pipelines.
 | Azure DevOps | `run-pipelines.bat` | Runs all landing zone pipelines in sequence.
@@ -337,3 +337,73 @@ The `/scripts/onboarding/.gitignore` file prevents the `./output` folder (defaul
 | Tenant | `remove-root-user-access-admin.bat` | Remove the specified user from elevated "User Access Administrator" role at tenant root scope.
 | Utility | `whereami-azure.bat` | Show all identities signed-in with the current Azure CLI session.
 | Utility | `whoami-azure.bat` | Show the active identity signed-in with the current Azure CLI session.
+
+## Appendices
+
+### Appendix A - Deleting Management Groups
+
+The `delete-management-groups.bat` script offers a convenient way of quickly tearing down the management group hierarchy (or a portion thereof) is an Azure AD tenant. This can be useful if you are experimenting with landing zone deployments and need a fast, programmatic way to remove management group deployments.
+
+This script is designed to take an optional parameter that represents the topmost management group you would like to to remove, along with all child management groups in the hierarchy. If no parameter is provided, the default behavior of this script is to operate at the `Tenant Root Group`, which is the topmost management group level in an Azure AD tenant. If a parameter is provided, it must specify an existing management group (use the ID, not the Display Name).
+
+Note that as part of the removal of management groups in the hierarchy, the `delete-management-groups.bat` script has the following additional effects:
+
+- Any subscriptions that are contained in a removed management group will themselves be removed from that management group. This is required, otherwise the management group cannot be deleted.
+- Any custom role definitions (i.e. those starting with the name `Custom - `) will be deleted.
+- Any custom role assignments on subscriptions that are removed from management groups about to be deleted will themselves be deleted.
+
+The following example illustrates the effects of invoking the `delete-management-groups.bat` script using both the parameter and parameter-less invocation methods.
+
+We start with an example management group hierarchy (`MyOrganization`) deployed by the `CanadaPubSecALZ` pipeline, along with 2 manually created management groups (`ChildGroup1` and `ChildGroup2`) created at the tenant root management scope:
+
+![](../media/onboarding/management-groups-01.png)
+
+Next, we run the `delete-management-groups.bat` script, passing in as a parameter one of the nested management groups with ID `Management`:
+
+![](../media/onboarding/run-1-1.png)
+
+After confirming we want to proceed, the affected objects are displayed (one management group and one subscription), a warning message is displayed, and we are prompted for confirmation to proceed:
+
+![](../media/onboarding/run-1-2.png)
+
+After confirming we want to proceed, an existing subscription is removed from the management group, a check for custom role definitions at the management group scope is performed (none found), and the management group is removed:
+
+![](../media/onboarding/run-1-3.png)
+
+After the first run of the `delete-management-groups.bat` script, the updated management group hierarchy appears as follows:
+
+![](../media/onboarding/management-groups-02.png)
+
+Note in the above image that the subscription `ALZ-Logging` has been re-parented to the Tenant Root Group and the `Management` management group has been deleted as a result of this script run.
+
+For the second run of the `delete-management-groups.bat` script, we will remove the entire `MyOrganization` management group hierarchy without affecting the other 2 management groups that are children of the Tenant Root Group. We do this by passing the ID of the `MyOrganization` management group as a parameter to the script:
+
+![](../media/onboarding/run-2-1.png)
+
+Similar to the previous script run, we are shown the current environment variables in effect and prompted to confirm (above), and are shown the affected objects along with a warning message and prompted to confirm again (below):
+
+![](../media/onboarding/run-2-2.png)
+
+As the script runs, it outputs each operation and results in sequence:
+
+![](../media/onboarding/run-2-3.png)
+![](../media/onboarding/run-2-4.png)
+
+After the second time this script is run, the `MyOrganization` management group (and all child management groups) have been deleted, and the updated management group hierarchy appears as follows:
+
+![](../media/onboarding/management-groups-03.png)
+
+Note that the `ALZ-Networking` and `ALZ-Workload-Generalized` subscriptions are now parented by the Tenant Root Group. The `ChildGroup1` and `ChildGroup2` management groups remain intact, since they were not part of the `MyOrganization` management group hierarchy.
+
+For the third and final run of the `delete-management-groups.bat` script, we will remove all management groups under the Tenant Root Group. We do this by invoking the script with no parameters. When invoked with no parameters, the script uses the value stored in the `%DEVOPS_TENANT_ID%` environment variable, which effectively removes all management groups under the Tenant Root Group. An equivalent way to achieve this is by passing the ID of the Tenant Root Group (your Azure AD tenant ID) as the parameter value; however, it is easier to just run the script with no parameters.
+
+Note that we could have achieved the same effect with a single invocation of the script with no parameters the first time we ran it. The previous invocations are simply examples of how to remove and individual management group or portion of the complete management group hierarchy.
+
+![](../media/onboarding/run-3-1.png)
+![](../media/onboarding/run-3-2.png)
+![](../media/onboarding/run-3-3.png)
+
+After the third time this script is run (with no parameters), only the Tenant Root Group remains, and all subscriptions have been re-parented under it:
+
+![](../media/onboarding/management-groups-04.png)
+

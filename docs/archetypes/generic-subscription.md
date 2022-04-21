@@ -82,6 +82,7 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
     * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
     * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
+    * [Log Analytics Workspace](../../schemas/latest/landingzones/types/logAnalyticsWorkspaceId.json)
 
   * Spoke types
     * [Automation](../../schemas/latest/landingzones/types/automation.json)
@@ -107,8 +108,7 @@ As an administrator, you can lock a subscription, resource group, or resource to
 | Deployment without subscription budget | [tests/schemas/lz-generic-subscription/BudgetIsFalse.json](../../tests/schemas/lz-generic-subscription/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
 | Deployment without resource tags | [tests/schemas/lz-generic-subscription/EmptyResourceTags.json](../../tests/schemas/lz-generic-subscription/EmptyResourceTags.json) | `parameters.resourceTags.value` is an empty object. |
 | Deployment without subscription tags | [tests/schemas/lz-generic-subscription/EmptySubscriptionTags.json](../../tests/schemas/lz-generic-subscription/EmptySubscriptionTags.json) | `parameters.subscriptionTags.value` is an empty object. |
-| Deployment with optional subnets | [tests/schemas/lz-generic-subscription/WithOptionalSubnets.json](../../tests/schemas/lz-generic-subscription/WithOptionalSubnets.json) | `parameters.network.value.subnets.optional` array has one subnet.  Many others can be added following the same syntax. |
-| Deployment without optional subnets | [tests/schemas/lz-generic-subscription/WithoutOptionalSubnets.json](../../tests/schemas/lz-generic-subscription/WithoutOptionalSubnets.json) | `parameters.network.value.subnets.optional` array is empty. |
+| Deployment without subnets | [tests/schemas/lz-generic-subscription/WithoutSubnets.json](../../tests/schemas/lz-generic-subscription/WithoutSubnets.json) | `parameters.network.value.subnets` array is empty. |
 | Deployment without custom DNS | [tests/schemas/lz-generic-subscription/WithoutCustomDNS.json](../../tests/schemas/lz-generic-subscription/WithoutCustomDNS.json) | `parameters.network.value.dnsServers` array is empty.  Defaults to Azure managed DNS when array is empty. |
 | Deployment with Backup Recovery Vault | [tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsTrue.json](../../tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsTrue.json) | `parameters.backupRecoveryVault.value.enabled` is set to `true and vault name is filled in. |
 | Deployment without Backup Recovery Vault | [tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsFalse.json](../../tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsFalse.json) | `parameters.backupRecoveryVault.value.enabled` is set to `false` and vault name is removed. |
@@ -123,10 +123,10 @@ This example configures:
 4. Subscription Budget with $1000
 5. Subscription Tags
 6. Resource Tags (aligned to the default tags defined in [Policies](../../policy/custom/definitions/policyset/Tags.parameters.json))
-7. Automation Account
-8. Backup Recovery Vault
-9. Spoke Virtual Network with Hub-managed DNS, Virtual Network Peering, 4 required subnets (zones) and 1 additional subnet `web`.
-
+7. Log Analytics Workspace integration through Azure Defender for Cloud
+8. Automation Account
+9. Backup Recovery Vault
+10. Spoke Virtual Network with Hub-managed DNS, Virtual Network Peering and 5 subnets.
 
 ```json
 {
@@ -136,37 +136,19 @@ This example configures:
         "location": {
             "value": "canadacentral"
         },
+        "logAnalyticsWorkspaceResourceId": {
+            "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
+        },
         "serviceHealthAlerts": {
             "value": {
                 "resourceGroupName": "pubsec-service-health",
-                "incidentTypes": [
-                    "Incident",
-                    "Security"
-                ],
-                "regions": [
-                    "Global",
-                    "Canada East",
-                    "Canada Central"
-                ],
+                "incidentTypes": [ "Incident", "Security" ],
+                "regions": [ "Global", "Canada East", "Canada Central" ],
                 "receivers": {
-                    "app": [
-                        "alzcanadapubsec@microsoft.com"
-                    ],
-                    "email": [
-                        "alzcanadapubsec@microsoft.com"
-                    ],
-                    "sms": [
-                        {
-                            "countryCode": "1",
-                            "phoneNumber": "5555555555"
-                        }
-                    ],
-                    "voice": [
-                        {
-                            "countryCode": "1",
-                            "phoneNumber": "5555555555"
-                        }
-                    ]
+                    "app": [ "alzcanadapubsec@microsoft.com" ],
+                    "email": [ "alzcanadapubsec@microsoft.com" ],
+                    "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+                    "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
                 },
                 "actionGroupName": "Sub1 ALZ action group",
                 "actionGroupShortName": "sub1-alert",
@@ -200,13 +182,7 @@ This example configures:
         },
         "subscriptionBudget": {
             "value": {
-                "createBudget": true,
-                "name": "MonthlySubscriptionBudget",
-                "amount": 1000,
-                "timeGrain": "Monthly",
-                "contactEmails": [
-                    "alzcanadapubsec@microsoft.com"
-                ]
+                "createBudget": false
             }
         },
         "subscriptionTags": {
@@ -226,10 +202,10 @@ This example configures:
         },
         "resourceGroups": {
             "value": {
-                "automation": "rgAutomation",
-                "networking": "rgVnet",
+                "automation": "rgAutomation2022Q1",
+                "networking": "rgVnet2022Q1",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecoveryVault"
+                "backupRecoveryVault":"rgRecoveryVault2022Q1"
             }
         },
         "automation": {
@@ -239,7 +215,7 @@ This example configures:
         },
         "backupRecoveryVault":{
             "value": {
-                "enableBackUpRecoveryVault":true,
+                "enabled":true,
                 "name":"bkupvault"
             }
         },
@@ -263,10 +239,10 @@ This example configures:
                 "addressPrefixes": [
                     "10.2.0.0/16"
                 ],
-                "subnets": {
-                    "oz": {
+                "subnets": [
+                    {
                         "comments": "App Management Zone (OZ)",
-                        "name": "oz",
+                        "name": "appManagement",
                         "addressPrefix": "10.2.1.0/25",
                         "nsg": {
                             "enabled": true
@@ -275,9 +251,9 @@ This example configures:
                             "enabled": true
                         }
                     },
-                    "paz": {
+                    {
                         "comments": "Presentation Zone (PAZ)",
-                        "name": "paz",
+                        "name": "web",
                         "addressPrefix": "10.2.2.0/25",
                         "nsg": {
                             "enabled": true
@@ -286,9 +262,9 @@ This example configures:
                             "enabled": true
                         }
                     },
-                    "rz": {
+                    {
                         "comments": "Application Zone (RZ)",
-                        "name": "rz",
+                        "name": "app",
                         "addressPrefix": "10.2.3.0/25",
                         "nsg": {
                             "enabled": true
@@ -297,9 +273,9 @@ This example configures:
                             "enabled": true
                         }
                     },
-                    "hrz": {
+                    {
                         "comments": "Data Zone (HRZ)",
-                        "name": "hrz",
+                        "name": "data",
                         "addressPrefix": "10.2.4.0/25",
                         "nsg": {
                             "enabled": true
@@ -308,23 +284,21 @@ This example configures:
                             "enabled": true
                         }
                     },
-                    "optional": [
-                        {
-                            "comments": "App Service",
-                            "name": "appservice",
-                            "addressPrefix": "10.2.5.0/25",
-                            "nsg": {
-                                "enabled": false
-                            },
-                            "udr": {
-                                "enabled": false
-                            },
-                            "delegations": {
-                                "serviceName": "Microsoft.Web/serverFarms"
-                            }
+                    {
+                        "comments": "App Service",
+                        "name": "appservice",
+                        "addressPrefix": "10.2.5.0/25",
+                        "nsg": {
+                            "enabled": false
+                        },
+                        "udr": {
+                            "enabled": false
+                        },
+                        "delegations": {
+                            "serviceName": "Microsoft.Web/serverFarms"
                         }
-                    ]
-                }
+                    }
+                ]
             }
         }
     }
@@ -374,6 +348,13 @@ The rest of the segments for the **virtualNetworkId** string must also match the
 in case a different prefix besides **pubsec** was used to conform to a specific and preferred naming convention or organization prefix (item **2**), or the default VNET name of hub-vnet was also changed to something else,
 (**item 3**) - again based on a specific and preferred naming convention that may have been used before when the actual hub VNET was deployed.
 
+> Each subnet in the spoke virtual network has its own User Defined Route (UDR).  This allows for scenarios in which subnets can have different routing rules. It is possible for a single User Defined Route to be associated with many spoke subnets by customizing the automation code.
 ### Deployment Instructions
+
+### Virtual Appliance IP
+To ensure traffic is routed/filtered via the firewall, please validate or update the "egressVirtualApplianceIp" value to the firewall IP in your environment: 
+  - For Azure Firewall, use the firewall IP address
+  - For Network Virtual Appliances (i.e. Fortigate firewalls), use the internal load-balancer IP (item **1**)
+![Generic Subscription:Egress Virtual Appliance IP](../../docs/media/archetypes/egressvirtualApplianceIP.jpg)
 
 Please see [archetype authoring guide for deployment instructions](authoring-guide.md#deployment-instructions).

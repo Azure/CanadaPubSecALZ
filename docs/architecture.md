@@ -328,6 +328,8 @@ Following the nomenclature of [ITSG-22][itsg22], these would be the default subn
 * App Management Zone (OZ), an optional network for app management servers in the spoke.
 * All zones would allow management traffic from the Management Access Zone (OZ).
 
+> Automation code deploys generic network security groups (NSGs) without the above traffic flow restrictions as they are dependent on the application architecture.  The NSG rules can be customized to control subnet-to-subnet traffic within a virtual network by customizing the automation code. Each subnet in the spoke virtual network has its own User Defined Route (UDR).  This allows for scenarios in which subnets can have different routing rules. It is possible for a single User Defined Route to be associated with many spoke subnets by customizing the automation code.
+
 ---
 
 ## 6. Logging
@@ -339,7 +341,7 @@ Microsoft's recommendation is [one central Log Analytics workspace](https://docs
 The design and recommendation are based on the following requirements:
 
 * Collect all logs from VMs and PaaS services.
-* Central Logging for security monitoring.
+* Logging for security monitoring.
 * Limit data access based on resource permissions granted to individuals and teams.
 * Tune alerting based on environments (i.e., less alerts from non-production environments).
 
@@ -479,10 +481,10 @@ To simplify, let's assume a single `CostCenter` tag is required for every resour
 
 | Archetype | Design | Documentation |
 | --- | --- | --- |
-| **Central Logging** | ![Archetype:  Central Logging](media/architecture/archetype-logging.jpg) | [Archetype definition](archetypes/logging.md) |
-| **Generic Subscription** | ![Archetype:  Generic Subscription](media/architecture/archetype-generic-subscription.jpg) | [Archetype definition](archetypes/generic-subscription.md)
-| **Machine Learning** | ![Archetype:  Machine Learning](media/architecture/archetype-machinelearning.jpg) | [Archetype definition](archetypes/machinelearning.md) |
-| **Healthcare** | ![Archetype:  Healthcare](media/architecture/archetype-healthcare.jpg) | [Archetype definition](archetypes/healthcare.md) |
+| **Logging** | ![Archetype: Logging](media/architecture/archetype-logging.jpg) | [Archetype definition](archetypes/logging.md) |
+| **Generic Subscription** | ![Archetype: Generic Subscription](media/architecture/archetype-generic-subscription.jpg) | [Archetype definition](archetypes/generic-subscription.md)
+| **Machine Learning** | ![Archetype: Machine Learning](media/architecture/archetype-machinelearning.jpg) | [Archetype definition](archetypes/machinelearning.md) |
+| **Healthcare** | ![Archetype: Healthcare](media/architecture/archetype-healthcare.jpg) | [Archetype definition](archetypes/healthcare.md) |
 
 ---
 

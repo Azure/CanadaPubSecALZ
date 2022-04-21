@@ -240,7 +240,7 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
     * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
     * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
-
+    * [Log Analytics Workspace](../../schemas/latest/landingzones/types/logAnalyticsWorkspaceId.json)
   * Spoke types
     * [Automation](../../schemas/latest/landingzones/types/automation.json)
     * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
@@ -282,6 +282,7 @@ As an administrator, you can lock a subscription, resource group, or resource to
 | Deployment with AKS using Network Plugin: Azure CNI + Network Policy: Azure | [tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json](../../tests/schemas/lz-machinelearning/AKS-AzureCNI-AzureNP.json) | `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.networkPlugin`  equals ***azure***, `parameters.aks.value.podCidr` is ***empty***, `parameters.aks.value.serviceCidr` is filled, `parameters.aks.value.dnsServiceIP` is filled and `parameters.aks.value.dockerBridgeCidr`  is filled |
 | Deployment without Azure App Service for Linux Containers | [tests/schemas/lz-machinelearning/AppServiceLinuxContainerIsFalse.json](../../tests/schemas/lz-machinelearning/AppServiceLinuxContainerIsFalse.json) | `parameters.appServiceLinuxContainer.value.enabled` is false. |
 | Deployment with Azure App Service for Linux Containers without Private Endpoint| [tests/schemas/lz-machinelearning/AppServiceLinuxContainerPrivateEndpointIsFalse.json](../../tests/schemas/lz-machinelearning/AppServiceLinuxContainerPrivateEndpointIsFalse.json) | `parameters.appServiceLinuxContainer.value.enabled` is true, `parameters.appServiceLinuxContainer.value.sku{Name,Tier}` are filled, and `parameters.appServiceLinuxContainer.value.enablePrivateEndpoint` is false. |
+
 ### Example Deployment Parameters
 
 This example configures:
@@ -292,9 +293,10 @@ This example configures:
 4. Subscription Budget with $1000
 5. Subscription Tags
 6. Resource Tags (aligned to the default tags defined in [Policies](../../policy/custom/definitions/policyset/Tags.parameters.json))
-7. Automation Account
-8. Spoke Virtual Network with Hub-managed DNS, Hub-managed private endpoint DNS Zones, Virtual Network Peering and all required subnets (zones).
-9. Deploys Azure resources with Customer Managed Keys.
+7. Log Analytics Workspace integration through Azure Defender for Cloud
+8. Automation Account
+9. Spoke Virtual Network with Hub-managed DNS, Hub-managed private endpoint DNS Zones, Virtual Network Peering and all required subnets (zones).
+10. Deploys Azure resources with Customer Managed Keys.
 
 > **Note 1:**  Azure Automation Account is not deployed with Customer Managed Key as it requires an Azure Key Vault instance with public network access.
 
@@ -371,6 +373,9 @@ This example configures:
         "ProjectName": "project-name-tag",
         "TechnicalContact": "technical-contact-tag"
       }
+    },
+    "logAnalyticsWorkspaceResourceId": {
+        "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
     },
     "resourceGroups": {
       "value": {
@@ -459,26 +464,6 @@ This example configures:
           "10.4.0.0/16"
         ],
         "subnets": {
-          "oz": {
-            "comments": "App Management Zone (OZ)",
-            "name": "oz",
-            "addressPrefix": "10.4.1.0/25"
-          },
-          "paz": {
-            "comments": "Presentation Zone (PAZ)",
-            "name": "paz",
-            "addressPrefix": "10.4.2.0/25"
-          },
-          "rz": {
-            "comments": "Application Zone (RZ)",
-            "name": "rz",
-            "addressPrefix": "10.4.3.0/25"
-          },
-          "hrz": {
-            "comments": "Data Zone (HRZ)",
-            "name": "hrz",
-            "addressPrefix": "10.4.4.0/25"
-          },
           "sqlmi": {
             "comments": "SQL Managed Instances Delegated Subnet",
             "name": "sqlmi",
