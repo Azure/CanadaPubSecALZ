@@ -265,6 +265,7 @@ As an administrator, you can lock a subscription, resource group, or resource to
 | Deployment with Hub Virtual Network | [tests/schemas/lz-healthcare/FullDeployment-With-Hub.json](../../tests/schemas/lz-healthcare/FullDeployment-With-Hub.json) | - |
 | Deployment with Location | [tests/schemas/lz-healthcare/FullDeployment-With-Location.json](../../tests/schemas/lz-healthcare/FullDeployment-With-Location.json) | `parameters.location.value` is `canadacentral` |
 | Deployment without Hub Virtual Network | [tests/schemas/lz-healthcare/FullDeployment-Without-Hub.json](../../tests/schemas/lz-healthcare/FullDeployment-Without-Hub.json) | `parameters.hubNetwork.value.*` fields are empty & `parameters.network.value.peerToHubVirtualNetwork` is false. |
+| Deployment with optional subnets | [tests/schemas/lz-healthcare/FullDeployment-With-OptionalSubnets.json](../../tests/schemas/lz-healthcare/FullDeployment-With-OptionalSubnets.json) | `parameters.network.subnets.optional` array is set with optional subnets. |
 | Deployment with subscription budget | [tests/schemas/lz-healthcare/BudgetIsTrue.json](../../tests/schemas/lz-healthcare/BudgetIsTrue.json) | `parameters.subscriptionBudget.value.createBudget` is set to `true` and budget information filled in. |
 | Deployment without subscription budget | [tests/schemas/lz-healthcare/BudgetIsFalse.json](../../tests/schemas/lz-healthcare/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
 | Deployment without resource tags | [tests/schemas/lz-healthcare/EmptyResourceTags.json](../../tests/schemas/lz-healthcare/EmptyResourceTags.json) | `parameters.resourceTags.value` is an empty object. |
@@ -290,7 +291,7 @@ This example configures:
 6. Resource Tags (aligned to the default tags defined in [Policies](../../policy/custom/definitions/policyset/Tags.parameters.json))
 7. Log Analytics Workspace integration through Azure Defender for Cloud
 8. Automation Account
-9. Spoke Virtual Network with Hub-managed DNS, Hub-managed private endpoint DNS Zones, Virtual Network Peering and all required subnets (zones).
+9. Spoke Virtual Network with Hub-managed DNS, Hub-managed private endpoint DNS Zones, Virtual Network Peering and all required subnets and 2 optional subnets.
 10. Deploys Azure resources with Customer Managed Keys.
 
 > **Note 1:**  Azure Automation Account is not deployed with Customer Managed Key as it requires an Azure Key Vault instance with public network access.
@@ -454,7 +455,34 @@ This example configures:
                         "comments": "Azure Web App Delegated Subnet",
                         "name": "webapp",
                         "addressPrefix": "10.5.8.0/25"
-                    }
+                    },
+                    "optional": [
+                        {
+                            "comments": "Optional Subnet 1",
+                            "name": "virtualMachines",
+                            "addressPrefix": "10.5.9.0/25",
+                            "nsg": {
+                            "enabled": true
+                            },
+                            "udr": {
+                            "enabled": true
+                            }
+                        },
+                        {
+                            "comments": "Optional Subnet 2 with delegation for NetApp Volumes",
+                            "name": "NetappVolumes",
+                            "addressPrefix": "10.5.10.0/25",
+                            "nsg": {
+                            "enabled": false
+                            },
+                            "udr": {
+                            "enabled": false
+                            },
+                            "delegations": {
+                                "serviceName": "Microsoft.NetApp/volumes"
+                            }
+                        }
+                    ]
                 }
             }
         }
