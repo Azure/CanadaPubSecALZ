@@ -6,7 +6,7 @@
 
 * Schema definition update for Machine Learning & Healthcare archetypes.  Expanded the spoke network subnet configuration to contain 0 or more optional subnets.  This change enables network configuration to be more flexible.
 
-  * Machine Learning archetype with optional subnets
+  * Machine Learning archetype network configuration with optional subnets
 
     <details>
       <summary>Expand/collapse</summary>
@@ -88,7 +88,7 @@
 
     </details>
 
-  * Healthcare archetype with optional subnets
+  * Healthcare archetype network configuration with optional subnets
 
     <details>
       <summary>Expand/collapse</summary>
