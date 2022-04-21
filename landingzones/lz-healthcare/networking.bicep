@@ -72,7 +72,34 @@ param hubNetwork object
 //         "comments": "Azure Web App Delegated Subnet",
 //         "name": "webapp",
 //         "addressPrefix": "10.2.8.0/25"
-//       }
+//       },
+//       "optional": [
+//           {
+//          "comments": "Optional Subnet 1",
+//          "name": "virtualMachines",
+//          "addressPrefix": "10.2.9.0/25",
+//          "nsg": {
+//            "enabled": true
+//          },
+//          "udr": {
+//            "enabled": true
+//          }
+//        },
+//        {
+//          "comments": "Optional Subnet 2 with delegation for NetApp Volumes",
+//          "name": "NetappVolumes",
+//          "addressPrefix": "10.2.10.0/25",
+//          "nsg": {
+//            "enabled": false
+//          },
+//          "udr": {
+//            "enabled": false
+//          },
+//          "delegations": {
+//              "serviceName": "Microsoft.NetApp/volumes"
+//          }
+//        }
+//      ]
 //     }
 //   }
 
@@ -109,6 +136,33 @@ param hubNetwork object
 //       name: 'webapp'
 //       addressPrefix: '10.2.8.0/25'
 //     }
+//     optional: [
+//      {
+//        comments: 'Optional Subnet 1'
+//        name: 'virtualMachines'
+//        addressPrefix: '10.2.9.0/25'
+//        nsg: {
+//          enabled: true
+//        },
+//        udr: {
+//          enabled: true
+//        }
+//      },
+//      {
+//        comments: 'Optional Subnet 2 with delegation for NetApp Volumes',
+//        name: 'NetappVolumes'
+//        addressPrefix: '10.2.10.0/25'
+//        nsg: {
+//          enabled: false
+//        },
+//        udr: {
+//          enabled: false
+//        },
+//        delegations: {
+//            serviceName: 'Microsoft.NetApp/volumes'
+//        }
+//      }
+//    ]
 //   }
 // }
 @description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (privateEndpoints, databricksPublic, databricksPrivate, web, optional [array of optional subnets]).')

@@ -145,7 +145,33 @@
                         "name": "webapp",
                         "addressPrefix": "10.5.8.0/25"
                     },
-                    "optional": []
+                    "optional": [
+                        {
+                            "comments": "Optional Subnet 1",
+                            "name": "virtualMachines",
+                            "addressPrefix": "10.5.9.0/25",
+                            "nsg": {
+                            "enabled": true
+                            },
+                            "udr": {
+                            "enabled": true
+                            }
+                        },
+                        {
+                            "comments": "Optional Subnet 2 with delegation for NetApp Volumes",
+                            "name": "NetappVolumes",
+                            "addressPrefix": "10.5.10.0/25",
+                            "nsg": {
+                            "enabled": false
+                            },
+                            "udr": {
+                            "enabled": false
+                            },
+                            "delegations": {
+                                "serviceName": "Microsoft.NetApp/volumes"
+                            }
+                        }
+                    ]
                 }
             }
         }
