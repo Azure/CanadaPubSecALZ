@@ -190,6 +190,7 @@ Instructions:
       deployOperation: create  # valid options: 'create', 'what-if'
 
       loggingPathFromRoot: 'config/logging'
+      networkPathFromRoot: 'config/networking'
       subscriptionsPathFromRoot: 'config/subscriptions'
 
       var-bashPreInjectScript: 'set -E; function catch { echo "##vso[task.logissue type=error]Caller: $(caller), LineNo: $LINENO, Command: $BASH_COMMAND" ; exit 1 ; } ; echo ; echo "Current working directory: $(pwd)" ; echo ; trap catch ERR'
