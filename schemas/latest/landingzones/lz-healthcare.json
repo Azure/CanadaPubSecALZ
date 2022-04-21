@@ -229,13 +229,20 @@
         },
         "web": {
           "$ref": "#/definitions/Subnet"
+        },
+        "optional": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OptionalSubnet"
+          }
         }
       },
       "required": [
         "databricksPublic",
         "databricksPrivate",
         "privateEndpoints",
-        "web"
+        "web",
+        "optional"
       ],
       "title": "Subnets"
     },
@@ -259,6 +266,77 @@
         "name"
       ],
       "title": "subnet"
+    },
+    "OptionalSubnet": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "comments": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "addressPrefix": {
+          "type": "string"
+        },
+        "nsg": {
+          "$ref": "#/definitions/OptionalSubnetNsg"
+        },
+        "udr": {
+          "$ref": "#/definitions/OptionalSubnetUdr"
+        },
+        "delegations": {
+          "$ref": "#/definitions/OptionalSubnetDelegations"
+        }
+      },
+      "required": [
+        "addressPrefix",
+        "comments",
+        "name",
+        "nsg",
+        "udr"
+      ],
+      "title": "OptionalSubnet"
+    },
+    "OptionalSubnetDelegations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "serviceName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "serviceName"
+      ],
+      "title": "OptionalSubnetDelegations"
+    },
+    "OptionalSubnetNsg": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "title": "OptionalSubnetNsg"
+    },
+    "OptionalSubnetUdr": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "title": "OptionalSubnetUdr"
     }
   }
 }

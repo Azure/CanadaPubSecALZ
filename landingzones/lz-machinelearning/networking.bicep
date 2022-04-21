@@ -168,6 +168,14 @@ var routesToHub = [
 ]
 
 // Network Security Groups
+resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = [for subnet in network.optional: if (subnet.nsg.enabled) {
+  name: '${subnet.name}Nsg'
+  location: location
+  properties: {
+    securityRules: []
+  }
+}]
+
 module nsgDatabricks '../../azresources/network/nsg/nsg-databricks.bicep' = {
   name: 'deploy-nsg-databricks'
   params: {
@@ -194,6 +202,14 @@ module nsgAppService '../../azresources/network/nsg/nsg-empty.bicep' = {
 }
 
 // Route Tables
+resource udr 'Microsoft.Network/routeTables@2021-02-01' = {
+  name: 'RouteTable'
+  location: location
+  properties: {
+    routes: network.peerToHubVirtualNetwork ? routesToHub : null
+  }
+}
+
 resource udrAKS 'Microsoft.Network/routeTables@2021-02-01' = {
   name: '${network.subnets.aks.name}Udr'
   location: location
@@ -235,6 +251,134 @@ module udrAppService '../../azresources/network/udr/udr-custom.bicep' = {
 }
 
 // Virtual Network
+var requiredSubnets = [
+  {
+    name: network.subnets.privateEndpoints.name
+    properties: {
+      addressPrefix: network.subnets.privateEndpoints.addressPrefix
+      privateEndpointNetworkPolicies: 'Disabled'
+    }
+  }
+  {
+    name: network.subnets.aks.name
+    properties: {
+      addressPrefix: network.subnets.aks.addressPrefix
+      routeTable: {
+        id: udrAKS.id
+      }
+      privateEndpointNetworkPolicies: 'Disabled'
+    }
+  }
+  {
+    name: network.subnets.appService.name
+    properties: {
+      addressPrefix: network.subnets.appService.addressPrefix
+      networkSecurityGroup: {
+        id: nsgAppService.outputs.nsgId
+      }
+      routeTable: {
+        id: udrAppService.outputs.udrId
+      }
+      delegations: [
+        {
+          name: 'app-service-delegation'
+          properties: {
+            serviceName: 'Microsoft.Web/serverFarms'
+          }
+        }
+      ]
+    }
+  }
+  {
+    name: network.subnets.databricksPublic.name
+    properties: {
+      addressPrefix: network.subnets.databricksPublic.addressPrefix
+      networkSecurityGroup: {
+        id: nsgDatabricks.outputs.publicNsgId
+      }
+      routeTable: {
+        id: udrDatabricksPublic.outputs.udrId
+      }
+      delegations: [
+        {
+          name: 'databricks-delegation-public'
+          properties: {
+            serviceName: 'Microsoft.Databricks/workspaces'
+          }
+        }
+      ]
+    }
+  }
+  {
+    name: network.subnets.databricksPrivate.name
+    properties: {
+      addressPrefix: network.subnets.databricksPrivate.addressPrefix
+      networkSecurityGroup: {
+        id: nsgDatabricks.outputs.privateNsgId
+      }
+      routeTable: {
+        id: udrDatabricksPrivate.outputs.udrId
+      }
+      delegations: [
+        {
+          name: 'databricks-delegation-private'
+          properties: {
+            serviceName: 'Microsoft.Databricks/workspaces'
+          }
+        }
+      ]
+    }
+  }
+  {
+    name: network.subnets.sqlmi.name
+    properties: {
+      addressPrefix: network.subnets.sqlmi.addressPrefix
+      routeTable: {
+        id: udrSqlMi.outputs.udrId
+      }
+      networkSecurityGroup: {
+        id: nsgSqlMi.outputs.nsgId
+      }
+      serviceEndpoints: [
+        {
+          service: 'Microsoft.Storage'
+        }
+      ]
+      delegations: [
+        {
+          name: 'sqlmi-delegation'
+          properties: {
+            serviceName: 'Microsoft.Sql/managedInstances'
+          }
+        }
+      ]
+    }
+  }
+]
+
+var optionalSubnets = [for (subnet, i) in network.optional: {
+  name: subnet.name
+  properties: {
+    addressPrefix: subnet.addressPrefix
+    networkSecurityGroup: (subnet.nsg.enabled) ? {
+      id: nsg[i].id
+    } : null
+    routeTable: (subnet.udr.enabled) ? {
+      id: udr.id
+    } : null
+    delegations: contains(subnet, 'delegations') ? [
+      {
+        name: replace(subnet.delegations.serviceName, '/', '.')
+        properties: {
+          serviceName: subnet.delegations.serviceName
+        }
+      }
+    ] : null
+  }
+}]
+
+var allSubnets = union(requiredSubnets, optionalSubnets)
+
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   name: network.name
   location: location
@@ -245,110 +389,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
     addressSpace: {
       addressPrefixes: network.addressPrefixes
     }
-    subnets: [
-      {
-        name: network.subnets.privateEndpoints.name
-        properties: {
-          addressPrefix: network.subnets.privateEndpoints.addressPrefix
-          privateEndpointNetworkPolicies: 'Disabled'
-        }
-      }
-      {
-        name: network.subnets.aks.name
-        properties: {
-          addressPrefix: network.subnets.aks.addressPrefix
-          routeTable: {
-            id: udrAKS.id
-          }
-          privateEndpointNetworkPolicies: 'Disabled'
-        }
-      }
-      {
-        name: network.subnets.appService.name
-        properties: {
-          addressPrefix: network.subnets.appService.addressPrefix
-          networkSecurityGroup: {
-            id: nsgAppService.outputs.nsgId
-          }
-          routeTable: {
-            id: udrAppService.outputs.udrId
-          }
-          delegations: [
-            {
-              name: 'app-service-delegation'
-              properties: {
-                serviceName: 'Microsoft.Web/serverFarms'
-              }
-            }
-          ]
-        }
-      }
-      {
-        name: network.subnets.databricksPublic.name
-        properties: {
-          addressPrefix: network.subnets.databricksPublic.addressPrefix
-          networkSecurityGroup: {
-            id: nsgDatabricks.outputs.publicNsgId
-          }
-          routeTable: {
-            id: udrDatabricksPublic.outputs.udrId
-          }
-          delegations: [
-            {
-              name: 'databricks-delegation-public'
-              properties: {
-                serviceName: 'Microsoft.Databricks/workspaces'
-              }
-            }
-          ]
-        }
-      }
-      {
-        name: network.subnets.databricksPrivate.name
-        properties: {
-          addressPrefix: network.subnets.databricksPrivate.addressPrefix
-          networkSecurityGroup: {
-            id: nsgDatabricks.outputs.privateNsgId
-          }
-          routeTable: {
-            id: udrDatabricksPrivate.outputs.udrId
-          }
-          delegations: [
-            {
-              name: 'databricks-delegation-private'
-              properties: {
-                serviceName: 'Microsoft.Databricks/workspaces'
-              }
-            }
-          ]
-        }
-      }
-      {
-        name: network.subnets.sqlmi.name
-        properties: {
-          addressPrefix: network.subnets.sqlmi.addressPrefix
-          routeTable: {
-            id: udrSqlMi.outputs.udrId
-          }
-          networkSecurityGroup: {
-            id: nsgSqlMi.outputs.nsgId
-          }
-          serviceEndpoints: [
-            {
-              service: 'Microsoft.Storage'
-            }
-          ]
-          delegations: [
-            {
-              name: 'sqlmi-delegation'
-              properties: {
-                serviceName: 'Microsoft.Sql/managedInstances'
-              }
-            }
-          ]
-        }
-      }
-    ]
+    subnets: allSubnets
   }
 }
 

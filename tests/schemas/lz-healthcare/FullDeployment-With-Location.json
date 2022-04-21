@@ -180,7 +180,8 @@
                         "comments": "Azure Web App Delegated Subnet",
                         "name": "webapp",
                         "addressPrefix": "10.5.8.0/25"
-                    }
+                    },
+                    "optional": []
                 }
             }
         }

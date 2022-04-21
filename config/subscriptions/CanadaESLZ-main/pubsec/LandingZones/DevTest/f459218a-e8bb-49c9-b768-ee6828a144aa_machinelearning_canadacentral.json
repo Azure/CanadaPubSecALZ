@@ -177,7 +177,8 @@
             "comments": "App Service Subnet",
             "name": "appService",
             "addressPrefix": "10.4.10.0/25"
-          }
+          },
+          "optional": []
         }
       }
     }
