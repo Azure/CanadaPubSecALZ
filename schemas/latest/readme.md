@@ -2,6 +2,164 @@
 
 ## Landing Zone Schemas
 
+### April 21, 2022
+
+* Schema definition update for Machine Learning & Healthcare archetypes.  Expanded the spoke network subnet configuration to contain 0 or more optional subnets.  This change enables network configuration to be more flexible.
+
+  * Machine Learning archetype with optional subnets
+
+    <details>
+      <summary>Expand/collapse</summary>
+
+      ```json
+          "network": {
+            "value": {
+              "peerToHubVirtualNetwork": true,
+              "useRemoteGateway": false,
+              "name": "azmlsqlauth2022Q1vnet",
+              "dnsServers": [
+                "10.18.1.4"
+              ],
+              "addressPrefixes": [
+                "10.6.0.0/16"
+              ],
+              "subnets": {
+                "sqlmi": {
+                  "comments": "SQL Managed Instances Delegated Subnet",
+                  "name": "sqlmi",
+                  "addressPrefix": "10.6.5.0/25"
+                },
+                "databricksPublic": {
+                  "comments": "Databricks Public Delegated Subnet",
+                  "name": "databrickspublic",
+                  "addressPrefix": "10.6.6.0/25"
+                },
+                "databricksPrivate": {
+                  "comments": "Databricks Private Delegated Subnet",
+                  "name": "databricksprivate",
+                  "addressPrefix": "10.6.7.0/25"
+                },
+                "privateEndpoints": {
+                  "comments": "Private Endpoints Subnet",
+                  "name": "privateendpoints",
+                  "addressPrefix": "10.6.8.0/25"
+                },
+                "aks": {
+                  "comments": "AKS Subnet",
+                  "name": "aks",
+                  "addressPrefix": "10.6.9.0/25"
+                },
+                "appService": {
+                  "comments": "App Service Subnet",
+                  "name": "appService",
+                  "addressPrefix": "10.6.10.0/25"
+                },
+                "optional": [
+                  {
+                    "comments": "Optional Subnet 1",
+                    "name": "virtualMachines",
+                    "addressPrefix": "10.6.11.0/25",
+                    "nsg": {
+                      "enabled": true
+                    },
+                    "udr": {
+                      "enabled": true
+                    }
+                  },
+                  {
+                    "comments": "Optional Subnet 2 with delegation for NetApp Volumes",
+                    "name": "NetappVolumes",
+                    "addressPrefix": "10.6.12.0/25",
+                    "nsg": {
+                      "enabled": false
+                    },
+                    "udr": {
+                      "enabled": false
+                    },
+                    "delegations": {
+                        "serviceName": "Microsoft.NetApp/volumes"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+      ```
+
+    </details>
+
+  * Healthcare archetype with optional subnets
+
+    <details>
+      <summary>Expand/collapse</summary>
+
+      ```json
+          "network": {
+              "value": {
+                  "peerToHubVirtualNetwork": true,
+                  "useRemoteGateway": false,
+                  "name": "health2022Q1vnet",
+                  "dnsServers": [
+                      "10.18.1.4"
+                  ],
+                  "addressPrefixes": [
+                      "10.5.0.0/16"
+                  ],
+                  "subnets": {
+                      "databricksPublic": {
+                          "comments": "Databricks Public Delegated Subnet",
+                          "name": "databrickspublic",
+                          "addressPrefix": "10.5.5.0/25"
+                      },
+                      "databricksPrivate": {
+                          "comments": "Databricks Private Delegated Subnet",
+                          "name": "databricksprivate",
+                          "addressPrefix": "10.5.6.0/25"
+                      },
+                      "privateEndpoints": {
+                          "comments": "Private Endpoints Subnet",
+                          "name": "privateendpoints",
+                          "addressPrefix": "10.5.7.0/25"
+                      },
+                      "web": {
+                          "comments": "Azure Web App Delegated Subnet",
+                          "name": "webapp",
+                          "addressPrefix": "10.5.8.0/25"
+                      },
+                      "optional": [
+                          {
+                              "comments": "Optional Subnet 1",
+                              "name": "virtualMachines",
+                              "addressPrefix": "10.5.9.0/25",
+                              "nsg": {
+                              "enabled": true
+                              },
+                              "udr": {
+                              "enabled": true
+                              }
+                          },
+                          {
+                              "comments": "Optional Subnet 2 with delegation for NetApp Volumes",
+                              "name": "NetappVolumes",
+                              "addressPrefix": "10.5.10.0/25",
+                              "nsg": {
+                              "enabled": false
+                              },
+                              "udr": {
+                              "enabled": false
+                              },
+                              "delegations": {
+                                  "serviceName": "Microsoft.NetApp/volumes"
+                              }
+                          }
+                      ]
+                  }
+              }
+          }
+      ```
+
+    </details>
+
 ### April 20, 2022
 
 * Schema definition update for Generic Subscription.  Spoke network's subnet configuration is now defined as an array.  The array can have 0 to many subnet definitions.
