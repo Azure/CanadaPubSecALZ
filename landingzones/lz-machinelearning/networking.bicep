@@ -83,6 +83,33 @@ param hubNetwork object
 //         "name": "appService",
 //         "addressPrefix": "10.2.10.0/25"
 //       }
+//       "optional": [
+//           {
+//          "comments": "Optional Subnet 1",
+//          "name": "virtualMachines",
+//          "addressPrefix": "10.6.11.0/25",
+//          "nsg": {
+//            "enabled": true
+//          },
+//          "udr": {
+//            "enabled": true
+//          }
+//        },
+//        {
+//          "comments": "Optional Subnet 2 with delegation for NetApp Volumes",
+//          "name": "NetappVolumes",
+//          "addressPrefix": "10.6.12.0/25",
+//          "nsg": {
+//            "enabled": false
+//          },
+//          "udr": {
+//            "enabled": false
+//          },
+//          "delegations": {
+//              "serviceName": "Microsoft.NetApp/volumes"
+//          }
+//        }
+//      ]
 //     }
 //   }
 // }
@@ -130,6 +157,33 @@ param hubNetwork object
 //       name: 'appService'
 //       addressPrefix: '10.2.10.0/25'
 //     }
+//     optional: [
+//      {
+//        comments: 'Optional Subnet 1'
+//        name: 'virtualMachines'
+//        addressPrefix: '10.6.11.0/25'
+//        nsg: {
+//          enabled: true
+//        },
+//        udr: {
+//          enabled: true
+//        }
+//      },
+//      {
+//        comments: 'Optional Subnet 2 with delegation for NetApp Volumes',
+//        name: 'NetappVolumes'
+//        addressPrefix: '10.6.12.0/25'
+//        nsg: {
+//          enabled: false
+//        },
+//        udr: {
+//          enabled: false
+//        },
+//        delegations: {
+//            serviceName: 'Microsoft.NetApp/volumes'
+//        }
+//      }
+//    ]
 //   }
 // }
 @description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, appService, optional [array of optional subnets]).) ')

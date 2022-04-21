@@ -186,7 +186,7 @@
               }
             },
             {
-              "comments": "Optional Subnet 2",
+              "comments": "Optional Subnet 2 with delegation for NetApp Volumes",
               "name": "NetappVolumes",
               "addressPrefix": "10.6.12.0/25",
               "nsg": {
