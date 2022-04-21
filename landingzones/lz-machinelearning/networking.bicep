@@ -132,7 +132,7 @@ param hubNetwork object
 //     }
 //   }
 // }
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, appService) ')
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, appService, optional [array of optional subnets]).) ')
 param network object
 
 var hubVnetIdSplit = split(hubNetwork.virtualNetworkId, '/')
@@ -168,7 +168,7 @@ var routesToHub = [
 ]
 
 // Network Security Groups
-resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = [for subnet in network.optional: if (subnet.nsg.enabled) {
+resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = [for subnet in network.subnets.optional: if (subnet.nsg.enabled) {
   name: '${subnet.name}Nsg'
   location: location
   properties: {
@@ -356,7 +356,7 @@ var requiredSubnets = [
   }
 ]
 
-var optionalSubnets = [for (subnet, i) in network.optional: {
+var optionalSubnets = [for (subnet, i) in network.subnets.optional: {
   name: subnet.name
   properties: {
     addressPrefix: subnet.addressPrefix
