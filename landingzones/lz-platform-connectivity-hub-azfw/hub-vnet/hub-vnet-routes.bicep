@@ -21,10 +21,6 @@ param hubVnetAddressPrefixRFC6598 string
 @description('Azure Firewall Private IP address')
 param azureFirwallPrivateIp string
 
-resource routeTable 'Microsoft.Network/routeTables@2021-02-01' existing = {
-  name: publicAccessZoneUdrName
-}
-
 var routes = [
   {
     name: 'Hub-AzureFirewall-Default-Route'
@@ -52,7 +48,7 @@ var routes = [
   }
 ]
 
-module publicAccessZoneUdr '../../../azresources/network/udr/udr-custom.bicep' = {
+module publicAccessZoneUdr '../../../azresources/network/udr/udr-custom.bicep' = if (publicAccessZoneUdrName != '') {
   name: 'deploy-route-table-${publicAccessZoneUdrName}'
   params: {
     name: publicAccessZoneUdrName
@@ -61,7 +57,7 @@ module publicAccessZoneUdr '../../../azresources/network/udr/udr-custom.bicep' =
   }
 }
 
-module managementRestrictedZoneUdr '../../../azresources/network/udr/udr-custom.bicep' = {
+module managementRestrictedZoneUdr '../../../azresources/network/udr/udr-custom.bicep' = if (managementRestrictedZoneUdrName != '') {
   name: 'deploy-route-table-${managementRestrictedZoneUdrName}'
   params: {
     name: managementRestrictedZoneUdrName

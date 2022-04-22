@@ -237,48 +237,10 @@ param bastionScaleUnits int
 param hubBastionSubnetAddressPrefix string //= '10.18.4.0/24'
 
 // Management Restricted Zone Virtual Network
-@description('Management Restricted Zone - Resource Group Name.')
-param rgMrzName string //= 'pubsecPrdMrzPbRsg'
-
-@description('Management Restricted Zone - Virtual Network Name.')
-param mrzVnetName string //= 'pubsecMrzVnet'
-
-@description('Management Restricted Zone - Virtual Network Address Space.')
-param mrzVnetAddressPrefixRFC1918 string //= '10.18.4.0/22'
-
-@description('Management Restricted Zone - Management (Access Zone) Subnet Name.')
-param mrzMazSubnetName string //= 'MazSubnet'
-
-@description('Management Restricted Zone - Management (Access Zone) Subnet Address Prefix.')
-param mrzMazSubnetAddressPrefix string //= '10.18.4.0/25'
-
-@description('Management Restricted Zone - Infrastructure Services (Restricted Zone) Subnet Name.')
-param mrzInfSubnetName string //= 'InfSubnet'
-
-@description('Management Restricted Zone - Infrastructure Services (Restricted Zone) Subnet Address Prefix.')
-param mrzInfSubnetAddressPrefix string //= '10.18.4.128/25'
-
-@description('Management Restricted Zone - Security Services (Restricted Zone) Subnet Name.')
-param mrzSecSubnetName string //= 'SecSubnet'
-
-@description('Management Restricted Zone - Security Services (Restricted Zone) Subnet Address Prefix.')
-param mrzSecSubnetAddressPrefix string //= '10.18.5.0/26'
-
-@description('Management Restricted Zone - Logging Services (Restricted Zone) Subnet Name.')
-param mrzLogSubnetName string //= 'LogSubnet'
-
-@description('Management Restricted Zone - Loggin Services (Restricted Zone) Subnet Address Prefix.')
-param mrzLogSubnetAddressPrefix string //= '10.18.5.64/26'
-
-@description('Management Restricted Zone - Core Management Interfaces (Restricted Zone) Subnet Name.')
-param mrzMgmtSubnetName string //= 'MgmtSubnet'
-
-@description('Management Restricted Zone - Core Management Interfaces (Restricted Zone) Subnet Address Prefix.')
-param mrzMgmtSubnetAddressPrefix string //= '10.18.5.128/26'
+param managementRestrictedZone object
 
 // Public Access Zone
-@description('Public Access Zone Resource Group Name.')
-param rgPazName string //= 'pubsecPazRg'
+param publicAccessZone object
 
 // Telemetry - Azure customer usage attribution
 // Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
@@ -335,20 +297,6 @@ resource rgHubVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   tags: resourceTags
 }
 
-// Create Managemend Restricted Virtual Network Resource Group
-resource rgMrzVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgMrzName
-  location: location
-  tags: resourceTags
-}
-
-// Create Public Access Zone Resource Group
-resource rgPaz 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgPazName
-  location: location
-  tags: resourceTags
-}
-
 // Enable delete locks
 module rgDdosDeleteLock '../../azresources/util/delete-lock.bicep' = if (deployDdosStandard) {
   name: 'deploy-delete-lock-${rgDdosName}'
@@ -358,16 +306,6 @@ module rgDdosDeleteLock '../../azresources/util/delete-lock.bicep' = if (deployD
 module rgHubDeleteLock '../../azresources/util/delete-lock.bicep' = {
   name: 'deploy-delete-lock-${rgHubName}'
   scope: rgHubVnet
-}
-
-module rgMrzDeleteLock '../../azresources/util/delete-lock.bicep' = {
-  name: 'deploy-delete-lock-${rgMrzName}'
-  scope: rgMrzVnet
-}
-
-module rgPazDeleteLock '../../azresources/util/delete-lock.bicep' = {
-  name: 'deploy-delete-lock-${rgPazName}'
-  scope: rgPaz
 }
 
 // Azure DDOS Standard - optional
@@ -407,7 +345,7 @@ module publicAccessZoneUdr '../../azresources/network/udr/udr-custom.bicep' = {
   }
 }
 
-module managementRestrictedZoneUdr '../../azresources/network/udr/udr-custom.bicep' = {
+module managementRestrictedZoneUdr '../../azresources/network/udr/udr-custom.bicep' = if (managementRestrictedZone.enabled) {
   name: 'deploy-route-table-MrzSpokeUdr'
   scope: rgHubVnet
   params: {
@@ -453,40 +391,6 @@ module hubVnet 'hub-vnet/hub-vnet.bicep' = {
   }
 }
 
-// Management Restricted Virtual Network
-module mrzVnet 'mrz-vnet/mrz-vnet.bicep' = {
-  name: 'deploy-management-vnet-${mrzVnetName}'
-  scope: rgMrzVnet
-  params: {
-    location: location
-
-    vnetName: mrzVnetName
-    vnetAddressPrefix: mrzVnetAddressPrefixRFC1918
-
-    mazSubnetName: mrzMazSubnetName
-    mazSubnetAddressPrefix: mrzMazSubnetAddressPrefix
-    mazSubnetUdrId: managementRestrictedZoneUdr.outputs.udrId
-
-    infSubnetName: mrzInfSubnetName
-    infSubnetAddressPrefix: mrzInfSubnetAddressPrefix
-    infSubnetUdrId: managementRestrictedZoneUdr.outputs.udrId
-
-    secSubnetName: mrzSecSubnetName
-    secSubnetAddressPrefix: mrzSecSubnetAddressPrefix
-    secSubnetUdrId: managementRestrictedZoneUdr.outputs.udrId
-
-    logSubnetName: mrzLogSubnetName
-    logSubnetAddressPrefix: mrzLogSubnetAddressPrefix
-    logSubnetUdrId: managementRestrictedZoneUdr.outputs.udrId
-
-    mgmtSubnetName: mrzMgmtSubnetName
-    mgmtSubnetAddressPrefix: mrzMgmtSubnetAddressPrefix
-    mgmtSubnetUdrId: managementRestrictedZoneUdr.outputs.udrId
-
-    ddosStandardPlanId: deployDdosStandard ? ddosPlan.outputs.ddosPlanId : ''
-  }
-}
-
 // Azure Firewall
 module azureFirewall '../../azresources/network/firewall.bicep' = {
   name: 'deploy-azure-firewall'
@@ -517,7 +421,7 @@ module hubVnetRoutes 'hub-vnet/hub-vnet-routes.bicep' = {
     hubVnetAddressPrefixRFC6598: hubVnetAddressPrefixRFC6598
 
     publicAccessZoneUdrName: publicAccessZoneUdr.outputs.udrName
-    managementRestrictedZoneUdrName: managementRestrictedZoneUdr.outputs.udrName
+    managementRestrictedZoneUdrName: managementRestrictedZone.enabled ? managementRestrictedZoneUdr.outputs.udrName : ''
   }
 }
 
@@ -549,30 +453,33 @@ module bastion '../../azresources/network/bastion.bicep' = {
   }
 }
 
-// Virtual Network Peering - Management Restricted Zone to Hub
-module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = {
-  name: 'deploy-vnet-peering-spoke-to-hub'
-  scope: rgMrzVnet
+// Management Restricted Zone
+module mrz 'mrz/mrz.bicep' = if (managementRestrictedZone.enabled) {
+  name: 'deploy-management-restricted-zone'
+  scope: subscription()
   params: {
-    peeringName: '${mrzVnet.outputs.vnetName}-to-${hubVnet.outputs.vnetName}'
-    allowForwardedTraffic: true
-    allowVirtualNetworkAccess: true
-    sourceVnetName: mrzVnet.outputs.vnetName
-    targetVnetId: hubVnet.outputs.vnetId
-    useRemoteGateways: false //to be changed once we have ExpressRoute or VPN GWs 
+    location: location
+    resourceTags: resourceTags
+    
+    ddosStandardPlanId: deployDdosStandard ? ddosPlan.outputs.ddosPlanId : ''
+
+    hubResourceGroup: rgHubVnet.name
+    hubVnetName: hubVnet.outputs.vnetName
+    hubVnetId: hubVnet.outputs.vnetId
+
+    managementRestrictedZone: managementRestrictedZone
+    managementRestrictedZoneUdrId: managementRestrictedZoneUdr.outputs.udrId
   }
 }
 
-// Virtual Network Peering - Hub to Management Restricted Zone
-module vnetPeeringHubToSpoke '../../azresources/network/vnet-peering.bicep' = {
-  name: 'deploy-vnet-peering-hub-to-spoke'
-  scope: rgHubVnet
+// Public Access Zone
+module paz 'paz/paz.bicep' = if (publicAccessZone.enabled) {
+  name: 'deploy-public-access-zone'
+  scope: subscription()
   params: {
-    peeringName: '${hubVnet.outputs.vnetName}-to-${mrzVnet.outputs.vnetName}'
-    allowForwardedTraffic: true
-    allowVirtualNetworkAccess: true
-    sourceVnetName: hubVnet.outputs.vnetName
-    targetVnetId: mrzVnet.outputs.vnetId
-    useRemoteGateways: false
+    location: location
+    resourceTags: resourceTags
+
+    publicAccessZone: publicAccessZone
   }
 }
