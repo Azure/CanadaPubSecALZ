@@ -12,16 +12,13 @@ param publicAccessZoneUdrName string
 @description('Management Restricted Zone Virtual Network Route Table Name')
 param managementRestrictedZoneUdrName string
 
-@description('Virtual Network address space for RFC 1918.')
-param hubVnetAddressPrefixRFC1918 string
-
-@description('Virtual Network address space for RFC 6598 (CG NAT).')
-param hubVnetAddressPrefixRFC6598 string
+@description('IP address prefixes used for configuring routes')
+param addressPrefixes array
 
 @description('Azure Firewall Private IP address')
 param azureFirwallPrivateIp string
 
-var routes = [
+var defaultRoutes = [
   {
     name: 'Hub-AzureFirewall-Default-Route'
     properties: {
@@ -30,23 +27,18 @@ var routes = [
       nextHopIpAddress: azureFirwallPrivateIp
     }
   }
-  {
-    name: 'Hub-AzureFirewall-RFC1918-Route'
-    properties: {
-      nextHopType: 'VirtualAppliance'
-      addressPrefix: hubVnetAddressPrefixRFC1918
-      nextHopIpAddress: azureFirwallPrivateIp
-    }
-  }
-  {
-    name: 'Hub-AzureFirewall-RFC6598-Route'
-    properties: {
-      nextHopType: 'VirtualAppliance'
-      addressPrefix: hubVnetAddressPrefixRFC6598
-      nextHopIpAddress: azureFirwallPrivateIp
-    }
-  }
 ]
+
+var routesFromAddressPrefixes = [for addressPrefix in addressPrefixes: {
+    name: 'Hub-AzureFirewall-${replace(replace(addressPrefix, '.', '-'), '/', '-')}'
+    properties: {
+      nextHopType: 'VirtualAppliance'
+      addressPrefix: addressPrefix
+      nextHopIpAddress: azureFirwallPrivateIp
+    }
+}]
+
+var routes = union(defaultRoutes, routesFromAddressPrefixes)
 
 module publicAccessZoneUdr '../../../azresources/network/udr/udr-custom.bicep' = if (publicAccessZoneUdrName != '') {
   name: 'deploy-route-table-${publicAccessZoneUdrName}'

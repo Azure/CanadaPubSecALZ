@@ -150,68 +150,17 @@ param subscriptionTags object
 @description('A set of key/value pairs of tags assigned to the resource group and resources.')
 param resourceTags object
 
+// Hub
+param hub object
+
 // Network Watcher
-@description('Azure Network Watcher Resource Group Name.  Default: NetworkWatcherRG')
-param rgNetworkWatcherName string = 'NetworkWatcherRG'
+param networkWatcher object
 
 // Private Dns Zones
 param privateDnsZones object
 
 // DDOS Standard
 param ddosStandard object
-
-// Bastion
-param bastion object
-
-// Azure Firewall
-@description('Azure Firewall Name')
-param azureFirewallName string //= 'azfw' 
-
-@description('Azure Firewall Availability Zones.  Empty array = zonal, an array 1,2,3 is zone-redundant.')
-param azureFirewallZones array //= ['1' '2' '3']
-
-@description('Azure Firewall is deployed in Forced Tunneling mode where a route table must be added as the next hop.')
-param azureFirewallForcedTunnelingEnabled bool
-
-@description('Next Hop for AzureFirewallSubnet when Azure Firewall is deployed in forced tunneling mode.')
-param azureFirewallForcedTunnelingNextHop string
-
-@description('Azure Firewall Policy Resource Id.')
-param azureFirewallExistingPolicyId string //= ARM Resource Id
-
-// Hub Virtual Network
-@description('Hub Virtual Network Resource Group Name.')
-param rgHubName string //= 'pubsecPrdHubPbRsg'
-
-@description('Hub Virtual Network Name.')
-param hubVnetName string //= 'pubsecHubVnet'
-
-@description('Hub Virtual Network address space for RFC 1918.')
-param hubVnetAddressPrefixRFC1918 string //= '10.18.0.0/22'
-
-@description('Hub Virtual Network address space for RFC 6598 (CGNAT).')
-param hubVnetAddressPrefixRFC6598 string //= '100.60.0.0/16'
-
-@description('Hub Virtual Network address space for Azure Bastion (must be RFC 1918).')
-param hubVnetAddressPrefixBastion string //= '192.168.0.0/16'
-
-@description('Hub - Public Access Zone Subnet Name.')
-param hubPazSubnetName string //= 'PAZSubnet'
-
-@description('Hub - Public Access Zone Subnet Name (based on RFC 6598).')
-param hubPazSubnetAddressPrefix string //= '100.60.1.0/24'
-
-@description('Hub - Virtual Network Gateway Subnet Address Prefix (based on RFC 1918).')
-param hubGatewaySubnetAddressPrefix string //= '10.18.1.0/27'
-
-@description('Hub - Azure Firewall Subnet Address Prefix.')
-param hubAzureFirewallSubnetAddressPrefix string //= '10.18.2.0/24'
-
-@description('Hub - Azure Firewall Management Subnet Address Prefix.')
-param hubAzureFirewallManagementSubnetAddressPrefix string //= '10.18.3.0/26'
-
-@description('Azure Bastion Subnet Address Prefix.')
-param hubBastionSubnetAddressPrefix string //= '10.18.4.0/24'
 
 // Management Restricted Zone Virtual Network
 param managementRestrictedZone object
@@ -248,7 +197,7 @@ module subScaffold '../scaffold-subscription.bicep' = {
 
 // Create Network Watcher Resource Group
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgNetworkWatcherName
+  name: networkWatcher.resourceGroup
   location: location
   tags: resourceTags
 }
@@ -269,7 +218,7 @@ resource rgDdos 'Microsoft.Resources/resourceGroups@2020-06-01' = if (ddosStanda
 
 // Create Hub Virtual Network Resource Group
 resource rgHubVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgHubName
+  name: hub.resourceGroup
   location: location
   tags: resourceTags
 }
@@ -281,7 +230,7 @@ module rgDdosDeleteLock '../../azresources/util/delete-lock.bicep' = if (ddosSta
 }
 
 module rgHubDeleteLock '../../azresources/util/delete-lock.bicep' = {
-  name: 'deploy-delete-lock-${rgHubName}'
+  name: 'deploy-delete-lock-${hub.resourceGroup}'
   scope: rgHubVnet
 }
 
@@ -305,11 +254,11 @@ module ddosPlan '../../azresources/network/ddos-standard.bicep' = if (ddosStanda
 // As a result, there will be ~ 30 seconds of network outage for traffic flowing through the Public Access Zone & Management
 // Restricted Zone spoke virtual network.
 module publicAccessZoneUdr '../../azresources/network/udr/udr-custom.bicep' = {
-  name: 'deploy-route-table-${hubPazSubnetName}Udr'
+  name: 'deploy-route-table-${hub.network.subnets.publicAccess.name}Udr'
   scope: rgHubVnet
   params: {
     location: location
-    name: '${hubPazSubnetName}Udr'
+    name: '${hub.network.subnets.publicAccess.name}Udr'
     routes: [
       {
         name: 'Blackhole'
@@ -341,28 +290,17 @@ module managementRestrictedZoneUdr '../../azresources/network/udr/udr-custom.bic
 }
 
 // Hub Virtual Network
-module hubVnet 'hub-vnet/hub-vnet.bicep' = {
-  name: 'deploy-hub-vnet-${hubVnetName}'
+module hubVnet 'hub/hub-vnet.bicep' = {
+  name: 'deploy-hub-vnet-${hub.network.name}'
   scope: rgHubVnet
   params: {
     location: location
 
-    vnetName: hubVnetName
-    vnetAddressPrefixRFC1918: hubVnetAddressPrefixRFC1918
-    vnetAddressPrefixRFC6598: hubVnetAddressPrefixRFC6598
-    vnetAddressPrefixBastion: hubVnetAddressPrefixBastion
-
-    pazSubnetName: hubPazSubnetName
-    pazSubnetAddressPrefix: hubPazSubnetAddressPrefix
+    hubNetwork: hub.network
     pazUdrId: publicAccessZoneUdr.outputs.udrId
 
-    azureFirewallSubnetAddressPrefix: hubAzureFirewallSubnetAddressPrefix
-    azureFirewallManagementSubnetAddressPrefix: hubAzureFirewallManagementSubnetAddressPrefix
-    gatewaySubnetAddressPrefix: hubGatewaySubnetAddressPrefix
-    bastionSubnetAddressPrefix: hubBastionSubnetAddressPrefix
-
-    azureFirewallForcedTunnelingEnabled: azureFirewallForcedTunnelingEnabled
-    azureFirewallForcedTunnelingNextHop: azureFirewallForcedTunnelingNextHop
+    azureFirewallForcedTunnelingEnabled: hub.azureFirewall.forcedTunnelingEnabled
+    azureFirewallForcedTunnelingNextHop: hub.azureFirewall.forcedTunnelingNextHop
 
     ddosStandardPlanId: ddosStandard.enabled ? ddosPlan.outputs.ddosPlanId : ''
   }
@@ -374,12 +312,12 @@ module azureFirewall '../../azresources/network/firewall.bicep' = {
   scope: rgHubVnet
   params: {
     location: location
-    name: azureFirewallName
-    zones: azureFirewallZones
+    name: hub.azureFirewall.name
+    zones: hub.azureFirewall.availabilityZones
     firewallSubnetId: hubVnet.outputs.AzureFirewallSubnetId
     firewallManagementSubnetId: hubVnet.outputs.AzureFirewallManagementSubnetId
-    existingFirewallPolicyId: azureFirewallExistingPolicyId
-    forcedTunnelingEnabled: azureFirewallForcedTunnelingEnabled
+    existingFirewallPolicyId: hub.azureFirewall.firewallPolicyId
+    forcedTunnelingEnabled: hub.azureFirewall.forcedTunnelingEnabled
   }
 }
 
@@ -387,15 +325,14 @@ module azureFirewall '../../azresources/network/firewall.bicep' = {
 // Update the Route Tables to force traffic through Azure Firewall.  Routes defined in this definition will be the only
 // routes remaining once updated.  As a result, it's recommended that all routes in the Hub Networking is updated through 'hub-vnet-routes.bicep'
 // for consistency.
-module hubVnetRoutes 'hub-vnet/hub-vnet-routes.bicep' = {
+module hubVnetRoutes 'hub/hub-vnet-routes.bicep' = {
   name: 'deploy-hub-vnet-routes'
   scope: rgHubVnet
   params: {
     location: location
     
     azureFirwallPrivateIp: azureFirewall.outputs.firewallPrivateIp
-    hubVnetAddressPrefixRFC1918: hubVnetAddressPrefixRFC1918
-    hubVnetAddressPrefixRFC6598: hubVnetAddressPrefixRFC6598
+    addressPrefixes: hub.network.addressPrefixes
 
     publicAccessZoneUdrName: publicAccessZoneUdr.outputs.udrName
     managementRestrictedZoneUdrName: managementRestrictedZoneUdr.outputs.udrName
@@ -418,14 +355,14 @@ module privatelinkDnsZones '../../azresources/network/private-dns-zone-privateli
 }
 
 // Bastion
-module azureBastion '../../azresources/network/bastion.bicep' = if (bastion.enabled) {
+module bastion '../../azresources/network/bastion.bicep' = if (hub.bastion.enabled) {
   name: 'deploy-bastion'
   scope: rgHubVnet
   params: {
     location: location
-    name: bastion.name
-    sku: bastion.sku
-    scaleUnits: bastion.scaleUnits
+    name: hub.bastion.name
+    sku: hub.bastion.sku
+    scaleUnits: hub.bastion.scaleUnits
     subnetId: hubVnet.outputs.AzureBastionSubnetId
   }
 }

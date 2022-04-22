@@ -2,9 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "azureFirewallExistingPolicyId": {
-      "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourcegroups/pubsec-azure-firewall-policy-rg/providers/Microsoft.Network/firewallPolicies/pubsecAzureFirewallPolicy"
-    },
     "logAnalyticsWorkspaceResourceId": {
       "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
     },
@@ -91,17 +88,9 @@
     },
     "ddosStandard": {
       "value": {
-        "enabled": true,
+        "enabled": false,
         "resourceGroup": "pubsec-ddos-rg",
         "planName": "ddos-plan"
-      }
-    },
-    "bastion": {
-      "value": {
-        "enabled": true,
-        "name": "bastion",
-        "sku": "Standard",
-        "scaleUnits": 2
       }
     },
     "publicAccessZone": {
@@ -177,54 +166,63 @@
         }
       }
     },
-    "rgHubName": {
-      "value": "pubsec-hub-networking-rg"
+    "hub": {
+      "value": {
+        "resourceGroup": "pubsec-hub-networking-rg",
+        "bastion": {
+          "enabled": true,
+          "name": "bastion",
+          "sku": "Standard",
+          "scaleUnits": 2
+        },
+        "azureFirewall": {
+          "name": "pubsecAzureFirewall",
+          "availabilityZones": ["1", "2", "3"],
+          "forcedTunnelingEnabled": false,
+          "forcedTunnelingNextHop": "10.17.1.4",
+          "firewallPolicyId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourcegroups/pubsec-azure-firewall-policy-rg/providers/Microsoft.Network/firewallPolicies/pubsecAzureFirewallPolicy"
+        },
+        "network": {
+          "name": "hub-vnet",
+          "addressPrefixes": [
+            "10.18.0.0/22",
+            "100.60.0.0/16"
+          ],
+          "addressPrefixBastion": "192.168.0.0/16",
+          "subnets": {
+            "gateway": {
+              "comments": "Gateway Subnet used for VPN and/or Express Route connectivity",
+              "name": "GatewaySubnet",
+              "addressPrefix": "10.18.0.0/27"
+            },
+            "firewall": {
+              "comments": "Azure Firewall",
+              "name": "AzureFirewallSubnet",
+              "addressPrefix": "10.18.1.0/24"
+            },
+            "firewallManagement": {
+              "comments": "Azure Firewall Management",
+              "name": "AzureFirewallManagementSubnet",
+              "addressPrefix": "10.18.2.0/26"
+            },
+            "bastion": {
+              "comments": "Azure Bastion",
+              "name": "AzureBastionSubnet",
+              "addressPrefix": "192.168.0.0/24"
+            },
+            "publicAccess": {
+              "comments": "Public Access Zone (Application Gateway)",
+              "name": "PAZSubnet",
+              "addressPrefix": "100.60.1.0/24"
+            }
+          }
+        }
+      }
     },
-    "hubVnetName": {
-      "value": "hub-vnet"
-    },
-    "hubVnetAddressPrefixRFC1918": {
-      "value": "10.18.0.0/22"
-    },
-    "hubVnetAddressPrefixRFC6598": {
-      "value": "100.60.0.0/16"
-    },
-    "hubVnetAddressPrefixBastion": {
-      "value": "192.168.0.0/16"
-    },
-    "hubPazSubnetName": {
-      "value": "PAZSubnet"
-    },
-    "hubPazSubnetAddressPrefix": {
-      "value": "100.60.1.0/24"
-    },
-    "hubGatewaySubnetAddressPrefix": {
-      "value": "10.18.0.0/27"
-    },
-    "hubAzureFirewallSubnetAddressPrefix": {
-      "value": "10.18.1.0/24"
-    },
-    "hubAzureFirewallManagementSubnetAddressPrefix": {
-      "value": "10.18.2.0/26"
-    },
-    "hubBastionSubnetAddressPrefix": {
-      "value": "192.168.0.0/24"
-    },
-    "azureFirewallName": {
-      "value": "pubsecAzureFirewall"
-    },
-    "azureFirewallZones": {
-      "value": [
-        "1",
-        "2",
-        "3"
-      ]
-    },
-    "azureFirewallForcedTunnelingEnabled": {
-      "value": false
-    },
-    "azureFirewallForcedTunnelingNextHop": {
-      "value": "10.17.1.4"
+    "networkWatcher": {
+      "value": {
+        "resourceGroup": "NetworkWatcherRG"
+      }
     }
   }
 }
