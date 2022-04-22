@@ -289,6 +289,24 @@ module managementRestrictedZoneUdr '../../azresources/network/udr/udr-custom.bic
   }
 }
 
+module hubUdr '../../azresources/network/udr/udr-custom.bicep' = {
+  name: 'deploy-route-table-HubUdr'
+  scope: rgHubVnet
+  params: {
+    location: location
+    name: 'HubUdr'
+    routes: [
+      {
+        name: 'Blackhole'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopType: 'None'
+        }
+      }
+    ]
+  }
+}
+
 // Hub Virtual Network
 module hubVnet 'hub/hub-vnet.bicep' = {
   name: 'deploy-hub-vnet-${hub.network.name}'
@@ -297,6 +315,7 @@ module hubVnet 'hub/hub-vnet.bicep' = {
     location: location
 
     hubNetwork: hub.network
+    hubUdrId: hubUdr.outputs.udrId
     pazUdrId: publicAccessZoneUdr.outputs.udrId
 
     azureFirewallForcedTunnelingEnabled: hub.azureFirewall.forcedTunnelingEnabled
@@ -334,6 +353,7 @@ module hubVnetRoutes 'hub/hub-vnet-routes.bicep' = {
     azureFirwallPrivateIp: azureFirewall.outputs.firewallPrivateIp
     addressPrefixes: hub.network.addressPrefixes
 
+    hubUdrName: hubUdr.outputs.udrName
     publicAccessZoneUdrName: publicAccessZoneUdr.outputs.udrName
     managementRestrictedZoneUdrName: managementRestrictedZoneUdr.outputs.udrName
   }

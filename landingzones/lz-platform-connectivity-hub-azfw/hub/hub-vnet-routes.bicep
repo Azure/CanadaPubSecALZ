@@ -6,6 +6,9 @@
 @description('Location for the deployment.')
 param location string = resourceGroup().location
 
+@description('Hub Route Table Name')
+param hubUdrName string
+
 @description('Public Access Zone Route Table Name')
 param publicAccessZoneUdrName string
 
@@ -40,7 +43,16 @@ var routesFromAddressPrefixes = [for addressPrefix in addressPrefixes: {
 
 var routes = union(defaultRoutes, routesFromAddressPrefixes)
 
-module publicAccessZoneUdr '../../../azresources/network/udr/udr-custom.bicep' = if (publicAccessZoneUdrName != '') {
+module hubUdr '../../../azresources/network/udr/udr-custom.bicep' = {
+  name: 'deploy-route-table-${hubUdrName}'
+  params: {
+    name: hubUdrName
+    routes: routes
+    location: location
+  }
+}
+
+module publicAccessZoneUdr '../../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-${publicAccessZoneUdrName}'
   params: {
     name: publicAccessZoneUdrName
@@ -49,7 +61,7 @@ module publicAccessZoneUdr '../../../azresources/network/udr/udr-custom.bicep' =
   }
 }
 
-module managementRestrictedZoneUdr '../../../azresources/network/udr/udr-custom.bicep' = if (managementRestrictedZoneUdrName != '') {
+module managementRestrictedZoneUdr '../../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-${managementRestrictedZoneUdrName}'
   params: {
     name: managementRestrictedZoneUdrName

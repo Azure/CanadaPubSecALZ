@@ -9,9 +9,12 @@ param location string = resourceGroup().location
 
 param hubNetwork object
 
-// Public Access Zone (i.e. Application Gateways)
+// Public Access Zone Route Table (i.e. Application Gateways)
 @description('Public Access Zone (i.e. Application Gateway) User Defined Route Resource Id.')
 param pazUdrId string
+
+// Common Route Table
+param hubUdrId string
 
 @description('Azure Firewall is deployed in Forced Tunneling mode where a route table must be added as the next hop.')
 param azureFirewallForcedTunnelingEnabled bool
@@ -21,22 +24,6 @@ param azureFirewallForcedTunnelingNextHop string
 
 // DDOS
 param ddosStandardPlanId string
-
-module publicAccessZoneNsg '../../../azresources/network/nsg/nsg-appgwv2.bicep' = {
-  name: 'deploy-nsg-${hubNetwork.subnets.publicAccess.name}Nsg'
-  params: {
-    name: '${hubNetwork.subnets.publicAccess.name}Nsg'
-    location: location
-  }
-}
-
-module bastionNsg '../../../azresources/network/nsg/nsg-bastion.bicep' = {
-  name: 'deploy-nsg-AzureBastionNsg'
-  params: {
-    name: 'AzureBastionNsg'
-    location: location
-  }
-}
 
 var azureFirewallForcedTunnelRoutes = [
   {
@@ -49,7 +36,7 @@ var azureFirewallForcedTunnelRoutes = [
   }
 ]
 
-var subnets = [
+var requiredSubnets = [
   {
     name: hubNetwork.subnets.publicAccess.name
     properties: {
@@ -94,6 +81,56 @@ var subnets = [
   }
 ]
 
+var optionalSubnets = [for (subnet, i) in hubNetwork.subnets.optional: {
+  name: subnet.name
+  properties: {
+    addressPrefix: subnet.addressPrefix
+    networkSecurityGroup: (subnet.nsg.enabled) ? {
+      id: nsg[i].id
+    } : null
+    routeTable: (subnet.udr.enabled) ? {
+      id: hubUdrId
+    } : null
+    delegations: contains(subnet, 'delegations') ? [
+      {
+        name: replace(subnet.delegations.serviceName, '/', '.')
+        properties: {
+          serviceName: subnet.delegations.serviceName
+        }
+      }
+    ] : null
+  }
+}]
+
+var allSubnets = union(requiredSubnets, optionalSubnets)
+
+// Network Security Groups
+module publicAccessZoneNsg '../../../azresources/network/nsg/nsg-appgwv2.bicep' = {
+  name: 'deploy-nsg-${hubNetwork.subnets.publicAccess.name}Nsg'
+  params: {
+    name: '${hubNetwork.subnets.publicAccess.name}Nsg'
+    location: location
+  }
+}
+
+module bastionNsg '../../../azresources/network/nsg/nsg-bastion.bicep' = {
+  name: 'deploy-nsg-AzureBastionNsg'
+  params: {
+    name: 'AzureBastionNsg'
+    location: location
+  }
+}
+
+// Network Security Group
+resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = [for subnet in hubNetwork.subnets.optional: if (subnet.nsg.enabled) {
+  name: '${subnet.name}Nsg'
+  location: location
+  properties: {
+    securityRules: []
+  }
+}]
+
+// Route Tables
 module azureFirewallSubnetUdr '../../../azresources/network/udr/udr-custom.bicep' = if (azureFirewallForcedTunnelingEnabled) {
   name: 'deploy-route-table-AzureFirewallSubnet'
   params: {
@@ -114,7 +151,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
     addressSpace: {
       addressPrefixes: union(hubNetwork.addressPrefixes, array(hubNetwork.addressPrefixBastion))
     }
-    subnets: subnets
+    subnets: allSubnets
   }
 }
 
@@ -123,7 +160,7 @@ output vnetId string = vnet.id
 
 output publicAccessZoneSubnetId string = '${vnet.id}/subnets/${hubNetwork.subnets.publicAccess.name}'
 
-output GatewaySubnetId string = '${vnet.id}/subnets/GatewaySubnet'
-output AzureBastionSubnetId string = '${vnet.id}/subnets/AzureBastionSubnet'
-output AzureFirewallSubnetId string = '${vnet.id}/subnets/AzureFirewallSubnet'
-output AzureFirewallManagementSubnetId string = '${vnet.id}/subnets/AzureFirewallManagementSubnet'
+output GatewaySubnetId string = '${vnet.id}/subnets/${hubNetwork.subnets.gateway.name}'
+output AzureBastionSubnetId string = '${vnet.id}/subnets/${hubNetwork.subnets.bastion.name}'
+output AzureFirewallSubnetId string = '${vnet.id}/subnets/${hubNetwork.subnets.firewall.name}'
+output AzureFirewallManagementSubnetId string = '${vnet.id}/subnets/${hubNetwork.subnets.firewallManagement.name}'
