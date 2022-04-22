@@ -83,29 +83,26 @@
         "TechnicalContact": "technical-contact-tag"
       }
     },
-    "deployPrivateDnsZones": {
-      "value": true
+    "privateDnsZones": {
+      "value": {
+        "enabled": true,
+        "resourceGroup": "pubsec-dns-rg"
+      }
     },
-    "rgPrivateDnsZonesName": {
-      "value": "pubsec-dns-rg"
+    "ddosStandard": {
+      "value": {
+        "enabled": true,
+        "resourceGroup": "pubsec-ddos-rg",
+        "planName": "ddos-plan"
+      }
     },
-    "deployDdosStandard": {
-      "value": false
-    },
-    "rgDdosName": {
-      "value": "pubsec-ddos-rg"
-    },
-    "ddosPlanName": {
-      "value": "ddos-plan"
-    },
-    "bastionName": {
-      "value": "bastion"
-    },
-    "bastionSku": {
-      "value": "Standard"
-    },
-    "bastionScaleUnits": {
-      "value": 2
+    "bastion": {
+      "value": {
+        "enabled": true,
+        "name": "bastion",
+        "sku": "Standard",
+        "scaleUnits": 2
+      }
     },
     "publicAccessZone": {
       "value": {

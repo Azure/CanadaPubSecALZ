@@ -155,21 +155,13 @@ param resourceTags object
 param rgNetworkWatcherName string = 'NetworkWatcherRG'
 
 // Private Dns Zones
-@description('Boolean flag to determine whether Private DNS Zones will be centrally managed in the Hub.')
-param deployPrivateDnsZones bool
-
-@description('Private DNS Zone Resource Group Name.')
-param rgPrivateDnsZonesName string
+param privateDnsZones object
 
 // DDOS Standard
-@description('Boolean flag to determine whether to deploy Azure DDOS Standard.')
-param deployDdosStandard bool
+param ddosStandard object
 
-@description('Azure DDOS Standard Resource Group.')
-param rgDdosName string
-
-@description('Azure DDOS Standard Plan Name.')
-param ddosPlanName string
+// Bastion
+param bastion object
 
 // Azure Firewall
 @description('Azure Firewall Name')
@@ -218,21 +210,6 @@ param hubAzureFirewallSubnetAddressPrefix string //= '10.18.2.0/24'
 @description('Hub - Azure Firewall Management Subnet Address Prefix.')
 param hubAzureFirewallManagementSubnetAddressPrefix string //= '10.18.3.0/26'
 
-@description('Azure Bastion Name.')
-param bastionName string //= 'pubsecHubBastion'
-
-@description('Hub - Azure Bastion SKU.')
-@allowed([
-  'Basic'
-  'Standard'
-])
-param bastionSku string
-
-@description('Azure Bastion Scale Units (2 to 50).  Required for Standard SKU.  Set to any number in min/max for Basic SKU as it is ignored.')
-@minValue(2)
-@maxValue(50)
-param bastionScaleUnits int
-
 @description('Azure Bastion Subnet Address Prefix.')
 param hubBastionSubnetAddressPrefix string //= '10.18.4.0/24'
 
@@ -277,15 +254,15 @@ resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
 }
 
 // Create Private DNS Zone Resource Group - optional
-resource rgPrivateDnsZones 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployPrivateDnsZones) {
-  name: rgPrivateDnsZonesName
+resource rgPrivateDnsZones 'Microsoft.Resources/resourceGroups@2020-06-01' = if (privateDnsZones.enabled) {
+  name: privateDnsZones.resourceGroup
   location: location
   tags: resourceTags
 }
 
 // Create Azure DDOS Standard Resource Group - optional
-resource rgDdos 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployDdosStandard) {
-  name: rgDdosName
+resource rgDdos 'Microsoft.Resources/resourceGroups@2020-06-01' = if (ddosStandard.enabled) {
+  name: ddosStandard.resourceGroup
   location: location
   tags: resourceTags
 }
@@ -298,8 +275,8 @@ resource rgHubVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
 }
 
 // Enable delete locks
-module rgDdosDeleteLock '../../azresources/util/delete-lock.bicep' = if (deployDdosStandard) {
-  name: 'deploy-delete-lock-${rgDdosName}'
+module rgDdosDeleteLock '../../azresources/util/delete-lock.bicep' = if (ddosStandard.enabled) {
+  name: 'deploy-delete-lock-${ddosStandard.resourceGroup}'
   scope: rgDdos
 }
 
@@ -309,11 +286,11 @@ module rgHubDeleteLock '../../azresources/util/delete-lock.bicep' = {
 }
 
 // Azure DDOS Standard - optional
-module ddosPlan '../../azresources/network/ddos-standard.bicep' = if (deployDdosStandard) {
+module ddosPlan '../../azresources/network/ddos-standard.bicep' = if (ddosStandard.enabled) {
   name: 'deploy-ddos-standard-plan'
   scope: rgDdos
   params: {
-    name: ddosPlanName
+    name: ddosStandard.planName
     location: location
   }
 }
@@ -345,7 +322,7 @@ module publicAccessZoneUdr '../../azresources/network/udr/udr-custom.bicep' = {
   }
 }
 
-module managementRestrictedZoneUdr '../../azresources/network/udr/udr-custom.bicep' = if (managementRestrictedZone.enabled) {
+module managementRestrictedZoneUdr '../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-MrzSpokeUdr'
   scope: rgHubVnet
   params: {
@@ -387,7 +364,7 @@ module hubVnet 'hub-vnet/hub-vnet.bicep' = {
     azureFirewallForcedTunnelingEnabled: azureFirewallForcedTunnelingEnabled
     azureFirewallForcedTunnelingNextHop: azureFirewallForcedTunnelingNextHop
 
-    ddosStandardPlanId: deployDdosStandard ? ddosPlan.outputs.ddosPlanId : ''
+    ddosStandardPlanId: ddosStandard.enabled ? ddosPlan.outputs.ddosPlanId : ''
   }
 }
 
@@ -421,12 +398,12 @@ module hubVnetRoutes 'hub-vnet/hub-vnet-routes.bicep' = {
     hubVnetAddressPrefixRFC6598: hubVnetAddressPrefixRFC6598
 
     publicAccessZoneUdrName: publicAccessZoneUdr.outputs.udrName
-    managementRestrictedZoneUdrName: managementRestrictedZone.enabled ? managementRestrictedZoneUdr.outputs.udrName : ''
+    managementRestrictedZoneUdrName: managementRestrictedZoneUdr.outputs.udrName
   }
 }
 
 // Private DNS Zones
-module privatelinkDnsZones '../../azresources/network/private-dns-zone-privatelinks.bicep' = if (deployPrivateDnsZones) {
+module privatelinkDnsZones '../../azresources/network/private-dns-zone-privatelinks.bicep' = if (privateDnsZones.enabled) {
   name: 'deploy-privatelink-private-dns-zones'
   scope: rgPrivateDnsZones
   params: {
@@ -441,14 +418,14 @@ module privatelinkDnsZones '../../azresources/network/private-dns-zone-privateli
 }
 
 // Bastion
-module bastion '../../azresources/network/bastion.bicep' = {
+module azureBastion '../../azresources/network/bastion.bicep' = if (bastion.enabled) {
   name: 'deploy-bastion'
   scope: rgHubVnet
   params: {
     location: location
-    name: bastionName
-    sku: bastionSku
-    scaleUnits: bastionScaleUnits
+    name: bastion.name
+    sku: bastion.sku
+    scaleUnits: bastion.scaleUnits
     subnetId: hubVnet.outputs.AzureBastionSubnetId
   }
 }
@@ -461,7 +438,7 @@ module mrz 'mrz/mrz.bicep' = if (managementRestrictedZone.enabled) {
     location: location
     resourceTags: resourceTags
     
-    ddosStandardPlanId: deployDdosStandard ? ddosPlan.outputs.ddosPlanId : ''
+    ddosStandardPlanId: ddosStandard.enabled ? ddosPlan.outputs.ddosPlanId : ''
 
     hubResourceGroup: rgHubVnet.name
     hubVnetName: hubVnet.outputs.vnetName
