@@ -218,6 +218,31 @@
               "addressPrefix": "100.60.1.0/24"
             },
             "optional": [
+              {
+                "comments": "Optional 1 Subnet",
+                "name": "Optional1Subnet",
+                "addressPrefix": "10.18.3.0/26",
+                "nsg": {
+                    "enabled": true
+                },
+                "udr": {
+                    "enabled": true
+                }
+              },
+              {
+                "comments": "Optional 2 Subnet",
+                "name": "Optional1Subnet",
+                "addressPrefix": "10.18.4.0/26",
+                "nsg": {
+                    "enabled": true
+                },
+                "udr": {
+                    "enabled": true
+                },
+                "delegations": {
+                  "serviceName": "Microsoft.NetApp/volumes"
+                }
+              }
             ]
           }
         }

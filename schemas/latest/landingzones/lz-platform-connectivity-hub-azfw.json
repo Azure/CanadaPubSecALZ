@@ -58,119 +58,23 @@
         "logAnalyticsWorkspaceResourceId": {
           "$ref": "types/logAnalyticsWorkspaceId.json#/definitions/LogAnalyticsWorkspaceId"
         },
-        "deployPrivateDnsZones": {
-          "$ref": "#/definitions/BooleanValue"
+        "privateDnsZones": {
+          "$ref": "#/definitions/privateDnsZones"
         },
-        "rgPrivateDnsZonesName": {
-          "$ref": "#/definitions/StringValue"
+        "ddosStandard": {
+          "$ref": "#/definitions/ddosStandard"
         },
-        "deployDdosStandard": {
-          "$ref": "#/definitions/BooleanValue"
+        "publicAccessZone": {
+          "$ref": "#/definitions/publicAccessZone"
         },
-        "rgDdosName": {
-          "$ref": "#/definitions/StringValue"
+        "managementRestrictedZone": {
+          "$ref": "#/definitions/managementRestrictedZone"
         },
-        "ddosPlanName": {
-          "$ref": "#/definitions/StringValue"
+        "hub": {
+          "$ref": "#/definitions/hub"
         },
-        "bastionName": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "bastionSku": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "bastionScaleUnits": {
-          "$ref": "#/definitions/IntegerValue"
-        },
-        "rgPazName": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "rgMrzName": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "mrzVnetName": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "mrzVnetAddressPrefixRFC1918": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "mrzMazSubnetName": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "mrzMazSubnetAddressPrefix": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "mrzInfSubnetName": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "mrzInfSubnetAddressPrefix": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "mrzSecSubnetName": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "mrzSecSubnetAddressPrefix": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "mrzLogSubnetName": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "mrzLogSubnetAddressPrefix": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "mrzMgmtSubnetName": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "mrzMgmtSubnetAddressPrefix": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "rgHubName": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "hubVnetName": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "hubVnetAddressPrefixRFC1918": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "hubVnetAddressPrefixRFC6598": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "hubVnetAddressPrefixBastion": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "hubPazSubnetName": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "hubPazSubnetAddressPrefix": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "hubGatewaySubnetAddressPrefix": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "hubAzureFirewallSubnetAddressPrefix": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "hubAzureFirewallManagementSubnetAddressPrefix": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "hubBastionSubnetAddressPrefix": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "azureFirewallName": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "azureFirewallZones": {
-          "$ref": "#/definitions/ArrayValue"
-        },
-        "azureFirewallForcedTunnelingEnabled": {
-          "$ref": "#/definitions/BooleanValue"
-        },
-        "azureFirewallForcedTunnelingNextHop": {
-          "$ref": "#/definitions/StringValue"
-        },
-        "azureFirewallExistingPolicyId": {
-          "$ref": "#/definitions/StringValue"
+        "networkWatcher": {
+          "$ref": "#/definitions/networkWatcher"
         }
       },
       "required": [
@@ -180,97 +84,350 @@
         "subscriptionBudget",
         "subscriptionRoleAssignments",
         "subscriptionTags",
-        "deployPrivateDnsZones",
-        "rgPrivateDnsZonesName",
-        "deployDdosStandard",
-        "rgDdosName",
-        "ddosPlanName",
-        "bastionName",
-        "bastionSku",
-        "bastionScaleUnits",
-        "rgPazName",
-        "rgMrzName",
-        "mrzVnetName",
-        "mrzVnetAddressPrefixRFC1918",
-        "mrzMazSubnetName",
-        "mrzMazSubnetAddressPrefix",
-        "mrzInfSubnetName",
-        "mrzInfSubnetAddressPrefix",
-        "mrzSecSubnetName",
-        "mrzSecSubnetAddressPrefix",
-        "mrzLogSubnetName",
-        "mrzLogSubnetAddressPrefix",
-        "mrzMgmtSubnetName",
-        "mrzMgmtSubnetAddressPrefix",
-        "rgHubName",
-        "hubVnetName",
-        "hubVnetAddressPrefixRFC1918",
-        "hubVnetAddressPrefixRFC6598",
-        "hubVnetAddressPrefixBastion",
-        "hubPazSubnetName",
-        "hubPazSubnetAddressPrefix",
-        "hubGatewaySubnetAddressPrefix",
-        "hubAzureFirewallSubnetAddressPrefix",
-        "hubAzureFirewallManagementSubnetAddressPrefix",
-        "hubBastionSubnetAddressPrefix",
-        "azureFirewallName",
-        "azureFirewallZones",
-        "azureFirewallForcedTunnelingEnabled",
-        "azureFirewallForcedTunnelingNextHop"
+        "privateDnsZones",
+        "ddosStandard",
+        "publicAccessZone",
+        "managementRestrictedZone",
+        "hub",
+        "networkWatcher"
       ],
       "title": "Parameters"
     },
-    "StringValue": {
+    "privateDnsZones": {
       "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "value"
-      ],
       "properties": {
         "value": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "resourceGroup": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "enabled",
+            "resourceGroup"
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "ddosStandard": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "resourceGroup": {
+              "type": "string"
+            },
+            "planName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "enabled",
+            "resourceGroup",
+            "planName"
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "publicAccessZone": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "resourceGroup": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "enabled",
+            "resourceGroup"
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "managementRestrictedZone": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "resourceGroup": {
+              "type": "string"
+            },
+            "network": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "addressPrefixes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "subnets": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/optionalSubnet"
+                  }
+                }
+              },
+              "required": [
+                "name",
+                "addressPrefixes",
+                "subnets"
+              ]
+            }
+          },
+          "required": [
+            "enabled",
+            "resourceGroup",
+            "network"
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "hub": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "object",
+          "properties": {
+            "resourceGroup": {
+              "type": "string"
+            },
+            "bastion": {
+              "$ref": "#/definitions/bastion"
+            },
+            "azureFirewall": {
+              "$ref": "#/definitions/azureFirewall"
+            },
+            "network": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "addressPrefixes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "subnets": {
+                  "type": "object",
+                  "properties": {
+                    "gateway": {
+                      "$ref": "#/definitions/requiredSubnet"
+                    },
+                    "firewall": {
+                      "$ref": "#/definitions/requiredSubnet"
+                    },
+                    "bastion": {
+                      "$ref": "#/definitions/requiredSubnet"
+                    },
+                    "publicAccess": {
+                      "$ref": "#/definitions/requiredSubnet"
+                    },
+                    "optional": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/optionalSubnet"
+                      }
+                    }
+                  }
+                }
+              },
+              "required": [
+                "name",
+                "addressPrefixes",
+                "subnets"
+              ]
+            }
+          },
+          "required": [
+            "resourceGroup",
+            "bastion",
+            "azureFirewall",
+            "network"
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "networkWatcher": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "object",
+          "properties": {
+            "resourceGroup": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "resourceGroup"
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "requiredSubnet": {
+      "type": "object",
+      "properties": {
+        "comments": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "addressPrefix": {
           "type": "string"
         }
       },
-      "title": "StringValue"
-    },
-    "BooleanValue": {
-      "type": "object",
-      "additionalProperties": false,
       "required": [
-        "value"
-      ],
+        "comments",
+        "name",
+        "addressPrefix"
+      ]
+    },
+    "optionalSubnet": {
+      "type": "object",
       "properties": {
-        "value": {
-          "type": "boolean"
+        "comments": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "addressPrefix": {
+          "type": "string"
+        },
+        "nsg": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "enabled"
+          ]
+        },
+        "udr": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "enabled"
+          ]
+        },
+        "delegations": {
+          "type": "object",
+          "properties": {
+            "serviceName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "serviceName"
+          ]
         }
       },
-      "title": "BooleanValue"
-    },
-    "IntegerValue": {
-      "type": "object",
-      "additionalProperties": false,
       "required": [
-        "value"
-      ],
+        "comments",
+        "name",
+        "addressPrefix",
+        "nsg",
+        "udr"
+      ]
+    },
+    "bastion": {
+      "type": "object",
       "properties": {
-        "value": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "sku": {
+          "type": "string"
+        },
+        "scaleUnits": {
           "type": "integer"
         }
       },
-      "title": "IntegerValue"
-    },
-    "ArrayValue": {
-      "type": "object",
-      "additionalProperties": false,
       "required": [
-        "value"
-      ],
+        "enabled",
+        "name",
+        "sku",
+        "scaleUnits"
+      ]
+    },
+    "azureFirewall": {
+      "type": "object",
       "properties": {
-        "value": {
-          "type": "array"
+        "name": {
+          "type": "string"
+        },
+        "availabilityZones": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "forcedTunnelingEnabled": {
+          "type": "boolean"
+        },
+        "forcedTunnelingNextHop": {
+          "type": "string"
+        },
+        "firewallPolicyId": {
+          "type": "string"
         }
       },
-      "title": "ArrayValue"
+      "required": [
+        "name",
+        "availabilityZones",
+        "forcedTunnelingEnabled",
+        "forcedTunnelingNextHop"
+      ]
     }
   }
 }
