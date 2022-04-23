@@ -279,6 +279,8 @@ By default, this archetype deploys `CanNotDelete` lock to prevent accidental del
 | Full Deployment with Azure Firewall Policy  | [tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-WithAzureFirewallPolicy.json](../../tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-WithAzureFirewallPolicy.json) | `parameters.azureFirewallExistingPolicyId.value` is configured.  When it's not defined, this setting is added by Azure DevOps pipeline during deployment. |
 | Full Deployment with Log Analytics Workspace  | [tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-WithLogAnalyticsWorkspace.json](../../tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-WithLogAnalyticsWorkspace.json) | `parameters.logAnalyticsWorkspaceResourceId.value` is configured.  When it's not defined, this setting is added by Azure DevOps pipeline during deployment. |
 | Deployment without subscription budget | [tests/schemas/lz-platform-connectivity-hub-azfw/BudgetIsFalse.json](../../tests/schemas/lz-platform-connectivity-hub-azfw/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
+| Deployment with optional hub subnets | [tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-With-OptionalHubSubnets.json](../../tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-With-OptionalHubSubnets.json) | `parameters.hub.value.network.subnets.optional` array is set. |
+| Deployment without Management Restricted Zone | [tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-Without-ManagementRestrictedZone.json](../../tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-Without-ManagementRestrictedZone.json) | `parameters.managementRestrictedZone.value.enabled` is set to `false` and `parameters.managementRestrictedZone.value.network.subnets` array is empty. |
 
 ### Example Deployment Parameters for Azure Firewall Policy
 
@@ -323,19 +325,13 @@ This example configures:
 5. Subscription Tags
 6. Resource Tags (aligned to the default tags defined in [Policies](../../policy/custom/definitions/policyset/Tags.parameters.json))
 7. Log Analytics Workspace integration through Azure Defender for Cloud
-8. Hub Network with Azure Firewall
+8. Hub Network with Azure Firewall and 2 optional subnets in Hub Virtual Network.
 
 ```json
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "azureFirewallExistingPolicyId": {
-      "value": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourcegroups/pubsec-azure-firewall-policy-rg/providers/Microsoft.Network/firewallPolicies/pubsecAzureFirewallPolicy"
-    },
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
-    },
     "serviceHealthAlerts": {
       "value": {
         "resourceGroupName": "pubsec-service-health",
@@ -417,120 +413,175 @@ This example configures:
         "TechnicalContact": "technical-contact-tag"
       }
     },
-    "deployPrivateDnsZones": {
-      "value": true
+    "privateDnsZones": {
+      "value": {
+        "enabled": true,
+        "resourceGroup": "pubsec-dns-rg"
+      }
     },
-    "rgPrivateDnsZonesName": {
-      "value": "pubsec-dns-rg"
+    "ddosStandard": {
+      "value": {
+        "enabled": false,
+        "resourceGroup": "pubsec-ddos-rg",
+        "planName": "ddos-plan"
+      }
     },
-    "deployDdosStandard": {
-      "value": false
+    "publicAccessZone": {
+      "value": {
+        "enabled": true,
+        "resourceGroup": "pubsec-public-access-zone-rg"
+      }
     },
-    "rgDdosName": {
-      "value": "pubsec-ddos-rg"
+    "managementRestrictedZone": {
+      "value": {
+        "enabled": true,
+        "resourceGroup": "pubsec-management-restricted-zone-rg",
+        "network": {
+          "name": "management-restricted-vnet",
+          "addressPrefixes": ["10.18.4.0/22"],
+          "subnets": [
+            {
+              "comments": "Management (Access Zone) Subnet",
+              "name": "MazSubnet",
+              "addressPrefix": "10.18.4.0/25",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Infrastructure Services (Restricted Zone) Subnet",
+              "name": "InfSubnet",
+              "addressPrefix": "10.18.4.128/25",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Security Services (Restricted Zone) Subnet",
+              "name": "SecSubnet",
+              "addressPrefix": "10.18.5.0/26",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Logging Services (Restricted Zone) Subnet",
+              "name": "LogSubnet",
+              "addressPrefix": "10.18.5.64/26",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Core Management Interfaces (Restricted Zone) Subnet",
+              "name": "MgmtSubnet",
+              "addressPrefix": "10.18.5.128/26",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            }
+          ]
+        }
+      }
     },
-    "ddosPlanName": {
-      "value": "ddos-plan"
+    "hub": {
+      "value": {
+        "resourceGroup": "pubsec-hub-networking-rg",
+        "bastion": {
+          "enabled": true,
+          "name": "bastion",
+          "sku": "Standard",
+          "scaleUnits": 2
+        },
+        "azureFirewall": {
+          "name": "pubsecAzureFirewall",
+          "availabilityZones": ["1", "2", "3"],
+          "forcedTunnelingEnabled": false,
+          "forcedTunnelingNextHop": "10.17.1.4"
+        },
+        "network": {
+          "name": "hub-vnet",
+          "addressPrefixes": [
+            "10.18.0.0/22",
+            "100.60.0.0/16"
+          ],
+          "addressPrefixBastion": "192.168.0.0/16",
+          "subnets": {
+            "gateway": {
+              "comments": "Gateway Subnet used for VPN and/or Express Route connectivity",
+              "name": "GatewaySubnet",
+              "addressPrefix": "10.18.0.0/27"
+            },
+            "firewall": {
+              "comments": "Azure Firewall",
+              "name": "AzureFirewallSubnet",
+              "addressPrefix": "10.18.1.0/24"
+            },
+            "firewallManagement": {
+              "comments": "Azure Firewall Management",
+              "name": "AzureFirewallManagementSubnet",
+              "addressPrefix": "10.18.2.0/26"
+            },
+            "bastion": {
+              "comments": "Azure Bastion",
+              "name": "AzureBastionSubnet",
+              "addressPrefix": "192.168.0.0/24"
+            },
+            "publicAccess": {
+              "comments": "Public Access Zone (Application Gateway)",
+              "name": "PAZSubnet",
+              "addressPrefix": "100.60.1.0/24"
+            },
+            "optional": [
+              {
+                "comments": "Optional 1 Subnet",
+                "name": "Optional1Subnet",
+                "addressPrefix": "10.18.3.0/26",
+                "nsg": {
+                    "enabled": true
+                },
+                "udr": {
+                    "enabled": true
+                }
+              },
+              {
+                "comments": "Optional 2 Subnet",
+                "name": "Optional1Subnet",
+                "addressPrefix": "10.18.4.0/26",
+                "nsg": {
+                    "enabled": true
+                },
+                "udr": {
+                    "enabled": true
+                },
+                "delegations": {
+                  "serviceName": "Microsoft.NetApp/volumes"
+                }
+              }
+            ]
+          }
+        }
+      }
     },
-    "bastionName": {
-      "value": "bastion"
-    },
-    "bastionSku": {
-      "value": "Standard"
-    },
-    "bastionScaleUnits": {
-      "value": 2
-    },
-    "rgPazName": {
-      "value": "pubsec-public-access-zone-rg"
-    },
-    "rgMrzName": {
-      "value": "pubsec-management-restricted-zone-rg"
-    },
-    "mrzVnetName": {
-      "value": "management-restricted-vnet"
-    },
-    "mrzVnetAddressPrefixRFC1918": {
-      "value": "10.18.4.0/22"
-    },
-    "mrzMazSubnetName": {
-      "value": "MazSubnet"
-    },
-    "mrzMazSubnetAddressPrefix": {
-      "value": "10.18.4.0/25"
-    },
-    "mrzInfSubnetName": {
-      "value": "InfSubnet"
-    },
-    "mrzInfSubnetAddressPrefix": {
-      "value": "10.18.4.128/25"
-    },
-    "mrzSecSubnetName": {
-      "value": "SecSubnet"
-    },
-    "mrzSecSubnetAddressPrefix": {
-      "value": "10.18.5.0/26"
-    },
-    "mrzLogSubnetName": {
-      "value": "LogSubnet"
-    },
-    "mrzLogSubnetAddressPrefix": {
-      "value": "10.18.5.64/26"
-    },
-    "mrzMgmtSubnetName": {
-      "value": "MgmtSubnet"
-    },
-    "mrzMgmtSubnetAddressPrefix": {
-      "value": "10.18.5.128/26"
-    },
-    "rgHubName": {
-      "value": "pubsec-hub-networking-rg"
-    },
-    "hubVnetName": {
-      "value": "hub-vnet"
-    },
-    "hubVnetAddressPrefixRFC1918": {
-      "value": "10.18.0.0/22"
-    },
-    "hubVnetAddressPrefixRFC6598": {
-      "value": "100.60.0.0/16"
-    },
-    "hubVnetAddressPrefixBastion": {
-      "value": "192.168.0.0/16"
-    },
-    "hubPazSubnetName": {
-      "value": "PAZSubnet"
-    },
-    "hubPazSubnetAddressPrefix": {
-      "value": "100.60.1.0/24"
-    },
-    "hubGatewaySubnetAddressPrefix": {
-      "value": "10.18.0.0/27"
-    },
-    "hubAzureFirewallSubnetAddressPrefix": {
-      "value": "10.18.1.0/24"
-    },
-    "hubAzureFirewallManagementSubnetAddressPrefix": {
-      "value": "10.18.2.0/26"
-    },
-    "hubBastionSubnetAddressPrefix": {
-      "value": "192.168.0.0/24"
-    },
-    "azureFirewallName": {
-      "value": "pubsecAzureFirewall"
-    },
-    "azureFirewallZones": {
-      "value": [
-        "1",
-        "2",
-        "3"
-      ]
-    },
-    "azureFirewallForcedTunnelingEnabled": {
-      "value": false
-    },
-    "azureFirewallForcedTunnelingNextHop": {
-      "value": "10.17.1.4"
+    "networkWatcher": {
+      "value": {
+        "resourceGroup": "NetworkWatcherRG"
+      }
     }
   }
 }
