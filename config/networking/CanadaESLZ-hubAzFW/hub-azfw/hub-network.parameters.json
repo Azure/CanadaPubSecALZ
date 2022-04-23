@@ -79,13 +79,13 @@
     },
     "privateDnsZones": {
       "value": {
-        "enabled": true,
+        "enabled": false,
         "resourceGroup": "pubsec-dns-rg"
       }
     },
     "ddosStandard": {
       "value": {
-        "enabled": false,
+        "enabled": true,
         "resourceGroup": "pubsec-ddos-rg",
         "planName": "ddos-plan"
       }
