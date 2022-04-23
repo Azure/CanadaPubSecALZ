@@ -1,0 +1,152 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serviceHealthAlerts": {
+            "value": {
+                "resourceGroupName": "pubsec-service-health",
+                "incidentTypes": [ "Incident", "Security" ],
+                "regions": [ "Global", "Canada East", "Canada Central" ],
+                "receivers": {
+                    "app": [ "alzcanadapubsec@microsoft.com" ],
+                    "email": [ "alzcanadapubsec@microsoft.com" ],
+                    "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+                    "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                },
+                "actionGroupName": "Sub2 ALZ action group",
+                "actionGroupShortName": "sub2-alert",
+                "alertRuleName": "Sub2 ALZ alert rule",
+                "alertRuleDescription": "Alert rule for Azure Landing Zone"
+            }
+        },
+        "securityCenter": {
+            "value": {
+                "email": "alzcanadapubsec@microsoft.com",
+                "phone": "5555555555"
+            }
+        },
+        "subscriptionRoleAssignments": {
+            "value": [
+                {
+                    "comments": "Built-in Role: Contributor",
+                    "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                    "securityGroupObjectIds": [
+                        "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+                    ]
+                },
+                {
+                    "comments": "Custom Role: Landing Zone Application Owner",
+                    "roleDefinitionId": "b4c87314-c1a1-5320-9c43-779585186bcc",
+                    "securityGroupObjectIds": [
+                        "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+                    ]
+                }
+            ]
+        },
+        "subscriptionBudget": {
+            "value": {
+                "createBudget": false
+            }
+        },
+        "subscriptionTags": {
+            "value": {
+                "ISSO": "isso-tag"
+            }
+        },
+        "resourceTags": {
+            "value": {
+                "ClientOrganization": "client-organization-tag",
+                "CostCenter": "cost-center-tag",
+                "DataSensitivity": "data-sensitivity-tag",
+                "ProjectContact": "project-contact-tag",
+                "ProjectName": "project-name-tag",
+                "TechnicalContact": "technical-contact-tag"
+            }
+        },
+        "resourceGroups": {
+            "value": {
+                "automation": "health2022Q1Automation",
+                "compute": "health2022Q1Compute",
+                "monitor": "health2022Q1Monitor",
+                "networking": "health2022Q1Network",
+                "networkWatcher": "NetworkWatcherRG",
+                "security": "health2022Q1Security",
+                "storage": "health2022Q1Storage"
+            }
+        },
+        "useCMK": {
+            "value": true
+        },
+        "keyVault": {
+            "value": {
+                "secretExpiryInDays": 3650
+            }
+        },
+        "automation": {
+            "value": {
+                "name": "health2022Q1automation"
+            }
+        },
+        "sqldb": {
+            "value": {
+              "enabled": true,
+              "sqlAuthenticationUsername": "azadmin",
+              "aadAuthenticationOnly":false
+            }
+          },
+          "synapse": {
+            "value": {
+              "aadAuthenticationOnly": true,
+              "aadLoginName": "az.admins",
+              "aadLoginObjectID": "e0357d81-55d8-44e9-9d9c-ab09dc710785",
+              "aadLoginType":"Group"
+            }
+          },
+        "hubNetwork": {
+            "value": {
+                "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+                "rfc1918IPRange": "10.18.0.0/22",
+                "rfc6598IPRange": "100.60.0.0/16",
+                "egressVirtualApplianceIp": "10.18.1.4",
+                "privateDnsManagedByHub": true,
+                "privateDnsManagedByHubSubscriptionId": "ed7f4eed-9010-4227-b115-2a5e37728f27",
+                "privateDnsManagedByHubResourceGroupName": "pubsec-dns-rg"
+            }
+        },
+        "network": {
+            "value": {
+                "peerToHubVirtualNetwork": true,
+                "useRemoteGateway": false,
+                "name": "health2022Q1vnet",
+                "dnsServers": [
+                    "10.18.1.4"
+                ],
+                "addressPrefixes": [
+                    "10.5.0.0/16"
+                ],
+                "subnets": {
+                    "databricksPublic": {
+                        "comments": "Databricks Public Delegated Subnet",
+                        "name": "databrickspublic",
+                        "addressPrefix": "10.5.5.0/25"
+                    },
+                    "databricksPrivate": {
+                        "comments": "Databricks Private Delegated Subnet",
+                        "name": "databricksprivate",
+                        "addressPrefix": "10.5.6.0/25"
+                    },
+                    "privateEndpoints": {
+                        "comments": "Private Endpoints Subnet",
+                        "name": "privateendpoints",
+                        "addressPrefix": "10.5.7.0/25"
+                    },
+                    "web": {
+                        "comments": "Azure Web App Delegated Subnet",
+                        "name": "webapp",
+                        "addressPrefix": "10.5.8.0/25"
+                    }
+                }
+            }
+        }
+    }
+}
