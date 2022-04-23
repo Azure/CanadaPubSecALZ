@@ -79,26 +79,26 @@
     },
     "privateDnsZones": {
       "value": {
-        "enabled": false,
+        "enabled": true,
         "resourceGroupName": "pubsec-dns-rg"
       }
     },
     "ddosStandard": {
       "value": {
-        "enabled": false,
+        "enabled": true,
         "resourceGroupName": "pubsec-ddos-rg",
         "planName": "ddos-plan"
       }
     },
     "publicAccessZone": {
       "value": {
-        "enabled": false,
+        "enabled": true,
         "resourceGroupName": "pubsec-public-access-zone-rg"
       }
     },
     "managementRestrictedZone": {
       "value": {
-        "enabled": false,
+        "enabled": true,
         "resourceGroupName": "pubsec-management-restricted-zone-rg",
         "network": {
           "name": "management-restricted-vnet",
@@ -167,7 +167,7 @@
       "value": {
         "resourceGroupName": "pubsec-hub-networking-rg",
         "bastion": {
-          "enabled": false,
+          "enabled": true,
           "name": "bastion",
           "sku": "Standard",
           "scaleUnits": 2
