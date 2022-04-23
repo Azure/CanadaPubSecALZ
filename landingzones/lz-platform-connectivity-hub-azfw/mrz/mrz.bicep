@@ -15,13 +15,13 @@ param ddosStandardPlanId string
 
 // Create Managemend Restricted Virtual Network Resource Group
 resource rgMrzVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: managementRestrictedZone.resourceGroup
+  name: managementRestrictedZone.resourceGroupName
   location: location
   tags: resourceTags
 }
 
 module rgMrzDeleteLock '../../../azresources/util/delete-lock.bicep' = {
-  name: 'deploy-delete-lock-${managementRestrictedZone.resourceGroup}'
+  name: 'deploy-delete-lock-${managementRestrictedZone.resourceGroupName}'
   scope: rgMrzVnet
 }
 

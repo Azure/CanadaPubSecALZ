@@ -102,13 +102,13 @@
             "enabled": {
               "type": "boolean"
             },
-            "resourceGroup": {
+            "resourceGroupName": {
               "type": "string"
             }
           },
           "required": [
             "enabled",
-            "resourceGroup"
+            "resourceGroupName"
           ]
         }
       },
@@ -125,7 +125,7 @@
             "enabled": {
               "type": "boolean"
             },
-            "resourceGroup": {
+            "resourceGroupName": {
               "type": "string"
             },
             "planName": {
@@ -134,7 +134,7 @@
           },
           "required": [
             "enabled",
-            "resourceGroup",
+            "resourceGroupName",
             "planName"
           ]
         }
@@ -152,13 +152,13 @@
             "enabled": {
               "type": "boolean"
             },
-            "resourceGroup": {
+            "resourceGroupName": {
               "type": "string"
             }
           },
           "required": [
             "enabled",
-            "resourceGroup"
+            "resourceGroupName"
           ]
         }
       },
@@ -175,7 +175,7 @@
             "enabled": {
               "type": "boolean"
             },
-            "resourceGroup": {
+            "resourceGroupName": {
               "type": "string"
             },
             "network": {
@@ -206,7 +206,7 @@
           },
           "required": [
             "enabled",
-            "resourceGroup",
+            "resourceGroupName",
             "network"
           ]
         }
@@ -221,7 +221,7 @@
         "value": {
           "type": "object",
           "properties": {
-            "resourceGroup": {
+            "resourceGroupName": {
               "type": "string"
             },
             "bastion": {
@@ -274,7 +274,7 @@
             }
           },
           "required": [
-            "resourceGroup",
+            "resourceGroupName",
             "bastion",
             "azureFirewall",
             "network"
@@ -291,12 +291,12 @@
         "value": {
           "type": "object",
           "properties": {
-            "resourceGroup": {
+            "resourceGroupName": {
               "type": "string"
             }
           },
           "required": [
-            "resourceGroup"
+            "resourceGroupName"
           ]
         }
       },

@@ -416,26 +416,26 @@ This example configures:
     "privateDnsZones": {
       "value": {
         "enabled": true,
-        "resourceGroup": "pubsec-dns-rg"
+        "resourceGroupName": "pubsec-dns-rg"
       }
     },
     "ddosStandard": {
       "value": {
         "enabled": false,
-        "resourceGroup": "pubsec-ddos-rg",
+        "resourceGroupName": "pubsec-ddos-rg",
         "planName": "ddos-plan"
       }
     },
     "publicAccessZone": {
       "value": {
         "enabled": true,
-        "resourceGroup": "pubsec-public-access-zone-rg"
+        "resourceGroupName": "pubsec-public-access-zone-rg"
       }
     },
     "managementRestrictedZone": {
       "value": {
         "enabled": true,
-        "resourceGroup": "pubsec-management-restricted-zone-rg",
+        "resourceGroupName": "pubsec-management-restricted-zone-rg",
         "network": {
           "name": "management-restricted-vnet",
           "addressPrefixes": ["10.18.4.0/22"],
@@ -501,7 +501,7 @@ This example configures:
     },
     "hub": {
       "value": {
-        "resourceGroup": "pubsec-hub-networking-rg",
+        "resourceGroupName": "pubsec-hub-networking-rg",
         "bastion": {
           "enabled": true,
           "name": "bastion",
@@ -580,7 +580,7 @@ This example configures:
     },
     "networkWatcher": {
       "value": {
-        "resourceGroup": "NetworkWatcherRG"
+        "resourceGroupName": "NetworkWatcherRG"
       }
     }
   }

@@ -7,13 +7,13 @@ param publicAccessZone object
 
 // Create Public Access Zone Resource Group
 resource rgPaz 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: publicAccessZone.resourceGroup
+  name: publicAccessZone.resourceGroupName
   location: location
   tags: resourceTags
 }
 
 module rgPazDeleteLock '../../../azresources/util/delete-lock.bicep' = {
-  name: 'deploy-delete-lock-${publicAccessZone.resourceGroup}'
+  name: 'deploy-delete-lock-${publicAccessZone.resourceGroupName}'
   scope: rgPaz
 }
 

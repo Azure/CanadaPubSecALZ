@@ -197,40 +197,40 @@ module subScaffold '../scaffold-subscription.bicep' = {
 
 // Create Network Watcher Resource Group
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: networkWatcher.resourceGroup
+  name: networkWatcher.resourceGroupName
   location: location
   tags: resourceTags
 }
 
 // Create Private DNS Zone Resource Group - optional
 resource rgPrivateDnsZones 'Microsoft.Resources/resourceGroups@2020-06-01' = if (privateDnsZones.enabled) {
-  name: privateDnsZones.resourceGroup
+  name: privateDnsZones.resourceGroupName
   location: location
   tags: resourceTags
 }
 
 // Create Azure DDOS Standard Resource Group - optional
 resource rgDdos 'Microsoft.Resources/resourceGroups@2020-06-01' = if (ddosStandard.enabled) {
-  name: ddosStandard.resourceGroup
+  name: ddosStandard.resourceGroupName
   location: location
   tags: resourceTags
 }
 
 // Create Hub Virtual Network Resource Group
 resource rgHubVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: hub.resourceGroup
+  name: hub.resourceGroupName
   location: location
   tags: resourceTags
 }
 
 // Enable delete locks
 module rgDdosDeleteLock '../../azresources/util/delete-lock.bicep' = if (ddosStandard.enabled) {
-  name: 'deploy-delete-lock-${ddosStandard.resourceGroup}'
+  name: 'deploy-delete-lock-${ddosStandard.resourceGroupName}'
   scope: rgDdos
 }
 
 module rgHubDeleteLock '../../azresources/util/delete-lock.bicep' = {
-  name: 'deploy-delete-lock-${hub.resourceGroup}'
+  name: 'deploy-delete-lock-${hub.resourceGroupName}'
   scope: rgHubVnet
 }
 
