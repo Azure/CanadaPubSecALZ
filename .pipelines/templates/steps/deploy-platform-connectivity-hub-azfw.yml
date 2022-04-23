@@ -127,7 +127,7 @@ steps:
     workingDirectory: '${{ parameters.workingDir }}/lz-platform-connectivity-hub-azfw'
 
 - task: AzureCLI@2
-  displayName: Azure Policy - Enable Private DNS Zone Policies (if deployPrivateDnsZones=true in config)
+  displayName: Azure Policy - Enable Private DNS Zone Policies (if privateDnsZones.enabled=true in config)
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
@@ -164,7 +164,7 @@ steps:
     workingDirectory: '$(System.DefaultWorkingDirectory)/policy/custom/assignments'
 
 - task: AzureCLI@2
-  displayName: Azure Policy - Enable DDoS Standard (if deployDdosStandard=true in config)
+  displayName: Azure Policy - Enable DDoS Standard (if ddosStandard.enabled=true in config)
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
