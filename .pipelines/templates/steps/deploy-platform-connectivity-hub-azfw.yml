@@ -136,7 +136,7 @@ steps:
       $(var-bashPreInjectScript)
 
       DEPLOY_PRIVATE_DNS_ZONES=`jq -r .parameters.privateDnsZones.value.enabled ${{ parameters.networkingConfigurationPath }}`
-      PRIVATE_DNS_ZONES_RESOURCE_GROUP=`jq -r .parameters.privateDnsZones.value.resourceGroup ${{ parameters.networkingConfigurationPath }}`   
+      PRIVATE_DNS_ZONES_RESOURCE_GROUP=`jq -r .parameters.privateDnsZones.value.resourceGroupName ${{ parameters.networkingConfigurationPath }}`   
 
       case $DEPLOY_PRIVATE_DNS_ZONES in
         (true)
@@ -178,7 +178,7 @@ steps:
         (true)
           echo "DDoS Standard is enabled, creating Azure Policy assignment to protect for all Virtual Networks in '$(var-topLevelManagementGroupName)' management group."
 
-          DDOS_STANDARD_RESOURCE_GROUP_NAME=`jq -r .parameters.ddosStandard.value.resourceGroup ${{ parameters.networkingConfigurationPath }}`
+          DDOS_STANDARD_RESOURCE_GROUP_NAME=`jq -r .parameters.ddosStandard.value.resourceGroupName ${{ parameters.networkingConfigurationPath }}`
           DDOS_STANDARD_PLAN_NAME=`jq -r .parameters.ddosStandard.value.planName ${{ parameters.networkingConfigurationPath }}`
 
           # Identify the Resource Id for DDOS Standard Plan
