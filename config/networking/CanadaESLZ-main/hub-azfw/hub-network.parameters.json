@@ -176,8 +176,7 @@
           "name": "pubsecAzureFirewall",
           "availabilityZones": ["1", "2", "3"],
           "forcedTunnelingEnabled": false,
-          "forcedTunnelingNextHop": "10.17.1.4",
-          "firewallPolicyId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourcegroups/pubsec-azure-firewall-policy-rg/providers/Microsoft.Network/firewallPolicies/pubsecAzureFirewallPolicy"
+          "forcedTunnelingNextHop": "10.17.1.4"
         },
         "network": {
           "name": "hub-vnet",
