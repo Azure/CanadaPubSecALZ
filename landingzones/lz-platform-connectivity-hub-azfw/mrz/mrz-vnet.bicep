@@ -11,9 +11,11 @@
 param location string = resourceGroup().location
 
 // Management Restricted Zone Virtual Network
+@description('Management Restricted Zone virtual network.  See docs/archetypes/hubnetwork-azfw.md for configuration settings.')
 param network object
 
 // Common Route Table for all subnets that require Udr
+@description('Route Table Resource Id for subnets in Management Restricted Zone')
 param udrId string
 
 // DDOS

@@ -7,13 +7,15 @@
 @description('Location for the deployment.')
 param location string = resourceGroup().location
 
+@description('Hub Virtual network configuration.  See docs/archetypes/hubnetwork-azfw.md for configuration settings.')
 param hubNetwork object
 
 // Public Access Zone Route Table (i.e. Application Gateways)
-@description('Public Access Zone (i.e. Application Gateway) User Defined Route Resource Id.')
+@description('Public Access Zone (i.e. Application Gateway) Route Table Resource Id.')
 param pazUdrId string
 
 // Common Route Table
+@description('Route Table Resource Id for optional subnets in Hub Virtual Network')
 param hubUdrId string
 
 @description('Azure Firewall is deployed in Forced Tunneling mode where a route table must be added as the next hop.')
@@ -23,6 +25,7 @@ param azureFirewallForcedTunnelingEnabled bool
 param azureFirewallForcedTunnelingNextHop string
 
 // DDOS
+@description('DDoS Standard Plan Resource Id.')
 param ddosStandardPlanId string
 
 var azureFirewallForcedTunnelRoutes = [

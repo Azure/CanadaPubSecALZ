@@ -151,21 +151,27 @@ param subscriptionTags object
 param resourceTags object
 
 // Hub
+@description('Hub configuration.  See docs/archetypes/hubnetwork-azfw.md for configuration settings.')
 param hub object
 
 // Network Watcher
+@description('Network Watcher configuration.  See docs/archetypes/hubnetwork-azfw.md for configuration settings.')
 param networkWatcher object
 
 // Private Dns Zones
+@description('Private DNS Zones configuration.  See docs/archetypes/hubnetwork-azfw.md for configuration settings.')
 param privateDnsZones object
 
 // DDOS Standard
+@description('DDOS Standard configuration.  See docs/archetypes/hubnetwork-azfw.md for configuration settings.')
 param ddosStandard object
 
 // Management Restricted Zone Virtual Network
+@description('Management Restricted Zone configuration.  See docs/archetypes/hubnetwork-azfw.md for configuration settings.')
 param managementRestrictedZone object
 
 // Public Access Zone
+@description('Public Access Zone configuration.  See docs/archetypes/hubnetwork-azfw.md for configuration settings.')
 param publicAccessZone object
 
 // Telemetry - Azure customer usage attribution

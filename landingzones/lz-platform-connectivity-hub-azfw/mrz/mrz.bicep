@@ -1,16 +1,27 @@
 targetScope = 'subscription'
 
+@description('Location for the deployment.')
 param location string = deployment().location
 
+@description('A set of key/value pairs of tags assigned to the resource group and resources.')
 param resourceTags object
 
+@description('Hub Resource Group Name')
 param hubResourceGroup string
+
+@description('Hub Virtual Network Name')
 param hubVnetName string
+
+@description('Hub Virtual Network Resource Id')
 param hubVnetId string
 
+@description('Management Restricted Zone configuration.  See docs/archetypes/hubnetwork-azfw.md for configuration settings.')
 param managementRestrictedZone object
+
+@description('Route Table Resource Id for subnets in Management Restricted Zone')
 param managementRestrictedZoneUdrId string
 
+@description('DDoS Standard Plan Resource Id.')
 param ddosStandardPlanId string
 
 // Create Managemend Restricted Virtual Network Resource Group
