@@ -2,9 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
-    },
     "serviceHealthAlerts": {
       "value": {
         "resourceGroupName": "pubsec-service-health",
@@ -179,8 +176,7 @@
           "name": "pubsecAzureFirewall",
           "availabilityZones": ["1", "2", "3"],
           "forcedTunnelingEnabled": false,
-          "forcedTunnelingNextHop": "10.17.1.4",
-          "firewallPolicyId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourcegroups/pubsec-azure-firewall-policy-rg/providers/Microsoft.Network/firewallPolicies/pubsecAzureFirewallPolicy"
+          "forcedTunnelingNextHop": "10.17.1.4"
         },
         "network": {
           "name": "hub-vnet",
