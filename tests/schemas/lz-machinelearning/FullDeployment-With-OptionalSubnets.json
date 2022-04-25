@@ -90,6 +90,9 @@
         "TechnicalContact": "technical-contact-tag"
       }
     },
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
+    },
     "resourceGroups": {
       "value": {
         "automation": "azmlcmkAutomation",
@@ -118,10 +121,10 @@
       "value": {
         "version": "1.21.2",
         "enabled": true,
-        "networkPlugin": "kubenet" ,
+        "networkPlugin": "kubenet",
         "networkPolicy": "calico",
         "podCidr": "11.0.0.0/16",
-        "serviceCidr": "20.0.0.0/16" ,
+        "serviceCidr": "20.0.0.0/16",
         "dnsServiceIP": "20.0.0.10",
         "dockerBridgeCidr": "30.0.0.1/16"
       }
@@ -207,7 +210,33 @@
             "name": "appService",
             "addressPrefix": "10.1.10.0/25"
           },
-          "optional": []
+          "optional": [
+            {
+              "comments": "Optional Subnet 1",
+              "name": "virtualMachines",
+              "addressPrefix": "10.1.11.0/25",
+              "nsg": {
+                "enabled": true
+              },
+              "udr": {
+                "enabled": true
+              }
+            },
+            {
+              "comments": "Optional Subnet 2 with delegation for NetApp Volumes",
+              "name": "NetappVolumes",
+              "addressPrefix": "10.1.12.0/25",
+              "nsg": {
+                "enabled": false
+              },
+              "udr": {
+                "enabled": false
+              },
+              "delegations": {
+                "serviceName": "Microsoft.NetApp/volumes"
+              }
+            }
+          ]
         }
       }
     }

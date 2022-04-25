@@ -2,9 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
-    },
     "serviceHealthAlerts": {
       "value": {
         "resourceGroupName": "pubsec-service-health",
@@ -107,68 +104,12 @@
     },
     "managementRestrictedZone": {
       "value": {
-        "enabled": true,
+        "enabled": false,
         "resourceGroupName": "pubsec-management-restricted-zone-rg",
         "network": {
           "name": "management-restricted-vnet",
           "addressPrefixes": ["10.18.4.0/22"],
-          "subnets": [
-            {
-              "comments": "Management (Access Zone) Subnet",
-              "name": "MazSubnet",
-              "addressPrefix": "10.18.4.0/25",
-              "nsg": {
-                  "enabled": true
-              },
-              "udr": {
-                  "enabled": true
-              }
-            },
-            {
-              "comments": "Infrastructure Services (Restricted Zone) Subnet",
-              "name": "InfSubnet",
-              "addressPrefix": "10.18.4.128/25",
-              "nsg": {
-                  "enabled": true
-              },
-              "udr": {
-                  "enabled": true
-              }
-            },
-            {
-              "comments": "Security Services (Restricted Zone) Subnet",
-              "name": "SecSubnet",
-              "addressPrefix": "10.18.5.0/26",
-              "nsg": {
-                  "enabled": true
-              },
-              "udr": {
-                  "enabled": true
-              }
-            },
-            {
-              "comments": "Logging Services (Restricted Zone) Subnet",
-              "name": "LogSubnet",
-              "addressPrefix": "10.18.5.64/26",
-              "nsg": {
-                  "enabled": true
-              },
-              "udr": {
-                  "enabled": true
-              }
-            },
-            {
-              "comments": "Core Management Interfaces (Restricted Zone) Subnet",
-              "name": "MgmtSubnet",
-              "addressPrefix": "10.18.5.128/26",
-              "nsg": {
-                  "enabled": true
-              },
-              "udr": {
-                  "enabled": true
-              }
-            }
-          ]
+          "subnets": []
         }
       }
     },

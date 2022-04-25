@@ -190,6 +190,7 @@ Instructions:
       deployOperation: create  # valid options: 'create', 'what-if'
 
       loggingPathFromRoot: 'config/logging'
+      networkPathFromRoot: 'config/networking'
       subscriptionsPathFromRoot: 'config/subscriptions'
 
       var-bashPreInjectScript: 'set -E; function catch { echo "##vso[task.logissue type=error]Caller: $(caller), LineNo: $LINENO, Command: $BASH_COMMAND" ; exit 1 ; } ; echo ; echo "Current working directory: $(pwd)" ; echo ; trap catch ERR'
@@ -669,7 +670,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
             <summary>Expand/collapse</summary>
 
             ```json
-              {
+            {
               "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
               "contentVersion": "1.0.0.0",
               "parameters": {
@@ -748,120 +749,149 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                     "TechnicalContact": "technical-contact-tag"
                   }
                 },
-                "deployPrivateDnsZones": {
-                  "value": true
+                "privateDnsZones": {
+                  "value": {
+                    "enabled": true,
+                    "resourceGroupName": "pubsec-dns-rg"
+                  }
                 },
-                "rgPrivateDnsZonesName": {
-                  "value": "pubsec-dns-rg"
+                "ddosStandard": {
+                  "value": {
+                    "enabled": false,
+                    "resourceGroupName": "pubsec-ddos-rg",
+                    "planName": "ddos-plan"
+                  }
                 },
-                "deployDdosStandard": {
-                  "value": false
+                "publicAccessZone": {
+                  "value": {
+                    "enabled": true,
+                    "resourceGroupName": "pubsec-public-access-zone-rg"
+                  }
                 },
-                "rgDdosName": {
-                  "value": "pubsec-ddos-rg"
+                "managementRestrictedZone": {
+                  "value": {
+                    "enabled": true,
+                    "resourceGroupName": "pubsec-management-restricted-zone-rg",
+                    "network": {
+                      "name": "management-restricted-vnet",
+                      "addressPrefixes": ["10.18.4.0/22"],
+                      "subnets": [
+                        {
+                          "comments": "Management (Access Zone) Subnet",
+                          "name": "MazSubnet",
+                          "addressPrefix": "10.18.4.0/25",
+                          "nsg": {
+                              "enabled": true
+                          },
+                          "udr": {
+                              "enabled": true
+                          }
+                        },
+                        {
+                          "comments": "Infrastructure Services (Restricted Zone) Subnet",
+                          "name": "InfSubnet",
+                          "addressPrefix": "10.18.4.128/25",
+                          "nsg": {
+                              "enabled": true
+                          },
+                          "udr": {
+                              "enabled": true
+                          }
+                        },
+                        {
+                          "comments": "Security Services (Restricted Zone) Subnet",
+                          "name": "SecSubnet",
+                          "addressPrefix": "10.18.5.0/26",
+                          "nsg": {
+                              "enabled": true
+                          },
+                          "udr": {
+                              "enabled": true
+                          }
+                        },
+                        {
+                          "comments": "Logging Services (Restricted Zone) Subnet",
+                          "name": "LogSubnet",
+                          "addressPrefix": "10.18.5.64/26",
+                          "nsg": {
+                              "enabled": true
+                          },
+                          "udr": {
+                              "enabled": true
+                          }
+                        },
+                        {
+                          "comments": "Core Management Interfaces (Restricted Zone) Subnet",
+                          "name": "MgmtSubnet",
+                          "addressPrefix": "10.18.5.128/26",
+                          "nsg": {
+                              "enabled": true
+                          },
+                          "udr": {
+                              "enabled": true
+                          }
+                        }
+                      ]
+                    }
+                  }
                 },
-                "ddosPlanName": {
-                  "value": "ddos-plan"
+                "hub": {
+                  "value": {
+                    "resourceGroupName": "pubsec-hub-networking-rg",
+                    "bastion": {
+                      "enabled": true,
+                      "name": "bastion",
+                      "sku": "Standard",
+                      "scaleUnits": 2
+                    },
+                    "azureFirewall": {
+                      "name": "pubsecAzureFirewall",
+                      "availabilityZones": ["1", "2", "3"],
+                      "forcedTunnelingEnabled": false,
+                      "forcedTunnelingNextHop": "10.17.1.4"
+                    },
+                    "network": {
+                      "name": "hub-vnet",
+                      "addressPrefixes": [
+                        "10.18.0.0/22",
+                        "100.60.0.0/16"
+                      ],
+                      "addressPrefixBastion": "192.168.0.0/16",
+                      "subnets": {
+                        "gateway": {
+                          "comments": "Gateway Subnet used for VPN and/or Express Route connectivity",
+                          "name": "GatewaySubnet",
+                          "addressPrefix": "10.18.0.0/27"
+                        },
+                        "firewall": {
+                          "comments": "Azure Firewall",
+                          "name": "AzureFirewallSubnet",
+                          "addressPrefix": "10.18.1.0/24"
+                        },
+                        "firewallManagement": {
+                          "comments": "Azure Firewall Management",
+                          "name": "AzureFirewallManagementSubnet",
+                          "addressPrefix": "10.18.2.0/26"
+                        },
+                        "bastion": {
+                          "comments": "Azure Bastion",
+                          "name": "AzureBastionSubnet",
+                          "addressPrefix": "192.168.0.0/24"
+                        },
+                        "publicAccess": {
+                          "comments": "Public Access Zone (Application Gateway)",
+                          "name": "PAZSubnet",
+                          "addressPrefix": "100.60.1.0/24"
+                        },
+                        "optional": []
+                      }
+                    }
+                  }
                 },
-                "bastionName": {
-                  "value": "bastion"
-                },
-                "bastionSku": {
-                  "value": "Standard"
-                },
-                "bastionScaleUnits": {
-                  "value": 2
-                },
-                "rgPazName": {
-                  "value": "pubsec-public-access-zone-rg"
-                },
-                "rgMrzName": {
-                  "value": "pubsec-management-restricted-zone-rg"
-                },
-                "mrzVnetName": {
-                  "value": "management-restricted-vnet"
-                },
-                "mrzVnetAddressPrefixRFC1918": {
-                  "value": "10.18.4.0/22"
-                },
-                "mrzMazSubnetName": {
-                  "value": "MazSubnet"
-                },
-                "mrzMazSubnetAddressPrefix": {
-                  "value": "10.18.4.0/25"
-                },
-                "mrzInfSubnetName": {
-                  "value": "InfSubnet"
-                },
-                "mrzInfSubnetAddressPrefix": {
-                  "value": "10.18.4.128/25"
-                },
-                "mrzSecSubnetName": {
-                  "value": "SecSubnet"
-                },
-                "mrzSecSubnetAddressPrefix": {
-                  "value": "10.18.5.0/26"
-                },
-                "mrzLogSubnetName": {
-                  "value": "LogSubnet"
-                },
-                "mrzLogSubnetAddressPrefix": {
-                  "value": "10.18.5.64/26"
-                },
-                "mrzMgmtSubnetName": {
-                  "value": "MgmtSubnet"
-                },
-                "mrzMgmtSubnetAddressPrefix": {
-                  "value": "10.18.5.128/26"
-                },
-                "rgHubName": {
-                  "value": "pubsec-hub-networking-rg"
-                },
-                "hubVnetName": {
-                  "value": "hub-vnet"
-                },
-                "hubVnetAddressPrefixRFC1918": {
-                  "value": "10.18.0.0/22"
-                },
-                "hubVnetAddressPrefixRFC6598": {
-                  "value": "100.60.0.0/16"
-                },
-                "hubVnetAddressPrefixBastion": {
-                  "value": "192.168.0.0/16"
-                },
-                "hubPazSubnetName": {
-                  "value": "PAZSubnet"
-                },
-                "hubPazSubnetAddressPrefix": {
-                  "value": "100.60.1.0/24"
-                },
-                "hubGatewaySubnetAddressPrefix": {
-                  "value": "10.18.0.0/27"
-                },
-                "hubAzureFirewallSubnetAddressPrefix": {
-                  "value": "10.18.1.0/24"
-                },
-                "hubAzureFirewallManagementSubnetAddressPrefix": {
-                  "value": "10.18.2.0/26"
-                },
-                "hubBastionSubnetAddressPrefix": {
-                  "value": "192.168.0.0/24"
-                },
-                "azureFirewallName": {
-                  "value": "pubsecAzureFirewall"
-                },
-                "azureFirewallZones": {
-                  "value": [
-                    "1",
-                    "2",
-                    "3"
-                  ]
-                },
-                "azureFirewallForcedTunnelingEnabled": {
-                  "value": false
-                },
-                "azureFirewallForcedTunnelingNextHop": {
-                  "value": "10.17.1.4"
+                "networkWatcher": {
+                  "value": {
+                    "resourceGroupName": "NetworkWatcherRG"
+                  }
                 }
               }
             }
@@ -1277,8 +1307,8 @@ In order to configure audit stream for Azure Monitor, identify the following inf
         2. Select Repository
         3. Select Existing Azure Pipeline YAML file
         4. Identify the pipeline in `.pipelines/platform-connectivity-hub-azfw.yml`.
-        6. Save the pipeline (don't run it yet)
-        7. Rename the pipeline to `platform-connectivity-hub-azfw-ci`
+        5. Save the pipeline (don't run it yet)
+        6. Rename the pipeline to `platform-connectivity-hub-azfw-ci`
 
 1. Configure Pipeline for Platform – Hub Networking using NVAs (only if Fortigate Firewall based Hub Networking is used)
 
@@ -1663,141 +1693,176 @@ Migration process:
             <summary>Expand/collapse</summary>
 
         ```json
-        {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-          "contentVersion": "1.0.0.0",
-          "parameters": {
-            "serviceHealthAlerts": {
-              "value": < value from var-hubnetwork-serviceHealthAlerts >
-            },
-            "securityCenter": {
-              "value": < value from var-hubnetwork-securityCenter >
-            },
-            "subscriptionRoleAssignments": {
-              "value": < value from var-hubnetwork-subscriptionRoleAssignments >
-            },
-            "subscriptionBudget": {
-              "value": < value from var-hubnetwork-subscriptionBudget >
-            },
-            "subscriptionTags": {
-              "value": < value from var-hubnetwork-subscriptionTags >
-            },
-            "resourceTags": {
-              "value": < value from var-hubnetwork-resourceTags >
-            },
-            "deployPrivateDnsZones": {
-              "value": < value from var-hubnetwork-deployPrivateDnsZones >
-            },
-            "rgPrivateDnsZonesName": {
-              "value": "< value from var-hubnetwork-rgPrivateDnsZonesName >"
-            },
-            "deployDdosStandard": {
-              "value": < value from var-hubnetwork-deployDdosStandard >
-            },
-            "rgDdosName": {
-              "value": "< value from var-hubnetwork-rgDdosName >"
-            },
-            "ddosPlanName": {
-              "value": "< value from var-hubnetwork-ddosPlanName >"
-            },
-            "bastionName": {
-              "value": "< value from var-hubnetwork-bastionName >"
-            },
-            "bastionSku": {
-              "value": "< value from var-hubnetwork-bastionSku >"
-            },
-            "bastionScaleUnits": {
-              "value": < value from var-hubnetwork-bastionScaleUnits >
-            },
-            "rgPazName": {
-              "value": "< value from var-hubnetwork-rgPazName >"
-            },
-            "rgMrzName": {
-              "value": "< value from var-hubnetwork-rgMrzName >"
-            },
-            "mrzVnetName": {
-              "value": "< value from var-hubnetwork-mrzVnetName >"
-            },
-            "mrzVnetAddressPrefixRFC1918": {
-              "value": "< value from var-hubnetwork-mrzVnetAddressPrefixRFC1918 >"
-            },
-            "mrzMazSubnetName": {
-              "value": "< value from var-hubnetwork-mrzMazSubnetName >"
-            },
-            "mrzMazSubnetAddressPrefix": {
-              "value": "< value from var-hubnetwork-mrzMazSubnetAddressPrefix >"
-            },
-            "mrzInfSubnetName": {
-              "value": "< value from var-hubnetwork-mrzInfSubnetName >"
-            },
-            "mrzInfSubnetAddressPrefix": {
-              "value": "< value from var-hubnetwork-mrzInfSubnetAddressPrefix >"
-            },
-            "mrzSecSubnetName": {
-              "value": "< value from var-hubnetwork-mrzSecSubnetName >"
-            },
-            "mrzSecSubnetAddressPrefix": {
-              "value": "< value from var-hubnetwork-mrzSecSubnetAddressPrefix >"
-            },
-            "mrzLogSubnetName": {
-              "value": "< value from var-hubnetwork-mrzLogSubnetName >"
-            },
-            "mrzLogSubnetAddressPrefix": {
-              "value": "< value from var-hubnetwork-mrzLogSubnetAddressPrefix >"
-            },
-            "mrzMgmtSubnetName": {
-              "value": "< value from var-hubnetwork-mrzMgmtSubnetName >"
-            },
-            "mrzMgmtSubnetAddressPrefix": {
-              "value": "< value from var-hubnetwork-mrzMgmtSubnetAddressPrefix >"
-            },
-            "rgHubName": {
-              "value": "< value from var-hubnetwork-azfw-rgHubName >"
-            },
-            "hubVnetName": {
-              "value": "< value from var-hubnetwork-azfw-hubVnetName >"
-            },
-            "hubVnetAddressPrefixRFC1918": {
-              "value": "< value from var-hubnetwork-azfw-hubVnetAddressPrefixRFC1918 >"
-            },
-            "hubVnetAddressPrefixRFC6598": {
-              "value": "< value from var-hubnetwork-azfw-hubVnetAddressPrefixRFC6598 >"
-            },
-            "hubVnetAddressPrefixBastion": {
-              "value": "< value from var-hubnetwork-azfw-hubVnetAddressPrefixBastion >"
-            },
-            "hubPazSubnetName": {
-              "value": "< value from var-hubnetwork-azfw-hubPazSubnetName >"
-            },
-            "hubPazSubnetAddressPrefix": {
-              "value": "< value from var-hubnetwork-azfw-hubPazSubnetAddressPrefix >"
-            },
-            "hubGatewaySubnetAddressPrefix": {
-              "value": "< value from var-hubnetwork-azfw-hubGatewaySubnetPrefix >"
-            },
-            "hubAzureFirewallSubnetAddressPrefix": {
-              "value": "< value from var-hubnetwork-azfw-hubAzureFirewallSubnetAddressPrefix >"
-            },
-            "hubAzureFirewallManagementSubnetAddressPrefix": {
-              "value": "< value from var-hubnetwork-azfw-hubAzureFirewallManagementSubnetAddressPrefix >"
-            },
-            "hubBastionSubnetAddressPrefix": {
-              "value": "< value from var-hubnetwork-azfw-hubBastionSubnetAddressPrefix >"
-            },
-            "azureFirewallName": {
-              "value": "< value from var-hubnetwork-azfw-azureFirewallName >"
-            },
-            "azureFirewallZones": {
-              "value": < value from var-hubnetwork-azfw-azureFirewallZones >
-            },
-            "azureFirewallForcedTunnelingEnabled": {
-              "value": < value from var-hubnetwork-azfw-azureFirewallForcedTunnelingEnabled >
-            },
-            "azureFirewallForcedTunnelingNextHop": {
-              "value": "< value from var-hubnetwork-azfw-azureFirewallForcedTunnelingNextHop >"
+            {
+              "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+              "contentVersion": "1.0.0.0",
+              "parameters": {
+                "serviceHealthAlerts": {
+                  "value": < value from var-hubnetwork-serviceHealthAlerts >
+                },
+                "securityCenter": {
+                  "value": < value from var-hubnetwork-securityCenter >
+                },
+                "subscriptionRoleAssignments": {
+                  "value": < value from var-hubnetwork-subscriptionRoleAssignments >
+                },
+                "subscriptionBudget": {
+                  "value": < value from var-hubnetwork-subscriptionBudget >
+                },
+                "subscriptionTags": {
+                  "value": < value from var-hubnetwork-subscriptionTags >
+                },
+                "resourceTags": {
+                  "value": < value from var-hubnetwork-resourceTags >
+                },
+                "privateDnsZones": {
+                  "value": {
+                    "enabled": < value from var-hubnetwork-deployPrivateDnsZones >,
+                    "resourceGroupName": "< value from var-hubnetwork-rgPrivateDnsZonesName >"
+                  }
+                },
+                "ddosStandard": {
+                  "value": {
+                    "enabled": < value from var-hubnetwork-deployDdosStandard >,
+                    "resourceGroupName": "< value from var-hubnetwork-rgDdosName >",
+                    "planName": "< value from var-hubnetwork-ddosPlanName >"
+                  }
+                },
+                "publicAccessZone": {
+                  "value": {
+                    "enabled": true,
+                    "resourceGroupName": "< value from var-hubnetwork-rgPazName >"
+                  }
+                },
+                "managementRestrictedZone": {
+                  "value": {
+                    "enabled": true,
+                    "resourceGroupName": "< value from var-hubnetwork-rgMrzName >",
+                    "network": {
+                      "name": "< value from var-hubnetwork-mrzVnetName >",
+                      "addressPrefixes": [
+                        "< value from var-hubnetwork-mrzVnetAddressPrefixRFC1918 >"
+                      ],
+                      "subnets": [
+                        {
+                          "comments": "Management (Access Zone) Subnet",
+                          "name": "< value from var-hubnetwork-mrzMazSubnetName >",
+                          "addressPrefix": "< value from var-hubnetwork-mrzMazSubnetAddressPrefix >",
+                          "nsg": {
+                              "enabled": true
+                          },
+                          "udr": {
+                              "enabled": true
+                          }
+                        },
+                        {
+                          "comments": "Infrastructure Services (Restricted Zone) Subnet",
+                          "name": "< value from var-hubnetwork-mrzInfSubnetName >",
+                          "addressPrefix": "< value from var-hubnetwork-mrzInfSubnetAddressPrefix >",
+                          "nsg": {
+                              "enabled": true
+                          },
+                          "udr": {
+                              "enabled": true
+                          }
+                        },
+                        {
+                          "comments": "Security Services (Restricted Zone) Subnet",
+                          "name": "< value from var-hubnetwork-mrzSecSubnetName >",
+                          "addressPrefix": "< value from var-hubnetwork-mrzSecSubnetAddressPrefix >",
+                          "nsg": {
+                              "enabled": true
+                          },
+                          "udr": {
+                              "enabled": true
+                          }
+                        },
+                        {
+                          "comments": "Logging Services (Restricted Zone) Subnet",
+                          "name": "< value from var-hubnetwork-mrzLogSubnetName >",
+                          "addressPrefix": "< value from var-hubnetwork-mrzLogSubnetAddressPrefix >",
+                          "nsg": {
+                              "enabled": true
+                          },
+                          "udr": {
+                              "enabled": true
+                          }
+                        },
+                        {
+                          "comments": "Core Management Interfaces (Restricted Zone) Subnet",
+                          "name": "< value from var-hubnetwork-mrzMgmtSubnetName >",
+                          "addressPrefix": "< value from var-hubnetwork-mrzMgmtSubnetAddressPrefix >",
+                          "nsg": {
+                              "enabled": true
+                          },
+                          "udr": {
+                              "enabled": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "hub": {
+                  "value": {
+                    "resourceGroupName": "< value from var-hubnetwork-azfw-rgHubName >",
+                    "bastion": {
+                      "enabled": true,
+                      "name": "< value from var-hubnetwork-bastionName >",
+                      "sku": "< value from var-hubnetwork-bastionSku >",
+                      "scaleUnits": < value from var-hubnetwork-bastionScaleUnits >
+                    },
+                    "azureFirewall": {
+                      "name": "< value from var-hubnetwork-azfw-azureFirewallName >",
+                      "availabilityZones": < value from var-hubnetwork-azfw-azureFirewallZones >,
+                      "forcedTunnelingEnabled": < value from var-hubnetwork-azfw-azureFirewallForcedTunnelingEnabled >,
+                      "forcedTunnelingNextHop": "< value from var-hubnetwork-azfw-azureFirewallForcedTunnelingNextHop >"
+                    },
+                    "network": {
+                      "name": "< value from var-hubnetwork-azfw-hubVnetName >",
+                      "addressPrefixes": [
+                        "< value from var-hubnetwork-azfw-hubVnetAddressPrefixRFC1918 >",
+                        "< value from var-hubnetwork-azfw-hubVnetAddressPrefixRFC6598 >"
+                      ],
+                      "addressPrefixBastion": "< value from var-hubnetwork-azfw-hubVnetAddressPrefixBastion >",
+                      "subnets": {
+                        "gateway": {
+                          "comments": "Gateway Subnet used for VPN and/or Express Route connectivity",
+                          "name": "GatewaySubnet",
+                          "addressPrefix": "< value from var-hubnetwork-azfw-hubGatewaySubnetPrefix >"
+                        },
+                        "firewall": {
+                          "comments": "Azure Firewall",
+                          "name": "AzureFirewallSubnet",
+                          "addressPrefix": "< value from var-hubnetwork-azfw-hubAzureFirewallSubnetAddressPrefix >"
+                        },
+                        "firewallManagement": {
+                          "comments": "Azure Firewall Management",
+                          "name": "AzureFirewallManagementSubnet",
+                          "addressPrefix": "< value from var-hubnetwork-azfw-hubAzureFirewallManagementSubnetAddressPrefix >"
+                        },
+                        "bastion": {
+                          "comments": "Azure Bastion",
+                          "name": "AzureBastionSubnet",
+                          "addressPrefix": "< value from var-hubnetwork-azfw-hubBastionSubnetAddressPrefix >"
+                        },
+                        "publicAccess": {
+                          "comments": "Public Access Zone (Application Gateway)",
+                          "name": "< value from var-hubnetwork-azfw-hubPazSubnetName >",
+                          "addressPrefix": "< value from var-hubnetwork-azfw-hubPazSubnetAddressPrefix >"
+                        },
+                        "optional": []
+                      }
+                    }
+                  }
+                },
+                "networkWatcher": {
+                  "value": {
+                    "resourceGroupName": "NetworkWatcherRG"
+                  }
+                }
+              }
             }
-          }
-        }
         ```
 
         </details>
