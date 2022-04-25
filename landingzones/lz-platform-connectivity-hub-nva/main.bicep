@@ -195,68 +195,6 @@ param publicAccessZone object
 param managementRestrictedZone object
 
 // Hub Virtual Network
-@description('Hub Virtual Network Resource Group Name.')
-param rgHubName string //= 'pubsecPrdHubPbRsg'
-
-@description('Hub Virtual Network Name.')
-param hubVnetName string //= 'pubsecHubVnet'
-
-@description('Hub Virtual Network address space for RFC 1918.')
-param hubVnetAddressPrefixRFC1918 string //= '10.18.0.0/22'
-
-@description('Hub Virtual Network address space for RFC 6598 (CGNAT).')
-param hubVnetAddressPrefixRFC6598 string //= '100.60.0.0/16'
-
-@description('Hub Virtual Network address space for Azure Bastion (must be RFC 1918).')
-param hubVnetAddressPrefixBastion string //= '192.168.0.0/16'
-
-@description('Hub - Enternal Access Network Subnet Name.')
-param hubEanSubnetName string //= 'EanSubnet'
-
-@description('Hub - Enternal Access Network Subnet Address Prefix (based on RFC 1918).')
-param hubEanSubnetAddressPrefix string //= '10.18.0.0/27'
-
-@description('Hub - Public Subnet Name.')
-param hubPublicSubnetName string //= 'PublicSubnet
-
-@description('Hub - Public Subnet Address Prefix (based on RFC 6598).')
-param hubPublicSubnetAddressPrefix string //= '100.60.0.0/24'
-
-@description('Hub - Public Access Zone Subnet Name.')
-param hubPazSubnetName string //= 'PAZSubnet'
-
-@description('Hub - Public Access Zone Subnet Name (based on RFC 6598).')
-param hubPazSubnetAddressPrefix string //= '100.60.1.0/24'
-
-@description('Hub - Non-Production Internal Subnet Name.')
-param hubDevIntSubnetName string //= 'DevIntSubnet'
-
-@description('Hub - Non-Production Internal Subnet Address Prefix (based on RFC 1918).')
-param hubDevIntSubnetAddressPrefix string //= '10.18.0.64/27'
-
-@description('Hub - Production Internal Subnet Name.')
-param hubProdIntSubnetName string //= 'PrdIntSubnet'
-
-@description('Hub - Production Internal Subnet Address Prefix (based on RFC 1918).')
-param hubProdIntSubnetAddressPrefix string //= '10.18.0.32/27'
-
-@description('Hub - Management Resctricted Zone Subnet Name.')
-param hubMrzIntSubnetName string //= 'MrzSubnet'
-
-@description('Hub - Management Resctricted Zone Subnet Address Prefix (based on RFC 1918).')
-param hubMrzIntSubnetAddressPrefix string //= '10.18.0.96/27'
-
-@description('Hub - Firewall High Availability Subnet Name.')
-param hubHASubnetName string //= 'HASubnet'
-
-@description('Hub - Firewall High Availability Subnet Address Prefix (based on RFC 1918).')
-param hubHASubnetAddressPrefix string //= '10.18.0.128/28'
-
-@description('Hub - Virtual Network Gateway Subnet Address Prefix (based on RFC 1918).')
-param hubGatewaySubnetPrefix string //= '10.18.1.0/27'
-
-@description('Hub - Azure Bastion Address Prefix (based on RFC 1918 and must be placed in the Azure Bastion Address Space).')
-param hubBastionSubnetAddressPrefix string //= '192.168.0.0/24'
 
 // Firewall Virtual Appliances
 @description('Boolean flag to determine whether virtual machines will be deployed, either Ubuntu (for internal testing) or Fortinet (for workloads).  Default: true')
@@ -429,7 +367,7 @@ resource rgDdos 'Microsoft.Resources/resourceGroups@2020-06-01' = if (ddosStanda
 
 // Create Hub Virtual Network Resource Group
 resource rgHubVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: rgHubName
+  name: hub.resourceGroupName
   location: location
   tags: resourceTags
 }
@@ -441,7 +379,7 @@ module rgDdosDeleteLock '../../azresources/util/delete-lock.bicep' = if (ddosSta
 }
 
 module rgHubDeleteLock '../../azresources/util/delete-lock.bicep' = {
-  name: 'deploy-delete-lock-${rgHubName}'
+  name: 'deploy-delete-lock-${hub.resourceGroupName}'
   scope: rgHubVnet
 }
 
@@ -456,40 +394,35 @@ module ddosPlan '../../azresources/network/ddos-standard.bicep' = if (ddosStanda
 }
 
 // Route Tables
+var defaultRoutes = [
+  {
+    name: 'Hub-NVA-Default-Route'
+    properties: {
+      nextHopType: 'VirtualAppliance'
+      addressPrefix: '0.0.0.0/0'
+      nextHopIpAddress: fwProdILBPrdIntIP
+    }
+  }
+]
+
+var routesFromAddressPrefixes = [for addressPrefix in hub.network.addressPrefixes: {
+    name: 'Hub-NVA-${replace(replace(addressPrefix, '.', '-'), '/', '-')}'
+    properties: {
+      nextHopType: 'VirtualAppliance'
+      addressPrefix: addressPrefix
+      nextHopIpAddress: fwProdILBPrdIntIP
+    }
+}]
+
+var routes = union(defaultRoutes, routesFromAddressPrefixes)
+
 module udrPrdSpokes '../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-PrdSpokesUdr'
   scope: rgHubVnet
   params: {
     location: location
     name: 'PrdSpokesUdr'
-    routes: [
-      {
-        name: 'default'
-        properties: {
-          addressPrefix: '0.0.0.0/0'
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: fwProdILBPrdIntIP
-        }
-      }
-      // Force Routes to Hub IPs (RFC1918 range) via FW despite knowing that route via peering
-      {
-        name: 'PrdSpokesUdrHubRFC1918FWRoute'
-        properties: {
-          addressPrefix: hubVnetAddressPrefixRFC1918
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: fwProdILBPrdIntIP
-        }
-      }
-      // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
-      {
-        name: 'PrdSpokesUdrHubRFC6598FWRoute'
-        properties: {
-          addressPrefix: hubVnetAddressPrefixRFC6598
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: fwProdILBPrdIntIP
-        }
-      }
-    ]
+    routes: routes
   }
 }
 
@@ -499,34 +432,7 @@ module managementRestrictedZoneUdr '../../azresources/network/udr/udr-custom.bic
   params: {
     location: location
     name: 'MrzSpokeUdr'
-    routes: [
-      {
-        name: 'RouteToEgressFirewall'
-        properties: {
-          addressPrefix: '0.0.0.0/0'
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: fwProdILBPrdIntIP
-        }
-      }
-      // Force Routes to Hub IPs (RFC1918 range) via FW despite knowing that route via peering
-      {
-        name: 'MrzSpokeUdrHubRFC1918FWRoute'
-        properties: {
-          addressPrefix: hubVnetAddressPrefixRFC1918
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: fwProdILBPrdIntIP
-        }
-      }
-      // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
-      {
-        name: 'MrzSpokeUdrHubRFC6598FWRoute'
-        properties: {
-          addressPrefix: hubVnetAddressPrefixRFC6598
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: fwProdILBPrdIntIP
-        }
-      }
-    ]
+    routes: routes
   }
 }
 
@@ -548,42 +454,14 @@ module udrPaz '../../azresources/network/udr/udr-custom.bicep' = {
 }
 
 // Hub Virtual Network
-module hubVnet 'hub-vnet/hub-vnet.bicep' = {
-  name: 'deploy-hub-vnet-${hubVnetName}'
+module hubVnet 'hub/hub-vnet.bicep' = {
+  name: 'deploy-hub-vnet-${hub.network.name}'
   scope: rgHubVnet
   params: {
     location: location
 
-    vnetName: hubVnetName
-    vnetAddressPrefixRFC1918: hubVnetAddressPrefixRFC1918
-    vnetAddressPrefixRFC6598: hubVnetAddressPrefixRFC6598
-    vnetAddressPrefixBastion: hubVnetAddressPrefixBastion
-
-    publicSubnetName: hubPublicSubnetName
-    publicSubnetAddressPrefix: hubPublicSubnetAddressPrefix
-
-    mrzIntSubnetName: hubMrzIntSubnetName
-    mrzIntSubnetAddressPrefix: hubMrzIntSubnetAddressPrefix
-
-    prodIntSubnetName: hubProdIntSubnetName
-    prodIntSubnetAddressPrefix: hubProdIntSubnetAddressPrefix
-
-    devIntSubnetName: hubDevIntSubnetName
-    devIntSubnetAddressPrefix: hubDevIntSubnetAddressPrefix
-
-    haSubnetName: hubHASubnetName
-    haSubnetAddressPrefix: hubHASubnetAddressPrefix
-
-    pazSubnetName: hubPazSubnetName
-    pazSubnetAddressPrefix: hubPazSubnetAddressPrefix
+    hubNetwork: hub.network
     pazUdrId: udrPaz.outputs.udrId
-
-    eanSubnetName: hubEanSubnetName
-    eanSubnetAddressPrefix: hubEanSubnetAddressPrefix
-
-    gatewaySubnetAddressPrefix: hubGatewaySubnetPrefix
-
-    bastionSubnetAddressPrefix: hubBastionSubnetAddressPrefix
 
     ddosStandardPlanId: ddosStandard.enabled ? ddosPlan.outputs.ddosPlanId : ''
   }
@@ -632,7 +510,7 @@ module ProdFW1_fortigate 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useF
     nic2PrivateIP: fwProdVM1MrzIntIP
     nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
     nic3PrivateIP: fwProdVM1PrdIntIP
-    nic3SubnetId: hubVnet.outputs.PrdIntSubnetId
+    nic3SubnetId: hubVnet.outputs.ProdIntSubnetId
     nic4PrivateIP: fwProdVM1HAIP
     nic4SubnetId: hubVnet.outputs.HASubnetId
     username: fwUsername
@@ -655,7 +533,7 @@ module ProdFW1_ubuntu 'nva/ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFo
     nic2PrivateIP: fwProdVM1MrzIntIP
     nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
     nic3PrivateIP: fwProdVM1PrdIntIP
-    nic3SubnetId: hubVnet.outputs.PrdIntSubnetId
+    nic3SubnetId: hubVnet.outputs.ProdIntSubnetId
     nic4PrivateIP: fwProdVM1HAIP
     nic4SubnetId: hubVnet.outputs.HASubnetId
     username: fwUsername
@@ -678,7 +556,7 @@ module ProdFW2_fortigate 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useF
     nic2PrivateIP: fwProdVM2MrzIntIP
     nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
     nic3PrivateIP: fwProdVM2PrdIntIP
-    nic3SubnetId: hubVnet.outputs.PrdIntSubnetId
+    nic3SubnetId: hubVnet.outputs.ProdIntSubnetId
     nic4PrivateIP: fwProdVM2HAIP
     nic4SubnetId: hubVnet.outputs.HASubnetId
     username: fwUsername
@@ -701,7 +579,7 @@ module ProdFW2_ubuntu 'nva/ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFo
     nic2PrivateIP: fwProdVM2MrzIntIP
     nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
     nic3PrivateIP: fwProdVM2PrdIntIP
-    nic3SubnetId: hubVnet.outputs.PrdIntSubnetId
+    nic3SubnetId: hubVnet.outputs.ProdIntSubnetId
     nic4PrivateIP: fwProdVM2HAIP
     nic4SubnetId: hubVnet.outputs.HASubnetId
     username: fwUsername
@@ -724,7 +602,7 @@ module DevFW1 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW)
     nic2PrivateIP: fwDevVM1MrzIntIP
     nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
     nic3PrivateIP: fwDevVM1DevIntIP
-    nic3SubnetId: hubVnet.outputs.DevIntSubnetId
+    nic3SubnetId: hubVnet.outputs.NonProdIntSubnetId
     nic4PrivateIP: fwDevVM1HAIP
     nic4SubnetId: hubVnet.outputs.HASubnetId
     username: fwUsername
@@ -747,7 +625,7 @@ module DevFW2 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW)
     nic2PrivateIP: fwDevVM2MrzIntIP
     nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
     nic3PrivateIP: fwDevVM2DevIntIP
-    nic3SubnetId: hubVnet.outputs.DevIntSubnetId
+    nic3SubnetId: hubVnet.outputs.NonProdIntSubnetId
     nic4PrivateIP: fwDevVM2HAIP
     nic4SubnetId: hubVnet.outputs.HASubnetId
     username: fwUsername
@@ -756,7 +634,7 @@ module DevFW2 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW)
 }
 
 // Production traffic - Internal Load Balancer
-module ProdFWs_ILB 'hub-vnet/lb-firewalls-hub.bicep' = {
+module ProdFWs_ILB 'hub/lb-firewalls-hub.bicep' = {
   name: 'deploy-internal-loadblancer-ProdFWs_ILB'
   scope: rgHubVnet
   params: {
@@ -771,14 +649,14 @@ module ProdFWs_ILB 'hub-vnet/lb-firewalls-hub.bicep' = {
     frontendIPInt: fwProdILBPrdIntIP
     backendIP1Int: fwProdVM1PrdIntIP
     backendIP2Int: fwProdVM2PrdIntIP
-    frontendSubnetIdInt: hubVnet.outputs.PrdIntSubnetId
+    frontendSubnetIdInt: hubVnet.outputs.ProdIntSubnetId
     lbProbeTcpPort: useFortigateFW ? 8008 : 22
     configureEmptyBackendPool: !deployFirewallVMs
   }
 }
 
 // Non-Production traffic - Internal Load Balancer
-module DevFWs_ILB 'hub-vnet/lb-firewalls-hub.bicep' = {
+module DevFWs_ILB 'hub/lb-firewalls-hub.bicep' = {
   name: 'deploy-internal-loadblancer-DevFWs_ILB'
   scope: rgHubVnet
   params: {
@@ -793,7 +671,7 @@ module DevFWs_ILB 'hub-vnet/lb-firewalls-hub.bicep' = {
     frontendIPInt: fwDevILBDevIntIP
     backendIP1Int: fwDevVM1DevIntIP
     backendIP2Int: fwDevVM2DevIntIP
-    frontendSubnetIdInt: hubVnet.outputs.DevIntSubnetId
+    frontendSubnetIdInt: hubVnet.outputs.NonProdIntSubnetId
     lbProbeTcpPort: useFortigateFW ? 8008 : 22
     configureEmptyBackendPool: !deployFirewallVMs
   }
