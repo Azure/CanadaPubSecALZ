@@ -167,6 +167,7 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
           name: 'appService'
           addressPrefix: '10.2.10.0/25'
         }
+        optional: []
       }
     }
   }

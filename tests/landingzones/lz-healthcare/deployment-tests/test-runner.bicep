@@ -145,6 +145,7 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
           name: 'webapp'
           addressPrefix: '10.1.8.0/25'
         }
+        optional: []
       }
     }
   }

@@ -89,7 +89,7 @@ param aml object
 param hubNetwork object
 
 // Example (JSON)
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, appService) ')
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, appService, optional [array of optional subnets]).')
 param network object
 
 // Telemetry - Azure customer usage attribution
