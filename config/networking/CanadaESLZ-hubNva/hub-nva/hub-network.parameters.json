@@ -173,7 +173,7 @@
           "enabled": false,
           "name": "bastion",
           "sku": "Standard",
-          "scal,eUnits": 2
+          "scaleUnits": 2
         },
         "network": {
           "name": "hub-vnet",
