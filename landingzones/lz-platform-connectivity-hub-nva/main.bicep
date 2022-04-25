@@ -389,7 +389,7 @@ module bastion '../../azresources/network/bastion.bicep' = if (hub.bastion.enabl
 }
 
 // Non production traffic - NVAs
-module nonProductionNVA 'nva/nva-vm.bicep' = [for (virtualMachine, virtualMachines) in hub.nvafirewall.nonProduction.virtualMachines: {
+module nonProductionNVA 'nva/nva-vm.bicep' = [for (virtualMachine, virtualMachines) in hub.nvafirewall.nonProduction.virtualMachines: if (hub.nvafirewall.nonProduction.deployVirtualMachines) {
   name: 'deploy-nva-nonprod-${virtualMachine.name}'
   scope: rgHubVnet
   params: {
@@ -450,7 +450,7 @@ module nonProductionNVA_ILB 'hub/lb-firewalls-hub.bicep' = {
 }
 
 // Production traffic - NVAs
-module productionNVA 'nva/nva-vm.bicep' = [for (virtualMachine, virtualMachines) in hub.nvafirewall.production.virtualMachines: {
+module productionNVA 'nva/nva-vm.bicep' = [for (virtualMachine, virtualMachines) in hub.nvafirewall.production.virtualMachines: if (hub.nvafirewall.production.deployVirtualMachines) {
   name: 'deploy-nva-prod-${virtualMachine.name}'
   scope: rgHubVnet
   params: {
