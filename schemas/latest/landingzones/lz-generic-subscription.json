@@ -216,6 +216,19 @@
       ],
       "title": "Nsg"
     },
+    "Udr": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "title": "Udr"
+    },
     "Subnet": {
       "type": "object",
       "additionalProperties": false,
@@ -233,7 +246,7 @@
           "$ref": "#/definitions/Nsg"
         },
         "udr": {
-          "$ref": "#/definitions/Nsg"
+          "$ref": "#/definitions/Udr"
         },
         "delegations": {
           "$ref": "#/definitions/Delegations"
