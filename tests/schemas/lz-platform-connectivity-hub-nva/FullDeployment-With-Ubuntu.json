@@ -178,6 +178,62 @@
           "sku": "Standard",
           "scaleUnits": 2
         },
+        "network": {
+          "name": "hub-vnet",
+          "addressPrefixes": [
+            "10.18.0.0/22",
+            "100.60.0.0/16"
+          ],
+          "addressPrefixBastion": "192.168.0.0/16",
+          "subnets": {
+            "gateway": {
+              "comments": "Gateway Subnet used for VPN and/or Express Route connectivity",
+              "name": "GatewaySubnet",
+              "addressPrefix": "10.18.1.0/27"
+            },
+            "bastion": {
+              "comments": "Azure Bastion",
+              "name": "AzureBastionSubnet",
+              "addressPrefix": "192.168.0.0/24"
+            },
+            "public": {
+              "comments": "Public Subnet Name (External Facing (Internet/Ground))",
+              "name": "PublicSubnet",
+              "addressPrefix": "100.60.0.0/24"
+            },
+            "publicAccessZone": {
+              "comments": "Public Access Zone (i.e. Application Gateway)",
+              "name": "PAZSubnet",
+              "addressPrefix": "100.60.1.0/24"
+            },
+            "externalAccessNetwork": {
+              "comments": "External Access Network",
+              "name": "EanSubnet",
+              "addressPrefix": "10.18.0.0/27"
+            },
+            "nonProductionInternal": {
+              "comments": "Non-production Internal for firewall appliances (Internal Facing Non-Production Traffic)",
+              "name": "DevIntSubnet",
+              "addressPrefix": "10.18.0.64/27"
+            },
+            "productionInternal": {
+              "comments": "Production Internal for firewall appliances (Internal Facing Production Traffic)",
+              "name": "PrdIntSubnet",
+              "addressPrefix": "10.18.0.32/27"
+            },
+            "managementRestrictedZoneInternal": {
+              "comments": "Management Restricted Zone",
+              "name": "MrzSubnet",
+              "addressPrefix": "10.18.0.96/27"
+            },
+            "highAvailability": {
+              "comments": "High Availability (Firewall to Firewall heartbeat)",
+              "name": "HASubnet",
+              "addressPrefix": "10.18.0.128/28"
+            },
+            "optional": []
+          }
+        },
         "nvafirewall": {
           "image": {
             "publisher": "Canonical",
@@ -253,62 +309,6 @@
                 "availabilityZone": "2"
               }
             ]
-          }
-        },
-        "network": {
-          "name": "hub-vnet",
-          "addressPrefixes": [
-            "10.18.0.0/22",
-            "100.60.0.0/16"
-          ],
-          "addressPrefixBastion": "192.168.0.0/16",
-          "subnets": {
-            "gateway": {
-              "comments": "Gateway Subnet used for VPN and/or Express Route connectivity",
-              "name": "GatewaySubnet",
-              "addressPrefix": "10.18.1.0/27"
-            },
-            "bastion": {
-              "comments": "Azure Bastion",
-              "name": "AzureBastionSubnet",
-              "addressPrefix": "192.168.0.0/24"
-            },
-            "public": {
-              "comments": "Public Subnet Name (External Facing (Internet/Ground))",
-              "name": "PublicSubnet",
-              "addressPrefix": "100.60.0.0/24"
-            },
-            "publicAccessZone": {
-              "comments": "Public Access Zone (i.e. Application Gateway)",
-              "name": "PAZSubnet",
-              "addressPrefix": "100.60.1.0/24"
-            },
-            "externalAccessNetwork": {
-              "comments": "External Access Network",
-              "name": "EanSubnet",
-              "addressPrefix": "10.18.0.0/27"
-            },
-            "nonProductionInternal": {
-              "comments": "Non-production Internal for firewall appliances (Internal Facing Non-Production Traffic)",
-              "name": "DevIntSubnet",
-              "addressPrefix": "10.18.0.64/27"
-            },
-            "productionInternal": {
-              "comments": "Production Internal for firewall appliances (Internal Facing Production Traffic)",
-              "name": "PrdIntSubnet",
-              "addressPrefix": "10.18.0.32/27"
-            },
-            "managementRestrictedZoneInternal": {
-              "comments": "Management Restricted Zone",
-              "name": "MrzSubnet",
-              "addressPrefix": "10.18.0.96/27"
-            },
-            "highAvailability": {
-              "comments": "High Availability (Firewall to Firewall heartbeat)",
-              "name": "HASubnet",
-              "addressPrefix": "10.18.0.128/28"
-            },
-            "optional": []
           }
         }
       }
