@@ -194,113 +194,6 @@ param publicAccessZone object
 @description('Management Restricted Zone configuration.  See docs/archetypes/hubnetwork-nva.md for configuration settings.')
 param managementRestrictedZone object
 
-// Hub Virtual Network
-
-// Firewall Virtual Appliances
-@description('Boolean flag to determine whether virtual machines will be deployed, either Ubuntu (for internal testing) or Fortinet (for workloads).  Default: true')
-param deployFirewallVMs bool = true
-
-@description('Boolean flag to determine whether Fortinet firewalls will be deployed.  Default: true')
-param useFortigateFW bool = true
-
-// Firewall Virtual Appliances - For Non-production Traffic
-@description('Non-production NVA - Internal Load Balancer Name.')
-param fwDevILBName string //= 'pubsecDevFWs_ILB'
-
-@description('Non-production NVA - VM SKU.')
-param fwDevVMSku string //= 'Standard_D8s_v4' //ensure it can have 4 nics
-
-@description('Non-production NVA - VM #1 Name.')
-param fwDevVM1Name string //= 'pubsecDevFW1'
-
-@description('Non-production NVA - VM #2 Name.')
-param fwDevVM2Name string //= 'pubsecDevFW2'
-
-@description('Non-production NVA - Internal Load Balancer External Facing IP (based on RFC 6598).')
-param fwDevILBExternalFacingIP string //= '100.60.0.7'
-
-@description('Non-production NVA - VM #1 External Facing IP (based on RFC 6598).')
-param fwDevVM1ExternalFacingIP string //= '100.60.0.8'
-
-@description('Non-production NVA - VM #2 External Facing IP (based on RFC 6598).')
-param fwDevVM2ExternalFacingIP string //= '100.60.0.9'
-
-@description('Non-production NVA - VM #1 Management Restricted Zone IP (based on RFC 1918).')
-param fwDevVM1MrzIntIP string //= '10.18.0.104'
-
-@description('Non-production NVA - VM #2 Management Restricted Zone IP (based on RFC 1918).')
-param fwDevVM2MrzIntIP string //= '10.18.0.105'
-
-@description('Non-production NVA - Internal Load Balancer IP (based on RFC 1918).')
-param fwDevILBDevIntIP string //= '10.18.0.68'
-
-@description('Non-production NVA - VM #1 IP (based on RFC 1918).')
-param fwDevVM1DevIntIP string //= '10.18.0.69'
-
-@description('Non-production NVA - VM #2 IP (based on RFC 1918).')
-param fwDevVM2DevIntIP string //= '10.18.0.70'
-
-@description('Non-production NVA - VM #1 High Availability IP (based on RFC 1918).')
-param fwDevVM1HAIP string //= '10.18.0.134'
-
-@description('Non-production NVA - VM #2 High Availability IP (based on RFC 1918).')
-param fwDevVM2HAIP string //= '10.18.0.135'
-
-@description('Non-production NVA - VM #1 Availability Zone. Default: 2')
-param fwDevVM1AvailabilityZone string = '2'
-
-@description('Non-production NVA - VM #2 Availability Zone. Default: 3')
-param fwDevVM2AvailabilityZone string = '3'
-
-// Firewall Virtual Appliances - For Production Traffic
-@description('Production NVA - Internal Load Balancer Name.')
-param fwProdILBName string //= 'pubsecProdFWs_ILB'
-
-@description('Production NVA - VM SKU.')
-param fwProdVMSku string //= 'Standard_F8s_v2' //ensure it can have 4 nics
-
-@description('Production NVA - VM #1 Name.')
-param fwProdVM1Name string //= 'pubsecProdFW1'
-
-@description('Production NVA - VM #2 Name.')
-param fwProdVM2Name string //= 'pubsecProdFW2'
-
-@description('Production NVA - Internal Load Balancer External Facing IP (based on RFC 6598).')
-param fwProdILBExternalFacingIP string //= '100.60.0.4'
-
-@description('Production NVA - VM #1 External Facing IP (based on RFC 6598).')
-param fwProdVM1ExternalFacingIP string //= '100.60.0.5'
-
-@description('Production NVA - VM #2 External Facing IP (based on RFC 6598).')
-param fwProdVM2ExternalFacingIP string //= '100.60.0.6'
-
-@description('Production NVA - VM #1 Management Restricted Zone IP (based on RFC 1918).')
-param fwProdVM1MrzIntIP string //= '10.18.0.101'
-
-@description('Production NVA - VM #2 Management Restricted Zone IP (based on RFC 1918).')
-param fwProdVM2MrzIntIP string //= '10.18.0.102'
-
-@description('Production NVA - Internal Load Balancer IP (based on RFC 1918).')
-param fwProdILBPrdIntIP string //= '10.18.0.36'
-
-@description('Production NVA - VM #1 IP (based on RFC 1918).')
-param fwProdVM1PrdIntIP string //= '10.18.0.37'
-
-@description('Production NVA - VM #2 IP (based on RFC 1918).')
-param fwProdVM2PrdIntIP string //= '10.18.0.38'
-
-@description('Production NVA - VM #1 High Availability IP (based on RFC 1918).')
-param fwProdVM1HAIP string //= '10.18.0.132'
-
-@description('Production NVA - VM #2 High Availability IP (based on RFC 1918).')
-param fwProdVM2HAIP string //= '10.18.0.133'
-
-@description('Production NVA - VM #1 Availability Zone.  Default: 1')
-param fwProdVM1AvailabilityZone string = '1'
-
-@description('Production NVA - VM #2 Availability Zone.  Default: 2')
-param fwProdVM2AvailabilityZone string = '2'
-
 // Temporary VM Credentials
 @description('Temporary username for firewall virtual machines.')
 @secure()
@@ -400,7 +293,7 @@ var defaultRoutes = [
     properties: {
       nextHopType: 'VirtualAppliance'
       addressPrefix: '0.0.0.0/0'
-      nextHopIpAddress: fwProdILBPrdIntIP
+      nextHopIpAddress: hub.nvafirewall.production.internalLoadBalancer.internalIp
     }
   }
 ]
@@ -410,7 +303,7 @@ var routesFromAddressPrefixes = [for addressPrefix in hub.network.addressPrefixe
     properties: {
       nextHopType: 'VirtualAppliance'
       addressPrefix: addressPrefix
-      nextHopIpAddress: fwProdILBPrdIntIP
+      nextHopIpAddress: hub.nvafirewall.production.internalLoadBalancer.internalIp
     }
 }]
 
@@ -447,7 +340,7 @@ module udrPaz '../../azresources/network/udr/udr-custom.bicep' = {
       properties: {
         addressPrefix: addressPrefix
         nextHopType: 'VirtualAppliance'
-        nextHopIpAddress: fwProdILBExternalFacingIP
+        nextHopIpAddress: hub.nvafirewall.production.internalLoadBalancer.externalIp
       }
     }]
   }
@@ -495,185 +388,125 @@ module bastion '../../azresources/network/bastion.bicep' = if (hub.bastion.enabl
   }
 }
 
-// Production traffic - Fortinet Firewall VM
-module ProdFW1_fortigate 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
-  name: 'deploy-nva-ProdFW1_fortigate'
+// Non production traffic - NVAs
+module nonProductionNVA 'nva/nva-vm.bicep' = [for (virtualMachine, virtualMachines) in hub.nvafirewall.nonProduction.virtualMachines: {
+  name: 'deploy-nva-nonprod-${virtualMachine.name}'
   scope: rgHubVnet
   params: {
     location: location
 
-    availabilityZone: '1' //make it a parameter with a default value (in the params.json file)
-    vmName: fwProdVM1Name
-    vmSku: fwProdVMSku
-    nic1PrivateIP: fwProdVM1ExternalFacingIP
+    vmImageOffer: hub.nvaFirewall.image.offer
+    vmImagePublisher: hub.nvaFirewall.image.publisher
+    vmImageSku: hub.nvaFirewall.image.sku
+    vmImageVersion: hub.nvaFirewall.image.version
+    vmImagePlanName: hub.nvaFirewall.image.plan
+
+    vmName: virtualMachine.name
+    vmSku: virtualMachine.vmSku
+    availabilityZone: virtualMachine.availabilityZone
+
+    nic1PrivateIP: virtualMachine.externalIp
     nic1SubnetId: hubVnet.outputs.PublicSubnetId
-    nic2PrivateIP: fwProdVM1MrzIntIP
+
+    nic2PrivateIP: virtualMachine.mrzInternalIp
     nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
-    nic3PrivateIP: fwProdVM1PrdIntIP
-    nic3SubnetId: hubVnet.outputs.ProdIntSubnetId
-    nic4PrivateIP: fwProdVM1HAIP
-    nic4SubnetId: hubVnet.outputs.HASubnetId
-    username: fwUsername
-    password: fwPassword
-  }
-}
 
-// Production traffic - Ubuntu Firewall VM
-module ProdFW1_ubuntu 'nva/ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFortigateFW) {
-  name: 'deploy-nva-ProdFW1_ubuntu'
-  scope: rgHubVnet
-  params: {
-    location: location
-
-    availabilityZone: fwProdVM1AvailabilityZone //make it a parameter with a default value (in the params.json file)
-    vmName: fwProdVM1Name
-    vmSku: fwProdVMSku
-    nic1PrivateIP: fwProdVM1ExternalFacingIP
-    nic1SubnetId: hubVnet.outputs.PublicSubnetId
-    nic2PrivateIP: fwProdVM1MrzIntIP
-    nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
-    nic3PrivateIP: fwProdVM1PrdIntIP
-    nic3SubnetId: hubVnet.outputs.ProdIntSubnetId
-    nic4PrivateIP: fwProdVM1HAIP
-    nic4SubnetId: hubVnet.outputs.HASubnetId
-    username: fwUsername
-    password: fwPassword
-  }
-}
-
-// Production traffic - Fortinet Firewall VM
-module ProdFW2_fortigate 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
-  name: 'deploy-nva-ProdFW2_fortigate'
-  scope: rgHubVnet
-  params: {
-    location: location
-
-    availabilityZone: fwProdVM2AvailabilityZone
-    vmName: fwProdVM2Name
-    vmSku: fwProdVMSku
-    nic1PrivateIP: fwProdVM2ExternalFacingIP
-    nic1SubnetId: hubVnet.outputs.PublicSubnetId
-    nic2PrivateIP: fwProdVM2MrzIntIP
-    nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
-    nic3PrivateIP: fwProdVM2PrdIntIP
-    nic3SubnetId: hubVnet.outputs.ProdIntSubnetId
-    nic4PrivateIP: fwProdVM2HAIP
-    nic4SubnetId: hubVnet.outputs.HASubnetId
-    username: fwUsername
-    password: fwPassword
-  }
-}
-
-// Production traffic - Ubuntu Firewall VM
-module ProdFW2_ubuntu 'nva/ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFortigateFW) {
-  name: 'deploy-nva-ProdFW2_ubuntu'
-  scope: rgHubVnet
-  params: {
-    location: location
-
-    availabilityZone: '2'
-    vmName: fwProdVM2Name
-    vmSku: fwProdVMSku
-    nic1PrivateIP: fwProdVM2ExternalFacingIP
-    nic1SubnetId: hubVnet.outputs.PublicSubnetId
-    nic2PrivateIP: fwProdVM2MrzIntIP
-    nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
-    nic3PrivateIP: fwProdVM2PrdIntIP
-    nic3SubnetId: hubVnet.outputs.ProdIntSubnetId
-    nic4PrivateIP: fwProdVM2HAIP
-    nic4SubnetId: hubVnet.outputs.HASubnetId
-    username: fwUsername
-    password: fwPassword
-  }
-}
-
-// Non-Production traffic - Fortinet Firewall VM
-module DevFW1 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
-  name: 'deploy-nva-DevFW1_fortigate'
-  scope: rgHubVnet
-  params: {
-    location: location
-
-    availabilityZone: fwDevVM1AvailabilityZone
-    vmName: fwDevVM1Name
-    vmSku: fwDevVMSku
-    nic1PrivateIP: fwDevVM1ExternalFacingIP
-    nic1SubnetId: hubVnet.outputs.PublicSubnetId
-    nic2PrivateIP: fwDevVM1MrzIntIP
-    nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
-    nic3PrivateIP: fwDevVM1DevIntIP
+    nic3PrivateIP: virtualMachine.internalIp
     nic3SubnetId: hubVnet.outputs.NonProdIntSubnetId
-    nic4PrivateIP: fwDevVM1HAIP
+
+    nic4PrivateIP: virtualMachine.highAvailabilityIp
     nic4SubnetId: hubVnet.outputs.HASubnetId
+
     username: fwUsername
     password: fwPassword
   }
-}
-
-// Non-Production traffic - Fortinet Firewall VM
-module DevFW2 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW) {
-  name: 'deploy-nva-DevFW2_fortigate'
-  scope: rgHubVnet
-  params: {
-    location: location
-
-    availabilityZone: fwDevVM2AvailabilityZone
-    vmName: fwDevVM2Name
-    vmSku: fwDevVMSku
-    nic1PrivateIP: fwDevVM2ExternalFacingIP
-    nic1SubnetId: hubVnet.outputs.PublicSubnetId
-    nic2PrivateIP: fwDevVM2MrzIntIP
-    nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
-    nic3PrivateIP: fwDevVM2DevIntIP
-    nic3SubnetId: hubVnet.outputs.NonProdIntSubnetId
-    nic4PrivateIP: fwDevVM2HAIP
-    nic4SubnetId: hubVnet.outputs.HASubnetId
-    username: fwUsername
-    password: fwPassword
-  }
-}
-
-// Production traffic - Internal Load Balancer
-module ProdFWs_ILB 'hub/lb-firewalls-hub.bicep' = {
-  name: 'deploy-internal-loadblancer-ProdFWs_ILB'
-  scope: rgHubVnet
-  params: {
-    location: location
-
-    name: fwProdILBName
-    backendVnetId: hubVnet.outputs.vnetId
-    frontendIPExt: fwProdILBExternalFacingIP
-    backendIP1Ext: fwProdVM1ExternalFacingIP
-    backendIP2Ext: fwProdVM2ExternalFacingIP
-    frontendSubnetIdExt: hubVnet.outputs.PublicSubnetId
-    frontendIPInt: fwProdILBPrdIntIP
-    backendIP1Int: fwProdVM1PrdIntIP
-    backendIP2Int: fwProdVM2PrdIntIP
-    frontendSubnetIdInt: hubVnet.outputs.ProdIntSubnetId
-    lbProbeTcpPort: useFortigateFW ? 8008 : 22
-    configureEmptyBackendPool: !deployFirewallVMs
-  }
-}
+}]
 
 // Non-Production traffic - Internal Load Balancer
-module DevFWs_ILB 'hub/lb-firewalls-hub.bicep' = {
-  name: 'deploy-internal-loadblancer-DevFWs_ILB'
+module nonProductionNVA_ILB 'hub/lb-firewalls-hub.bicep' = {
+  name: 'deploy-internal-loadblancer-nonprod-ilb'
   scope: rgHubVnet
   params: {
     location: location
 
-    name: fwDevILBName
+    name: hub.nvafirewall.nonProduction.internalLoadBalancer.name
+
     backendVnetId: hubVnet.outputs.vnetId
-    frontendIPExt: fwDevILBExternalFacingIP
-    backendIP1Ext: fwDevVM1ExternalFacingIP
-    backendIP2Ext: fwDevVM2ExternalFacingIP
-    frontendSubnetIdExt: hubVnet.outputs.PublicSubnetId
-    frontendIPInt: fwDevILBDevIntIP
-    backendIP1Int: fwDevVM1DevIntIP
-    backendIP2Int: fwDevVM2DevIntIP
+
     frontendSubnetIdInt: hubVnet.outputs.NonProdIntSubnetId
-    lbProbeTcpPort: useFortigateFW ? 8008 : 22
-    configureEmptyBackendPool: !deployFirewallVMs
+    frontendSubnetIdExt: hubVnet.outputs.PublicSubnetId
+
+    frontendIPInt: hub.nvafirewall.nonProduction.internalLoadBalancer.internalIp
+    frontendIPExt: hub.nvafirewall.nonProduction.internalLoadBalancer.externalIp
+   
+    lbProbeTcpName: hub.nvafirewall.nonProduction.internalLoadBalancer.tcpProbe.name
+    lbProbeTcpPort: hub.nvafirewall.nonProduction.internalLoadBalancer.tcpProbe.port
+    lbProbeTcpIntervalInSeconds: hub.nvafirewall.nonProduction.internalLoadBalancer.tcpProbe.intervalInSeconds
+    lbProbeTcpNumberOfProbes: hub.nvafirewall.nonProduction.internalLoadBalancer.tcpProbe.numberOfProbes
+
+    configureEmptyBackendPool: hub.nvafirewall.type == 'none' || length(hub.nvafirewall.nonProduction.virtualMachines) == 0
+    backendPoolVirtualMachines: hub.nvafirewall.nonProduction.virtualMachines
+  }
+}
+
+// Production traffic - NVAs
+module productionNVA 'nva/nva-vm.bicep' = [for (virtualMachine, virtualMachines) in hub.nvafirewall.production.virtualMachines: {
+  name: 'deploy-nva-prod-${virtualMachine.name}'
+  scope: rgHubVnet
+  params: {
+    location: location
+
+    vmImageOffer: hub.nvaFirewall.image.offer
+    vmImagePublisher: hub.nvaFirewall.image.publisher
+    vmImageSku: hub.nvaFirewall.image.sku
+    vmImageVersion: hub.nvaFirewall.image.version
+    vmImagePlanName: hub.nvaFirewall.image.plan
+
+    vmName: virtualMachine.name
+    vmSku: virtualMachine.vmSku
+    availabilityZone: virtualMachine.availabilityZone
+
+    nic1PrivateIP: virtualMachine.externalIp
+    nic1SubnetId: hubVnet.outputs.PublicSubnetId
+
+    nic2PrivateIP: virtualMachine.mrzInternalIp
+    nic2SubnetId: hubVnet.outputs.MrzIntSubnetId
+
+    nic3PrivateIP: virtualMachine.internalIp
+    nic3SubnetId: hubVnet.outputs.ProdIntSubnetId
+
+    nic4PrivateIP: virtualMachine.highAvailabilityIp
+    nic4SubnetId: hubVnet.outputs.HASubnetId
+
+    username: fwUsername
+    password: fwPassword
+  }
+}]
+
+// Production traffic - Internal Load Balancer
+module productionNVA_ILB 'hub/lb-firewalls-hub.bicep' = {
+  name: 'deploy-internal-loadblancer-prod-ilb'
+  scope: rgHubVnet
+  params: {
+    location: location
+
+    name: hub.nvafirewall.production.internalLoadBalancer.name
+
+    backendVnetId: hubVnet.outputs.vnetId
+
+    frontendSubnetIdInt: hubVnet.outputs.ProdIntSubnetId
+    frontendSubnetIdExt: hubVnet.outputs.PublicSubnetId
+
+    frontendIPInt: hub.nvafirewall.production.internalLoadBalancer.internalIp
+    frontendIPExt: hub.nvafirewall.production.internalLoadBalancer.externalIp
+   
+    lbProbeTcpName: hub.nvafirewall.production.internalLoadBalancer.tcpProbe.name
+    lbProbeTcpPort: hub.nvafirewall.production.internalLoadBalancer.tcpProbe.port
+    lbProbeTcpIntervalInSeconds: hub.nvafirewall.production.internalLoadBalancer.tcpProbe.intervalInSeconds
+    lbProbeTcpNumberOfProbes: hub.nvafirewall.production.internalLoadBalancer.tcpProbe.numberOfProbes
+
+    configureEmptyBackendPool: hub.nvafirewall.type == 'none' || length(hub.nvafirewall.production.virtualMachines) == 0
+    backendPoolVirtualMachines: hub.nvafirewall.production.virtualMachines
   }
 }
 
