@@ -2,9 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
-    },
     "serviceHealthAlerts": {
       "value": {
         "resourceGroupName": "pubsec-service-health",
@@ -183,18 +180,18 @@
         },
         "nvafirewall": {
           "image": {
-            "publisher": "fortinet",
-            "offer": "fortinet_fortigate-vm_v5",
-            "sku": "fortinet_fg-vm",
-            "version": "6.4.5",
-            "plan": "fortinet_fg-vm"
+            "publisher": "Canonical",
+            "offer": "UbuntuServer",
+            "sku": "18.04-LTS",
+            "version": "latest",
+            "plan": ""
           },
           "nonProduction": {
             "internalLoadBalancer": {
               "name": "pubsecDevFWILB",
               "tcpProbe": {
                 "name": "lbprobe",
-                "port": 8008,
+                "port": 22,
                 "intervalInSeconds": 5,
                 "numberOfProbes": 2 
               },
@@ -228,7 +225,7 @@
               "name": "pubsecProdFWILB",
               "tcpProbe": {
                 "name": "lbprobe",
-                "port": 8008,
+                "port": 22,
                 "intervalInSeconds": 5,
                 "numberOfProbes": 2 
               },

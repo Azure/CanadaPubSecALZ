@@ -79,7 +79,7 @@
     },
     "privateDnsZones": {
       "value": {
-        "enabled": false,
+        "enabled": true,
         "resourceGroupName": "pubsec-dns-rg"
       }
     },
@@ -92,13 +92,13 @@
     },
     "publicAccessZone": {
       "value": {
-        "enabled": false,
+        "enabled": true,
         "resourceGroupName": "pubsec-public-access-zone-rg"
       }
     },
     "managementRestrictedZone": {
       "value": {
-        "enabled": false,
+        "enabled": true,
         "resourceGroupName": "pubsec-management-restricted-zone-rg",
         "network": {
           "name": "management-restricted-vnet",
@@ -167,32 +167,32 @@
       "value": {
         "resourceGroupName": "pubsec-hub-networking-rg",
         "bastion": {
-          "enabled": false,
+          "enabled": true,
           "name": "bastion",
           "sku": "Standard",
           "scaleUnits": 2
         },
         "nvafirewall": {
-          "type": "ubuntu",
           "image": {
-            "publisher": "Canonical",
-            "offer": "UbuntuServer",
-            "sku": "18.04-LTS",
-            "version": "latest",
-            "plan": ""
+            "publisher": "fortinet",
+            "offer": "fortinet_fortigate-vm_v5",
+            "sku": "fortinet_fg-vm",
+            "version": "6.4.5",
+            "plan": "fortinet_fg-vm"
           },
           "nonProduction": {
             "internalLoadBalancer": {
               "name": "pubsecDevFWILB",
               "tcpProbe": {
                 "name": "lbprobe",
-                "port": 22,
+                "port": 8008,
                 "intervalInSeconds": 5,
                 "numberOfProbes": 2 
               },
               "internalIp": "10.18.0.68",
               "externalIp": "100.60.0.7"
             },
+            "deployVirtualMachines": false,
             "virtualMachines": [
               {
                 "name": "pubsecDevFW1",
@@ -219,13 +219,14 @@
               "name": "pubsecProdFWILB",
               "tcpProbe": {
                 "name": "lbprobe",
-                "port": 22,
+                "port": 8008,
                 "intervalInSeconds": 5,
                 "numberOfProbes": 2 
               },
               "internalIp": "10.18.0.36",
               "externalIp": "100.60.0.4"
             },
+            "deployVirtualMachines": false,
             "virtualMachines": [
               {
                 "name": "pubsecProdFW1",

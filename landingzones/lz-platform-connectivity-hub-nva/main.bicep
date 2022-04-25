@@ -444,7 +444,7 @@ module nonProductionNVA_ILB 'hub/lb-firewalls-hub.bicep' = {
     lbProbeTcpIntervalInSeconds: hub.nvafirewall.nonProduction.internalLoadBalancer.tcpProbe.intervalInSeconds
     lbProbeTcpNumberOfProbes: hub.nvafirewall.nonProduction.internalLoadBalancer.tcpProbe.numberOfProbes
 
-    configureEmptyBackendPool: hub.nvafirewall.type == 'none' || length(hub.nvafirewall.nonProduction.virtualMachines) == 0
+    configureEmptyBackendPool: hub.nvafirewall.nonProduction.deployVirtualMachines || length(hub.nvafirewall.nonProduction.virtualMachines) == 0
     backendPoolVirtualMachines: hub.nvafirewall.nonProduction.virtualMachines
   }
 }
@@ -505,7 +505,7 @@ module productionNVA_ILB 'hub/lb-firewalls-hub.bicep' = {
     lbProbeTcpIntervalInSeconds: hub.nvafirewall.production.internalLoadBalancer.tcpProbe.intervalInSeconds
     lbProbeTcpNumberOfProbes: hub.nvafirewall.production.internalLoadBalancer.tcpProbe.numberOfProbes
 
-    configureEmptyBackendPool: hub.nvafirewall.type == 'none' || length(hub.nvafirewall.production.virtualMachines) == 0
+    configureEmptyBackendPool: hub.nvafirewall.production.deployVirtualMachines || length(hub.nvafirewall.production.virtualMachines) == 0
     backendPoolVirtualMachines: hub.nvafirewall.production.virtualMachines
   }
 }
