@@ -234,7 +234,7 @@
             "optional": []
           }
         },
-        "nvafirewall": {
+        "nvaFirewall": {
           "image": {
             "publisher": "Canonical",
             "offer": "UbuntuServer",

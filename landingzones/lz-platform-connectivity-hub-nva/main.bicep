@@ -293,7 +293,7 @@ var defaultRoutes = [
     properties: {
       nextHopType: 'VirtualAppliance'
       addressPrefix: '0.0.0.0/0'
-      nextHopIpAddress: hub.nvafirewall.production.internalLoadBalancer.internalIp
+      nextHopIpAddress: hub.nvaFirewall.production.internalLoadBalancer.internalIp
     }
   }
 ]
@@ -303,7 +303,7 @@ var routesFromAddressPrefixes = [for addressPrefix in hub.network.addressPrefixe
     properties: {
       nextHopType: 'VirtualAppliance'
       addressPrefix: addressPrefix
-      nextHopIpAddress: hub.nvafirewall.production.internalLoadBalancer.internalIp
+      nextHopIpAddress: hub.nvaFirewall.production.internalLoadBalancer.internalIp
     }
 }]
 
@@ -340,7 +340,7 @@ module udrPaz '../../azresources/network/udr/udr-custom.bicep' = {
       properties: {
         addressPrefix: addressPrefix
         nextHopType: 'VirtualAppliance'
-        nextHopIpAddress: hub.nvafirewall.production.internalLoadBalancer.externalIp
+        nextHopIpAddress: hub.nvaFirewall.production.internalLoadBalancer.externalIp
       }
     }]
   }
@@ -400,7 +400,7 @@ module bastion '../../azresources/network/bastion.bicep' = if (hub.bastion.enabl
 }
 
 // Non production traffic - NVAs
-module nonProductionNVA 'nva/nva-vm.bicep' = [for (virtualMachine, virtualMachines) in hub.nvafirewall.nonProduction.virtualMachines: if (hub.nvafirewall.nonProduction.deployVirtualMachines) {
+module nonProductionNVA 'nva/nva-vm.bicep' = [for (virtualMachine, virtualMachines) in hub.nvaFirewall.nonProduction.virtualMachines: if (hub.nvaFirewall.nonProduction.deployVirtualMachines) {
   name: 'deploy-nva-nonprod-${virtualMachine.name}'
   scope: rgHubVnet
   params: {
@@ -440,28 +440,28 @@ module nonProductionNVA_ILB 'hub/lb-firewalls-hub.bicep' = {
   params: {
     location: location
 
-    name: hub.nvafirewall.nonProduction.internalLoadBalancer.name
+    name: hub.nvaFirewall.nonProduction.internalLoadBalancer.name
 
     backendVnetId: hubVnet.outputs.vnetId
 
     frontendSubnetIdInt: hubVnet.outputs.NonProdIntSubnetId
     frontendSubnetIdExt: hubVnet.outputs.PublicSubnetId
 
-    frontendIPInt: hub.nvafirewall.nonProduction.internalLoadBalancer.internalIp
-    frontendIPExt: hub.nvafirewall.nonProduction.internalLoadBalancer.externalIp
+    frontendIPInt: hub.nvaFirewall.nonProduction.internalLoadBalancer.internalIp
+    frontendIPExt: hub.nvaFirewall.nonProduction.internalLoadBalancer.externalIp
    
-    lbProbeTcpName: hub.nvafirewall.nonProduction.internalLoadBalancer.tcpProbe.name
-    lbProbeTcpPort: hub.nvafirewall.nonProduction.internalLoadBalancer.tcpProbe.port
-    lbProbeTcpIntervalInSeconds: hub.nvafirewall.nonProduction.internalLoadBalancer.tcpProbe.intervalInSeconds
-    lbProbeTcpNumberOfProbes: hub.nvafirewall.nonProduction.internalLoadBalancer.tcpProbe.numberOfProbes
+    lbProbeTcpName: hub.nvaFirewall.nonProduction.internalLoadBalancer.tcpProbe.name
+    lbProbeTcpPort: hub.nvaFirewall.nonProduction.internalLoadBalancer.tcpProbe.port
+    lbProbeTcpIntervalInSeconds: hub.nvaFirewall.nonProduction.internalLoadBalancer.tcpProbe.intervalInSeconds
+    lbProbeTcpNumberOfProbes: hub.nvaFirewall.nonProduction.internalLoadBalancer.tcpProbe.numberOfProbes
 
-    configureEmptyBackendPool: !hub.nvafirewall.nonProduction.deployVirtualMachines || length(hub.nvafirewall.nonProduction.virtualMachines) == 0
-    backendPoolVirtualMachines: hub.nvafirewall.nonProduction.virtualMachines
+    configureEmptyBackendPool: !hub.nvaFirewall.nonProduction.deployVirtualMachines || length(hub.nvaFirewall.nonProduction.virtualMachines) == 0
+    backendPoolVirtualMachines: hub.nvaFirewall.nonProduction.virtualMachines
   }
 }
 
 // Production traffic - NVAs
-module productionNVA 'nva/nva-vm.bicep' = [for (virtualMachine, virtualMachines) in hub.nvafirewall.production.virtualMachines: if (hub.nvafirewall.production.deployVirtualMachines) {
+module productionNVA 'nva/nva-vm.bicep' = [for (virtualMachine, virtualMachines) in hub.nvaFirewall.production.virtualMachines: if (hub.nvaFirewall.production.deployVirtualMachines) {
   name: 'deploy-nva-prod-${virtualMachine.name}'
   scope: rgHubVnet
   params: {
@@ -501,23 +501,23 @@ module productionNVA_ILB 'hub/lb-firewalls-hub.bicep' = {
   params: {
     location: location
 
-    name: hub.nvafirewall.production.internalLoadBalancer.name
+    name: hub.nvaFirewall.production.internalLoadBalancer.name
 
     backendVnetId: hubVnet.outputs.vnetId
 
     frontendSubnetIdInt: hubVnet.outputs.ProdIntSubnetId
     frontendSubnetIdExt: hubVnet.outputs.PublicSubnetId
 
-    frontendIPInt: hub.nvafirewall.production.internalLoadBalancer.internalIp
-    frontendIPExt: hub.nvafirewall.production.internalLoadBalancer.externalIp
+    frontendIPInt: hub.nvaFirewall.production.internalLoadBalancer.internalIp
+    frontendIPExt: hub.nvaFirewall.production.internalLoadBalancer.externalIp
    
-    lbProbeTcpName: hub.nvafirewall.production.internalLoadBalancer.tcpProbe.name
-    lbProbeTcpPort: hub.nvafirewall.production.internalLoadBalancer.tcpProbe.port
-    lbProbeTcpIntervalInSeconds: hub.nvafirewall.production.internalLoadBalancer.tcpProbe.intervalInSeconds
-    lbProbeTcpNumberOfProbes: hub.nvafirewall.production.internalLoadBalancer.tcpProbe.numberOfProbes
+    lbProbeTcpName: hub.nvaFirewall.production.internalLoadBalancer.tcpProbe.name
+    lbProbeTcpPort: hub.nvaFirewall.production.internalLoadBalancer.tcpProbe.port
+    lbProbeTcpIntervalInSeconds: hub.nvaFirewall.production.internalLoadBalancer.tcpProbe.intervalInSeconds
+    lbProbeTcpNumberOfProbes: hub.nvaFirewall.production.internalLoadBalancer.tcpProbe.numberOfProbes
 
-    configureEmptyBackendPool: !hub.nvafirewall.production.deployVirtualMachines || length(hub.nvafirewall.production.virtualMachines) == 0
-    backendPoolVirtualMachines: hub.nvafirewall.production.virtualMachines
+    configureEmptyBackendPool: !hub.nvaFirewall.production.deployVirtualMachines || length(hub.nvaFirewall.production.virtualMachines) == 0
+    backendPoolVirtualMachines: hub.nvaFirewall.production.virtualMachines
   }
 }
 

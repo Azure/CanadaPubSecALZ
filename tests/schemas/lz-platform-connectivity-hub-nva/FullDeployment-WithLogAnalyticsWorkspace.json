@@ -237,7 +237,7 @@
             "optional": []
           }
         },
-        "nvafirewall": {
+        "nvaFirewall": {
           "image": {
             "publisher": "fortinet",
             "offer": "fortinet_fortigate-vm_v5",
