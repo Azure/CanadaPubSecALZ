@@ -231,13 +231,13 @@
               },
               {
                 "comments": "Optional 2 Subnet",
-                "name": "Optional1Subnet",
+                "name": "Optional2Subnet",
                 "addressPrefix": "10.18.4.0/26",
                 "nsg": {
-                    "enabled": true
+                    "enabled": false
                 },
                 "udr": {
-                    "enabled": true
+                    "enabled": false
                 },
                 "delegations": {
                   "serviceName": "Microsoft.NetApp/volumes"
