@@ -167,7 +167,7 @@
       "value": {
         "resourceGroupName": "pubsec-hub-networking-rg",
         "bastion": {
-          "enabled": false,
+          "enabled": true,
           "name": "bastion",
           "sku": "Standard",
           "scaleUnits": 2
