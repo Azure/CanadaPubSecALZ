@@ -24,7 +24,7 @@ param hubVnetName string
 @description('Hub Virtual Network Resource Id')
 param hubVnetId string
 
-@description('Management Restricted Zone configuration.  See docs/archetypes/hubnetwork-azfw.md for configuration settings.')
+@description('Management Restricted Zone configuration.  See docs/archetypes/hubnetwork-nva.md for configuration settings.')
 param managementRestrictedZone object
 
 @description('Route Table Resource Id for subnets in Management Restricted Zone')

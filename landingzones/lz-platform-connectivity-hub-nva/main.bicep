@@ -346,6 +346,16 @@ module udrPaz '../../azresources/network/udr/udr-custom.bicep' = {
   }
 }
 
+module udrHub '../../azresources/network/udr/udr-custom.bicep' = {
+  name: 'deploy-route-table-HubUdr'
+  scope: rgHubVnet
+  params: {
+    location: location
+    name: 'HubUdr'
+    routes: routes
+  }
+}
+
 // Hub Virtual Network
 module hubVnet 'hub/hub-vnet.bicep' = {
   name: 'deploy-hub-vnet-${hub.network.name}'
@@ -354,6 +364,7 @@ module hubVnet 'hub/hub-vnet.bicep' = {
     location: location
 
     hubNetwork: hub.network
+    hubUdrId: udrHub.outputs.udrId
     pazUdrId: udrPaz.outputs.udrId
 
     ddosStandardPlanId: ddosStandard.enabled ? ddosPlan.outputs.ddosPlanId : ''
