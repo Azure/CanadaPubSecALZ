@@ -85,7 +85,7 @@
     },
     "ddosStandard": {
       "value": {
-        "enabled": false,
+        "enabled": true,
         "resourceGroupName": "pubsec-ddos-rg",
         "planName": "ddos-plan"
       }
@@ -228,7 +228,7 @@
             "optional": []
           }
         },
-        "nvafirewall": {
+        "nvaFirewall": {
           "image": {
             "publisher": "fortinet",
             "offer": "fortinet_fortigate-vm_v5",
@@ -248,7 +248,7 @@
               "internalIp": "10.18.0.68",
               "externalIp": "100.60.0.7"
             },
-            "deployVirtualMachines": false,
+            "deployVirtualMachines": true,
             "virtualMachines": [
               {
                 "name": "pubsecDevFW1",
@@ -282,7 +282,7 @@
               "internalIp": "10.18.0.36",
               "externalIp": "100.60.0.4"
             },
-            "deployVirtualMachines": false,
+            "deployVirtualMachines": true,
             "virtualMachines": [
               {
                 "name": "pubsecProdFW1",
