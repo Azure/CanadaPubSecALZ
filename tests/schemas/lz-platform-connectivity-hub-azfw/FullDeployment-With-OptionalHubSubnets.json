@@ -2,9 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
-    },
     "serviceHealthAlerts": {
       "value": {
         "resourceGroupName": "pubsec-service-health",
@@ -221,6 +218,31 @@
               "addressPrefix": "100.60.1.0/24"
             },
             "optional": [
+              {
+                "comments": "Optional 1 Subnet",
+                "name": "Optional1Subnet",
+                "addressPrefix": "10.18.3.0/26",
+                "nsg": {
+                    "enabled": true
+                },
+                "udr": {
+                    "enabled": true
+                }
+              },
+              {
+                "comments": "Optional 2 Subnet",
+                "name": "Optional1Subnet",
+                "addressPrefix": "10.18.4.0/26",
+                "nsg": {
+                    "enabled": true
+                },
+                "udr": {
+                    "enabled": true
+                },
+                "delegations": {
+                  "serviceName": "Microsoft.NetApp/volumes"
+                }
+              }
             ]
           }
         }
