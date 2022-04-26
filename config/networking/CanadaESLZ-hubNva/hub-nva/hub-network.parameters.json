@@ -92,13 +92,13 @@
     },
     "publicAccessZone": {
       "value": {
-        "enabled": false,
+        "enabled": true,
         "resourceGroupName": "pubsec-public-access-zone-rg"
       }
     },
     "managementRestrictedZone": {
       "value": {
-        "enabled": false,
+        "enabled": true,
         "resourceGroupName": "pubsec-management-restricted-zone-rg",
         "network": {
           "name": "management-restricted-vnet",
@@ -225,7 +225,34 @@
               "name": "HASubnet",
               "addressPrefix": "10.18.0.128/28"
             },
-            "optional": []
+            "optional": [
+              {
+                "comments": "Optional 1 Subnet",
+                "name": "Optional1Subnet",
+                "addressPrefix": "10.18.2.0/24",
+                "nsg": {
+                    "enabled": true
+                },
+                "udr": {
+                    "enabled": true
+                }
+              },
+              {
+                "comments": "Optional 2 Subnet",
+                "name": "Optional2Subnet",
+                "addressPrefix": "10.18.3.0/24",
+                "nsg": {
+                    "enabled": false
+                },
+                "udr": {
+                    "enabled": false
+                },
+                "delegations": {
+                  "serviceName": "Microsoft.NetApp/volumes"
+                }
+              }
+
+            ]
           }
         },
         "nvaFirewall": {
