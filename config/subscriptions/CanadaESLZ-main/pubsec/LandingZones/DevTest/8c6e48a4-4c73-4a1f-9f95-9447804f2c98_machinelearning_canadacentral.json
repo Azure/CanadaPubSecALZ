@@ -143,26 +143,6 @@
           "10.6.0.0/16"
         ],
         "subnets": {
-          "oz": {
-            "comments": "App Management Zone (OZ)",
-            "name": "oz",
-            "addressPrefix": "10.6.1.0/25"
-          },
-          "paz": {
-            "comments": "Presentation Zone (PAZ)",
-            "name": "paz",
-            "addressPrefix": "10.6.2.0/25"
-          },
-          "rz": {
-            "comments": "Application Zone (RZ)",
-            "name": "rz",
-            "addressPrefix": "10.6.3.0/25"
-          },
-          "hrz": {
-            "comments": "Data Zone (HRZ)",
-            "name": "hrz",
-            "addressPrefix": "10.6.4.0/25"
-          },
           "sqlmi": {
             "comments": "SQL Managed Instances Delegated Subnet",
             "name": "sqlmi",
@@ -192,7 +172,34 @@
             "comments": "App Service Subnet",
             "name": "appService",
             "addressPrefix": "10.6.10.0/25"
-          }
+          },
+          "optional": [
+            {
+              "comments": "Optional Subnet 1",
+              "name": "virtualMachines",
+              "addressPrefix": "10.6.11.0/25",
+              "nsg": {
+                "enabled": true
+              },
+              "udr": {
+                "enabled": true
+              }
+            },
+            {
+              "comments": "Optional Subnet 2 with delegation for NetApp Volumes",
+              "name": "NetappVolumes",
+              "addressPrefix": "10.6.12.0/25",
+              "nsg": {
+                "enabled": false
+              },
+              "udr": {
+                "enabled": false
+              },
+              "delegations": {
+                  "serviceName": "Microsoft.NetApp/volumes"
+              }
+            }
+          ]
         }
       }
     }

@@ -11,7 +11,15 @@
 * [Required Routes](#required-routes)
 * [Azure Firewall Rules](#azure-firewall-rules)
 * [Log Analytics Integration](#log-analytics-integration)
-* [Delete Locks](#delete-locks)
+* [Azure Deployment](#azure-deployment)
+  * [Schema Definition](#schema-definition)
+  * [Delete Locks](#delete-locks)
+  * Deployment Scenarios
+    * [Azure Firewall Policy](#deployment-scenarios-for-azure-firewall-policy)
+    * [Hub Networking with Azure Firewall](#deployment-scenarios-for-hub-networking-with-azure-firewall)
+  * Example Deployment Parameters
+    * [Azure Firewall Policy](#example-deployment-parameters-for-azure-firewall-policy)
+    * [Hub Networking with Azure Firewall](#example-deployment-parameters-for-hub-networking-with-azure-firewall)
 
 ## Overview
 
@@ -45,7 +53,7 @@ Network design will require 3 IP blocks:
 * [RFC 1918][rfc1918] for Azure Bastion.  Example:  `192.168.0.0/16`
 * [RFC 6598][rfc1918] for department to department traffic through GCnet. Example:  `100.60.0.0/16`
 
-> This document will reference the example IP addresses above to illustrate network flow and configuration. 
+> This document will reference the example IP addresses above to illustrate network flow and configuration.
 
 **Virtual Network Address Space**
 ![Hub Virtual Network Address Space](../media/architecture/hubnetwork-azfw/hubvnet-address-space.jpg)
@@ -63,7 +71,7 @@ Network design will require 3 IP blocks:
 
 ## Management Restricted Zone Virtual Network
 
-* Management Access Zone (OZ) - to host any privileged access workstations (PAW), with Management Public IPs forwarded via the hub's firewall. 
+* Management Access Zone (OZ) - to host any privileged access workstations (PAW), with Management Public IPs forwarded via the hub's firewall.
 * Management (OZ) – hosting the management servers (domain controllers).
 * Infrastructure (OZ) – hosting other common infrastructure, like file shares.
 * Security Management (OZ) – hosting security, proxies and patching servers.
@@ -75,26 +83,28 @@ Network design will require 3 IP blocks:
 
 ## Shared Public Access Zone subnet in the Hub
 
-To simplify management and compliance, all public-facing web servers, reverse proxies and application delivery controllers will be hosted in this subnet, as a sort of DMZ. 
+To simplify management and compliance, all public-facing web servers, reverse proxies and application delivery controllers will be hosted in this subnet, as a sort of DMZ.
 
 Application Gateway can have either public or private frontends (also with [RFC 6598][rfc6598] space) and it requires a full subnet for it's instances.
 
 The Backend URL should map to a VIP and Port mapping in the firewall's External network. In the future, Backend URLs could be directly pointed to the Frontend subnets in the spoke. The firewall performs DNAT and sends to the webserver, which will answer to the source IP (Application Gateway's internal IP), which means the webserver may need a UDR to force traffic destined to Application Gateway to re-traverse the firewall (next-hop), which is considered asymmetric routing ([other example topologies](https://docs.microsoft.com/azure/architecture/example-scenario/gateway/firewall-application-gateway#application-gateway-before-firewall)).
 
 ## User Defined Routes
+
 All traffic to be sent to the Hub's Azure Firewall VIP.
 
 Azure supports connecting to PaaS services using [RFC 1918][rfc1918] private IPs, avoiding all traffic from the internet and only allowing connections from designated private endpoints as a special kind of NICs in the subnet of choice. Private DNS resolution must be implemented so the PaaS service URLs properly translate to the individual private IP of the private endpoint.
 
 ## Network Security Groups
+
 Below is a list of requirements for the NSGs in each subnet:
 
 * Hub Virtual Network
 
   * PazSubnet – must follow [Application Gateway's guidelines][nsgAppGatewayV2]
-    *	TCP ports 65200-65535 for the v2 SKU with the destination subnet as Any and source as GatewayManager service tag
-    *	Defaults (Allow [AzureLoadBalancer][nsgAzureLoadBalancer])
-  *	AzureBastionSubnet - See [documentation][nsgAzureBastion]
+    * TCP ports 65200-65535 for the v2 SKU with the destination subnet as Any and source as GatewayManager service tag
+    * Defaults (Allow [AzureLoadBalancer][nsgAzureLoadBalancer])
+  * AzureBastionSubnet - See [documentation][nsgAzureBastion]
 
 ## Subnets and IP Ranges
 
@@ -104,7 +114,7 @@ We'll use as few IPs as possible for the Core, MRZ and PAZ virtual networks, and
 
 We also use a [RFC 6598][rfc6598] range for external networking, which makes this design compatible with SCED requirements for future hybrid. connectivity.
 
-To leverage Azure Bastion as a shared service for all spoke virtual networks, we use a third IP range (outside of the [RFC 1918][rfc1918] and [RFC 6598][rfc6598] ranges). 
+To leverage Azure Bastion as a shared service for all spoke virtual networks, we use a third IP range (outside of the [RFC 1918][rfc1918] and [RFC 6598][rfc6598] ranges).
 
 ### Core network (Firewall and future VPN/ExpressRoute Gateway)
 
@@ -114,7 +124,7 @@ To leverage Azure Bastion as a shared service for all spoke virtual networks, we
 **Subnets with Network Security Group & User Defined Routes**
 ![Hub Virtual Network Subnets](../media/architecture/hubnetwork-azfw/hubvnet-subnets.jpg)
 
-| Hub Virtual Network - 10.18.0.0/22, 100.60.0.0/24, 192.168.0.0/16	| Function | IP block |
+| Hub Virtual Network - 10.18.0.0/22, 100.60.0.0/24, 192.168.0.0/16 | Function | IP block |
 | --- | --- | --- |
 | PAZSubnet | Shared Application Gateways | 100.60.1.0/24 |
 | AzureFirewallSubnet | Data plane traffic.  When forced tunneling is off, it is also used for management traffic. | 100.60.1.0/24 |
@@ -130,7 +140,7 @@ To leverage Azure Bastion as a shared service for all spoke virtual networks, we
 **Subnets with Network Security Group & User Defined Routes**
 ![Hub Virtual Network Subnets](../media/architecture/hubnetwork-azfw/mrzvnet-subnets.jpg)
 
-| Hub Virtual Network - 10.18.4.0/22	| Function | IP block |
+| Hub Virtual Network - 10.18.4.0/22 | Function | IP block |
 | --- | --- | --- |
 | MazSubnet | Management (Access Zone) | 10.18.4.0/25 |
 | InfSubnet | Infrastructure Services (Restricted Zone)| 10.18.4.128/25 |
@@ -140,7 +150,7 @@ To leverage Azure Bastion as a shared service for all spoke virtual networks, we
 
 ### Example Spoke:  Generic Subscription Archetype
 
-| Spoke Virtual Network - 10.18.16.0/21	| Function | IP block |
+| Spoke Virtual Network - 10.18.16.0/21 | Function | IP block |
 | --- | --- | --- |
 | oz-subnet | Internal Foundational Elements (OZ) | /25 |
 | paz-subnet | Presentation Zone (PAZ) | /25 |
@@ -218,7 +228,29 @@ AzureDiagnostics
 [nsgAzureBastion]: https://docs.microsoft.com/azure/bastion/bastion-nsg#apply
 [nsgAppGatewayV2]: https://docs.microsoft.com/azure/application-gateway/configuration-infrastructure#network-security-groups
 
-## Delete Locks
+## Azure Deployment
+
+### Schema Definition
+
+Reference implementation uses parameter files with `object` parameters to consolidate parameters based on their context.  The schemas types are:
+
+* Schema (version: `latest`)
+
+  * [Hub Network deployment parameters definition](../../schemas/latest/landingzones/lz-platform-connectivity-hub-azfw.json)
+
+  * [Azure Firewall Policy parameters definition](../../schemas/latest/landingzones/lz-platform-connectivity-hub-azfw-policy.json)
+
+  * Common types
+    * [Location](../../schemas/latest/landingzones/types/location.json)
+    * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
+    * [Microsoft Defender for Cloud](../../schemas/latest/landingzones/types/securityCenter.json)
+    * [Subscription Role Assignments](../../schemas/latest/landingzones/types/subscriptionRoleAssignments.json)
+    * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
+    * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
+    * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
+    * [Log Analytics Workspace](../../schemas/latest/landingzones/types/logAnalyticsWorkspaceId.json)
+
+### Delete Locks
 
 As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
 
@@ -228,3 +260,329 @@ By default, this archetype deploys `CanNotDelete` lock to prevent accidental del
 * Management Restricted Zone resource group
 * Public Access Zone resource group
 * DDoS resource group (when enabled)
+
+### Deployment Scenarios for Azure Firewall Policy
+
+> Sample deployment scenarios are based on the latest JSON parameters file schema definition.  If you have an older version of this repository, please use the examples from your repository.
+
+| Scenario | Example JSON Parameters | Notes |
+|:-------- |:----------------------- |:----- |
+| Full Deployment | [tests/schemas/lz-platform-connectivity-hub-azfw-policy/FullDeployment.json](../../tests/schemas/lz-platform-connectivity-hub-azfw-policy/FullDeployment.json) | - |
+
+### Deployment Scenarios for Hub Networking with Azure Firewall
+
+> Sample deployment scenarios are based on the latest JSON parameters file schema definition.  If you have an older version of this repository, please use the examples from your repository.
+
+| Scenario | Example JSON Parameters | Notes |
+|:-------- |:----------------------- |:----- |
+| Full Deployment | [tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment.json](../../tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment.json) | - |
+| Full Deployment with Azure Firewall Policy  | [tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-WithAzureFirewallPolicy.json](../../tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-WithAzureFirewallPolicy.json) | `parameters.azureFirewallExistingPolicyId.value` is configured.  When it's not defined, this setting is added by Azure DevOps pipeline during deployment. |
+| Full Deployment with Log Analytics Workspace  | [tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-WithLogAnalyticsWorkspace.json](../../tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-WithLogAnalyticsWorkspace.json) | `parameters.logAnalyticsWorkspaceResourceId.value` is configured.  When it's not defined, this setting is added by Azure DevOps pipeline during deployment. |
+| Deployment without subscription budget | [tests/schemas/lz-platform-connectivity-hub-azfw/BudgetIsFalse.json](../../tests/schemas/lz-platform-connectivity-hub-azfw/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
+| Deployment with optional hub subnets | [tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-With-OptionalHubSubnets.json](../../tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-With-OptionalHubSubnets.json) | `parameters.hub.value.network.subnets.optional` array is set. |
+| Deployment without Management Restricted Zone | [tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-Without-ManagementRestrictedZone.json](../../tests/schemas/lz-platform-connectivity-hub-azfw/FullDeployment-Without-ManagementRestrictedZone.json) | `parameters.managementRestrictedZone.value.enabled` is set to `false` and `parameters.managementRestrictedZone.value.network.subnets` array is empty. |
+
+### Example Deployment Parameters for Azure Firewall Policy
+
+This example configures:
+
+1. Resource Group with Tags
+2. Azure Firewall Policy
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceTags": {
+      "value": {
+        "ClientOrganization": "client-organization-tag",
+        "CostCenter": "cost-center-tag",
+        "DataSensitivity": "data-sensitivity-tag",
+        "ProjectContact": "project-contact-tag",
+        "ProjectName": "project-name-tag",
+        "TechnicalContact": "technical-contact-tag"
+      }
+    },
+    "resourceGroupName": {
+      "value": "pubsec-azure-firewall-policy-rg"
+    },
+    "policyName": {
+      "value": "pubsecAzureFirewallPolicy"
+    }
+  }
+}
+```
+
+### Example Deployment Parameters for Hub Networking with Azure Firewall
+
+This example configures:
+
+1. Service Health Alerts
+2. Microsoft Defender for Cloud
+3. Subscription Role Assignments using built-in and custom roles
+4. Subscription Budget with $1000
+5. Subscription Tags
+6. Resource Tags (aligned to the default tags defined in [Policies](../../policy/custom/definitions/policyset/Tags.parameters.json))
+7. Log Analytics Workspace integration through Azure Defender for Cloud
+8. Hub Network with Azure Firewall and 2 optional subnets in Hub Virtual Network.
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serviceHealthAlerts": {
+      "value": {
+        "resourceGroupName": "pubsec-service-health",
+        "incidentTypes": [
+          "Incident",
+          "Security"
+        ],
+        "regions": [
+          "Global",
+          "Canada East",
+          "Canada Central"
+        ],
+        "receivers": {
+          "app": [
+            "alzcanadapubsec@microsoft.com"
+          ],
+          "email": [
+            "alzcanadapubsec@microsoft.com"
+          ],
+          "sms": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "5555555555"
+            }
+          ],
+          "voice": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "5555555555"
+            }
+          ]
+        },
+        "actionGroupName": "ALZ action group",
+        "actionGroupShortName": "alz-alert",
+        "alertRuleName": "ALZ alert rule",
+        "alertRuleDescription": "Alert rule for Azure Landing Zone"
+      }
+    },
+    "securityCenter": {
+      "value": {
+        "email": "alzcanadapubsec@microsoft.com",
+        "phone": "5555555555"
+      }
+    },
+    "subscriptionRoleAssignments": {
+      "value": [
+        {
+          "comments": "Built-in Contributor Role",
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+          "securityGroupObjectIds": [
+            "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+          ]
+        }
+      ]
+    },
+    "subscriptionBudget": {
+      "value": {
+        "createBudget": true,
+        "name": "MonthlySubscriptionBudget",
+        "amount": 1000,
+        "timeGrain": "Monthly",
+        "contactEmails": [
+          "alzcanadapubsec@microsoft.com"
+        ]
+      }
+    },
+    "subscriptionTags": {
+      "value": {
+        "ISSO": "isso-tbd"
+      }
+    },
+    "resourceTags": {
+      "value": {
+        "ClientOrganization": "client-organization-tag",
+        "CostCenter": "cost-center-tag",
+        "DataSensitivity": "data-sensitivity-tag",
+        "ProjectContact": "project-contact-tag",
+        "ProjectName": "project-name-tag",
+        "TechnicalContact": "technical-contact-tag"
+      }
+    },
+    "privateDnsZones": {
+      "value": {
+        "enabled": true,
+        "resourceGroupName": "pubsec-dns-rg"
+      }
+    },
+    "ddosStandard": {
+      "value": {
+        "enabled": false,
+        "resourceGroupName": "pubsec-ddos-rg",
+        "planName": "ddos-plan"
+      }
+    },
+    "publicAccessZone": {
+      "value": {
+        "enabled": true,
+        "resourceGroupName": "pubsec-public-access-zone-rg"
+      }
+    },
+    "managementRestrictedZone": {
+      "value": {
+        "enabled": true,
+        "resourceGroupName": "pubsec-management-restricted-zone-rg",
+        "network": {
+          "name": "management-restricted-vnet",
+          "addressPrefixes": ["10.18.4.0/22"],
+          "subnets": [
+            {
+              "comments": "Management (Access Zone) Subnet",
+              "name": "MazSubnet",
+              "addressPrefix": "10.18.4.0/25",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Infrastructure Services (Restricted Zone) Subnet",
+              "name": "InfSubnet",
+              "addressPrefix": "10.18.4.128/25",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Security Services (Restricted Zone) Subnet",
+              "name": "SecSubnet",
+              "addressPrefix": "10.18.5.0/26",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Logging Services (Restricted Zone) Subnet",
+              "name": "LogSubnet",
+              "addressPrefix": "10.18.5.64/26",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Core Management Interfaces (Restricted Zone) Subnet",
+              "name": "MgmtSubnet",
+              "addressPrefix": "10.18.5.128/26",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    "hub": {
+      "value": {
+        "resourceGroupName": "pubsec-hub-networking-rg",
+        "bastion": {
+          "enabled": true,
+          "name": "bastion",
+          "sku": "Standard",
+          "scaleUnits": 2
+        },
+        "azureFirewall": {
+          "name": "pubsecAzureFirewall",
+          "availabilityZones": ["1", "2", "3"],
+          "forcedTunnelingEnabled": false,
+          "forcedTunnelingNextHop": "10.17.1.4"
+        },
+        "network": {
+          "name": "hub-vnet",
+          "addressPrefixes": [
+            "10.18.0.0/22",
+            "100.60.0.0/16"
+          ],
+          "addressPrefixBastion": "192.168.0.0/16",
+          "subnets": {
+            "gateway": {
+              "comments": "Gateway Subnet used for VPN and/or Express Route connectivity",
+              "name": "GatewaySubnet",
+              "addressPrefix": "10.18.0.0/27"
+            },
+            "firewall": {
+              "comments": "Azure Firewall",
+              "name": "AzureFirewallSubnet",
+              "addressPrefix": "10.18.1.0/24"
+            },
+            "firewallManagement": {
+              "comments": "Azure Firewall Management",
+              "name": "AzureFirewallManagementSubnet",
+              "addressPrefix": "10.18.2.0/26"
+            },
+            "bastion": {
+              "comments": "Azure Bastion",
+              "name": "AzureBastionSubnet",
+              "addressPrefix": "192.168.0.0/24"
+            },
+            "publicAccess": {
+              "comments": "Public Access Zone (Application Gateway)",
+              "name": "PAZSubnet",
+              "addressPrefix": "100.60.1.0/24"
+            },
+            "optional": [
+              {
+                "comments": "Optional 1 Subnet",
+                "name": "Optional1Subnet",
+                "addressPrefix": "10.18.3.0/26",
+                "nsg": {
+                    "enabled": true
+                },
+                "udr": {
+                    "enabled": true
+                }
+              },
+              {
+                "comments": "Optional 2 Subnet",
+                "name": "Optional1Subnet",
+                "addressPrefix": "10.18.4.0/26",
+                "nsg": {
+                    "enabled": true
+                },
+                "udr": {
+                    "enabled": true
+                },
+                "delegations": {
+                  "serviceName": "Microsoft.NetApp/volumes"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "networkWatcher": {
+      "value": {
+        "resourceGroupName": "NetworkWatcherRG"
+      }
+    }
+  }
+}
+```

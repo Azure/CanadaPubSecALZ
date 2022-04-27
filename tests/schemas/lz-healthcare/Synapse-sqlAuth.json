@@ -34,9 +34,9 @@
                         }
                     ]
                 },
-                "actionGroupName": "Sub1 ALZ action group",
-                "actionGroupShortName": "sub1-alert",
-                "alertRuleName": "Sub1 ALZ alert rule",
+                "actionGroupName": "Sub2 ALZ action group",
+                "actionGroupShortName": "sub2-alert",
+                "alertRuleName": "Sub2 ALZ alert rule",
                 "alertRuleDescription": "Alert rule for Azure Landing Zone"
             }
         },
@@ -66,7 +66,13 @@
         },
         "subscriptionBudget": {
             "value": {
-                "createBudget": false
+                "createBudget": true,
+                "name": "MonthlySubscriptionBudget",
+                "amount": 1000,
+                "timeGrain": "Monthly",
+                "contactEmails": [
+                    "alzcanadapubsec@microsoft.com"
+                ]
             }
         },
         "subscriptionTags": {
@@ -86,21 +92,41 @@
         },
         "resourceGroups": {
             "value": {
-                "automation": "rgAutomation",
-                "networking": "rgVnet",
+                "automation": "healthAutomation",
+                "compute": "healthCompute",
+                "monitor": "healthMonitor",
+                "networking": "healthNetwork",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecoveryVault"
+                "security": "healthSecurity",
+                "storage": "healthStorage"
+            }
+        },
+        "useCMK": {
+            "value": true
+        },
+        "keyVault": {
+            "value": {
+                "secretExpiryInDays": 3650
             }
         },
         "automation": {
             "value": {
-                "name": "automation"
+                "name": "healthautomation"
             }
         },
-        "backupRecoveryVault":{
+        "sqldb": {
             "value": {
-                "enabled":true,
-                "name":"bkupvault"
+                "enabled": true,
+                "aadAuthenticationOnly": true,
+                "aadLoginName": "DBA Group",
+                "aadLoginObjectID": "4e4ea47c-ee21-4add-ad2f-a75d0d8014e0",
+                "aadLoginType": "Group"
+            }
+        },
+        "synapse": {
+            "value": {
+                "aadAuthenticationOnly": false,
+                "sqlAuthenticationUsername":"synaseAdminUser"
             }
         },
         "hubNetwork": {
@@ -108,65 +134,43 @@
                 "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
                 "rfc1918IPRange": "10.18.0.0/22",
                 "rfc6598IPRange": "100.60.0.0/16",
-                "egressVirtualApplianceIp": "10.18.1.4"
+                "egressVirtualApplianceIp": "10.18.1.4",
+                "privateDnsManagedByHub": true,
+                "privateDnsManagedByHubSubscriptionId": "ed7f4eed-9010-4227-b115-2a5e37728f27",
+                "privateDnsManagedByHubResourceGroupName": "pubsec-dns-rg"
             }
         },
         "network": {
             "value": {
-                "deployVnet": true,
                 "peerToHubVirtualNetwork": true,
                 "useRemoteGateway": false,
-                "name": "vnet",
+                "name": "healthvnet",
                 "dnsServers": [
                     "10.18.1.4"
                 ],
                 "addressPrefixes": [
-                    "10.2.0.0/16"
+                    "10.5.0.0/16"
                 ],
                 "subnets": {
-                    "oz": {
-                        "comments": "App Management Zone (OZ)",
-                        "name": "oz",
-                        "addressPrefix": "10.2.1.0/25",
-                        "nsg": {
-                            "enabled": true
-                        },
-                        "udr": {
-                            "enabled": true
-                        }
+                    "databricksPublic": {
+                        "comments": "Databricks Public Delegated Subnet",
+                        "name": "databrickspublic",
+                        "addressPrefix": "10.5.5.0/25"
                     },
-                    "paz": {
-                        "comments": "Presentation Zone (PAZ)",
-                        "name": "paz",
-                        "addressPrefix": "10.2.2.0/25",
-                        "nsg": {
-                            "enabled": true
-                        },
-                        "udr": {
-                            "enabled": true
-                        }
+                    "databricksPrivate": {
+                        "comments": "Databricks Private Delegated Subnet",
+                        "name": "databricksprivate",
+                        "addressPrefix": "10.5.6.0/25"
                     },
-                    "rz": {
-                        "comments": "Application Zone (RZ)",
-                        "name": "rz",
-                        "addressPrefix": "10.2.3.0/25",
-                        "nsg": {
-                            "enabled": true
-                        },
-                        "udr": {
-                            "enabled": true
-                        }
+                    "privateEndpoints": {
+                        "comments": "Private Endpoints Subnet",
+                        "name": "privateendpoints",
+                        "addressPrefix": "10.5.7.0/25"
                     },
-                    "hrz": {
-                        "comments": "Data Zone (HRZ)",
-                        "name": "hrz",
-                        "addressPrefix": "10.2.4.0/25",
-                        "nsg": {
-                            "enabled": true
-                        },
-                        "udr": {
-                            "enabled": true
-                        }
+                    "web": {
+                        "comments": "Azure Web App Delegated Subnet",
+                        "name": "webapp",
+                        "addressPrefix": "10.5.8.0/25"
                     },
                     "optional": []
                 }

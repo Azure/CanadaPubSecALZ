@@ -184,35 +184,10 @@
       "title": "NetworkValue"
     },
     "Subnets": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "oz": {
-          "$ref": "#/definitions/Subnet"
-        },
-        "paz": {
-          "$ref": "#/definitions/Subnet"
-        },
-        "rz": {
-          "$ref": "#/definitions/Subnet"
-        },
-        "hrz": {
-          "$ref": "#/definitions/Subnet"
-        },
-        "optional": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Subnet"
-          }
-        }
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Subnet"
       },
-      "required": [
-        "oz",
-        "paz",
-        "rz",
-        "hrz",
-        "optional"
-      ],
       "title": "Subnets"
     },
     "Delegations": {
@@ -241,6 +216,19 @@
       ],
       "title": "Nsg"
     },
+    "Udr": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "title": "Udr"
+    },
     "Subnet": {
       "type": "object",
       "additionalProperties": false,
@@ -258,7 +246,7 @@
           "$ref": "#/definitions/Nsg"
         },
         "udr": {
-          "$ref": "#/definitions/Nsg"
+          "$ref": "#/definitions/Udr"
         },
         "delegations": {
           "$ref": "#/definitions/Delegations"

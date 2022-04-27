@@ -101,7 +101,7 @@
                 "automation": "rgAutomation092021W3",
                 "networking": "rgVnet092021W3",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecoveryVault"
+                "backupRecoveryVault": "rgRecoveryVault"
             }
         },
         "automation": {
@@ -109,10 +109,10 @@
                 "name": "automation"
             }
         },
-        "backupRecoveryVault":{
+        "backupRecoveryVault": {
             "value": {
-                "enabled":true,
-                "name":"bkupvault"
+                "enabled": true,
+                "name": "bkupvault"
             }
         },
         "hubNetwork": {
@@ -135,8 +135,8 @@
                 "addressPrefixes": [
                     "10.2.0.0/16"
                 ],
-                "subnets": {
-                    "oz": {
+                "subnets": [
+                    {
                         "comments": "App Management Zone (OZ)",
                         "name": "oz",
                         "addressPrefix": "10.2.1.0/25",
@@ -147,7 +147,7 @@
                             "enabled": true
                         }
                     },
-                    "paz": {
+                    {
                         "comments": "Presentation Zone (PAZ)",
                         "name": "paz",
                         "addressPrefix": "10.2.2.0/25",
@@ -158,7 +158,7 @@
                             "enabled": true
                         }
                     },
-                    "rz": {
+                    {
                         "comments": "Application Zone (RZ)",
                         "name": "rz",
                         "addressPrefix": "10.2.3.0/25",
@@ -169,7 +169,7 @@
                             "enabled": true
                         }
                     },
-                    "hrz": {
+                    {
                         "comments": "Data Zone (HRZ)",
                         "name": "hrz",
                         "addressPrefix": "10.2.4.0/25",
@@ -180,23 +180,21 @@
                             "enabled": true
                         }
                     },
-                    "optional": [
-                        {
-                            "comments": "App Service",
-                            "name": "appservice",
-                            "addressPrefix": "10.2.5.0/25",
-                            "nsg": {
-                                "enabled": false
-                            },
-                            "udr": {
-                                "enabled": false
-                            },
-                            "delegations": {
-                                "serviceName": "Microsoft.Web/serverFarms"
-                            }
+                    {
+                        "comments": "App Service",
+                        "name": "appservice",
+                        "addressPrefix": "10.2.5.0/25",
+                        "nsg": {
+                            "enabled": false
+                        },
+                        "udr": {
+                            "enabled": false
+                        },
+                        "delegations": {
+                            "serviceName": "Microsoft.Web/serverFarms"
                         }
-                    ]
-                }
+                    }
+                ]
             }
         }
     }

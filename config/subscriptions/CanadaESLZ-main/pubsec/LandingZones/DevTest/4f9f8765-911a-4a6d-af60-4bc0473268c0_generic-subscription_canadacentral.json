@@ -105,10 +105,10 @@
                 "addressPrefixes": [
                     "10.2.0.0/16"
                 ],
-                "subnets": {
-                    "oz": {
+                "subnets": [
+                    {
                         "comments": "App Management Zone (OZ)",
-                        "name": "oz",
+                        "name": "appManagement",
                         "addressPrefix": "10.2.1.0/25",
                         "nsg": {
                             "enabled": true
@@ -117,9 +117,9 @@
                             "enabled": true
                         }
                     },
-                    "paz": {
+                    {
                         "comments": "Presentation Zone (PAZ)",
-                        "name": "paz",
+                        "name": "web",
                         "addressPrefix": "10.2.2.0/25",
                         "nsg": {
                             "enabled": true
@@ -128,9 +128,9 @@
                             "enabled": true
                         }
                     },
-                    "rz": {
+                    {
                         "comments": "Application Zone (RZ)",
-                        "name": "rz",
+                        "name": "app",
                         "addressPrefix": "10.2.3.0/25",
                         "nsg": {
                             "enabled": true
@@ -139,9 +139,9 @@
                             "enabled": true
                         }
                     },
-                    "hrz": {
+                    {
                         "comments": "Data Zone (HRZ)",
-                        "name": "hrz",
+                        "name": "data",
                         "addressPrefix": "10.2.4.0/25",
                         "nsg": {
                             "enabled": true
@@ -150,23 +150,21 @@
                             "enabled": true
                         }
                     },
-                    "optional": [
-                        {
-                            "comments": "App Service",
-                            "name": "appservice",
-                            "addressPrefix": "10.2.5.0/25",
-                            "nsg": {
-                                "enabled": false
-                            },
-                            "udr": {
-                                "enabled": false
-                            },
-                            "delegations": {
-                                "serviceName": "Microsoft.Web/serverFarms"
-                            }
+                    {
+                        "comments": "App Service",
+                        "name": "appservice",
+                        "addressPrefix": "10.2.5.0/25",
+                        "nsg": {
+                            "enabled": false
+                        },
+                        "udr": {
+                            "enabled": false
+                        },
+                        "delegations": {
+                            "serviceName": "Microsoft.Web/serverFarms"
                         }
-                    ]
-                }
+                    }
+                ]
             }
         }
     }
