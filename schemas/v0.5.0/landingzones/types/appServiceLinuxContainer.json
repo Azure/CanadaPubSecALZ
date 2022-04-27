@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "definitions": {
+    "APPSERVICELINUXCONTAINER": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "enum": [
+                    true
+                  ]
+                },
+                "skuName": {
+                  "type": "string"
+                },
+                "skuTier": {
+                  "type": "string"
+                },
+                "enablePrivateEndpoint": {
+                  "type": "boolean",
+                  "enum": [
+                    true,
+                    false
+                  ]
+                }
+              },
+              "required": [
+                "enabled",
+                "skuName",
+                "skuTier",
+                "enablePrivateEndpoint"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "enum": [
+                    false
+                  ]
+                }
+              },
+              "required": [
+                "enabled"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "App Service Linux Container"
+    }
+  }
+}
