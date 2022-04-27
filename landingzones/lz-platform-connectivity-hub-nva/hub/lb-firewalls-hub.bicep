@@ -21,18 +21,15 @@ param backendVnetId string
 @description('Boolean flag to determine whether to create an empty backend pool.')
 param configureEmptyBackendPool bool
 
+@description('Array of virtual machines for the backend pool.')
+param backendPoolVirtualMachines array
+
 // external
 @description('External Facing - Frontend Subnet Resource Id.')
 param frontendSubnetIdExt string
 
 @description('External Facing - Frontend IP.')
 param frontendIPExt string
-
-@description('External Facing - Backend IP #1.')
-param backendIP1Ext string
-
-@description('External Facing - Backend IP #2.')
-param backendIP2Ext string
 
 // internal
 @description('Internal Facing - Frontend Subnet Resource Id.')
@@ -41,15 +38,19 @@ param frontendSubnetIdInt string
 @description('Internal Facing - Frontend IP.')
 param frontendIPInt string
 
-@description('Internal Facing - Backend IP #1.')
-param backendIP1Int string
-
-@description('Internal Facing - Backend IP #2.')
-param backendIP2Int string
-
 // probe
-@description('Load Balancer Probe Tcp Port.')
+@description('Load Balancer TCP Probe - Name.')
+param lbProbeTcpName string 
+
+@description('Load Balancer TCP Probe - Port.')
 param lbProbeTcpPort int 
+
+@description('Load Balancer TCP Probe - Interval in seconds.')
+param lbProbeTcpIntervalInSeconds int
+
+@description('Load Balancer TCP Probe - Number of probes')
+param lbProbeTcpNumberOfProbes int
+
 
 resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
   name: name
@@ -149,12 +150,12 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
     ]
     probes: [
       {
-        name: 'lbprobe'
+        name: lbProbeTcpName
         properties: {
           protocol: 'Tcp'
           port: lbProbeTcpPort
-          intervalInSeconds: 5
-          numberOfProbes: 2
+          intervalInSeconds: lbProbeTcpIntervalInSeconds
+          numberOfProbes: lbProbeTcpNumberOfProbes
         }
       }
     ]
@@ -162,55 +163,37 @@ resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
 }
 
 // BackendAddressPool
-resource ILBBackendExt 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
-  name: '${ILB.name}/${name}-Backend-ext'
+var backendPoolExternalInterfaces = [for (virtualMachine, index) in backendPoolVirtualMachines: {
+  name: '${ILB.name}-ext${index}'
   properties: {
-    loadBalancerBackendAddresses: configureEmptyBackendPool ? null : [
-      {
-        name: '${ILB.name}-ext1'
-        properties: {
-          ipAddress: backendIP1Ext
-          virtualNetwork: {
-            id: backendVnetId
-          }
-        }
-      }
-      {
-        name: '${ILB.name}-ext2'
-        properties: {
-          ipAddress: backendIP2Ext
-          virtualNetwork: {
-            id: backendVnetId
-          }
-        }
-      }
-    ]
+    ipAddress: virtualMachine.externalIp
+    virtualNetwork: {
+      id: backendVnetId
+    }
+  }
+}]
+
+var backendPoolInternalInterfaces = [for (virtualMachine, index) in backendPoolVirtualMachines: {
+  name: '${ILB.name}-int${index}'
+  properties: {
+    ipAddress: virtualMachine.internalIp
+    virtualNetwork: {
+      id: backendVnetId
+    }
+  }
+}]
+
+resource ILBBackendExt 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
+  name: '${ILB.name}/${ILB.name}-Backend-ext'
+  properties: {
+    loadBalancerBackendAddresses: configureEmptyBackendPool ? null : backendPoolExternalInterfaces
   }
 }
 
 resource ILBBackendInt 'Microsoft.Network/loadBalancers/backendAddressPools@2020-11-01' = {
-  name: '${ILB.name}/${name}-Backend-int'
+  name: '${ILB.name}/${ILB.name}-Backend-int'
   properties: {
-    loadBalancerBackendAddresses: configureEmptyBackendPool ? null : [
-      {
-        name: '${ILB.name}-int1'
-        properties: {
-          ipAddress: backendIP1Int
-          virtualNetwork: {
-            id: backendVnetId
-          }
-        }
-      }
-      {
-        name: '${ILB.name}-int2'
-        properties: {
-          ipAddress: backendIP2Int
-          virtualNetwork: {
-            id: backendVnetId
-          }
-        }
-      }
-    ]
+    loadBalancerBackendAddresses: configureEmptyBackendPool ? null : backendPoolInternalInterfaces
   }
 }
 

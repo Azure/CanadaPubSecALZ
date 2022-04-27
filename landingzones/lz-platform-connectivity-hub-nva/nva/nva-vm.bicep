@@ -7,14 +7,14 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
+@description('Location for the deployment')
 param location string = resourceGroup().location
 
 // VM
-@description('Virtual Machine Name.')
+@description('Virtual Machine Name')
 param vmName string
 
-@description('Virtual Machine SKU.')
+@description('Virtual Machine SKU')
 param vmSku string
 
 @description('Virtual Machine Availability Zone')
@@ -44,24 +44,21 @@ param nic4PrivateIP string
 param nic4SubnetId string
 
 
-//fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm:6.4.5 //BYOL - works with MSDN free subs
-//fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm-payg_20190624:6.4.5 //PAYG - needs credit card
-
 // VM Image
-@description('Fortigate Firewall - Publisher.  Default: fortinet')
-param vmImagePublisher string = 'fortinet'
+@description('Fortigate Firewall - Publisher')
+param vmImagePublisher string
 
-@description('Fortigate Firewall - Image Offer.  Default: fortinet_fortigate')
-param vmImageOffer string = 'fortinet_fortigate-vm_v5'
+@description('Fortigate Firewall - Image Offer')
+param vmImageOffer string
 
-@description('Fortigate Firewall - Plan.  Default: fortinet_fg-vm')
-param vmImagePlanName string = 'fortinet_fg-vm'
+@description('Fortigate Firewall - Plan')
+param vmImagePlanName string
 
-@description('Fortigate Firewall - SKU.  Default: fortinet_fg-vm')
-param vmImageSku string = 'fortinet_fg-vm'
+@description('Fortigate Firewall - SKU')
+param vmImageSku string
 
-@description('Fortigate Firewall - Image Version.  Default: 6.4.5')
-param vmImageVersion string = '6.4.5' 
+@description('Fortigate Firewall - Image Version')
+param vmImageVersion string
 
 @description('Temporary username for firewall virtual machine.')
 @secure()
@@ -184,11 +181,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   zones: [
     availabilityZone
   ]
-  plan: { 
+  plan: (vmImagePlanName != '') ? { 
      name: vmImagePlanName
      product: vmImageOffer
      publisher: vmImagePublisher
-   }
+   } : null
   properties: {
     hardwareProfile: {
       vmSize: vmSku

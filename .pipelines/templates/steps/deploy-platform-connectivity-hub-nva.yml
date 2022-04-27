@@ -99,7 +99,7 @@ steps:
     workingDirectory: '${{ parameters.workingDir }}/lz-platform-connectivity-hub-nva'
 
 - task: AzureCLI@2
-  displayName: Azure Policy - Enable Private DNS Zone Policies (if deployPrivateDnsZones=true in config)
+  displayName: Azure Policy - Enable Private DNS Zone Policies (if privateDnsZones.enabled=true in config)
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
@@ -107,8 +107,8 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      DEPLOY_PRIVATE_DNS_ZONES=`jq -r .parameters.deployPrivateDnsZones.value ${{ parameters.networkingConfigurationPath }}`
-      PRIVATE_DNS_ZONES_RESOURCE_GROUP=`jq -r .parameters.rgPrivateDnsZonesName.value ${{ parameters.networkingConfigurationPath }}`   
+      DEPLOY_PRIVATE_DNS_ZONES=`jq -r .parameters.privateDnsZones.value.enabled ${{ parameters.networkingConfigurationPath }}`
+      PRIVATE_DNS_ZONES_RESOURCE_GROUP=`jq -r .parameters.privateDnsZones.value.resourceGroupName ${{ parameters.networkingConfigurationPath }}`   
 
       case $DEPLOY_PRIVATE_DNS_ZONES in
         (true)
@@ -136,7 +136,7 @@ steps:
     workingDirectory: '$(System.DefaultWorkingDirectory)/policy/custom/assignments'
 
 - task: AzureCLI@2
-  displayName: Azure Policy - Enable DDoS Standard (if deployDdosStandard=true in config)
+  displayName: Azure Policy - Enable DDoS Standard (if ddosStandard.enabled=true in config)
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
@@ -144,14 +144,14 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      DEPLOY_DDOS_STANDARD=`jq -r .parameters.deployDdosStandard.value ${{ parameters.networkingConfigurationPath }}`
+      DEPLOY_DDOS_STANDARD=`jq -r .parameters.ddosStandard.value.enabled ${{ parameters.networkingConfigurationPath }}`
 
       case $DEPLOY_DDOS_STANDARD in
         (true)
           echo "DDoS Standard is enabled, creating Azure Policy assignment to protect for all Virtual Networks in '$(var-topLevelManagementGroupName)' management group."
 
-          DDOS_STANDARD_RESOURCE_GROUP_NAME=`jq -r .parameters.rgDdosName.value ${{ parameters.networkingConfigurationPath }}`
-          DDOS_STANDARD_PLAN_NAME=`jq -r .parameters.ddosPlanName.value ${{ parameters.networkingConfigurationPath }}`
+          DDOS_STANDARD_RESOURCE_GROUP_NAME=`jq -r .parameters.ddosStandard.value.resourceGroupName ${{ parameters.networkingConfigurationPath }}`
+          DDOS_STANDARD_PLAN_NAME=`jq -r .parameters.ddosStandard.value.planName ${{ parameters.networkingConfigurationPath }}`
 
           # Identify the Resource Id for DDOS Standard Plan
           DDOS_PLAN_ID=`az network ddos-protection show -g $DDOS_STANDARD_RESOURCE_GROUP_NAME -n $DDOS_STANDARD_PLAN_NAME --subscription ${{ parameters.networkingSubscriptionId }} --query id -o tsv`

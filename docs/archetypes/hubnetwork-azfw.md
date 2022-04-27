@@ -49,7 +49,7 @@ There will be at least one shared Application Gateway instance and multiple dedi
 
 Network design will require 3 IP blocks:
 
-* [RFC 1918][rfc1918] for Azure native-traffic (including IaaS and PaaS).  Example:  `10.18.0.0/16`
+* [RFC 1918][rfc1918] for Azure native-traffic (including IaaS and PaaS). This will also include the Azure Gateway subnet.  Example:  `10.18.0.0/16`
 * [RFC 1918][rfc1918] for Azure Bastion.  Example:  `192.168.0.0/16`
 * [RFC 6598][rfc1918] for department to department traffic through GCnet. Example:  `100.60.0.0/16`
 
@@ -169,7 +169,7 @@ Required routing rules to enforce the security controls required to protect the 
 | PrdSpokesUdr | `0.0.0.0/0`, `10.18.0.0/16` and `100.60.0.0/16` via Azure Firewall VIP. | All production spoke virtual networks. | Via peering, spokes learn static routes to reach any IP in the Hub. Hence, we override the Hub virtual network's IPs (10.18/16 and 100.60/16) and force traffic via Firewall. |
 | DevSpokesUdr | Same as above. | All development spoke virtual networks. | Same as above. |
 | MrzSpokeUdr | Same as above. | Mrz spoke virtual network  | Same as above. |
-| PazSubnetUdr | Same as above. | Force traffic from Application Gateway to be sent via the Firewall VIP | Same as above. |
+| PazSubnetUdr | Same as above. | Force traffic from Application Gateway to be sent via the Firewall VIP | Same as above. The 0.0.0.0./0 "Next hop type" should be updated as "Internet" and not the Virtual Appliance IP if deploying Azure Application Gateway.. |
 
 ## Azure Firewall Rules
 

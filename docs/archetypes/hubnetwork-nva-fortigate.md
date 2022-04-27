@@ -48,7 +48,7 @@ There will be at least one shared Application Gateway instance and multiple dedi
 
 Network design will require 3 IP blocks:
 
-* [RFC 1918][rfc1918] for Azure native-traffic (including IaaS and PaaS).  Example:  `10.18.0.0/16`
+* [RFC 1918][rfc1918] for Azure native-traffic (including IaaS and PaaS). This will also include the Azure Gateway subnet. Example:  `10.18.0.0/16`
 * [RFC 1918][rfc1918] for Azure Bastion.  Example:  `192.168.0.0/16`
 * [RFC 6598][rfc1918] for department to department traffic through GCnet. Example:  `100.60.0.0/16`
 
@@ -176,7 +176,7 @@ Required routing rules to enforce the security controls required to protect the 
 | PrdSpokesUdr | 0.0.0.0/0 via PrdInt ILB VIP<br />10.18.0.0/16 via PrdInt ILB VIP<br />100.60.0.0/16 via PrdInt ILB VIP | All production spoke virtual networks. | Via peering, spokes learn static routes to reach any IP in the Hub. Hence, we override the Hub virtual network's IPs (10.18/16 and 100.60/16) and force traffic via Firewall. |
 | DevSpokesUdr | 0.0.0.0/0 via DevInt ILB VIP<br />10.18.0.0/16 via DevInt ILB VIP<br />100.60.0.0/16 via DevInt ILB VIP | All development spoke virtual networks. | Same as above. |
 | MrzSpokeUdr | 0.0.0.0/0 via PrdInt ILB VIP<br />10.18.0.0/16 via PrdInt ILB VIP<br />100.60.0.0/16 via PrdInt ILB VIP | Mrz spoke virtual network  | Same as above |
-| PazSubnetUdr | 10.18.4.0/24 via PrdExtFW VIP<br />(Future) ProdSpokeIPs via PrdExt ILB VIP<br />(Future) DevSpokeIPs via DevExt ILB VIP | Shared PAZ subnet (Application Gateway) | Force traffic from Application Gateway to be sent via the Firewall External ILBs |
+| PazSubnetUdr | 10.18.4.0/24 via PrdExtFW VIP<br />(Future) ProdSpokeIPs via PrdExt ILB VIP<br />(Future) DevSpokeIPs via DevExt ILB VIP | Shared PAZ subnet (Application Gateway) | Force traffic from Application Gateway to be sent via the Firewall External ILBs. The 0.0.0.0./0 "Next hop type" should be updated as "Internet" and not the Virtual Appliance IP if deploying Azure Application Gateway |
 
 ## Firewall configuration details
 
@@ -285,7 +285,9 @@ By default, this archetype deploys `CanNotDelete` lock to prevent accidental del
 
 | Scenario | Example JSON Parameters | Notes |
 |:-------- |:----------------------- |:----- |
-| Full Deployment | [tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment.json](../../tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment.json) | - |
+| Full Deployment with Fortigate Firewalls (BYOL) | [tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-With-FortigateBYOL.json](../../tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-With-FortigateBYOL.json) | `parameters.hub.value.nvaFirewall.image` configured with Fortigate BYOL image. |
+| Full Deployment with Ubuntu | [tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-With-Ubuntu.json](../../tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-With-Ubuntu.json) | `parameters.hub.value.nvaFirewall.image` configured with Ubuntu image. |
+| Full Deployment with optional subnets in Hub Virtual Network | [tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-With-OptionalHubSubnets.json](../../tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-With-OptionalHubSubnets.json) | `parameters.hub.value.nvaFirewall.subnets.optional` array set. |
 | Full Deployment with Log Analytics Workspace  | [tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-WithLogAnalyticsWorkspace.json](../../tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-WithLogAnalyticsWorkspace.json) | `parameters.logAnalyticsWorkspaceResourceId.value` is configured.  When it's not defined, this setting is added by Azure DevOps pipeline during deployment. |
 | Deployment without subscription budget | [tests/schemas/lz-platform-connectivity-hub-nva/BudgetIsFalse.json](../../tests/schemas/lz-platform-connectivity-hub-nva/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
 
@@ -307,6 +309,9 @@ This example configures:
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
+    },
     "serviceHealthAlerts": {
       "value": {
         "resourceGroupName": "pubsec-service-health",
@@ -388,224 +393,240 @@ This example configures:
         "TechnicalContact": "technical-contact-tag"
       }
     },
-    "deployPrivateDnsZones": {
-      "value": true
-    },
-    "rgPrivateDnsZonesName": {
-      "value": "pubsec-dns-rg"
-    },
-    "deployDdosStandard": {
-      "value": false
-    },
-    "rgDdosName": {
-      "value": "pubsec-ddos-rg"
-    },
-    "ddosPlanName": {
-      "value": "ddos-plan"
-    },
-    "bastionName": {
-      "value": "bastion"
-    },
-    "bastionSku": {
-      "value": "Standard"
-    },
-    "bastionScaleUnits": {
-      "value": 2
-    },
-    "rgPazName": {
-      "value": "pubsec-public-access-zone-rg"
-    },
-    "rgMrzName": {
-      "value": "pubsec-management-restricted-zone-rg"
-    },
-    "mrzVnetName": {
-      "value": "management-restricted-vnet"
-    },
-    "mrzVnetAddressPrefixRFC1918": {
-      "value": "10.18.4.0/22"
-    },
-    "mrzMazSubnetName": {
-      "value": "MazSubnet"
-    },
-    "mrzMazSubnetAddressPrefix": {
-      "value": "10.18.4.0/25"
-    },
-    "mrzInfSubnetName": {
-      "value": "InfSubnet"
-    },
-    "mrzInfSubnetAddressPrefix": {
-      "value": "10.18.4.128/25"
-    },
-    "mrzSecSubnetName": {
-      "value": "SecSubnet"
-    },
-    "mrzSecSubnetAddressPrefix": {
-      "value": "10.18.5.0/26"
-    },
-    "mrzLogSubnetName": {
-      "value": "LogSubnet"
-    },
-    "mrzLogSubnetAddressPrefix": {
-      "value": "10.18.5.64/26"
-    },
-    "mrzMgmtSubnetName": {
-      "value": "MgmtSubnet"
-    },
-    "mrzMgmtSubnetAddressPrefix": {
-      "value": "10.18.5.128/26"
-    },
-    "rgHubName": {
-      "value": "pubsec-hub-networking-rg"
-    },
-    "hubVnetName": {
-      "value": "hub-vnet"
-    },
-    "hubVnetAddressPrefixRFC1918": {
-      "value": "10.18.0.0/22"
-    },
-    "hubVnetAddressPrefixRFC6598": {
-      "value": "100.60.0.0/16"
-    },
-    "hubVnetAddressPrefixBastion": {
-      "value": "192.168.0.0/16"
-    },
-    "hubEanSubnetName": {
-      "value": "EanSubnet"
-    },
-    "hubEanSubnetAddressPrefix": {
-      "value": "10.18.0.0/27"
-    },
-    "hubPublicSubnetName": {
-      "value": "PublicSubnet"
-    },
-    "hubPublicSubnetAddressPrefix": {
-      "value": "100.60.0.0/24"
-    },
-    "hubPazSubnetName": {
-      "value": "PAZSubnet"
-    },
-    "hubPazSubnetAddressPrefix": {
-      "value": "100.60.1.0/24"
-    },
-    "hubDevIntSubnetName": {
-      "value": "DevIntSubnet"
-    },
-    "hubDevIntSubnetAddressPrefix": {
-      "value": "10.18.0.64/27"
-    },
-    "hubProdIntSubnetName": {
-      "value": "PrdIntSubnet"
-    },
-    "hubProdIntSubnetAddressPrefix": {
-      "value": "10.18.0.32/27"
-    },
-    "hubMrzIntSubnetName": {
-      "value": "MrzSubnet"
-    },
-    "hubMrzIntSubnetAddressPrefix": {
-      "value": "10.18.0.96/27"
-    },
-    "hubHASubnetName": {
-      "value": "HASubnet"
-    },
-    "hubHASubnetAddressPrefix": {
-      "value": "10.18.0.128/28"
-    },
-    "hubGatewaySubnetPrefix": {
-      "value": "10.18.1.0/27"
-    },
-    "hubBastionSubnetAddressPrefix": {
-      "value": "192.168.0.0/24"
-    },
-    "deployFirewallVMs": {
-      "value": true
-    },
-    "useFortigateFW": {
-      "value": true
-    },
-    "fwDevILBName": {
-      "value": "pubsecDevFWILB"
-    },
-    "fwDevVMSku": {
-      "value": "Standard_D8s_v4"
-    },
-    "fwDevVM1Name": {
-      "value": "pubsecDevFW1"
-    },
-    "fwDevVM2Name": {
-      "value": "pubsecDevFW2"
-    },
-    "fwDevILBExternalFacingIP": {
-      "value": "100.60.0.7"
-    },
-    "fwDevVM1ExternalFacingIP": {
-      "value": "100.60.0.8"
-    },
-    "fwDevVM2ExternalFacingIP": {
-      "value": "100.60.0.9"
-    },
-    "fwDevVM1MrzIntIP": {
-      "value": "10.18.0.104"
-    },
-    "fwDevVM2MrzIntIP": {
-      "value": "10.18.0.105"
-    },
-    "fwDevILBDevIntIP": {
-      "value": "10.18.0.68"
-    },
-    "fwDevVM1DevIntIP": {
-      "value": "10.18.0.69"
-    },
-    "fwDevVM2DevIntIP": {
-      "value": "10.18.0.70"
-    },
-    "fwDevVM1HAIP": {
-      "value": "10.18.0.134"
-    },
-    "fwDevVM2HAIP": {
-      "value": "10.18.0.135"
-    },
-    "fwProdILBName": {
-      "value": "pubsecProdFWILB"
-    },
-    "fwProdVMSku": {
-      "value": "Standard_F8s_v2"
-    },
-    "fwProdVM1Name": {
-      "value": "pubsecProdFW1"
-    },
-    "fwProdVM2Name": {
-      "value": "pubsecProdFW2"
-    },
-    "fwProdILBExternalFacingIP": {
-      "value": "100.60.0.4"
-    },
-    "fwProdVM1ExternalFacingIP": {
-      "value": "100.60.0.5"
-    },
-    "fwProdVM2ExternalFacingIP": {
-      "value": "100.60.0.6"
-    },
-    "fwProdVM1MrzIntIP": {
-      "value": "10.18.0.101"
-    },
-    "fwProdVM2MrzIntIP": {
-      "value": "10.18.0.102"
-    },
-    "fwProdILBPrdIntIP": {
-      "value": "10.18.0.36"
-    },
-    "fwProdVM1PrdIntIP": {
-      "value": "10.18.0.37"
-    },
-    "fwProdVM2PrdIntIP": {
-      "value": "10.18.0.38"
-    },
-    "fwProdVM1HAIP": {
-      "value": "10.18.0.132"
-    },
-    "fwProdVM2HAIP": {
-      "value": "10.18.0.133"
+    "privateDnsZones": {
+      "value": {
+        "enabled": true,
+        "resourceGroupName": "pubsec-dns-rg"
+      }
+    },
+    "ddosStandard": {
+      "value": {
+        "enabled": false,
+        "resourceGroupName": "pubsec-ddos-rg",
+        "planName": "ddos-plan"
+      }
+    },
+    "publicAccessZone": {
+      "value": {
+        "enabled": true,
+        "resourceGroupName": "pubsec-public-access-zone-rg"
+      }
+    },
+    "managementRestrictedZone": {
+      "value": {
+        "enabled": true,
+        "resourceGroupName": "pubsec-management-restricted-zone-rg",
+        "network": {
+          "name": "management-restricted-vnet",
+          "addressPrefixes": ["10.18.4.0/22"],
+          "subnets": [
+            {
+              "comments": "Management (Access Zone) Subnet",
+              "name": "MazSubnet",
+              "addressPrefix": "10.18.4.0/25",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Infrastructure Services (Restricted Zone) Subnet",
+              "name": "InfSubnet",
+              "addressPrefix": "10.18.4.128/25",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Security Services (Restricted Zone) Subnet",
+              "name": "SecSubnet",
+              "addressPrefix": "10.18.5.0/26",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Logging Services (Restricted Zone) Subnet",
+              "name": "LogSubnet",
+              "addressPrefix": "10.18.5.64/26",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Core Management Interfaces (Restricted Zone) Subnet",
+              "name": "MgmtSubnet",
+              "addressPrefix": "10.18.5.128/26",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    "hub": {
+      "value": {
+        "resourceGroupName": "pubsec-hub-networking-rg",
+        "bastion": {
+          "enabled": true,
+          "name": "bastion",
+          "sku": "Standard",
+          "scaleUnits": 2
+        },
+        "network": {
+          "name": "hub-vnet",
+          "addressPrefixes": [
+            "10.18.0.0/22",
+            "100.60.0.0/16"
+          ],
+          "addressPrefixBastion": "192.168.0.0/16",
+          "subnets": {
+            "gateway": {
+              "comments": "Gateway Subnet used for VPN and/or Express Route connectivity",
+              "name": "GatewaySubnet",
+              "addressPrefix": "10.18.1.0/27"
+            },
+            "bastion": {
+              "comments": "Azure Bastion",
+              "name": "AzureBastionSubnet",
+              "addressPrefix": "192.168.0.0/24"
+            },
+            "public": {
+              "comments": "Public Subnet Name (External Facing (Internet/Ground))",
+              "name": "PublicSubnet",
+              "addressPrefix": "100.60.0.0/24"
+            },
+            "publicAccessZone": {
+              "comments": "Public Access Zone (i.e. Application Gateway)",
+              "name": "PAZSubnet",
+              "addressPrefix": "100.60.1.0/24"
+            },
+            "externalAccessNetwork": {
+              "comments": "External Access Network",
+              "name": "EanSubnet",
+              "addressPrefix": "10.18.0.0/27"
+            },
+            "nonProductionInternal": {
+              "comments": "Non-production Internal for firewall appliances (Internal Facing Non-Production Traffic)",
+              "name": "DevIntSubnet",
+              "addressPrefix": "10.18.0.64/27"
+            },
+            "productionInternal": {
+              "comments": "Production Internal for firewall appliances (Internal Facing Production Traffic)",
+              "name": "PrdIntSubnet",
+              "addressPrefix": "10.18.0.32/27"
+            },
+            "managementRestrictedZoneInternal": {
+              "comments": "Management Restricted Zone",
+              "name": "MrzSubnet",
+              "addressPrefix": "10.18.0.96/27"
+            },
+            "highAvailability": {
+              "comments": "High Availability (Firewall to Firewall heartbeat)",
+              "name": "HASubnet",
+              "addressPrefix": "10.18.0.128/28"
+            },
+            "optional": []
+          }
+        },
+        "nvaFirewall": {
+          "image": {
+            "publisher": "fortinet",
+            "offer": "fortinet_fortigate-vm_v5",
+            "sku": "fortinet_fg-vm",
+            "version": "6.4.5",
+            "plan": "fortinet_fg-vm"
+          },
+          "nonProduction": {
+            "internalLoadBalancer": {
+              "name": "pubsecDevFWILB",
+              "tcpProbe": {
+                "name": "lbprobe",
+                "port": 8008,
+                "intervalInSeconds": 5,
+                "numberOfProbes": 2 
+              },
+              "internalIp": "10.18.0.68",
+              "externalIp": "100.60.0.7"
+            },
+            "deployVirtualMachines": true,
+            "virtualMachines": [
+              {
+                "name": "pubsecDevFW1",
+                "vmSku": "Standard_D8s_v4",
+                "internalIp": "10.18.0.69",
+                "externalIp": "100.60.0.8",
+                "mrzInternalIp": "10.18.0.104",
+                "highAvailabilityIp": "10.18.0.134",
+                "availabilityZone": "2"
+              },
+              {
+                "name": "pubsecDevFW2",
+                "vmSku": "Standard_D8s_v4",
+                "internalIp": "10.18.0.70",
+                "externalIp": "100.60.0.9",
+                "mrzInternalIp": "10.18.0.105",
+                "highAvailabilityIp": "10.18.0.135",
+                "availabilityZone": "3"
+              }
+            ]
+          },
+          "production": {
+            "internalLoadBalancer": {
+              "name": "pubsecProdFWILB",
+              "tcpProbe": {
+                "name": "lbprobe",
+                "port": 8008,
+                "intervalInSeconds": 5,
+                "numberOfProbes": 2 
+              },
+              "internalIp": "10.18.0.36",
+              "externalIp": "100.60.0.4"
+            },
+            "deployVirtualMachines": true,
+            "virtualMachines": [
+              {
+                "name": "pubsecProdFW1",
+                "vmSku": "Standard_F8s_v2",
+                "internalIp": "10.18.0.37",
+                "externalIp": "100.60.0.5",
+                "mrzInternalIp": "10.18.0.101",
+                "highAvailabilityIp": "10.18.0.132",
+                "availabilityZone": "1"
+              },
+              {
+                "name": "pubsecProdFW2",
+                "vmSku": "Standard_F8s_v2",
+                "internalIp": "10.18.0.38",
+                "externalIp": "100.60.0.6",
+                "mrzInternalIp": "10.18.0.102",
+                "highAvailabilityIp": "10.18.0.133",
+                "availabilityZone": "2"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "networkWatcher": {
+      "value": {
+        "resourceGroupName": "NetworkWatcherRG"
+      }
     }
   }
 }
