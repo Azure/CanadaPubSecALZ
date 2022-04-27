@@ -248,7 +248,7 @@
               "internalIp": "10.18.0.68",
               "externalIp": "100.60.0.7"
             },
-            "deployVirtualMachines": true,
+            "deployVirtualMachines": false,
             "virtualMachines": [
               {
                 "name": "pubsecDevFW1",
@@ -282,7 +282,7 @@
               "internalIp": "10.18.0.36",
               "externalIp": "100.60.0.4"
             },
-            "deployVirtualMachines": true,
+            "deployVirtualMachines": false,
             "virtualMachines": [
               {
                 "name": "pubsecProdFW1",
