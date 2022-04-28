@@ -1,30 +1,39 @@
 #Requires -Modules powershell-yaml
 
 . ".\functions\Set-EnvironmentContext.ps1"
-
-# Working Directory
-$WorkingDirectory = "../.."
-
-# Set Context
-Set-EnvironmentContext -Environment "CanadaESLZ-main" -WorkingDirectory $WorkingDirectory
-
-# Deployment
-function ProcessManagementGroupHierarchy {
+function DeployManagementGroups {
   param (
-    $parentNode
+    [Parameter(Mandatory = $true)]
+    [String] $Environment,
+
+    [Parameter(Mandatory = $true)]
+    [String] $WorkingDirectory
   )
 
-  foreach ($childNode in $parentNode.children) {
-    $parentManagementGroupId = $parentNode.id
-    $childManagementGroupId = $childNode.id
-    $childManagementGroupName = $childNode.name
-    
-    Write-Output "Creating $childManagementGroupName [$childManagementGroupId] under $parentManagementGroupId"
+  # Set Context
+  Set-EnvironmentContext -Environment $Environment -WorkingDirectory $WorkingDirectory
 
-    # TODO: Add Azure PS deployment command
+  # Deployment
+  function ProcessManagementGroupHierarchy {
+    param (
+      [Parameter(Mandatory = $true)]
+      $parentNode
+    )
 
-    ProcessManagementGroupHierarchy($childNode)
+    foreach ($childNode in $parentNode.children) {
+      $parentManagementGroupId = $parentNode.id
+      $childManagementGroupId = $childNode.id
+      $childManagementGroupName = $childNode.name
+      
+      Write-Output "Creating $childManagementGroupName [$childManagementGroupId] under $parentManagementGroupId"
+
+      # TODO: Add Azure PS deployment command
+
+      ProcessManagementGroupHierarchy($childNode)
+    }
   }
+
+  ProcessManagementGroupHierarchy($global:ManagementGroupHierarchy)
 }
 
-ProcessManagementGroupHierarchy($global:ManagementGroupHierarchy)
+DeployManagementGroups -WorkingDirectory "../../" -Environment "CanadaESLZ-main"
