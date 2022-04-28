@@ -1,6 +1,7 @@
 #Requires -Modules powershell-yaml
 
 . ".\functions\Set-EnvironmentContext.ps1"
+
 function DeployManagementGroups {
   param (
     [Parameter(Mandatory = $true)]
