@@ -15,7 +15,7 @@ $DeploymentSubscription = $EnvironmentConfiguration.variables['var-logging-subsc
 $DeploymentConfigurationFileName = $EnvironmentConfiguration.variables['var-logging-configurationFileName']
 
 Write-Output "Moving Subscription ($DeploymentSubscription) to Management Group ($DeploymentManagementGroup)"
-# Add Azure PS deployment command
+# TODO: Add Azure PS deployment command
 
 Write-Output "Deploying $LoggingDirectory/$DeploymentConfigurationFileName to $DeploymentSubscription in $DeploymentRegion"
-# Add Azure PS deployment command
+# TODO: Add Azure PS deployment command

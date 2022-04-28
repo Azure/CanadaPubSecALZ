@@ -21,7 +21,7 @@ function ProcessManagementGroupHierarchy {
     
     Write-Output "Creating $childManagementGroupName [$childManagementGroupId] under $parentManagementGroupId"
 
-    # Add Azure PS deployment command
+    # TODO: Add Azure PS deployment command
 
     ProcessManagementGroupHierarchy($childNode)
   }
