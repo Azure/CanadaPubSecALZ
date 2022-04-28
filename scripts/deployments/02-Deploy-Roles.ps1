@@ -2,19 +2,30 @@
 
 . ".\functions\Set-EnvironmentContext.ps1"
 
-# Working Directory
-$WorkingDirectory = "../.."
-$RolesDirectory = "$WorkingDirectory/roles"
+function DeployRoles {
+  param (
+    [Parameter(Mandatory = $true)]
+    [String] $Environment,
 
-# Set Context
-Set-EnvironmentContext -Environment "CanadaESLZ-main" -WorkingDirectory $WorkingDirectory
+    [Parameter(Mandatory = $true)]
+    [String] $WorkingDirectory
+  )
 
-# Deployment
-Write-Output "Using top level management group: $global:TopLevelManagementGroupId"
-Write-Output "Deploying role definitions from $global:RolesDirectory"
+  # Working Directory
+  $RolesDirectory = "$WorkingDirectory/roles"
 
-foreach ($roleDefinition in Get-ChildItem -Path $RolesDirectory) {
-  Write-Output "Deploying $($roleDefinition.name)"
+  # Set Context
+  Set-EnvironmentContext -Environment $Environment -WorkingDirectory $WorkingDirectory
 
-  # TODO: Add Azure PS deployment command
+  # Deployment
+  Write-Output "Using top level management group: $global:TopLevelManagementGroupId"
+  Write-Output "Deploying role definitions from $global:RolesDirectory"
+
+  foreach ($roleDefinition in Get-ChildItem -Path $RolesDirectory) {
+    Write-Output "Deploying $($roleDefinition.name)"
+
+    # TODO: Add Azure PS deployment command
+  }
 }
+
+DeployRoles -WorkingDirectory "../../" -Environment "CanadaESLZ-main"
