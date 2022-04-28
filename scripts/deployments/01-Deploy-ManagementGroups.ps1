@@ -1,14 +1,12 @@
-Import-Module powershell-yaml
+. ".\helpers\Set-EnvironmentContext.ps1"
 
-# Configuration
-$WorkingDirectory = "../../"
-$Environment = "CanadaESLZ-main"
-$EnvironmentConfigurationYamlFilePath = "$WorkingDirectory/config/variables/$Environment.yml"
+# Working Directory
+$WorkingDirectory = "../.."
+
+# Set Context
+Set-EnvironmentContext -Environment "CanadaESLZ-main" -WorkingDirectory $WorkingDirectory
 
 # Deployment
-$EnvironmentConfiguration = Get-Content $EnvironmentConfigurationYamlFilePath  | ConvertFrom-Yaml
-$ManagementGroupHierarchy = $EnvironmentConfiguration.variables['var-managementgroup-hierarchy'] | ConvertFrom-Json
-
 function ProcessManagementGroupHierarchy {
   param (
     $parentNode
@@ -27,4 +25,4 @@ function ProcessManagementGroupHierarchy {
   }
 }
 
-ProcessManagementGroupHierarchy($ManagementGroupHierarchy)
+ProcessManagementGroupHierarchy($global:ManagementGroupHierarchy)

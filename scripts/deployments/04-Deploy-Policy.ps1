@@ -1,23 +1,20 @@
-Import-Module powershell-yaml
+. ".\helpers\Set-EnvironmentContext.ps1"
 
-# Configuration
-$WorkingDirectory = "../../"
-$Environment = "CanadaESLZ-main"
-$EnvironmentConfigurationYamlFilePath = "$WorkingDirectory/config/variables/$Environment.yml"
+# Working Directory
+$WorkingDirectory = "../.."
 
-$LoggingDirectory = "$WorkingDirectory/config/logging/$Environment/"
+# Set Context
+Set-EnvironmentContext -Environment "CanadaESLZ-main" -WorkingDirectory $WorkingDirectory
+
 $PolicyRootDirectory = "$WorkingDirectory/policy"
 
-$EnvironmentConfiguration = Get-Content $EnvironmentConfigurationYamlFilePath  | ConvertFrom-Yaml
-$ManagementGroupHierarchy = $EnvironmentConfiguration.variables['var-managementgroup-hierarchy'] | ConvertFrom-Json
-$TopLevelManagementGroup = $ManagementGroupHierarchy.children[0]
+$LoggingSubscription = $global:EnvironmentConfiguration.variables['var-logging-subscriptionId']
+$LoggingConfigurationFileName = $global:EnvironmentConfiguration.variables['var-logging-configurationFileName']
 
-$LoggingSubscription = $EnvironmentConfiguration.variables['var-logging-subscriptionId']
-$LoggingConfigurationFileName = $EnvironmentConfiguration.variables['var-logging-configurationFileName']
-
+#region Policy definition & assignment configuration
 $BuiltInPolicySetAssignmentScopes = $(
   [PSCustomObject]@{
-    ManagementGroupId = $TopLevelManagementGroup.id
+    ManagementGroupId = $global:TopLevelManagementGroupId
     Policies = $(
       'asb',
       'nist80053r4',
@@ -29,7 +26,7 @@ $BuiltInPolicySetAssignmentScopes = $(
       'location'
     )
     LoggingSubscriptionId = $LoggingSubscription
-    LoggingConfigurationFilePath = "$LoggingDirectory/$LoggingConfigurationFileName"
+    LoggingConfigurationFilePath = "$global:LoggingDirectory/$LoggingConfigurationFileName"
   }
 )
 
@@ -44,7 +41,7 @@ $CustomPolicySetDefinitions = $(
 
 $CustomPolicySetAssignmentScopes = $(
   [PSCustomObject]@{
-    ManagementGroupId = $TopLevelManagementGroup.id
+    ManagementGroupId = $global:TopLevelManagementGroupId
     Policies = $(
       'AKS',
       'DefenderForCloud',
@@ -53,13 +50,12 @@ $CustomPolicySetAssignmentScopes = $(
       'Tags'
     )
     LoggingSubscriptionId = $LoggingSubscription
-    LoggingConfigurationFilePath = "$LoggingDirectory/$LoggingConfigurationFileName"
+    LoggingConfigurationFilePath = "$global:LoggingDirectory/$LoggingConfigurationFileName"
   }
 )
+#endregion
 
-# Deployment
-
-# Enumerate and deploy built-in policy assignments
+#region Enumerate and deploy built-in policy assignments
 $BuiltInPolicySetAssignmentsDirectory = "$PolicyRootDirectory/builtin/assignments"
 
 foreach ($assignmentScope in $BuiltInPolicySetAssignmentScopes) {
@@ -92,8 +88,9 @@ foreach ($assignmentScope in $BuiltInPolicySetAssignmentScopes) {
 
   }
 }
+#endregion
 
-# Enumerate and deploy the custom policy definitions
+#region Enumerate and deploy the custom policy definitions
 $CustomPolicyDefinitionDirectory = "$PolicyRootDirectory/custom/definitions/policy"
 
 Get-ChildItem -Directory -Path $CustomPolicyDefinitionDirectory |
@@ -110,8 +107,9 @@ Get-ChildItem -Directory -Path $CustomPolicyDefinitionDirectory |
 
     # TODO: Add Azure PS deployment command
   }
+#endregion
 
-# Enumerate and deploy custom policy set definitions
+#region Enumerate and deploy custom policy set definitions
 $CustomPolicySetDefinitionsDirectory = "$PolicyRootDirectory/custom/definitions/policyset"
 
 foreach ($policySetDefinitionName in $CustomPolicySetDefinitions) {
@@ -130,10 +128,9 @@ foreach ($policySetDefinitionName in $CustomPolicySetDefinitions) {
 
   # TODO: Add Azure PS deployment command
 }
+#endregion
 
-
-# Enumerate and deploy custom policy assignments
-
+#region Enumerate and deploy custom policy assignments
 $CustomPolicySetAssignmentsDirectory = "$PolicyRootDirectory/custom/assignments/policyset"
 
 foreach ($assignmentScope in $CustomPolicySetAssignmentScopes) {
@@ -168,3 +165,4 @@ foreach ($assignmentScope in $CustomPolicySetAssignmentScopes) {
 
   }
 }
+#endregion

@@ -1,19 +1,15 @@
-Import-Module powershell-yaml
+. ".\helpers\Set-EnvironmentContext.ps1"
 
-# Configuration
-$WorkingDirectory = "../../"
-$Environment = "CanadaESLZ-main"
+# Working Directory
+$WorkingDirectory = "../.."
 
-$NetworkingDirectory = "$WorkingDirectory/config/networking/$Environment/"
-
-$EnvironmentConfigurationYamlFilePath = "$WorkingDirectory/config/variables/$Environment.yml"
+# Set Context
+Set-EnvironmentContext -Environment "CanadaESLZ-main" -WorkingDirectory $WorkingDirectory
 
 # Deployment
-$EnvironmentConfiguration = Get-Content $EnvironmentConfigurationYamlFilePath  | ConvertFrom-Yaml
+$DeploymentRegion = $global:EnvironmentConfiguration.variables['var-hubnetwork-region']
+$DeploymentSubscription = $global:EnvironmentConfiguration.variables['var-hubnetwork-subscriptionId']
+$DeploymentConfigurationFileName = $global:EnvironmentConfiguration.variables['var-hubnetwork-azfwPolicy-configurationFileName']
 
-$DeploymentRegion = $EnvironmentConfiguration.variables['var-hubnetwork-region']
-$DeploymentSubscription = $EnvironmentConfiguration.variables['var-hubnetwork-subscriptionId']
-$DeploymentConfigurationFileName = $EnvironmentConfiguration.variables['var-hubnetwork-azfwPolicy-configurationFileName']
-
-Write-Output "Deploying $NetworkingDirectory/$DeploymentConfigurationFileName to $DeploymentSubscription in $DeploymentRegion"
+Write-Output "Deploying $global:NetworkingDirectory/$DeploymentConfigurationFileName to $DeploymentSubscription in $DeploymentRegion"
 # TODO: Add Azure PS deployment command

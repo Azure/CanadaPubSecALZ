@@ -1,21 +1,19 @@
-Import-Module powershell-yaml
+. ".\helpers\Set-EnvironmentContext.ps1"
 
-# Configuration
-$WorkingDirectory = "../../"
-$Environment = "CanadaESLZ-main"
-$LoggingDirectory = "$WorkingDirectory/config/logging/$Environment/"
-$EnvironmentConfigurationYamlFilePath = "$WorkingDirectory/config/variables/$Environment.yml"
+# Working Directory
+$WorkingDirectory = "../.."
+
+# Set Context
+Set-EnvironmentContext -Environment "CanadaESLZ-main" -WorkingDirectory $WorkingDirectory
 
 # Deployment
-$EnvironmentConfiguration = Get-Content $EnvironmentConfigurationYamlFilePath  | ConvertFrom-Yaml
-
-$DeploymentRegion = $EnvironmentConfiguration.variables['var-logging-region']
-$DeploymentManagementGroup = $EnvironmentConfiguration.variables['var-logging-managementGroupId']
-$DeploymentSubscription = $EnvironmentConfiguration.variables['var-logging-subscriptionId']
-$DeploymentConfigurationFileName = $EnvironmentConfiguration.variables['var-logging-configurationFileName']
+$DeploymentRegion = $global:EnvironmentConfiguration.variables['var-logging-region']
+$DeploymentManagementGroup = $global:EnvironmentConfiguration.variables['var-logging-managementGroupId']
+$DeploymentSubscription = $global:EnvironmentConfiguration.variables['var-logging-subscriptionId']
+$DeploymentConfigurationFileName = $global:EnvironmentConfiguration.variables['var-logging-configurationFileName']
 
 Write-Output "Moving Subscription ($DeploymentSubscription) to Management Group ($DeploymentManagementGroup)"
 # TODO: Add Azure PS deployment command
 
-Write-Output "Deploying $LoggingDirectory/$DeploymentConfigurationFileName to $DeploymentSubscription in $DeploymentRegion"
+Write-Output "Deploying $global:LoggingDirectory/$DeploymentConfigurationFileName to $DeploymentSubscription in $DeploymentRegion"
 # TODO: Add Azure PS deployment command

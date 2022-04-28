@@ -1,25 +1,20 @@
-Import-Module powershell-yaml
+. ".\helpers\Set-EnvironmentContext.ps1"
 
-# Configuration
-$WorkingDirectory = "../../"
-$Environment = "CanadaESLZ-main"
+# Working Directory
+$WorkingDirectory = "../.."
 
-$LoggingDirectory = "$WorkingDirectory/config/logging/$Environment/"
-$NetworkingDirectory = "$WorkingDirectory/config/networking/$Environment/"
-
-$EnvironmentConfigurationYamlFilePath = "$WorkingDirectory/config/variables/$Environment.yml"
+# Set Context
+Set-EnvironmentContext -Environment "CanadaESLZ-main" -WorkingDirectory $WorkingDirectory
 
 # Deployment
-$EnvironmentConfiguration = Get-Content $EnvironmentConfigurationYamlFilePath  | ConvertFrom-Yaml
+$DeploymentRegion = $global:EnvironmentConfiguration.variables['var-hubnetwork-region']
+$DeploymentManagementGroup = $global:EnvironmentConfiguration.variables['var-hubnetwork-managementGroupId']
+$DeploymentSubscription = $global:EnvironmentConfiguration.variables['var-hubnetwork-subscriptionId']
+$DeploymentConfigurationFileName = $global:EnvironmentConfiguration.variables['var-hubnetwork-nva-configurationFileName']
 
-$DeploymentRegion = $EnvironmentConfiguration.variables['var-hubnetwork-region']
-$DeploymentManagementGroup = $EnvironmentConfiguration.variables['var-hubnetwork-managementGroupId']
-$DeploymentSubscription = $EnvironmentConfiguration.variables['var-hubnetwork-subscriptionId']
-$DeploymentConfigurationFileName = $EnvironmentConfiguration.variables['var-hubnetwork-nva-configurationFileName']
-
-$LoggingSubscription = $EnvironmentConfiguration.variables['var-logging-subscriptionId']
-$LoggingConfigurationFileName = $EnvironmentConfiguration.variables['var-logging-configurationFileName']
-$LoggingConfigurationFilePath = "$LoggingDirectory/$LoggingConfigurationFileName"
+$LoggingSubscription = $global:EnvironmentConfiguration.variables['var-logging-subscriptionId']
+$LoggingConfigurationFileName = $global:EnvironmentConfiguration.variables['var-logging-configurationFileName']
+$LoggingConfigurationFilePath = "$global:LoggingDirectory/$LoggingConfigurationFileName"
 
 # TODO: Load logging configuration
 
@@ -28,5 +23,5 @@ $LoggingConfigurationFilePath = "$LoggingDirectory/$LoggingConfigurationFileName
 Write-Output "Moving Subscription ($DeploymentSubscription) to Management Group ($DeploymentManagementGroup)"
 # TODO: Add Azure PS deployment command
 
-Write-Output "Deploying $NetworkingDirectory/$DeploymentConfigurationFileName to $DeploymentSubscription in $DeploymentRegion"
+Write-Output "Deploying $global:NetworkingDirectory/$DeploymentConfigurationFileName to $DeploymentSubscription in $DeploymentRegion"
 # TODO: Add Azure PS deployment command

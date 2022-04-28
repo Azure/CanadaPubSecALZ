@@ -1,23 +1,18 @@
-Import-Module powershell-yaml
+. ".\helpers\Set-EnvironmentContext.ps1"
 
-# Configuration
-$WorkingDirectory = "../../"
-$Environment = "CanadaESLZ-main"
-$EnvironmentConfigurationYamlFilePath = "$WorkingDirectory/config/variables/$Environment.yml"
+# Working Directory
+$WorkingDirectory = "../.."
 $RolesDirectory = "$WorkingDirectory/roles"
 
+# Set Context
+Set-EnvironmentContext -Environment "CanadaESLZ-main" -WorkingDirectory $WorkingDirectory
+
 # Deployment
-$EnvironmentConfiguration = Get-Content $EnvironmentConfigurationYamlFilePath  | ConvertFrom-Yaml
-$ManagementGroupHierarchy = $EnvironmentConfiguration.variables['var-managementgroup-hierarchy'] | ConvertFrom-Json
-
-$TopLevelManagementGroup = $ManagementGroupHierarchy.children[0]
-
-Write-Output "Using top level management group: $($TopLevelManagementGroup.id)"
-Write-Output "Deploying role definitions from $RolesDirectory"
+Write-Output "Using top level management group: $global:TopLevelManagementGroupId"
+Write-Output "Deploying role definitions from $global:RolesDirectory"
 
 foreach ($roleDefinition in Get-ChildItem -Path $RolesDirectory) {
   Write-Output "Deploying $($roleDefinition.name)"
 
   # TODO: Add Azure PS deployment command
 }
-
