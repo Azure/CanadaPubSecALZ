@@ -1,4 +1,4 @@
-. ".\helpers\Set-EnvironmentContext.ps1"
+. ".\functions\Set-EnvironmentContext.ps1"
 
 # Working Directory
 $WorkingDirectory = "../.."
