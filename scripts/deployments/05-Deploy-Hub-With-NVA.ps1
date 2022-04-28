@@ -25,3 +25,7 @@ Write-Output "Moving Subscription ($DeploymentSubscription) to Management Group 
 
 Write-Output "Deploying $global:NetworkingDirectory/$DeploymentConfigurationFileName to $DeploymentSubscription in $DeploymentRegion"
 # TODO: Add Azure PS deployment command
+
+# TODO:  Check if Private DNS Zones are managed in the Hub.  If so, enable Private DNS Zones policy assignment
+
+# TODO:  Check if DDOS Standard is deployed in the Hub.  If so, enable DDOS Standard policy assignment
