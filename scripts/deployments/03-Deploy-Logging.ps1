@@ -2,8 +2,8 @@ Import-Module powershell-yaml
 
 # Configuration
 $WorkingDirectory = "../../"
-$LoggingDirectory = "$WorkingDirectory/config/logging"
 $Environment = "CanadaESLZ-main"
+$LoggingDirectory = "$WorkingDirectory/config/logging/$Environment/"
 $EnvironmentConfigurationYamlFilePath = "$WorkingDirectory/config/variables/$Environment.yml"
 
 # Deployment
