@@ -5,7 +5,7 @@ $WorkingDirectory = "../../"
 $Environment = "CanadaESLZ-main"
 
 $LoggingDirectory = "$WorkingDirectory/config/logging/$Environment/"
-$NetworkingDirectory = "$WorkingDirectory/config/logging/$Environment/"
+$NetworkingDirectory = "$WorkingDirectory/config/networking/$Environment/"
 
 $EnvironmentConfigurationYamlFilePath = "$WorkingDirectory/config/variables/$Environment.yml"
 
