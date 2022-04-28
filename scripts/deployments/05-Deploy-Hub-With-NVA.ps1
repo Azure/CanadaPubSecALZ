@@ -25,4 +25,8 @@ $LoggingConfigurationFilePath = "$LoggingDirectory/$LoggingConfigurationFileName
 
 # TODO: Load networking configuration and check if Log Analytics Workspace Id is provided.  Otherwise set it.
 
+Write-Output "Moving Subscription ($DeploymentSubscription) to Management Group ($DeploymentManagementGroup)"
+# TODO: Add Azure PS deployment command
+
+Write-Output "Deploying $NetworkingDirectory/$DeploymentConfigurationFileName to $DeploymentSubscription in $DeploymentRegion"
 # TODO: Add Azure PS deployment command
