@@ -1,4 +1,7 @@
+#Requires -Modules powershell-yaml
+ 
 Import-Module powershell-yaml
+
 function Set-EnvironmentContext {
   param (
     [string] $WorkingDirectory,

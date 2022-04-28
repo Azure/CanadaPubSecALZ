@@ -1,3 +1,5 @@
+#Requires -Modules powershell-yaml
+
 . ".\functions\Set-EnvironmentContext.ps1"
 
 # Working Directory
