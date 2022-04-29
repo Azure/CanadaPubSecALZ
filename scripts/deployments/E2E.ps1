@@ -22,6 +22,7 @@ $Features = @{
   DeployRoles = $false
   DeployLogging = $false
   DeployPolicy = $false
+  DeployHubNetworkWithNVA = $false
 }
 
 Write-Output "Features configured for deployment:"
@@ -61,6 +62,7 @@ if ($Features.DeployLogging) {
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])"
 }
 
+# Deploy Policy
 if ($Features.DeployPolicy) {
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
@@ -102,17 +104,27 @@ if ($Features.DeployPolicy) {
     -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
 }
 
+# Deploy Hub Networking with NVA
+if ($Features.DeployHubNetworkWithNVA) {
+  # Get Logging information using logging config file
+  $LoggingConfiguration = Get-LoggingConfiguration `
+    -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
+    -SubscriptionId $Context.Variables['var-logging-subscriptionId']
+
+    Set-HubNetwork-With-NVA `
+      -Context $Context `
+      -Region $Context.Variables['var-hubnetwork-region'] `
+      -ManagementGroupId $Context.Variables['var-hubnetwork-managementGroupId'] `
+      -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
+      -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-nva-configurationFileName'])" `
+      -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
+}
+
 <#
 
 
 
-# Hub Networking with NVA
-Set-HubNetwork-With-NVA `
-  -Region $Context.Variables['var-hubnetwork-region'] `
-  -ManagementGroupId $Context.Variables['var-hubnetwork-managementGroupId'] `
-  -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
-  -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-nva-configurationFileName'])" `
-  -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
+
 
 # Hub Networking with Azure Firewall
 Set-AzureFirewallPolicy `
