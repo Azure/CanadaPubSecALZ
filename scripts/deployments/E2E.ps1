@@ -1,4 +1,4 @@
-#Requires -Modules powershell-yaml
+#Requires -Modules Az, powershell-yaml
 
 . ".\Functions\EnvironmentContext.ps1"
 . ".\Functions\ManagementGroups.ps1"
@@ -10,17 +10,26 @@
 . ".\Functions\Subscriptions.ps1"
 
 $EnvironmentName = "CanadaESLZ-main"
-$WorkingDirectory = "../.."
+$WorkingDirectory = Resolve-Path "../.."
+
+# Replace the Tenant ID with the GUID for your Azure Active Directory instance.
+# It can be found through https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview
+$AzureADTenantId = "343ddfdb-bef5-46d9-99cf-ed67d5948783"
 
 # Az Login
-# TODO:  Login
+Connect-AzAccount `
+  -UseDeviceAuthentication `
+  -TenantId $AzureADTenantId
 
 # Set Azure Landing Zones Context
 $Context = New-EnvironmentContext -Environment $EnvironmentName -WorkingDirectory $WorkingDirectory
 
 # Deploy Management Groups
 Set-ManagementGroups `
+  -Context $Context `
   -ManagementGroupHierarchy $Context.ManagementGroupHierarchy
+
+<#
 
 # Deploy Roles
 Set-Roles `
@@ -102,3 +111,5 @@ Set-Subscriptions `
   -Region "canadacentral" `
   -SubscriptionIds $("4f9", "ec6") `
   -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
+
+#>

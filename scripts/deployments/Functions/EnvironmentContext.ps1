@@ -24,7 +24,7 @@ function New-EnvironmentContext {
 
   # Create a new context object
   return [PSCustomObject]@{
-    EnvironmentConfigurationYamlFilePath = $EnvironmentConfigurationYamlFilePath
+    WorkingDirectory = $WorkingDirectory
 
     RolesDirectory = "$WorkingDirectory/roles"
    
@@ -41,5 +41,8 @@ function New-EnvironmentContext {
 
     # Identify the top level management group (the first child underneath Tenant Root Group)
     TopLevelManagementGroupId = $ManagementGroupHierarchy.children[0].id
+
+    # TODO:  Retrieve from common.yml
+    DeploymentRegion = "canadacentral"
   }
 }
