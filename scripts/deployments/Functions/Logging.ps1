@@ -9,6 +9,8 @@ function Get-LoggingConfiguration {
 
   $Configuration = Get-Content $ConfigurationFilePath | ConvertFrom-Json
 
+  Set-AzContext -Subscription $SubscriptionId
+
   $LogAnalyticsWorkspace = Get-AzOperationalInsightsWorkspace `
                               -Name $Configuration.parameters.logAnalyticsWorkspaceName.value `
                               -ResourceGroupName $Configuration.parameters.logAnalyticsResourceGroupName.value
