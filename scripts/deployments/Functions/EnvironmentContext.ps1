@@ -35,6 +35,7 @@ function New-EnvironmentContext {
       
     LoggingDirectory = "$WorkingDirectory/config/logging/$Environment"
     NetworkingDirectory = "$WorkingDirectory/config/networking/$Environment"
+    SubscriptionsDirectory = "$WorkingDirectory/config/subscriptions/$Environment"
   
     Variables = $Variables
     ManagementGroupHierarchy = $ManagementGroupHierarchy

@@ -1,5 +1,9 @@
 #Requires -Modules Az, powershell-yaml
 
+# In order to use this End to End script, you must configure ARM template configurations for Logging, Networking and Subscriptions.
+# Please follow the instructions on https://github.com/Azure/CanadaPubSecALZ/blob/main/docs/onboarding/azure-devops-pipelines.md
+# to setup the configuration files.  Once the configuration files are setup, you can choose to run this script or use Azure DevOps.
+
 . ".\Functions\EnvironmentContext.ps1"
 . ".\Functions\ManagementGroups.ps1"
 . ".\Functions\Roles.ps1"
@@ -9,12 +13,15 @@
 . ".\Functions\HubNetworkWithAzureFirewall.ps1"
 . ".\Functions\Subscriptions.ps1"
 
+# Set the environment name which is used to locate configuration files stored within the /config directory 
 $EnvironmentName = "CanadaESLZ-main"
-$WorkingDirectory = Resolve-Path "../.."
 
 # Replace the Tenant ID with the GUID for your Azure Active Directory instance.
 # It can be found through https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview
 $AzureADTenantId = "343ddfdb-bef5-46d9-99cf-ed67d5948783"
+
+# Set the working directory.  It should point the root of this project.
+$WorkingDirectory = Resolve-Path "../.."
 
 $Features = @{
   # Prompt to login to Azure AD and set the context for Azure deployments
@@ -37,6 +44,9 @@ $Features = @{
 
   # Hub Networking - With Azure Firewall
   DeployHubNetworkWithAzureFirewall = $false
+
+  # Subscriptions
+  DeploySubscriptions = $false
 }
 
 Write-Output "Features configured for deployment:"
@@ -125,13 +135,13 @@ if ($Features.DeployHubNetworkWithNVA) {
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
     -SubscriptionId $Context.Variables['var-logging-subscriptionId']
 
-    Set-HubNetwork-With-NVA `
-      -Context $Context `
-      -Region $Context.Variables['var-hubnetwork-region'] `
-      -ManagementGroupId $Context.Variables['var-hubnetwork-managementGroupId'] `
-      -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
-      -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-nva-configurationFileName'])" `
-      -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
+  Set-HubNetwork-With-NVA `
+    -Context $Context `
+    -Region $Context.Variables['var-hubnetwork-region'] `
+    -ManagementGroupId $Context.Variables['var-hubnetwork-managementGroupId'] `
+    -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
+    -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-nva-configurationFileName'])" `
+    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
 }
 
 # Hub Networking with Azure Firewall
@@ -163,12 +173,18 @@ if ($Features.DeployHubNetworkWithAzureFirewall) {
     -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
 }
 
-<#
+# Deploy Subscription archetypes
+if ($Features.DeploySubscriptions) {
+  # Get Logging information using logging config file
+  $LoggingConfiguration = Get-LoggingConfiguration `
+    -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
+    -SubscriptionId $Context.Variables['var-logging-subscriptionId']
 
-# Subscriptions
-Set-Subscriptions `
-  -Region "canadacentral" `
-  -SubscriptionIds $("4f9", "ec6") `
-  -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
-
-#>
+  # Deploy archetypes
+  # Replace subscription id example below with your subscription ids
+  Set-Subscriptions `
+    -Context $Context `
+    -Region "canadacentral" `
+    -SubscriptionIds $("4f9f8765-911a-4a6d-af60-4bc0473268c0") `
+    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
+}
