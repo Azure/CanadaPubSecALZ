@@ -16,6 +16,11 @@ $WorkingDirectory = Resolve-Path "../.."
 # It can be found through https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview
 $AzureADTenantId = "343ddfdb-bef5-46d9-99cf-ed67d5948783"
 
+$Features = @{
+  DeployManagementGroups = $false
+  DeployRoles = $false
+}
+
 # Az Login
 Connect-AzAccount `
   -UseDeviceAuthentication `
@@ -25,16 +30,24 @@ Connect-AzAccount `
 $Context = New-EnvironmentContext -Environment $EnvironmentName -WorkingDirectory $WorkingDirectory
 
 # Deploy Management Groups
-Set-ManagementGroups `
-  -Context $Context `
-  -ManagementGroupHierarchy $Context.ManagementGroupHierarchy
+if ($Features.DeployManagementGroups) {
+  Set-ManagementGroups `
+    -Context $Context `
+    -ManagementGroupHierarchy $Context.ManagementGroupHierarchy
+}
+
+# Deploy Roles
+if ($Features.DeployRoles) {
+  Set-Roles `
+    -Context $Context `
+    -RolesDirectory $Context.RolesDirectory `
+    -ManagementGroupId $Context.TopLevelManagementGroupId
+}
 
 <#
 
-# Deploy Roles
-Set-Roles `
-  -RolesDirectory $Context.RolesDirectory `
-  -ManagementGroupId $Context.TopLevelManagementGroupId
+
+
 
 # Deploy Logging
 Set-Logging `
