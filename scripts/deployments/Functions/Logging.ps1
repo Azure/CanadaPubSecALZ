@@ -9,14 +9,16 @@ function Get-LoggingConfiguration {
 
   $Configuration = Get-Content $ConfigurationFilePath | ConvertFrom-Json
 
-  # TODO:  Retreive Log Analytics Workspace Resource Id & Workspace Id
+  $LogAnalyticsWorkspace = Get-AzOperationalInsightsWorkspace `
+                              -Name $Configuration.parameters.logAnalyticsWorkspaceName.value `
+                              -ResourceGroupName $Configuration.parameters.logAnalyticsResourceGroupName.value
 
   return [PSCustomObject]@{
     ResourceGroup = $Configuration.parameters.logAnalyticsResourceGroupName.value
     LogAnalyticsWorkspaceName = $Configuration.parameters.logAnalyticsWorkspaceName.value
     LogRetentionInDays = $Configuration.parameters.logAnalyticsRetentionInDays.value
-    LogAnalyticsWorkspaceResourceId = "TODO"
-    LogAnalyticsWorkspaceId = "TODO"
+    LogAnalyticsWorkspaceResourceId = $LogAnalyticsWorkspace.ResourceId
+    LogAnalyticsWorkspaceId = $LogAnalyticsWorkspace.CustomerId
   }
 }
 
