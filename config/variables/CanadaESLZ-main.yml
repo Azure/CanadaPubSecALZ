@@ -58,7 +58,7 @@ variables:
     }
 
   # Logging
-  var-logging-region: $(deploymentRegion)
+  var-logging-region: canadacentral
   var-logging-managementGroupId: pubsecPlatformManagement
   var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
   var-logging-configurationFileName: logging.parameters.json
@@ -67,7 +67,7 @@ variables:
   var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
 
   # Hub Networking
-  var-hubnetwork-region: $(deploymentRegion)
+  var-hubnetwork-region: canadacentral
   var-hubnetwork-managementGroupId: pubsecPlatformConnectivity
   var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
 
