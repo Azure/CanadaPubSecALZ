@@ -13,12 +13,22 @@ function Set-Policy-Definitions {
       $PolicyRuleFilePath = "$($_.FullName)/azurepolicy.rules.json"
       $PolicyParametersFilePath = "$($_.FullName)/azurepolicy.parameters.json"
 
-      Write-Output "Policy: $PolicyDefinitionName"
-      Write-Output "- Rule: $PolicyRuleFilePath"
-      Write-Output "- Parameters: $PolicyParametersFilePath"
-      Write-Output "- Config: $PolicyConfigFilePath"
+      $PolicyConfig = Get-Content $PolicyConfigFilePath | ConvertFrom-Json
 
-      # TODO: Add Azure PS deployment command
+      Write-Output "Policy: $PolicyDefinitionName"
+      Write-Output "   - Rule: $PolicyRuleFilePath"
+      Write-Output "   - Parameters: $PolicyParametersFilePath"
+      Write-Output "   - Id: $PolicyDefinitionName"
+      Write-Output "   - Display Name: $($PolicyConfig.name)"
+      Write-Output "   - Mode: $($PolicyConfig.mode)"
+
+      New-AzPolicyDefinition `
+        -ManagementGroupName $ManagementGroupId `
+        -Name $PolicyDefinitionName `
+        -DisplayName $($PolicyConfig.name) `
+        -Mode $PolicyConfig.mode `
+        -Policy $PolicyRuleFilePath `
+        -Parameter $PolicyParametersFilePath
     }
 }
 
