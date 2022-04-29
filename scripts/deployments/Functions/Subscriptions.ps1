@@ -1,4 +1,4 @@
-function Deploy-Subscriptions {
+function Set-Subscriptions {
   param (
     [Parameter(Mandatory = $true)]
     [String]$Region,

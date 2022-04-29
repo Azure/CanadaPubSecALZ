@@ -1,4 +1,4 @@
-function Deploy-Roles {
+function Set-Roles {
   param (
     [Parameter(Mandatory = $true)]
     [String] $RolesDirectory,

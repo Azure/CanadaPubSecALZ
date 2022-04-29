@@ -1,126 +1,104 @@
 #Requires -Modules powershell-yaml
 
-. ".\functions\SetEnvironmentContext.ps1"
-. ".\functions\ManagementGroups.ps1"
-. ".\functions\Roles.ps1"
-. ".\functions\Logging.ps1"
-. ".\functions\Policy.ps1"
-. ".\functions\HubNetworkWithNVA.ps1"
-. ".\functions\HubNetworkWithAzureFirewall.ps1"
-. ".\functions\Subscriptions.ps1"
+. ".\Functions\EnvironmentContext.ps1"
+. ".\Functions\ManagementGroups.ps1"
+. ".\Functions\Roles.ps1"
+. ".\Functions\Logging.ps1"
+. ".\Functions\Policy.ps1"
+. ".\Functions\HubNetworkWithNVA.ps1"
+. ".\Functions\HubNetworkWithAzureFirewall.ps1"
+. ".\Functions\Subscriptions.ps1"
 
-$Environment = "CanadaESLZ-main"
+$EnvironmentName = "CanadaESLZ-main"
 $WorkingDirectory = "../.."
-
-$RolesDirectory = "$WorkingDirectory/roles"
-$PolicyDirectory = "$WorkingDirectory/policy"
 
 # Az Login
 # TODO:  Login
 
-# Set Context
-Set-EnvironmentContext -Environment $Environment -WorkingDirectory $WorkingDirectory
+# Set Azure Landing Zones Context
+$Context = New-EnvironmentContext -Environment $EnvironmentName -WorkingDirectory $WorkingDirectory
 
 # Deploy Management Groups
-Deploy-ManagementGroups `
-  -ManagementGroupHierarchy $global:ManagementGroupHierarchy
+Set-ManagementGroups `
+  -ManagementGroupHierarchy $Context.ManagementGroupHierarchy
 
 # Deploy Roles
-Deploy-Roles `
-  -RolesDirectory $RolesDirectory `
-  -ManagementGroupId $global:TopLevelManagementGroupId
+Set-Roles `
+  -RolesDirectory $Context.RolesDirectory `
+  -ManagementGroupId $Context.TopLevelManagementGroupId
 
 # Deploy Logging
-Deploy-Logging `
-  -Region $global:EnvironmentConfiguration.variables['var-logging-region'] `
-  -ManagementGroupId $global:EnvironmentConfiguration.variables['var-logging-managementGroupId'] `
-  -SubscriptionId $global:EnvironmentConfiguration.variables['var-logging-subscriptionId'] `
-  -ConfigurationFilePath "$global:LoggingDirectory/$($global:EnvironmentConfiguration.variables['var-logging-configurationFileName'])"
+Set-Logging `
+  -Region $Context.Variables['var-logging-region'] `
+  -ManagementGroupId $Context.Variables['var-logging-managementGroupId'] `
+  -SubscriptionId $Context.Variables['var-logging-subscriptionId'] `
+  -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])"
+
+# Get Logging Configuration using logging configuration file & Azure environment
+$LoggingConfiguration = Get-LoggingConfiguration `
+  -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
+  -SubscriptionId $Context.Variables['var-logging-subscriptionId']
 
 # Deploy Policies
-$LoggingSubscription = $global:EnvironmentConfiguration.variables['var-logging-subscriptionId']
-$LoggingConfigurationFileName = "$global:LoggingDirectory/$global:EnvironmentConfiguration.variables['var-logging-configurationFileName']"
 
-#Custom Policy Definitions
-Deploy-Policy-Definitions `
-  -PolicyDefinitionsDirectory "$PolicyDirectory/custom/definitions/policy" `
-  -ManagementGroupId $global:TopLevelManagementGroupId
+## Custom Policy Definitions
+Set-Policy-Definitions `
+  -PolicyDefinitionsDirectory $Context.PolicyCustomDefinitionDirectory `
+  -ManagementGroupId $Context.TopLevelManagementGroupId
 
-#Custom Policy Set Definitions
-Deploy-PolicySet-Defintions `
-  -PolicySetDefinitionsDirectory "$PolicyDirectory/custom/definitions/policyset" `
-  -ManagementGroupId $global:TopLevelManagementGroupId `
+## Custom Policy Set Definitions
+Set-PolicySet-Defintions `
+  -PolicySetDefinitionsDirectory $Context.PolicySetCustomDefinitionDirectory `
+  -ManagementGroupId $Context.TopLevelManagementGroupId `
   -PolicySetDefinitionNames $('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'DNSPrivateEndpoints', 'Tags')
 
-#Built In Policy Set Assignments
-$BuiltInPolicySetAssignmentScopes = $(
-  [PSCustomObject]@{
-    ManagementGroupId = $global:TopLevelManagementGroupId
-    Policies = $(
-      'asb',
-      'nist80053r4',
-      'nist80053r5',
-      'pbmm',
-      'cis-msft-130',
-      'fedramp-moderate',
-      'hitrust-hipaa',
-      'location'
-    )
-    LogAnalyticsWorkspaceResourceId = "TODO:  SET Dynamically"
-    LogAnalyticsWorkspaceId = "TODO:  SET Dynamically"
-    LogAnalyticsWorkspaceRetentionInDays = "TODO:  SET Dynamically"
-  }
-)
-
-Deploy-PolicySet-Assignments `
-  -PolicySetAssignmentsDirectory "$PolicyDirectory/builtin/assignments" `
-  -AssignmentScopes $BuiltInPolicySetAssignmentScopes
+## Built In Policy Set Assignments
+Set-PolicySet-Assignments `
+  -PolicySetAssignmentsDirectory $Context.PolicySetBuiltInAssignmentsDirectory `
+  -PolicySetAssignmentManagementGroupId $Context.TopLevelManagementGroupId `
+  -PolicySetAssignmentNames $('asb', 'nist80053r4', 'nist80053r5', 'pbmm', 'cis-msft-130', 'fedramp-moderate', 'hitrust-hipaa', 'location') `
+  -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
+  -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
+  -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
 
 #Custom Policy Sets Assignments
-$CustomPolicySetAssignmentScopes = $(
-  [PSCustomObject]@{
-    ManagementGroupId = $global:TopLevelManagementGroupId
-    Policies = $(
-      'AKS',
-      'DefenderForCloud',
-      'LogAnalytics',
-      'Network',
-      'Tags'
-    )
-    LogAnalyticsWorkspaceId = "TODO:  SET Dynamically"
-    LogAnalyticsWorkspaceRetentionInDays = "TODO:  SET Dynamically"
-  }
-)
-
-Deploy-PolicySet-Assignments `
-  -PolicySetAssignmentsDirectory "$PolicyDirectory/custom/assignments/policyset" `
-  -AssignmentScopes $CustomPolicySetAssignmentScopes
+Set-PolicySet-Assignments `
+  -PolicySetAssignmentsDirectory $Context.PolicySetCustomAssignmentsDirectory `
+  -PolicySetAssignmentManagementGroupId $Context.TopLevelManagementGroupId `
+  -PolicySetAssignmentNames $('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'Tags') `
+  -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
+  -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
+  -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
 
 # Hub Networking with NVA
-Deploy-HubNetwork-With-NVA `
-  -Region $global:EnvironmentConfiguration.variables['var-hubnetwork-region'] `
-  -ManagementGroupId $global:EnvironmentConfiguration.variables['var-hubnetwork-managementGroupId'] `
-  -SubscriptionId $global:EnvironmentConfiguration.variables['var-hubnetwork-subscriptionId'] `
-  -ConfigurationFilePath "$global:NetworkingDirectory/$($global:EnvironmentConfiguration.variables['var-hubnetwork-nva-configurationFileName'])" `
-  -LogAnalyticsWorkspaceResourceId "TODO:  SET Dynamically"
-
+Set-HubNetwork-With-NVA `
+  -Region $Context.Variables['var-hubnetwork-region'] `
+  -ManagementGroupId $Context.Variables['var-hubnetwork-managementGroupId'] `
+  -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
+  -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-nva-configurationFileName'])" `
+  -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
 
 # Hub Networking with Azure Firewall
-Deploy-AzureFirewall-Policy `
-  -Region $global:EnvironmentConfiguration.variables['var-hubnetwork-region'] `
-  -SubscriptionId $global:EnvironmentConfiguration.variables['var-hubnetwork-subscriptionId'] `
-  -ConfigurationFilePath "$global:NetworkingDirectory/$($global:EnvironmentConfiguration.variables['var-hubnetwork-azfwPolicy-configurationFileName'])"
+Set-AzureFirewallPolicy `
+  -Region $Context.Variables['var-hubnetwork-region'] `
+  -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
+  -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfwPolicy-configurationFileName'])"
 
-Deploy-HubNetwork-With-AzureFirewall `
-  -Region $global:EnvironmentConfiguration.variables['var-hubnetwork-region'] `
-  -ManagementGroupId $global:EnvironmentConfiguration.variables['var-hubnetwork-managementGroupId'] `
-  -SubscriptionId $global:EnvironmentConfiguration.variables['var-hubnetwork-subscriptionId'] `
-  -ConfigurationFilePath "$global:NetworkingDirectory/$($global:EnvironmentConfiguration.variables['var-hubnetwork-azfw-configurationFileName'])" `
-  -AzureFirewallPolicyResourceId "TODO:  SET Dynamically" `
-  -LogAnalyticsWorkspaceResourceId "TODO:  SET Dynamically"
+# Retrieve Azure Firewall Configuration
+$AzureFirewallConfiguration = Get-AzureFirewallPolicy `
+  -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
+  -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfwPolicy-configurationFileName'])"
+
+Set-HubNetwork-With-AzureFirewall `
+  -Region $Context.Variables['var-hubnetwork-region'] `
+  -ManagementGroupId $Context.Variables['var-hubnetwork-managementGroupId'] `
+  -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
+  -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfw-configurationFileName'])" `
+  -AzureFirewallPolicyResourceId $AzureFirewallConfiguration.AzureFirewallPolicyResourceId `
+  -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
 
 # Subscriptions
-Deploy-Subscriptions `
+Set-Subscriptions `
   -Region "canadacentral" `
   -SubscriptionIds $("4f9", "ec6") `
-  -LogAnalyticsWorkspaceResourceId "TODO:  SET Dynamically"
+  -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId

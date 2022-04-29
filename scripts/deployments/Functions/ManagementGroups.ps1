@@ -1,9 +1,9 @@
-function Deploy-ManagementGroups {
+function Set-ManagementGroups {
   param (
     [Parameter(Mandatory = $true)]
     $ManagementGroupHierarchy
   )
-  function Process-ManagementGroup-Hierarchy {
+  function Set-ChildManagementGroups {
     param (
       [Parameter(Mandatory = $true)]
       $ParentNode
@@ -18,9 +18,9 @@ function Deploy-ManagementGroups {
 
       # TODO: Add Azure PS deployment command
 
-      Process-ManagementGroup-Hierarchy($childNode)
+      Set-ChildManagementGroups($childNode)
     }
   }
 
-  Process-ManagementGroup-Hierarchy($ManagementGroupHierarchy)
+  Set-ChildManagementGroups($ManagementGroupHierarchy)
 }

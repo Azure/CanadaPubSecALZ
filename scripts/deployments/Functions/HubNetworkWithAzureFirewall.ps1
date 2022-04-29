@@ -1,4 +1,22 @@
-function Deploy-AzureFirewall-Policy {
+function Get-AzureFirewallPolicy {
+  param (
+    [Parameter(Mandatory = $true)]
+    [String]$ConfigurationFilePath,
+
+    [Parameter(Mandatory = $true)]
+    [String]$SubscriptionId
+  )
+
+  $Configuration = Get-Content $ConfigurationFilePath | ConvertFrom-Json
+
+  # TODO:  Retreive Azure Firewall Policy Id
+
+  return [PSCustomObject]@{
+    AzureFirewallPolicyResourceId = "TODO"
+  }
+}
+
+function Set-AzureFirewallPolicy {
   param (
     [Parameter(Mandatory = $true)]
     [String]$Region,
@@ -14,7 +32,7 @@ function Deploy-AzureFirewall-Policy {
   Write-Output "Deploying $ConfigurationFilePath to $SubscriptionId in $Region"
 }
 
-function Deploy-HubNetwork-With-AzureFirewall {
+function Set-HubNetwork-With-AzureFirewall {
   param (
     [Parameter(Mandatory = $true)]
     [String]$Region,

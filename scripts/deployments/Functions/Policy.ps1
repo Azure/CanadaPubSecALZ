@@ -1,4 +1,4 @@
-function Deploy-Policy-Definitions {
+function Set-Policy-Definitions {
   param(
     [Parameter(Mandatory = $true)]
     [String] $PolicyDefinitionsDirectory,
@@ -22,7 +22,7 @@ function Deploy-Policy-Definitions {
     }
 }
 
-function Deploy-PolicySet-Defintions {
+function Set-PolicySet-Defintions {
   param(
     [Parameter(Mandatory = $true)]
     [String] $PolicySetDefinitionsDirectory,
@@ -52,41 +52,49 @@ function Deploy-PolicySet-Defintions {
   }
 }
 
-function Deploy-PolicySet-Assignments {
+function Set-PolicySet-Assignments {
   param(
     [Parameter(Mandatory = $true)]
     [String] $PolicySetAssignmentsDirectory,
 
     [Parameter(Mandatory = $true)]
-    [PSCustomObject] $AssignmentScopes
+    [String] $PolicySetAssignmentManagementGroupId,
+
+    [Parameter(Mandatory = $true)]
+    [String[]] $PolicySetAssignmentNames,
+
+    [Parameter(Mandatory = $true)]
+    [String] $LogAnalyticsWorkspaceResourceId,
+
+    [Parameter(Mandatory = $true)]
+    [String] $LogAnalyticsWorkspaceId,
+
+    [Parameter(Mandatory = $true)]
+    [Int32] $LogAnalyticsWorkspaceRetentionInDays
   )
 
-  foreach ($assignmentScope in $AssignmentScopes) {
-    Write-Output "Assignment scope: $($assignmentScope.ManagementGroupId)"
-    
-    foreach ($policy in $assignmentScope.Policies) {
-      Write-Output "Policy: $policy"
+  foreach ($policySetAssignmentName in $PolicySetAssignmentNames) {
+    Write-Output "Policy Set assignment Name: $($policySetAssignmentName)"
 
-      $DefaultPolicyParameterFilePath = "$PolicySetAssignmentsDirectory/$policy.parameters.json"
-      $AssignmentScopeParameterFilePath = "$PolicySetAssignmentsDirectory/$policy-$($assignmentScope.ManagementGroupId).parameters.json"
+    $DefaultPolicyParameterFilePath = "$PolicySetAssignmentsDirectory/$policySetAssignmentName.parameters.json"
+    $AssignmentScopeParameterFilePath = "$PolicySetAssignmentsDirectory/$policySetAssignmentName-$PolicySetAssignmentManagementGroupId.parameters.json"
 
-      # Check if there is an assignment scope specific parameter file.
-      # The file will have the syntax <Policy>-<Management Group Id>.parameters.json
-      # If not found, then use the default parameter file with syntax <Policy>.parameters.json
-      if (Test-Path $AssignmentScopeParameterFilePath -PathType Leaf) {
-        $PolicyParameterFilePath = $AssignmentScopeParameterFilePath
-      } else {
-        $PolicyParameterFilePath = $DefaultPolicyParameterFilePath
-      }
-
-      Write-Output "Policy: $policy"
-      Write-Output "- Definition: $PolicySetAssignmentsDirectory/$policy.bicep"
-      Write-Output "- Parameters: $PolicyParameterFilePath"
-
-      # TODO: Add logic to replace templated parameters
-
-      # TODO: Add Azure PS deployment command
-
+    # Check if there is an assignment scope specific parameter file.
+    # The file will have the syntax <Policy>-<Management Group Id>.parameters.json
+    # If not found, then use the default parameter file with syntax <Policy>.parameters.json
+    if (Test-Path $AssignmentScopeParameterFilePath -PathType Leaf) {
+      $PolicySetParameterFilePath = $AssignmentScopeParameterFilePath
+    } else {
+      $PolicySetParameterFilePath = $DefaultPolicyParameterFilePath
     }
+
+    Write-Output "Policy: $policy"
+    Write-Output "- Definition: $PolicySetAssignmentsDirectory/$policySetAssignmentName.bicep"
+    Write-Output "- Parameters: $PolicySetParameterFilePath"
+
+    # TODO: Add logic to replace templated parameters
+
+    # TODO: Add Azure PS deployment command
+
   }
 }

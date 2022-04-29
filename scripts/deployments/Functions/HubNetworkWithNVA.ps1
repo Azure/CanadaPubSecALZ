@@ -1,4 +1,4 @@
-function Deploy-HubNetwork-With-NVA {
+function Set-HubNetwork-With-NVA {
   param (
     [Parameter(Mandatory = $true)]
     [String]$Region,
