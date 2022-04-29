@@ -30,7 +30,7 @@ function New-EnvironmentContext {
    
     PolicyCustomDefinitionDirectory = "$PolicyDirectory/custom/definitions/policy"
     PolicySetCustomDefinitionDirectory = "$PolicyDirectory/custom/definitions/policyset"
-    PolicySetCustomAssignmentsDirectory = "$PolicyDirectory/custom/assignments/policyset"
+    PolicySetCustomAssignmentsDirectory = "$PolicyDirectory/custom/assignments"
     PolicySetBuiltInAssignmentsDirectory = "$PolicyDirectory/builtin/assignments"
       
     LoggingDirectory = "$WorkingDirectory/config/logging/$Environment"

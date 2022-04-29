@@ -35,6 +35,9 @@ function Set-Policy-Definitions {
 function Set-PolicySet-Defintions {
   param(
     [Parameter(Mandatory = $true)]
+    $Context, 
+
+    [Parameter(Mandatory = $true)]
     [String] $PolicySetDefinitionsDirectory,
 
     [Parameter(Mandatory = $true)]
@@ -45,25 +48,38 @@ function Set-PolicySet-Defintions {
   )
 
   foreach ($policySetDefinitionName in $PolicySetDefinitionNames) {
-    Write-Output "Policy set definition: $policySetDefinitionName"
-
     $PolicySetDefinitionFilePath = "$($PolicySetDefinitionsDirectory)/$($policySetDefinitionName).bicep"
     $PolicySetDefinitionParametersFilePath = "$($PolicySetDefinitionsDirectory)/$($policySetDefinitionName).parameters.json"
 
+    # Replace templated parameters & create temp file for deployment
+    $ParametersContent = Get-Content $PolicySetDefinitionParametersFilePath
+    $ParametersContent = $ParametersContent -Replace '{{var-topLevelManagementGroupName}}', $ManagementGroupId
+
+    $PopulatedParametersFilePath = "$($PolicySetDefinitionsDirectory)/$($policySetDefinitionName)-populated.parameters.json"
+    $ParametersContent | Set-Content -Path $PopulatedParametersFilePath
+
     Write-Output "Policy Set: $policySetDefinitionName"
-    Write-Output "- Definition: $PolicySetDefinitionFilePath"
-    Write-Output "- Parameters: $PolicySetDefinitionParametersFilePath"
+    Write-Output "   - Definition: $PolicySetDefinitionFilePath"
+    Write-Output "   - Parameters: $PolicySetDefinitionParametersFilePath"
+    Write-Output "   - Populated (temp): $PopulatedParametersFilePath"
 
-    # TODO: Add logic to load logging configuration
+    # Deploy Policy Set
+    New-AzManagementGroupDeployment `
+      -ManagementGroupId $ManagementGroupId `
+      -Location $Context.DeploymentRegion `
+      -TemplateFile $PolicySetDefinitionFilePath `
+      -TemplateParameterFile $PopulatedParametersFilePath
 
-    # TODO: Add logic to replace templated parameters
-
-    # TODO: Add Azure PS deployment command
+    # Remove temporary file
+    Remove-Item $PopulatedParametersFilePath
   }
 }
 
 function Set-PolicySet-Assignments {
   param(
+    [Parameter(Mandatory = $true)]
+    $Context,
+
     [Parameter(Mandatory = $true)]
     [String] $PolicySetAssignmentsDirectory,
 
@@ -72,6 +88,9 @@ function Set-PolicySet-Assignments {
 
     [Parameter(Mandatory = $true)]
     [String[]] $PolicySetAssignmentNames,
+
+    [Parameter(Mandatory = $true)]
+    [String] $LogAnalyticsWorkspaceResourceGroupName,
 
     [Parameter(Mandatory = $true)]
     [String] $LogAnalyticsWorkspaceResourceId,
@@ -86,6 +105,8 @@ function Set-PolicySet-Assignments {
   foreach ($policySetAssignmentName in $PolicySetAssignmentNames) {
     Write-Output "Policy Set assignment Name: $($policySetAssignmentName)"
 
+    $PolicySetAssignmentFilePath = "$($PolicySetAssignmentsDirectory)/$($policySetAssignmentName).bicep"
+
     $DefaultPolicyParameterFilePath = "$PolicySetAssignmentsDirectory/$policySetAssignmentName.parameters.json"
     $AssignmentScopeParameterFilePath = "$PolicySetAssignmentsDirectory/$policySetAssignmentName-$PolicySetAssignmentManagementGroupId.parameters.json"
 
@@ -98,13 +119,32 @@ function Set-PolicySet-Assignments {
       $PolicySetParameterFilePath = $DefaultPolicyParameterFilePath
     }
 
+    # Replace templated parameters & create temp file for deployment
+    $ParametersContent = Get-Content $PolicySetParameterFilePath
+    $ParametersContent = $ParametersContent -Replace '{{var-topLevelManagementGroupName}}', $Context.TopLevelManagementGroupId
+    $ParametersContent = $ParametersContent -Replace '{{var-logging-logAnalyticsWorkspaceResourceId}}', $LogAnalyticsWorkspaceResourceId
+    $ParametersContent = $ParametersContent -Replace '{{var-logging-logAnalyticsWorkspaceId}}', $LogAnalyticsWorkspaceId
+    $ParametersContent = $ParametersContent -Replace '{{var-logging-logAnalyticsResourceGroupName}}', $LogAnalyticsWorkspaceResourceGroupName
+    $ParametersContent = $ParametersContent -Replace '{{var-logging-logAnalyticsRetentionInDays}}', $LogAnalyticsWorkspaceRetentionInDays
+    $ParametersContent = $ParametersContent -Replace '{{var-policyAssignmentManagementGroupId}}', $PolicySetAssignmentManagementGroupId
+    $ParametersContent = $ParametersContent -Replace '{{var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix}}', $Context.Variables['var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix']
+
+    $PopulatedParametersFilePath = "$($PolicySetAssignmentsDirectory)/$($policySetAssignmentName)-populated.parameters.json"
+    $ParametersContent | Set-Content -Path $PopulatedParametersFilePath
+
     Write-Output "Policy: $policy"
-    Write-Output "- Definition: $PolicySetAssignmentsDirectory/$policySetAssignmentName.bicep"
-    Write-Output "- Parameters: $PolicySetParameterFilePath"
+    Write-Output "   - Definition: $PolicySetAssignmentFilePath"
+    Write-Output "   - Parameters: $PolicySetParameterFilePath"
+    Write-Output "   - Populated (temp): $PopulatedParametersFilePath"
 
-    # TODO: Add logic to replace templated parameters
+    # Deploy Policy Set
+    New-AzManagementGroupDeployment `
+      -ManagementGroupId $PolicySetAssignmentManagementGroupId `
+      -Location $Context.DeploymentRegion `
+      -TemplateFile $PolicySetAssignmentFilePath `
+      -TemplateParameterFile $PopulatedParametersFilePath
 
-    # TODO: Add Azure PS deployment command
-
+    # Remove temporary file
+    Remove-Item $PopulatedParametersFilePath
   }
 }

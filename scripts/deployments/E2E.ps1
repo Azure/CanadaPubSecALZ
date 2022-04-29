@@ -21,6 +21,7 @@ $Features = @{
   DeployManagementGroups = $false
   DeployRoles = $false
   DeployLogging = $false
+  DeployPolicy = $false
 }
 
 Write-Output "Features configured for deployment:"
@@ -60,47 +61,50 @@ if ($Features.DeployLogging) {
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])"
 }
 
+if ($Features.DeployPolicy) {
+  # Get Logging information using logging config file
+  $LoggingConfiguration = Get-LoggingConfiguration `
+    -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
+    -SubscriptionId $Context.Variables['var-logging-subscriptionId']
+
+  # Custom Policy Definitions
+  Set-Policy-Definitions `
+    -PolicyDefinitionsDirectory $Context.PolicyCustomDefinitionDirectory `
+    -ManagementGroupId $Context.TopLevelManagementGroupId
+
+  # Custom Policy Set Definitions
+  Set-PolicySet-Defintions `
+    -Context $Context `
+    -PolicySetDefinitionsDirectory $Context.PolicySetCustomDefinitionDirectory `
+    -ManagementGroupId $Context.TopLevelManagementGroupId `
+    -PolicySetDefinitionNames $('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'DNSPrivateEndpoints', 'Tags')
+
+  # Built In Policy Set Assignments
+  Set-PolicySet-Assignments `
+    -Context $Context `
+    -PolicySetAssignmentsDirectory $Context.PolicySetBuiltInAssignmentsDirectory `
+    -PolicySetAssignmentManagementGroupId $Context.TopLevelManagementGroupId `
+    -PolicySetAssignmentNames $('asb', 'nist80053r4', 'nist80053r5', 'pbmm', 'cis-msft-130', 'fedramp-moderate', 'hitrust-hipaa', 'location') `
+    -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
+    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
+    -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
+    -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
+
+  # Custom Policy Sets Assignments
+  Set-PolicySet-Assignments `
+    -Context $Context `
+    -PolicySetAssignmentsDirectory $Context.PolicySetCustomAssignmentsDirectory `
+    -PolicySetAssignmentManagementGroupId $Context.TopLevelManagementGroupId `
+    -PolicySetAssignmentNames $('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'Tags') `
+    -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
+    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
+    -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
+    -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
+}
+
 <#
 
 
-
-
-
-# Get Logging Configuration using logging configuration file & Azure environment
-$LoggingConfiguration = Get-LoggingConfiguration `
-  -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
-  -SubscriptionId $Context.Variables['var-logging-subscriptionId']
-
-# Deploy Policies
-
-## Custom Policy Definitions
-Set-Policy-Definitions `
-  -PolicyDefinitionsDirectory $Context.PolicyCustomDefinitionDirectory `
-  -ManagementGroupId $Context.TopLevelManagementGroupId
-
-## Custom Policy Set Definitions
-Set-PolicySet-Defintions `
-  -PolicySetDefinitionsDirectory $Context.PolicySetCustomDefinitionDirectory `
-  -ManagementGroupId $Context.TopLevelManagementGroupId `
-  -PolicySetDefinitionNames $('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'DNSPrivateEndpoints', 'Tags')
-
-## Built In Policy Set Assignments
-Set-PolicySet-Assignments `
-  -PolicySetAssignmentsDirectory $Context.PolicySetBuiltInAssignmentsDirectory `
-  -PolicySetAssignmentManagementGroupId $Context.TopLevelManagementGroupId `
-  -PolicySetAssignmentNames $('asb', 'nist80053r4', 'nist80053r5', 'pbmm', 'cis-msft-130', 'fedramp-moderate', 'hitrust-hipaa', 'location') `
-  -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
-  -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
-  -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
-
-#Custom Policy Sets Assignments
-Set-PolicySet-Assignments `
-  -PolicySetAssignmentsDirectory $Context.PolicySetCustomAssignmentsDirectory `
-  -PolicySetAssignmentManagementGroupId $Context.TopLevelManagementGroupId `
-  -PolicySetAssignmentNames $('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'Tags') `
-  -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
-  -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
-  -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
 
 # Hub Networking with NVA
 Set-HubNetwork-With-NVA `

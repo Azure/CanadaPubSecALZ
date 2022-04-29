@@ -14,7 +14,7 @@ function Get-LoggingConfiguration {
                               -ResourceGroupName $Configuration.parameters.logAnalyticsResourceGroupName.value
 
   return [PSCustomObject]@{
-    ResourceGroup = $Configuration.parameters.logAnalyticsResourceGroupName.value
+    ResourceGroupName = $Configuration.parameters.logAnalyticsResourceGroupName.value
     LogAnalyticsWorkspaceName = $Configuration.parameters.logAnalyticsWorkspaceName.value
     LogRetentionInDays = $Configuration.parameters.logAnalyticsRetentionInDays.value
     LogAnalyticsWorkspaceResourceId = $LogAnalyticsWorkspace.ResourceId
