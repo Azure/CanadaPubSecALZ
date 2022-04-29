@@ -1,7 +1,7 @@
 function Set-Subscriptions {
   param (
     [Parameter(Mandatory = $true)]
-    [String]$Region,
+    [String] $Region,
     
     [Parameter(Mandatory = $true)]
     [String[]] $SubscriptionIds,
@@ -19,7 +19,7 @@ function Set-Subscriptions {
 
     # TODO: Parse the file name to determine archetype, region and subscription id
 
-    # TODO: Load networking configuration and check if Log Analytics Workspace Id is provided.  Otherwise set it.
+    # TODO: Load subscription configuration and check if Log Analytics Workspace Id is provided.  Otherwise set it.
 
     # TODO: Add Azure PS deployment command
   }
