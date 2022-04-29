@@ -21,6 +21,7 @@
 #         currently executing pipeline.
 
 variables:
+  deploymentRegion: canadacentral
 
   # Management Groups
   var-managementgroup-hierarchy: >

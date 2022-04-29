@@ -43,7 +43,7 @@ function New-EnvironmentContext {
     # Identify the top level management group (the first child underneath Tenant Root Group)
     TopLevelManagementGroupId = $ManagementGroupHierarchy.children[0].id
 
-    # TODO:  Retrieve from common.yml
-    DeploymentRegion = "canadacentral"
+    # Retreive default deployment region
+    DeploymentRegion = $Variables['deploymentRegion']
   }
 }
