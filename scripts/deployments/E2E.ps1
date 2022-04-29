@@ -17,14 +17,21 @@ $WorkingDirectory = Resolve-Path "../.."
 $AzureADTenantId = "343ddfdb-bef5-46d9-99cf-ed67d5948783"
 
 $Features = @{
+  PromptForLogin = $false
   DeployManagementGroups = $false
   DeployRoles = $false
+  DeployLogging = $false
 }
 
+Write-Output "Features configured for deployment:"
+$Features
+
 # Az Login
-Connect-AzAccount `
-  -UseDeviceAuthentication `
-  -TenantId $AzureADTenantId
+if ($Features.PromptForLogin) {
+  Connect-AzAccount `
+    -UseDeviceAuthentication `
+    -TenantId $AzureADTenantId
+}
 
 # Set Azure Landing Zones Context
 $Context = New-EnvironmentContext -Environment $EnvironmentName -WorkingDirectory $WorkingDirectory
@@ -44,17 +51,20 @@ if ($Features.DeployRoles) {
     -ManagementGroupId $Context.TopLevelManagementGroupId
 }
 
+# Deploy Logging
+if ($Features.DeployLogging) {
+  Set-Logging `
+    -Region $Context.Variables['var-logging-region'] `
+    -ManagementGroupId $Context.Variables['var-logging-managementGroupId'] `
+    -SubscriptionId $Context.Variables['var-logging-subscriptionId'] `
+    -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])"
+}
+
 <#
 
 
 
 
-# Deploy Logging
-Set-Logging `
-  -Region $Context.Variables['var-logging-region'] `
-  -ManagementGroupId $Context.Variables['var-logging-managementGroupId'] `
-  -SubscriptionId $Context.Variables['var-logging-subscriptionId'] `
-  -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])"
 
 # Get Logging Configuration using logging configuration file & Azure environment
 $LoggingConfiguration = Get-LoggingConfiguration `
