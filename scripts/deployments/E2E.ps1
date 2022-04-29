@@ -17,12 +17,26 @@ $WorkingDirectory = Resolve-Path "../.."
 $AzureADTenantId = "343ddfdb-bef5-46d9-99cf-ed67d5948783"
 
 $Features = @{
+  # Prompt to login to Azure AD and set the context for Azure deployments
   PromptForLogin = $false
+
+  # Resource Organization
   DeployManagementGroups = $false
+
+  # Access Control
   DeployRoles = $false
+
+  # Logging
   DeployLogging = $false
+
+  # Guardrail & Compliance
   DeployPolicy = $false
+
+  # Hub Networking - With Network Virtual Appliance
   DeployHubNetworkWithNVA = $false
+
+  # Hub Networking - With Azure Firewall
+  DeployHubNetworkWithAzureFirewall = $false
 }
 
 Write-Output "Features configured for deployment:"
@@ -120,30 +134,36 @@ if ($Features.DeployHubNetworkWithNVA) {
       -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
 }
 
-<#
-
-
-
-
-
 # Hub Networking with Azure Firewall
-Set-AzureFirewallPolicy `
-  -Region $Context.Variables['var-hubnetwork-region'] `
-  -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
-  -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfwPolicy-configurationFileName'])"
+if ($Features.DeployHubNetworkWithAzureFirewall) {
+  # Get Logging information using logging config file
+  $LoggingConfiguration = Get-LoggingConfiguration `
+    -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
+    -SubscriptionId $Context.Variables['var-logging-subscriptionId']
 
-# Retrieve Azure Firewall Configuration
-$AzureFirewallConfiguration = Get-AzureFirewallPolicy `
-  -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
-  -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfwPolicy-configurationFileName'])"
+  # Create Azure Firewall Policy
+  Set-AzureFirewallPolicy `
+    -Region $Context.Variables['var-hubnetwork-region'] `
+    -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
+    -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfwPolicy-configurationFileName'])"
+  
+  # Retrieve Azure Firewall Policy
+  $AzureFirewallPolicyConfiguration = Get-AzureFirewallPolicy `
+    -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
+    -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfwPolicy-configurationFileName'])"
 
-Set-HubNetwork-With-AzureFirewall `
-  -Region $Context.Variables['var-hubnetwork-region'] `
-  -ManagementGroupId $Context.Variables['var-hubnetwork-managementGroupId'] `
-  -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
-  -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfw-configurationFileName'])" `
-  -AzureFirewallPolicyResourceId $AzureFirewallConfiguration.AzureFirewallPolicyResourceId `
-  -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
+  # Create Hub Networking with Azure Firewall
+  Set-HubNetwork-With-AzureFirewall `
+    -Context $Context `
+    -Region $Context.Variables['var-hubnetwork-region'] `
+    -ManagementGroupId $Context.Variables['var-hubnetwork-managementGroupId'] `
+    -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
+    -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfw-configurationFileName'])" `
+    -AzureFirewallPolicyResourceId $AzureFirewallPolicyConfiguration.AzureFirewallPolicyResourceId `
+    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
+}
+
+<#
 
 # Subscriptions
 Set-Subscriptions `
