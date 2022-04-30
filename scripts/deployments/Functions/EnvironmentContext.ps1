@@ -1,3 +1,14 @@
+<#
+----------------------------------------------------------------------------------
+Copyright (c) Microsoft Corporation.
+Licensed under the MIT license.
+
+THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+----------------------------------------------------------------------------------
+#>
+
 #Requires -Modules powershell-yaml
  
 Import-Module powershell-yaml
@@ -35,6 +46,7 @@ function New-EnvironmentContext {
       
     LoggingDirectory = "$WorkingDirectory/config/logging/$Environment"
     NetworkingDirectory = "$WorkingDirectory/config/networking/$Environment"
+    SubscriptionsDirectory = "$WorkingDirectory/config/subscriptions/$Environment"
   
     Variables = $Variables
     ManagementGroupHierarchy = $ManagementGroupHierarchy
@@ -42,7 +54,7 @@ function New-EnvironmentContext {
     # Identify the top level management group (the first child underneath Tenant Root Group)
     TopLevelManagementGroupId = $ManagementGroupHierarchy.children[0].id
 
-    # TODO:  Retrieve from common.yml
-    DeploymentRegion = "canadacentral"
+    # Retreive default deployment region
+    DeploymentRegion = $Variables['deploymentRegion']
   }
 }
