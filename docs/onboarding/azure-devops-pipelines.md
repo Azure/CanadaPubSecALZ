@@ -49,6 +49,126 @@ Example configuration with telemetry disabled:
 
 ---
 
+## Deployment Flow
+
+This deployment diagram describes the steps for deploying one, many or all modules in your environment.
+
+### High Level Flow
+
+```mermaid
+  stateDiagram-v2
+
+    ManagementGroups: Management Groups
+    CustomRoles: Custom Roles
+    Logging: Logging
+    Policy: Azure Policy
+    HubNetworking: Hub Networking (NVAs or Azure Firewall)
+    Archetypes: Archetypes (Spokes)
+
+    [*] --> ManagementGroups
+    ManagementGroups --> CustomRoles
+    ManagementGroups-->Logging
+    CustomRoles --> Logging
+    Logging --> Policy
+
+    Policy --> HubNetworking
+    Policy --> Archetypes
+
+    HubNetworking --> Archetypes
+
+    Policy --> [*]
+    HubNetworking --> [*]
+    Archetypes --> [*]
+```
+
+### Detailed Flow
+
+```mermaid
+  stateDiagram-v2
+    ManagementGroups: Management Groups
+    CustomRoles: Custom Roles
+    Logging: Logging
+
+    Policy: Azure Policy
+    DeployCustomPolicies: Deploy Custom Policies
+    DeployCustomPolicySets: Deploy Custom Policy Sets
+    AssignCustomPolicySets: Assign Custom Policy Sets
+    AssignBuiltInPolicySets:  Assign Built-In Policy Sets
+
+    HubNetworking: Hub Networking
+    DeployWithNetworkVirtualAppliance:  Hub Networking with Virtual Appliance
+    DeployWithAzureFirewall: Hub Networking with Azure Firewall
+    DeployAzureFirewallPolicy: Deploy Azure Firewall Policy
+    DeployAzureFirewall: Deploy Azure Firewall
+    AssignDDOSPolicy: [Optional] Assign Azure Policy for linking DDoS Standard Plan to virtual network
+    AssignPrivateDNSZonesPolicy: [Optional] Assign Azure Policies for centrally managing private DNS zones
+
+    Archetypes: Archetypes (Spokes)
+    DeployGenericSubscriptionArchetype: Generic Subscription
+    DeployMachineLearningArchetype: Machine Learning
+    DeployHealthcareArchetype: Healthcare
+    
+    [*] --> ManagementGroups
+    ManagementGroups --> CustomRoles
+    ManagementGroups-->Logging
+    CustomRoles --> Logging
+    Logging --> Policy
+
+    state Policy {
+        [*] --> DeployCustomPolicies
+        DeployCustomPolicies --> DeployCustomPolicySets
+        DeployCustomPolicySets --> AssignCustomPolicySets
+        AssignCustomPolicySets --> [*]
+        --
+        [*] --> AssignBuiltInPolicySets
+
+        AssignBuiltInPolicySets --> [*]
+    }
+
+    Policy --> HubNetworking: When Hub Networking is required
+    Policy --> Archetypes: When existing Hub Networking is in place
+
+    state HubNetworking {
+        state HubNetworkTechChoice <<choice>>
+        
+        [*] --> HubNetworkTechChoice 
+
+        HubNetworkTechChoice --> DeployWithNetworkVirtualAppliance: When NVAs like Fortinet are used
+        HubNetworkTechChoice --> DeployWithAzureFirewall:  When Azure Firewall is used
+
+        state DeployWithAzureFirewall {
+            [*] --> DeployAzureFirewallPolicy
+            DeployAzureFirewallPolicy --> DeployAzureFirewall
+            DeployAzureFirewall --> [*]
+        }
+
+        DeployWithNetworkVirtualAppliance --> AssignDDOSPolicy
+        DeployWithAzureFirewall --> AssignDDOSPolicy
+
+        AssignDDOSPolicy --> AssignPrivateDNSZonesPolicy
+
+        AssignPrivateDNSZonesPolicy --> [*]
+    }
+
+    HubNetworking --> Archetypes: When archetypes are deployed in spoke subscriptions
+
+    state Archetypes {
+        state ArchetypeChoice <<choice>>
+
+        [*] --> ArchetypeChoice
+
+        ArchetypeChoice --> DeployGenericSubscriptionArchetype: Simple subscription pattern
+        ArchetypeChoice --> DeployMachineLearningArchetype: Machine learning pattern
+        ArchetypeChoice --> DeployHealthcareArchetype: Healthcare pattern
+    }
+
+    Policy --> [*]: MVP deployment and enables Microsoft Sentinel & Log Analytics
+    HubNetworking --> [*]
+    Archetypes --> [*]
+```
+
+---
+
 ## Instructions
 
 * [Step 1 - Create Service Principal Account & Assign RBAC](#step-1---create-service-principal-account--assign-rbac)
