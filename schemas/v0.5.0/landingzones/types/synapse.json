@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "definitions": {
+    "Synapse": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/valuedef"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "Synapse"
+    },
+    "valuedef": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "oneOf": [
+            {
+              "aadAuthenticationOnly": {
+                "type": "boolean",
+                "enum": [
+                  true
+                ]
+              },
+              "sqlAuthenticationUsername": {
+                "type": "string"
+              },
+              "aadLoginName": {
+                "type": "string"
+              },
+              "aadLoginObjectID": {
+                "type": "string"
+              },
+              "aadLoginType": {
+                "type": "string",
+                "enum": [
+                  "User",
+                  "Group",
+                  "Application"
+                ]
+              },
+              "required": [
+                "aadAuthenticationOnly",
+                "aadLoginName",
+                "aadLoginObjectID",
+                "aadLoginType"
+              ]
+            },
+            {
+              "aadAuthenticationOnly": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              },
+              "sqlAuthenticationUsername": {
+                "type": "string"
+              },
+              "aadLoginObjectID": {
+                "type": "string"
+              },
+              "aadLoginType": {
+                "type": "string",
+                "enum": [
+                  "User",
+                  "Group",
+                  "Application"
+                ]
+              },
+              "required": [
+                "aadAuthenticationOnly",
+                "sqlAuthenticationUsername"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

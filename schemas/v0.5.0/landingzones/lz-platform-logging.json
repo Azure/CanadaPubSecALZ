@@ -1,0 +1,138 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/PlatformLoggingArchetypeDefinition",
+    "definitions": {
+        "PlatformLoggingArchetypeDefinition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "$schema": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "https"
+                    ],
+                    "qt-uri-extensions": [
+                        ".json"
+                    ]
+                },
+                "contentVersion": {
+                    "type": "string"
+                },
+                "parameters": {
+                    "$ref": "#/definitions/Parameters"
+                }
+            },
+            "required": [
+                "$schema",
+                "contentVersion",
+                "parameters"
+            ],
+            "title": "PlatformLoggingArchetypeDefinition"
+        },
+        "Parameters": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "location": {
+                    "$ref": "types/location.json#/definitions/Location"
+                },
+                "serviceHealthAlerts": {
+                    "$ref": "types/serviceHealthAlerts.json#/definitions/ServiceHealthAlerts"
+                },
+                "securityCenter": {
+                    "$ref": "types/securityCenter.json#/definitions/SecurityCenter"
+                },
+                "subscriptionRoleAssignments": {
+                    "$ref": "types/subscriptionRoleAssignments.json#/definitions/SubscriptionRoleAssignments"
+                },
+                "subscriptionBudget": {
+                    "$ref": "types/subscriptionBudget.json#/definitions/SubscriptionBudget"
+                },
+                "subscriptionTags": {
+                    "$ref": "types/subscriptionTags.json#/definitions/SubscriptionTags"
+                },
+                "resourceTags": {
+                    "$ref": "types/resourceTags.json#/definitions/ResourceTags"
+                },
+                "logAnalyticsResourceGroupName": {
+                    "$ref": "#/definitions/logAnalyticsResourceGroupName"
+                },
+                "logAnalyticsWorkspaceName": {
+                    "$ref": "#/definitions/logAnalyticsWorkspaceName"
+                },
+                "logAnalyticsRetentionInDays": {
+                    "$ref": "#/definitions/logAnalyticsRetentionInDays"
+                },
+                "logAnalyticsAutomationAccountName": {
+                    "$ref": "#/definitions/logAnalyticsAutomationAccountName"
+                }
+            },
+            "required": [
+                "resourceTags",
+                "securityCenter",
+                "serviceHealthAlerts",
+                "subscriptionBudget",
+                "subscriptionRoleAssignments",
+                "subscriptionTags",
+                "logAnalyticsResourceGroupName",
+                "logAnalyticsWorkspaceName",
+                "logAnalyticsRetentionInDays",
+                "logAnalyticsAutomationAccountName"
+            ],
+            "title": "Parameters"
+        },
+        "logAnalyticsResourceGroupName": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            },
+            "title": "logAnalyticsResourceGroupName"
+        },
+        "logAnalyticsWorkspaceName": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            },
+            "title": "logAnalyticsWorkspaceName"
+        },
+        "logAnalyticsRetentionInDays": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "integer"
+                }
+            },
+            "title": "logAnalyticsRetentionInDays"
+        },
+        "logAnalyticsAutomationAccountName": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            },
+            "title": "logAnalyticsAutomationAccountName"
+        }
+    }
+}

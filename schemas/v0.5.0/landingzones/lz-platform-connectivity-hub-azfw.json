@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
-  "$ref": "#/definitions/PlatformConnectivityHubNetworkNVA",
+  "$ref": "#/definitions/PlatformConnectivityHubNetworkAzureFirewall",
   "definitions": {
-    "PlatformConnectivityHubNetworkNVA": {
+    "PlatformConnectivityHubNetworkAzureFirewall": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -28,7 +28,7 @@
         "contentVersion",
         "parameters"
       ],
-      "title": "PlatformConnectivityHubNetworkNVA"
+      "title": "PlatformConnectivityHubNetworkAzureFirewall"
     },
     "Parameters": {
       "type": "object",
@@ -75,22 +75,6 @@
         },
         "networkWatcher": {
           "$ref": "#/definitions/networkWatcher"
-        },
-        "fwUsername": {
-          "type": "object",
-          "properties": {
-            "value": {
-              "type": "string"
-            }
-          }
-        },
-        "fwPassword": {
-          "type": "object",
-          "properties": {
-            "value": {
-              "type": "string"
-            }
-          }
         }
       },
       "required": [
@@ -243,6 +227,9 @@
             "bastion": {
               "$ref": "#/definitions/bastion"
             },
+            "azureFirewall": {
+              "$ref": "#/definitions/azureFirewall"
+            },
             "network": {
               "type": "object",
               "properties": {
@@ -261,28 +248,13 @@
                     "gateway": {
                       "$ref": "#/definitions/requiredSubnet"
                     },
+                    "firewall": {
+                      "$ref": "#/definitions/requiredSubnet"
+                    },
                     "bastion": {
                       "$ref": "#/definitions/requiredSubnet"
                     },
-                    "public": {
-                      "$ref": "#/definitions/requiredSubnet"
-                    },
-                    "publicAccessZone": {
-                      "$ref": "#/definitions/requiredSubnet"
-                    },
-                    "externalAccessNetwork": {
-                      "$ref": "#/definitions/requiredSubnet"
-                    },
-                    "nonProductionInternal": {
-                      "$ref": "#/definitions/requiredSubnet"
-                    },
-                    "productionInternal": {
-                      "$ref": "#/definitions/requiredSubnet"
-                    },
-                    "managementRestrictedZoneInternal": {
-                      "$ref": "#/definitions/requiredSubnet"
-                    },
-                    "highAvailability": {
+                    "publicAccess": {
                       "$ref": "#/definitions/requiredSubnet"
                     },
                     "optional": {
@@ -291,19 +263,7 @@
                         "$ref": "#/definitions/optionalSubnet"
                       }
                     }
-                  },
-                  "required": [
-                    "gateway",
-                    "bastion",
-                    "public",
-                    "publicAccessZone",
-                    "externalAccessNetwork",
-                    "nonProductionInternal",
-                    "productionInternal",
-                    "managementRestrictedZoneInternal",
-                    "highAvailability",
-                    "optional"
-                  ]
+                  }
                 }
               },
               "required": [
@@ -311,16 +271,13 @@
                 "addressPrefixes",
                 "subnets"
               ]
-            },
-            "nvaFirewall": {
-              "$ref": "#/definitions/nvaFirewall"
             }
           },
           "required": [
             "resourceGroupName",
             "bastion",
-            "network",
-            "nvaFirewall"
+            "azureFirewall",
+            "network"
           ]
         }
       },
@@ -420,124 +377,6 @@
         "udr"
       ]
     },
-    "nvaFirewall": {
-      "type": "object",
-      "properties": {
-        "image": {
-          "type": "object",
-          "properties": {
-            "publisher": {
-              "type": "string"
-            },
-            "offer": {
-              "type": "string"
-            },
-            "sku": {
-              "type": "string"
-            },
-            "version": {
-              "type": "string"
-            },
-            "plan": {
-              "type": "string"
-            }
-          }
-        },
-        "nonProduction": {
-          "$ref": "#/definitions/nvaEnvironment"
-        },
-        "production": {
-          "$ref": "#/definitions/nvaEnvironment"
-        }
-      }
-    },
-    "nvaEnvironment": {
-      "type": "object",
-      "properties": {
-        "internalLoadBalancer": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "internalIp": {
-              "type": "string"
-            },
-            "externalIp": {
-              "type": "string"
-            },
-            "tcpProbe": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "port": {
-                  "type": "integer"
-                },
-                "intervalInSeconds": {
-                  "type": "integer"
-                },
-                "numberOfProbes": {
-                  "type": "integer"
-                }
-              },
-              "required": [
-                "name",
-                "port",
-                "intervalInSeconds",
-                "numberOfProbes"
-              ]
-            }
-          }
-        },
-        "deployVirtualMachines": {
-          "type": "boolean"
-        },
-        "virtualMachines": {
-          "type": "array",
-          "items": {
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "vmSku": {
-                "type": "string"
-              },
-              "internalIp": {
-                "type": "string"
-              },
-              "externalIp": {
-                "type": "string"
-              },
-              "mrzInternalIp": {
-                "type": "string"
-              },
-              "highAvailabilityIp": {
-                "type": "string"
-              },
-              "availabilityZone": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "name",
-              "vmSku",
-              "internalIp",
-              "externalIp",
-              "mrzInternalIp",
-              "highAvailabilityIp",
-              "availabilityZone"
-            ]
-          }
-        }
-      },
-      "required": [
-        "internalLoadBalancer",
-        "deployVirtualMachines",
-        "virtualMachines"
-      ]
-    },
     "bastion": {
       "type": "object",
       "properties": {
@@ -559,6 +398,35 @@
         "name",
         "sku",
         "scaleUnits"
+      ]
+    },
+    "azureFirewall": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "availabilityZones": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "forcedTunnelingEnabled": {
+          "type": "boolean"
+        },
+        "forcedTunnelingNextHop": {
+          "type": "string"
+        },
+        "firewallPolicyId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "availabilityZones",
+        "forcedTunnelingEnabled",
+        "forcedTunnelingNextHop"
       ]
     }
   }
