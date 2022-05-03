@@ -15,4 +15,5 @@ jobs:
       uses: actions/checkout@v3
     - name: Show Variables step
       run: |
-        Write-Output "${env.GITHUB_REPOSITORY}"
+        Write-Output "Repo:   ${env:GITHUB_REPOSITORY}"
+        Write-Output "Branch: ${env:GITHUB_REF}"
