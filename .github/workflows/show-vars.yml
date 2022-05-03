@@ -1,0 +1,16 @@
+name: Show Variables workflow
+
+on: workflow_dispatch
+
+defaults:
+  run:
+    shell: pwsh
+    working-directory: scripts/deployments
+
+jobs:
+  show-vars:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Show Variables step
+      run: |
+        Write-Output "hello world!"
