@@ -5,3 +5,4 @@ experiments/*
 /*.ps1
 packages-microsoft-prod.deb
 *parameters.secret.json
+.venv
