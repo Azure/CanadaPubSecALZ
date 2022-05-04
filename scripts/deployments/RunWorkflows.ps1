@@ -10,8 +10,10 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 #>
 [CmdletBinding()]
 Param(
-  [string]$EnvironmentName="CanadaESLZ-main",
-  [string]$WorkingDirectory=(Resolve-Path "../.."),
+  [string]$EnvironmentName = "CanadaESLZ-main",
+  [string]$GitHubRepo = $null,
+  [string]$GitHubRef = $null,
+  [string]$WorkingDirectory = (Resolve-Path "../.."),
   [string]$LoginInteractiveTenantId = $null,
   [string]$LoginServicePrincipalJson = $null,
   [switch]$DeployManagementGroups,
@@ -30,6 +32,16 @@ Param(
 # Please follow the instructions on https://github.com/Azure/CanadaPubSecALZ/blob/main/docs/onboarding/azure-devops-pipelines.md
 # to setup the configuration files.  Once the configuration files are setup, you can choose to run this script or use Azure DevOps.
 
+# Construct environment name from GitHub repo and ref
+if ($GitHubRepo -and $GitHubRef) {
+  $EnvironmentName = `
+    $GitHubRepo.Split('/')[0] + "-" + `
+    $GitHubRef.Split('/')[$GitHubRef.Split('/').Count-1]
+  Write-Host "Environment name: $EnvironmentName"
+}
+
+# Load functions
+Write-Host "Loading functions..."
 . ".\Functions\EnvironmentContext.ps1"
 . ".\Functions\ManagementGroups.ps1"
 . ".\Functions\Roles.ps1"

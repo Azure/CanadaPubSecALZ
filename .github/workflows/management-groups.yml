@@ -15,18 +15,15 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Install required modules
+    - name: Required modules
       run: |
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
-    - name: Login
+    - name: Deploy Management Groups
       run: |
-        Get-Location
         . ./RunWorkflows.ps1 `
-          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}'
-
-    - name: Show Variables
-      run: |
-        Write-Output "Repo:   ${env:GITHUB_REPOSITORY}"
-        Write-Output "Branch: ${env:GITHUB_REF}"
+          -DeployManagementGroups ``
+          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
