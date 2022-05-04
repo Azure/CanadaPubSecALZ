@@ -7,21 +7,13 @@ defaults:
     shell: pwsh
     working-directory: scripts/deployments
 
-# https://docs.microsoft.com/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#use-the-azure-login-action-with-a-service-principal-secret
-# https://github.com/marketplace/actions/azure-login
-# https://github.com/azure/powershell
-
 jobs:
   management-groups:
     runs-on: ubuntu-latest
     steps:
 
-    # - name: Login   # https://github.com/Azure/login
-    #   uses: azure/login@v1
-    #   with:
-    #     creds: ${{ secrets.AZURE_CREDENTIALS }}
-    #     enable-AzPSSession: true
-    #     allow-no-subscriptions: true
+    - name: Checkout
+      uses: actions/checkout@v3
 
     - name: Install required modules
       run: |
@@ -33,9 +25,6 @@ jobs:
         Get-Location
         RunWorkflows.ps1 `
           -LoginServicePrincipalJson ${{secrets.AZURE_CREDENTIALS}}
-
-    - name: Checkout
-      uses: actions/checkout@v3
 
     - name: Show Variables
       run: |
