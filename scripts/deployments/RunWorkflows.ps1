@@ -10,12 +10,12 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 #>
 [CmdletBinding()]
 Param(
-  [string]$EnvironmentName = "CanadaESLZ-main",
-  [string]$GitHubRepo = $null,
-  [string]$GitHubRef = $null,
-  [string]$WorkingDirectory = (Resolve-Path "../.."),
-  [string]$LoginInteractiveTenantId = $null,
-  [string]$LoginServicePrincipalJson = $null,
+  [string]$EnvironmentName="CanadaESLZ-main",
+  [string]$GitHubRepo=$null,
+  [string]$GitHubRef=$null,
+  [string]$WorkingDirectory=(Resolve-Path "../.."),
+  [string]$LoginInteractiveTenantId=$null,
+  [string]$LoginServicePrincipalJson=$null,
   [switch]$DeployManagementGroups,
   [switch]$DeployRoles,
   [switch]$DeployLogging,
@@ -33,7 +33,7 @@ Param(
 # to setup the configuration files.  Once the configuration files are setup, you can choose to run this script or use Azure DevOps.
 
 # Construct environment name from GitHub repo and ref
-if ($GitHubRepo -and $GitHubRef) {
+if ((-not [string]::IsNullOrEmpty($GitHubRepo)) -and (-not [string]::IsNullOrEmpty($GitHubRef))) {
   $EnvironmentName = `
     $GitHubRepo.Split('/')[0] + "-" + `
     $GitHubRef.Split('/')[$GitHubRef.Split('/').Count-1]
@@ -52,7 +52,7 @@ Write-Host "Loading functions..."
 . ".\Functions\Subscriptions.ps1"
 
 # Az Login interactively
-if ($LoginInteractiveTenantId) {
+if (-not [string]::IsNullOrEmpty($LoginInteractiveTenantId)) {
   Write-Host "Logging in to Azure interactively..."
   Connect-AzAccount `
     -UseDeviceAuthentication `
@@ -60,7 +60,7 @@ if ($LoginInteractiveTenantId) {
 }
 
 # Az Login via Service Principal
-if ($LoginServicePrincipalJson) {
+if (-not [string]::IsNullOrEmpty($LoginServicePrincipalJson)) {
   Write-Host "Logging in to Azure using service principal..."
   $ServicePrincipal = $LoginServicePrincipalJson | ConvertFrom-Json
   $Password = ConvertTo-SecureString $ServicePrincipal.password -AsPlainText -Force
