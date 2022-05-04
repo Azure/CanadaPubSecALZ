@@ -16,11 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Login
+    - name: Login   # https://github.com/Azure/login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
+        allow-no-subscriptions: true
 
     - name: Checkout
       uses: actions/checkout@v3
