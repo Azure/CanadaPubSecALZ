@@ -33,7 +33,7 @@ Param(
 # to setup the configuration files.  Once the configuration files are setup, you can choose to run this script or use Azure DevOps.
 
 # Construct environment name from GitHub repo and ref
-if (($GitHubRepo -ne $null) -and ($GitHubRef -ne $null)) {
+if ($GitHubRepo -and $GitHubRef) {
   $EnvironmentName = `
     $GitHubRepo.Split('/')[0] + "-" + `
     $GitHubRef.Split('/')[$GitHubRef.Split('/').Count-1]
@@ -52,15 +52,15 @@ Write-Host "Loading functions..."
 . ".\Functions\Subscriptions.ps1"
 
 # Az Login interactively
-if ($LoginInteractiveTenantId -ne $null) {
+if ($LoginInteractiveTenantId) {
   Write-Host "Logging in to Azure interactively..."
   Connect-AzAccount `
     -UseDeviceAuthentication `
-    -TenantId $AzureADTenantId
+    -TenantId $LoginInteractiveTenantId
 }
 
 # Az Login via Service Principal
-if ($LoginServicePrincipalJson -ne $null) {
+if ($LoginServicePrincipalJson) {
   Write-Host "Logging in to Azure using service principal..."
   $ServicePrincipal = $LoginServicePrincipalJson | ConvertFrom-Json
   $Password = ConvertTo-SecureString $ServicePrincipal.password -AsPlainText -Force
@@ -73,7 +73,7 @@ Write-Host "Setting Azure Landing Zones Context..."
 $Context = New-EnvironmentContext -Environment $EnvironmentName -WorkingDirectory $WorkingDirectory
 
 # Deploy Management Groups
-if ($Features.DeployManagementGroups) {
+if ($DeployManagementGroups) {
   Write-Host "Deploying Management Groups..."
   Set-ManagementGroups `
     -Context $Context `
@@ -81,7 +81,7 @@ if ($Features.DeployManagementGroups) {
 }
 
 # Deploy Roles
-if ($Features.DeployRoles) {
+if ($DeployRoles) {
   Write-Host "Deploying Roles..."
   Set-Roles `
     -Context $Context `
@@ -90,7 +90,7 @@ if ($Features.DeployRoles) {
 }
 
 # Deploy Logging
-if ($Features.DeployLogging) {
+if ($DeployLogging) {
   Write-Host "Deploying Logging..."
   Set-Logging `
     -Region $Context.Variables['var-logging-region'] `
@@ -100,7 +100,7 @@ if ($Features.DeployLogging) {
 }
 
 # Deploy Policy
-if ($Features.DeployPolicy) {
+if ($DeployPolicy) {
   Write-Host "Deploying Policy..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
@@ -143,7 +143,7 @@ if ($Features.DeployPolicy) {
 }
 
 # Deploy Hub Networking with NVA
-if ($Features.DeployHubNetworkWithNVA) {
+if ($DeployHubNetworkWithNVA) {
   Write-Host "Deploying Hub Networking with NVA..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
@@ -160,7 +160,7 @@ if ($Features.DeployHubNetworkWithNVA) {
 }
 
 # Hub Networking with Azure Firewall
-if ($Features.DeployHubNetworkWithAzureFirewall) {
+if ($DeployHubNetworkWithAzureFirewall) {
   Write-Host "Deploying Hub Networking with Azure Firewall..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
@@ -190,7 +190,7 @@ if ($Features.DeployHubNetworkWithAzureFirewall) {
 }
 
 # Deploy Subscription archetypes
-if ($Features.DeploySubscriptions) {
+if ($DeploySubscriptions) {
   Write-Host "Deploying Subscriptions..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
