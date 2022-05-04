@@ -33,7 +33,7 @@ Param(
 # to setup the configuration files.  Once the configuration files are setup, you can choose to run this script or use Azure DevOps.
 
 # Construct environment name from GitHub repo and ref
-if ($GitHubRepo -and $GitHubRef) {
+if (($GitHubRepo -ne $null) -and ($GitHubRef -ne $null)) {
   $EnvironmentName = `
     $GitHubRepo.Split('/')[0] + "-" + `
     $GitHubRef.Split('/')[$GitHubRef.Split('/').Count-1]
@@ -52,7 +52,7 @@ Write-Host "Loading functions..."
 . ".\Functions\Subscriptions.ps1"
 
 # Az Login interactively
-if ($LoginInteractiveTenantId) {
+if ($LoginInteractiveTenantId -ne $null) {
   Write-Host "Logging in to Azure interactively..."
   Connect-AzAccount `
     -UseDeviceAuthentication `
@@ -60,7 +60,7 @@ if ($LoginInteractiveTenantId) {
 }
 
 # Az Login via Service Principal
-if ($LoginServicePrincipalJson) {
+if ($LoginServicePrincipalJson -ne $null) {
   Write-Host "Logging in to Azure using service principal..."
   $ServicePrincipal = $LoginServicePrincipalJson | ConvertFrom-Json
   $Password = ConvertTo-SecureString $ServicePrincipal.password -AsPlainText -Force
