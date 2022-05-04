@@ -10,9 +10,10 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 #>
 [CmdletBinding()]
 Param(
-  [string]$AzureADTenantId="343ddfdb-bef5-46d9-99cf-ed67d5948783",
   [string]$EnvironmentName="CanadaESLZ-main",
   [string]$WorkingDirectory=(Resolve-Path "../.."),
+  [string]$LoginInteractiveTenantId = $null,
+  [string]$LoginServicePrincipalJson = $null,
   [switch]$DeployManagementGroups,
   [switch]$DeployRoles,
   [switch]$DeployLogging,
@@ -38,12 +39,21 @@ Param(
 . ".\Functions\HubNetworkWithAzureFirewall.ps1"
 . ".\Functions\Subscriptions.ps1"
 
-# Az Login
-if ($Features.PromptForLogin) {
-  Write-Host "Logging in to Azure..."
+# Az Login interactively
+if ($LoginInteractiveTenantId) {
+  Write-Host "Logging in to Azure interactively..."
   Connect-AzAccount `
     -UseDeviceAuthentication `
     -TenantId $AzureADTenantId
+}
+
+# Az Login via Service Principal
+if ($LoginServicePrincipalJson) {
+  Write-Host "Logging in to Azure using service principal..."
+  $ServicePrincipal = $LoginServicePrincipalJson | ConvertFrom-Json
+  $Password = ConvertTo-SecureString $ServicePrincipal.password -AsPlainText -Force
+  $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $ServicePrincipal.appId, $Password
+  Connect-AzAccount -ServicePrincipal -TenantId $ServicePrincipal.tenant -Credential $Credential
 }
 
 # Set Azure Landing Zones Context

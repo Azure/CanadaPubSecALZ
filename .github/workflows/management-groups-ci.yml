@@ -16,29 +16,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Login   # https://github.com/Azure/login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-        enable-AzPSSession: true
-        allow-no-subscriptions: true
+    # - name: Login   # https://github.com/Azure/login
+    #   uses: azure/login@v1
+    #   with:
+    #     creds: ${{ secrets.AZURE_CREDENTIALS }}
+    #     enable-AzPSSession: true
+    #     allow-no-subscriptions: true
+
+    - name: Install required modules
+      run: |
+        Get-Location
+        Install-Module powershell-yaml -Force
+
+    - name: Login
+      run: |
+        Get-Location
+        RunWorkflows.ps1 `
+          -LoginServicePrincipalJson ${{secrets.AZURE_CREDENTIALS}}
 
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Test
-      run: |
-        Get-Location
-
-    - name: Install prerequisites
-      uses: Azure/powershell@v1
-      with:
-        inlineScript: |
-          Get-Location
-          .\Install-Prerequisites.ps1
-        azPSVersion: "latest"
-
-    - name: Show Variables step
+    - name: Show Variables
       run: |
         Write-Output "Repo:   ${env:GITHUB_REPOSITORY}"
         Write-Output "Branch: ${env:GITHUB_REF}"
