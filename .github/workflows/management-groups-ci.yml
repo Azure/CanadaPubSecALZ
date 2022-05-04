@@ -23,7 +23,7 @@ jobs:
     - name: Login
       run: |
         Get-Location
-        RunWorkflows.ps1 `
+        . ./RunWorkflows.ps1 `
           -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}'
 
     - name: Show Variables
