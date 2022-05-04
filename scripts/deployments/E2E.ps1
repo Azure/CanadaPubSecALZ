@@ -8,6 +8,20 @@ EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES
 OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 ----------------------------------------------------------------------------------
 #>
+[CmdletBinding()]
+Param(
+  [string]$AzureADTenantId="343ddfdb-bef5-46d9-99cf-ed67d5948783",
+  [string]$EnvironmentName="CanadaESLZ-main",
+  [string]$WorkingDirectory=(Resolve-Path "../.."),
+  [switch]$DeployManagementGroups,
+  [switch]$DeployRoles,
+  [switch]$DeployLogging,
+  [switch]$DeployPolicy,
+  [switch]$DeployHubNetworkWithNVA,
+  [switch]$DeployHubNetworkWithAzureFirewall,
+  [switch]$DeploySubscriptions,
+  [array]$SubscriptionIds=@()
+)
 
 #Requires -Modules Az, powershell-yaml
 
@@ -24,57 +38,21 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 . ".\Functions\HubNetworkWithAzureFirewall.ps1"
 . ".\Functions\Subscriptions.ps1"
 
-# Set the environment name which is used to locate configuration files stored within the /config directory 
-$EnvironmentName = "CanadaESLZ-main"
-
-# Replace the Tenant ID with the GUID for your Azure Active Directory instance.
-# It can be found through https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview
-$AzureADTenantId = "343ddfdb-bef5-46d9-99cf-ed67d5948783"
-
-# Set the working directory.  It should point the root of this project.
-$WorkingDirectory = Resolve-Path "../.."
-
-$Features = @{
-  # Prompt to login to Azure AD and set the context for Azure deployments
-  PromptForLogin = $false
-
-  # Resource Organization
-  DeployManagementGroups = $false
-
-  # Access Control
-  DeployRoles = $false
-
-  # Logging
-  DeployLogging = $false
-
-  # Guardrail & Compliance
-  DeployPolicy = $false
-
-  # Hub Networking - With Network Virtual Appliance
-  DeployHubNetworkWithNVA = $false
-
-  # Hub Networking - With Azure Firewall
-  DeployHubNetworkWithAzureFirewall = $false
-
-  # Subscriptions
-  DeploySubscriptions = $false
-}
-
-Write-Output "Features configured for deployment:"
-$Features
-
 # Az Login
 if ($Features.PromptForLogin) {
+  Write-Host "Logging in to Azure..."
   Connect-AzAccount `
     -UseDeviceAuthentication `
     -TenantId $AzureADTenantId
 }
 
 # Set Azure Landing Zones Context
+Write-Host "Setting Azure Landing Zones Context..."
 $Context = New-EnvironmentContext -Environment $EnvironmentName -WorkingDirectory $WorkingDirectory
 
 # Deploy Management Groups
 if ($Features.DeployManagementGroups) {
+  Write-Host "Deploying Management Groups..."
   Set-ManagementGroups `
     -Context $Context `
     -ManagementGroupHierarchy $Context.ManagementGroupHierarchy
@@ -82,6 +60,7 @@ if ($Features.DeployManagementGroups) {
 
 # Deploy Roles
 if ($Features.DeployRoles) {
+  Write-Host "Deploying Roles..."
   Set-Roles `
     -Context $Context `
     -RolesDirectory $Context.RolesDirectory `
@@ -90,6 +69,7 @@ if ($Features.DeployRoles) {
 
 # Deploy Logging
 if ($Features.DeployLogging) {
+  Write-Host "Deploying Logging..."
   Set-Logging `
     -Region $Context.Variables['var-logging-region'] `
     -ManagementGroupId $Context.Variables['var-logging-managementGroupId'] `
@@ -99,6 +79,7 @@ if ($Features.DeployLogging) {
 
 # Deploy Policy
 if ($Features.DeployPolicy) {
+  Write-Host "Deploying Policy..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
@@ -141,6 +122,7 @@ if ($Features.DeployPolicy) {
 
 # Deploy Hub Networking with NVA
 if ($Features.DeployHubNetworkWithNVA) {
+  Write-Host "Deploying Hub Networking with NVA..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
@@ -157,6 +139,7 @@ if ($Features.DeployHubNetworkWithNVA) {
 
 # Hub Networking with Azure Firewall
 if ($Features.DeployHubNetworkWithAzureFirewall) {
+  Write-Host "Deploying Hub Networking with Azure Firewall..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
@@ -186,6 +169,7 @@ if ($Features.DeployHubNetworkWithAzureFirewall) {
 
 # Deploy Subscription archetypes
 if ($Features.DeploySubscriptions) {
+  Write-Host "Deploying Subscriptions..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `

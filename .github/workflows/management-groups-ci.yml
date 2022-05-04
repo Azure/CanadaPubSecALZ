@@ -1,0 +1,37 @@
+name: Show Variables workflow
+
+on: workflow_dispatch
+
+defaults:
+  run:
+    shell: pwsh
+    working-directory: scripts/deployments
+
+# https://docs.microsoft.com/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#use-the-azure-login-action-with-a-service-principal-secret
+# https://github.com/marketplace/actions/azure-login
+# https://github.com/azure/powershell
+
+jobs:
+  show-vars:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        enable-AzPSSession: true
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install prerequisites
+      uses: Azure/powershell@v1
+      with:
+        inlineScript: |
+          .\Install-Prerequisites.ps1
+
+    - name: Show Variables step
+      run: |
+        Write-Output "Repo:   ${env:GITHUB_REPOSITORY}"
+        Write-Output "Branch: ${env:GITHUB_REF}"
