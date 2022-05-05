@@ -8,22 +8,107 @@ EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES
 OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 ----------------------------------------------------------------------------------
 #>
+
+<#
+  .SYNOPSIS
+    Runs CanadaPubSecALZ workflows.
+
+  .DESCRIPTION
+    This script is used to run one or more workflows for management groups, roles,
+    logging, policies, networking, and subscriptions.
+
+  .PARAMETER EnvironmentName
+    The name of the environment to run the workflow against.
+    Used primarily for running interactively.
+
+  .PARAMETER DeployManagementGroups
+    If true, run the management group workflow.
+
+  .PARAMETER DeployRoles
+    If true, run the role workflow.
+
+  .PARAMETER DeployLogging
+    If true, run the logging workflow.
+
+  .PARAMETER DeployPolicies
+    If true, run the policy workflow.
+
+  .PARAMETER DeployHubNetworkWithNVA
+    If true, run the NVA hub network workflow.
+
+  .PARAMETER DeployHubNetworkWithAzureFirewall
+    If true, run the Azure Firewall hub network workflow.
+
+  .PARAMETER DeploySubscriptions
+    If subscription ids provided, run the subscription workflow.
+
+  .PARAMETER SubscriptionIds
+    Comma separated list of subscription ids to run the subscription workflow against.
+
+  .PARAMETER GitHubRepo
+    The GitHub repo to use for the workflow.
+
+  .PARAMETER GitHubRef
+    The GitHub ref to use for the workflow.
+
+  .PARAMETER LoginInteractiveTenantId
+    If set, prompt for credentials and login to the specified tenant.
+
+  .PARAMETER LoginServicePrincipalJson
+    If set, login using the JSON credentials for the specified service principal.
+
+  .PARAMETER WorkingDirectory
+    The directory to use for the workflow.
+
+  .EXAMPLE
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups
+
+    Deploy management groups interactively.
+
+  .EXAMPLE
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups -DeployRoles -DeployLogging -DeployPolicies -DeployHubNetworkWithAzureFirewall
+
+    Deploy all platform components interactively, with Azure Firewall.
+
+  .EXAMPLE
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeploySubscriptions 'a188040e-6c67-4c5c-b112-36a304b66dad,7188030d-6c67-4c5c-b112-36a304b66dac'
+
+    Deploy 2 subscriptions interactively.
+
+  .EXAMPLE
+    PS> .\RunWorkflows.ps1 -GitHubRepo 'Azure/CanadaPubSecALZ' -GitHubRef 'refs/head/main' -LoginServicePrincipalJson '{ <output from: az ad sp create-for-rbac> }' -DeployManagementGroups
+
+    Deploy management groups using service principal authentication.
+
+    The action in the GitHub workflow could look like this:
+
+    - name: Deploy Management Groups
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployManagementGroups `
+          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+#>
+
 [CmdletBinding()]
 Param(
-  [string]$EnvironmentName="CanadaESLZ-main",
-  [string]$GitHubRepo=$null,
-  [string]$GitHubRef=$null,
-  [string]$WorkingDirectory=(Resolve-Path "../.."),
-  [string]$LoginInteractiveTenantId=$null,
-  [string]$LoginServicePrincipalJson=$null,
+  # What to deploy
   [switch]$DeployManagementGroups,
   [switch]$DeployRoles,
   [switch]$DeployLogging,
   [switch]$DeployPolicy,
   [switch]$DeployHubNetworkWithNVA,
   [switch]$DeployHubNetworkWithAzureFirewall,
-  [switch]$DeploySubscriptions,
-  [array]$SubscriptionIds=@()
+  [array]$DeploySubscriptionIds=@(),
+
+  # How to deploy
+  [string]$EnvironmentName="CanadaESLZ-main",
+  [string]$GitHubRepo=$null,
+  [string]$GitHubRef=$null,
+  [string]$LoginInteractiveTenantId=$null,
+  [string]$LoginServicePrincipalJson=$null,
+  [string]$WorkingDirectory=(Resolve-Path "../..")
 )
 
 #Requires -Modules Az, powershell-yaml
@@ -32,13 +117,18 @@ Param(
 # Please follow the instructions on https://github.com/Azure/CanadaPubSecALZ/blob/main/docs/onboarding/azure-devops-pipelines.md
 # to setup the configuration files.  Once the configuration files are setup, you can choose to run this script or use Azure DevOps.
 
-# Construct environment name from GitHub repo and ref
+# Construct environment name from GitHub repo and ref (result: <org>-<branch>)
 if ((-not [string]::IsNullOrEmpty($GitHubRepo)) -and (-not [string]::IsNullOrEmpty($GitHubRef))) {
   $EnvironmentName = `
-    $GitHubRepo.Split('/')[0] + "-" + `
+    $GitHubRepo.Split('/')[0] + '-' + `
     $GitHubRef.Split('/')[$GitHubRef.Split('/').Count-1]
   Write-Host "Environment name: $EnvironmentName"
 }
+
+# Construct environment name from Azure DevOps (result: <org>-<branch>)
+<#
+  TO BE IMPLEMENTED
+#>
 
 # Load functions
 Write-Host "Loading functions..."
@@ -190,7 +280,7 @@ if ($DeployHubNetworkWithAzureFirewall) {
 }
 
 # Deploy Subscription archetypes
-if ($DeploySubscriptions) {
+if ($DeploySubscriptions.Count -gt 0) {
   Write-Host "Deploying Subscriptions..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
@@ -201,7 +291,7 @@ if ($DeploySubscriptions) {
   # Replace subscription id example below with your subscription ids
   Set-Subscriptions `
     -Context $Context `
-    -Region "canadacentral" `
-    -SubscriptionIds $("4f9f8765-911a-4a6d-af60-4bc0473268c0") `
+    -Region $Context.DeploymentRegion `
+    -SubscriptionIds $DeploySubscriptions `
     -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
 }
