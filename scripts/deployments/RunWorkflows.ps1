@@ -100,7 +100,7 @@ Param(
   [switch]$DeployPolicy,
   [switch]$DeployHubNetworkWithNVA,
   [switch]$DeployHubNetworkWithAzureFirewall,
-  [array]$DeploySubscriptionIds=@(),
+  [string[]]$DeploySubscriptionIds=@(),
 
   # How to deploy
   [string]$EnvironmentName="CanadaESLZ-main",
