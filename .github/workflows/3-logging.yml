@@ -17,7 +17,7 @@ defaults:
     working-directory: scripts/deployments
 
 jobs:
-  management-groups:
+  logging:
     runs-on: ubuntu-latest
     steps:
 

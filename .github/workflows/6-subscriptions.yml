@@ -23,7 +23,7 @@ defaults:
     working-directory: scripts/deployments
 
 jobs:
-  management-groups:
+  subscriptions:
     runs-on: ubuntu-latest
     steps:
 
