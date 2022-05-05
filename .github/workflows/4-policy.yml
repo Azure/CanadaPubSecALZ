@@ -7,7 +7,7 @@
 # OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 # ----------------------------------------------------------------------------------
 
-name: Policy
+name: 4 - Policy
 
 on: workflow_dispatch
 

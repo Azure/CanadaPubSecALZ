@@ -7,7 +7,7 @@
 # OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 # ----------------------------------------------------------------------------------
 
-name: Custom Roles
+name: 2 - Custom Roles
 
 on: workflow_dispatch
 

@@ -7,7 +7,7 @@
 # OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 # ----------------------------------------------------------------------------------
 
-name: HubNetworkWithNVA
+name: 5 - Hub Network with NVA
 
 on: workflow_dispatch
 
