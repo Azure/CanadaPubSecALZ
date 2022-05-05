@@ -22,8 +22,8 @@ jobs:
 
     - name: Deploy Management Groups
       run: |
-        . ./RunWorkflows.ps1 `
-          -DeployManagementGroups ``
+        RunWorkflows.ps1 `
+          -DeployManagementGroups `
           -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
