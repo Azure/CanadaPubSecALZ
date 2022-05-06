@@ -311,6 +311,16 @@
       "value": {
         "resourceGroupName": "NetworkWatcherRG"
       }
+    },
+    "fwUsername": {
+      "value": {
+        "username": "admin"
+      }
+    },
+    "fwPassword": {
+      "value": {
+        "password": "Fortinet1!"
+      }
     }
   }
 }
