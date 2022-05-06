@@ -117,15 +117,15 @@ Param(
 # Please follow the instructions on https://github.com/Azure/CanadaPubSecALZ/blob/main/docs/onboarding/azure-devops-pipelines.md
 # to setup the configuration files.  Once the configuration files are setup, you can choose to run this script or use Azure DevOps.
 
-# Construct environment name from GitHub repo and ref (result: <org>-<branch>)
+# Construct environment name from GitHub repo and ref (result: <repo>-<branch>)
 if ((-not [string]::IsNullOrEmpty($GitHubRepo)) -and (-not [string]::IsNullOrEmpty($GitHubRef))) {
   $EnvironmentName = `
-    $GitHubRepo.Split('/')[0] + '-' + `
+    $GitHubRepo.Split('/')[1] + '-' + `
     $GitHubRef.Split('/')[$GitHubRef.Split('/').Count-1]
   Write-Host "Environment name: $EnvironmentName"
 }
 
-# Construct environment name from Azure DevOps (result: <org>-<branch>)
+# Construct environment name from Azure DevOps (result: <repo>-<branch>)
 <#
   TO BE IMPLEMENTED
 #>

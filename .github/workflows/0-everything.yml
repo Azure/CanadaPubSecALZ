@@ -1,0 +1,57 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+name: 0 - Everything
+
+on:
+  workflow_dispatch:
+    inputs:
+      hubNetworkType:
+        type: choice
+        description: "Select the hub network type"
+        required: true
+        options:
+          - "HubNetworkWithNVA"
+          - "HubNetworkWithAzureFirewall"
+        default: "HubNetworkWithAzureFirewall"
+      subscriptionIds:
+        type: string
+        description: The subscription ID(s) to use for the deployment.
+        required: true
+
+defaults:
+  run:
+    shell: pwsh
+    working-directory: scripts/deployments
+
+jobs:
+  everything:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Required modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy Everything - ${{github.event.inputs.hubNetworkType}}
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployManagementGroups `
+          -DeployRoles `
+          -DeployLogging `
+          -DeployPolicy `
+          -Deploy${{github.event.inputs.hubNetworkType}} `
+          -DeploySubscriptionIds ${{github.event.inputs.subscriptionIds}} `
+          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
