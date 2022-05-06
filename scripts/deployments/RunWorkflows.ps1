@@ -280,7 +280,7 @@ if ($DeployHubNetworkWithAzureFirewall) {
 }
 
 # Deploy Subscription archetypes
-if ($DeploySubscriptions.Count -gt 0) {
+if ($DeploySubscriptionIds.Count -gt 0) {
   Write-Host "Deploying Subscriptions..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
@@ -292,6 +292,6 @@ if ($DeploySubscriptions.Count -gt 0) {
   Set-Subscriptions `
     -Context $Context `
     -Region $Context.DeploymentRegion `
-    -SubscriptionIds $DeploySubscriptions `
+    -SubscriptionIds $DeploySubscriptionIds `
     -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
 }
