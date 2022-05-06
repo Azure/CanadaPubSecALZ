@@ -313,14 +313,10 @@
       }
     },
     "fwUsername": {
-      "value": {
-        "username": "admin"
-      }
+      "value": "admin"
     },
     "fwPassword": {
-      "value": {
-        "password": "Fortinet1!"
-      }
+      "value": "Fortinet1!"
     }
   }
 }
