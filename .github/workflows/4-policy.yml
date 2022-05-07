@@ -18,6 +18,7 @@ defaults:
 
 jobs:
   policy:
+    name: Policy
     runs-on: ubuntu-latest
     steps:
 

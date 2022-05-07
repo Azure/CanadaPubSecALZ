@@ -7,7 +7,7 @@
 # OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 # ----------------------------------------------------------------------------------
 
-name: 0 - Everything (${{github.event.inputs.hubNetworkType}})
+name: 0 - Everything
 
 on:
   workflow_dispatch:
@@ -32,7 +32,7 @@ defaults:
 
 jobs:
   everything:
-    name: everything-${{github.event.inputs.hubNetworkType}}
+    name: Everything (${{github.event.inputs.hubNetworkType}})
     runs-on: ubuntu-latest
     steps:
 

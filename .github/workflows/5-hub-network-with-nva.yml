@@ -18,6 +18,7 @@ defaults:
 
 jobs:
   hub-network-with-nva:
+    name: Hub Network with NVA
     runs-on: ubuntu-latest
     steps:
 

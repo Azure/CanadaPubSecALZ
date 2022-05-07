@@ -18,6 +18,7 @@ defaults:
 
 jobs:
   roles:
+    name: Custom Roles
     runs-on: ubuntu-latest
     steps:
 

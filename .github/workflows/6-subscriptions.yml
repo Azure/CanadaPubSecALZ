@@ -24,6 +24,7 @@ defaults:
 
 jobs:
   subscriptions:
+    name: Subscriptions
     runs-on: ubuntu-latest
     steps:
 

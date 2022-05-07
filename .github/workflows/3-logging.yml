@@ -18,6 +18,7 @@ defaults:
 
 jobs:
   logging:
+    name: Logging
     runs-on: ubuntu-latest
     steps:
 

@@ -18,6 +18,7 @@ defaults:
 
 jobs:
   management-groups:
+    name: Management Groups
     runs-on: ubuntu-latest
     steps:
 
