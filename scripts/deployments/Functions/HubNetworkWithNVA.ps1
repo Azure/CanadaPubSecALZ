@@ -78,12 +78,6 @@ function Set-HubNetwork-With-NVA {
     $Configuration.parameters | Add-Member $NvaPasswordElement -Force
   }
 
-  Write-Output "********************************************************************************"
-  Write-Output " CONFIGURATION PARAMETERS"
-  Write-Output "********************************************************************************"
-  Write-Output $Configuration.parameters
-  Write-Output "********************************************************************************"
-  
   #endregion
 
   $PopulatedParametersFilePath = $ConfigurationFilePath.Split('.')[0] + '-populated.json'
