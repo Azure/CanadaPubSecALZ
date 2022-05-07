@@ -62,7 +62,9 @@ Additional information on configuration files is available here:
 
 ## Workflow secrets
 
-In addition to the repository-based configuration files, you will also need to create a [GitHub encrypted secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) named `ALZ_CREDENTIALS`. This is the default secret name used by the workflows, but you can modify the workflow definition files if you would like to use different secret name(s). This secret should contain the JSON output from the `az ad sp create-for-rbac` command you used to create the service principal(s). Here is an example showing the format for this secret value:
+In addition to the repository-based configuration files, you will also need to create a [GitHub encrypted secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) named `ALZ_CREDENTIALS`. This is the default secret name used by the workflows, but you can modify the workflow definition files if you would like to use different secret name(s). This secret should contain the JSON output from the `az ad sp create-for-rbac` command you used to create the service principal(s). Here is an example showing the format for this secret value as output by the `az ad sp create-for-rbac` command.
+
+>**Note**: you will need to ensure there are no newline (carriage return / line feed) characters in the value stored in the `ALZ_CREDENTIALS` secret, as this will break the workflow definition.
 
 ```json
 {
