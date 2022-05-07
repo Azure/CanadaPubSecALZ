@@ -32,7 +32,7 @@ function Set-HubNetwork-With-NVA {
     [String]$NvaUsername = $null,
 
     [Parameter(Mandatory = $false)]
-    [String]$NvaPassword = $null,
+    [String]$NvaPassword = $null
   )
 
   Set-AzContext -Subscription $SubscriptionId
