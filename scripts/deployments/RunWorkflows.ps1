@@ -17,10 +17,6 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
     This script is used to run one or more workflows for management groups, roles,
     logging, policies, networking, and subscriptions.
 
-  .PARAMETER EnvironmentName
-    The name of the environment to run the workflow against.
-    Used primarily for running interactively.
-
   .PARAMETER DeployManagementGroups
     If true, run the management group workflow.
 
@@ -30,20 +26,21 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
   .PARAMETER DeployLogging
     If true, run the logging workflow.
 
-  .PARAMETER DeployPolicies
+  .PARAMETER DeployPolicy
     If true, run the policy workflow.
-
-  .PARAMETER DeployHubNetworkWithNVA
-    If true, run the NVA hub network workflow.
 
   .PARAMETER DeployHubNetworkWithAzureFirewall
     If true, run the Azure Firewall hub network workflow.
 
-  .PARAMETER DeploySubscriptions
-    If subscription ids provided, run the subscription workflow.
+  .PARAMETER DeployHubNetworkWithNVA
+    If true, run the NVA hub network workflow.
 
-  .PARAMETER SubscriptionIds
+  .PARAMETER DeploySubscriptionIds
     Comma separated list of subscription ids to run the subscription workflow against.
+
+  .PARAMETER EnvironmentName
+    The name of the environment to run the workflow against.
+    Used primarily for running interactively.
 
   .PARAMETER GitHubRepo
     The GitHub repo to use for the workflow.
@@ -60,6 +57,12 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
   .PARAMETER WorkingDirectory
     The directory to use for the workflow.
 
+  .PARAMETER NvaUsername
+    The firewall username to use for the Hub network with NVA workflow.
+
+  .PARAMETER NvaPassword
+    The firewall password to use for the Hub Network with NVA workflow.
+
   .EXAMPLE
     PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups
 
@@ -71,12 +74,12 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
     Deploy all platform components interactively, with Azure Firewall.
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeploySubscriptions 'a188040e-6c67-4c5c-b112-36a304b66dad,7188030d-6c67-4c5c-b112-36a304b66dac'
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeploySubscriptionIds 'a188040e-6c67-4c5c-b112-36a304b66dad,7188030d-6c67-4c5c-b112-36a304b66dac'
 
     Deploy 2 subscriptions interactively.
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -GitHubRepo 'Azure/CanadaPubSecALZ' -GitHubRef 'refs/head/main' -LoginServicePrincipalJson '{ <output from: az ad sp create-for-rbac> }' -DeployManagementGroups
+    PS> .\RunWorkflows.ps1 -GitHubRepo 'Azure/CanadaPubSecALZ' -GitHubRef 'refs/head/main' -LoginServicePrincipalJson '<output from: az ad sp create-for-rbac>' -DeployManagementGroups
 
     Deploy management groups using service principal authentication.
 
@@ -86,7 +89,7 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
       run: |
         ./RunWorkflows.ps1 `
           -DeployManagementGroups `
-          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
+          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 #>
@@ -108,7 +111,9 @@ Param(
   [string]$GitHubRef=$null,
   [string]$LoginInteractiveTenantId=$null,
   [string]$LoginServicePrincipalJson=$null,
-  [string]$WorkingDirectory=(Resolve-Path "../..")
+  [string]$WorkingDirectory=(Resolve-Path "../.."),
+  [string]$NvaUsername=$null,
+  [string]$NvaPassword=$null
 )
 
 #Requires -Modules Az, powershell-yaml
@@ -246,7 +251,9 @@ if ($DeployHubNetworkWithNVA) {
     -ManagementGroupId $Context.Variables['var-hubnetwork-managementGroupId'] `
     -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
     -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-nva-configurationFileName'])" `
-    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
+    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
+    -NvaUsername $NvaUsername `
+    -NvaPassword $NvaPassword
 }
 
 # Hub Networking with Azure Firewall

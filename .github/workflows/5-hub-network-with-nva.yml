@@ -33,6 +33,8 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployHubNetworkWithNVA `
-          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
+          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
-          -GitHubRef ${env:GITHUB_REF}
+          -GitHubRef ${env:GITHUB_REF} `
+          -NvaUsername '${{secrets.NVA_USERNAME}}' `
+          -NvaPassword '${{secrets.NVA_PASSWORD}}'

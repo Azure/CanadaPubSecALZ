@@ -47,7 +47,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployManagementGroups `
-          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
+          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
@@ -55,7 +55,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployRoles `
-          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
+          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
@@ -63,7 +63,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployLogging `
-          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
+          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
@@ -71,23 +71,35 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployPolicy `
-          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
+          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
-    - name: Deploy ${{github.event.inputs.hubNetworkType}}
+    - name: Deploy Hub Network with Azure Firewall
+      if: github.event.inputs.hubNetworkType == "HubNetworkWithAzureFirewall"
       run: |
         ./RunWorkflows.ps1 `
           -Deploy${{github.event.inputs.hubNetworkType}} `
-          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
+          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
+
+    - name: Deploy Hub Network with NVA
+      if: github.event.inputs.hubNetworkType == "HubNetworkWithNVA"
+      run: |
+        ./RunWorkflows.ps1 `
+          -Deploy${{github.event.inputs.hubNetworkType}} `
+          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF} `
+          -NvaUsername '${{secrets.NVA_USERNAME}}' `
+          -NvaPassword '${{secrets.NVA_PASSWORD}}'
 
     - name: Deploy Subscriptions
       if: github.event.inputs.subscriptionIds != ''
       run: |
         ./RunWorkflows.ps1 `
           -DeploySubscriptionIds ${{github.event.inputs.subscriptionIds}} `
-          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
+          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}

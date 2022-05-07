@@ -33,6 +33,6 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployLogging `
-          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
+          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}

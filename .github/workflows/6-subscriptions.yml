@@ -39,6 +39,6 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeploySubscriptionIds ${{github.event.inputs.subscriptionIds}} `
-          -LoginServicePrincipalJson '${{secrets.AZURE_CREDENTIALS}}' `
+          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}

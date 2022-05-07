@@ -60,6 +60,21 @@ Additional information on configuration files is available here:
 - [Environment configuration files](../config/variables/README.md)
 - [Subscription configuration files](../config/subscriptions/README.md)
 
-In addition to the repository-based configuration files, you will also need to create a [GitHub encrypted secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) named `AZURE_CREDENTIALS`. This secret should contain the JSON output from the `az ad sp create-for-rbac` command you used to create the service principal - ensure you remove any newline characters present in the JSON representation when you create the secret as those characters will break the workflow.
+## Workflow secrets
 
->NOTE: The initial implementation of GitHub workflow definitions uses a combination of the repository name and the branch name for configuration paths & file names. This is a change from the DevOps pipelines approach where a combination of the DevOps organization name and the branch name are used. In a future release, we will convert the Azure DevOps pipelines to use the `RunWorkflows.ps1` PowerShell script, and at that time have it adopt the `repo-branch` configuration path/file naming convention used by the GitHub workflows.
+In addition to the repository-based configuration files, you will also need to create a [GitHub encrypted secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) named `ALZ_CREDENTIALS`. This is the default secret name used by the workflows, but you can modify the workflow definition files if you would like to use different secret name(s). This secret should contain the JSON output from the `az ad sp create-for-rbac` command you used to create the service principal(s). Here is an example showing the format for this secret value:
+
+```json
+{
+  "appId": "a1a1a1a1-b2b2-c3c3-d4d4-e5e5e5e5e5e5",
+  "displayName": "alz-credentials",
+  "password": "a1!b2@c3#d4$e5%f6^a1!b2@c3#d4$e5%f6^",
+  "tenant": "a6a6a6a6-b7b7-c8c8-d9d9-e0e0e0e0e0e0"
+}
+```
+
+>**Note**: For advanced scenarios with increased security, you should consider using a different service principal value for each workflow where each service principal has the minimum Role-Based Access Control (RBAC) permissions required by it.
+
+If you are using the _Hub Networking with NVA_ workflow, you will also need to create [GitHub encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) named `NVA_USERNAME` and `NVA_PASSWORD`. These secret values will be used for the username and password of your Network Virtual Appliance (NVA) firewall.
+
+>**Note**: the initial implementation of GitHub workflow definitions uses a combination of the repository name and the branch name for configuration paths & file names. This is a change from the DevOps pipelines approach where a combination of the DevOps organization name and the branch name are used. In a future release, we will convert the Azure DevOps pipelines to use the `RunWorkflows.ps1` PowerShell script, and at that time have it adopt the `repo-branch` configuration path/file naming convention used by the GitHub workflows.
