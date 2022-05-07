@@ -76,7 +76,7 @@ jobs:
           -GitHubRef ${env:GITHUB_REF}
 
     - name: Deploy Hub Network with Azure Firewall
-      if: github.event.inputs.hubNetworkType == "HubNetworkWithAzureFirewall"
+      if: github.event.inputs.hubNetworkType == 'HubNetworkWithAzureFirewall'
       run: |
         ./RunWorkflows.ps1 `
           -Deploy${{github.event.inputs.hubNetworkType}} `
@@ -85,7 +85,7 @@ jobs:
           -GitHubRef ${env:GITHUB_REF}
 
     - name: Deploy Hub Network with NVA
-      if: github.event.inputs.hubNetworkType == "HubNetworkWithNVA"
+      if: github.event.inputs.hubNetworkType == 'HubNetworkWithNVA'
       run: |
         ./RunWorkflows.ps1 `
           -Deploy${{github.event.inputs.hubNetworkType}} `
