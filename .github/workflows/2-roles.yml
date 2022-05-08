@@ -7,7 +7,7 @@
 # OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 # ----------------------------------------------------------------------------------
 
-name: 2 - Custom Roles
+name: 2 - Roles
 
 on: workflow_dispatch
 
@@ -18,7 +18,7 @@ defaults:
 
 jobs:
   roles:
-    name: Custom Roles
+    name: Roles
     runs-on: ubuntu-latest
     steps:
 
@@ -30,7 +30,7 @@ jobs:
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
-    - name: Deploy Custom Roles
+    - name: Deploy Roles
       run: |
         ./RunWorkflows.ps1 `
           -DeployRoles `

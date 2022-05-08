@@ -52,7 +52,7 @@ jobs:
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
-    - name: Deploy Custom Roles
+    - name: Deploy Roles
       run: |
         ./RunWorkflows.ps1 `
           -DeployRoles `

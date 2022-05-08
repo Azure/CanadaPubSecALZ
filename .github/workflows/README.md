@@ -16,7 +16,7 @@ The following workflows are present in the `.github/workflows` repository folder
 | :---: | ---------- | ----------
 | 0 | Everything | `0-everything.yml`
 | 1 | Management Groups | `1-management-groups.yml`
-| 2 | Custom Roles | `2-roles.yml`
+| 2 | Roles | `2-roles.yml`
 | 3 | Logging | `3-logging.yml`
 | 4 | Policy | `policy.yml`
 | 5 | Hub Networking with Azure Firewall | `5-hub-network-with-azure-firewall.yml`
