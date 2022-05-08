@@ -3,6 +3,7 @@ experiments/*
 .vscode/*
 /*.sh
 /*.ps1
+/*.zip
 packages-microsoft-prod.deb
 *parameters.secret.json
 .venv
