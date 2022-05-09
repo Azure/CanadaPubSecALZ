@@ -118,6 +118,8 @@ Param(
 
 #Requires -Modules Az, powershell-yaml
 
+$ErrorActionPreference = "Stop"
+
 # In order to use this End to End script, you must configure ARM template configurations for Logging, Networking and Subscriptions.
 # Please follow the instructions on https://github.com/Azure/CanadaPubSecALZ/blob/main/docs/onboarding/azure-devops-pipelines.md
 # to setup the configuration files.  Once the configuration files are setup, you can choose to run this script or use Azure DevOps.
