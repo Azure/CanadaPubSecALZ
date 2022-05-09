@@ -20,7 +20,7 @@ Param(
   [SecureString]$NvaPassword=$null
 )
 
-Write-Output "DeploySubscriptionIds count: $DeploySubscriptionIds.Count"
+Write-Output "DeploySubscriptionIds count: ($DeploySubscriptionIds.Count)"
 foreach ($subscription in $DeploySubscriptionIds) {
   Write-Output "Deploying to subscription $subscription"
 }
