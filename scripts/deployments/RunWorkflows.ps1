@@ -9,12 +9,134 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 ----------------------------------------------------------------------------------
 #>
 
+<#
+  .SYNOPSIS
+    Runs CanadaPubSecALZ workflows.
+
+  .DESCRIPTION
+    This script is used to run one or more workflows for management groups, roles,
+    logging, policies, networking, and subscriptions.
+
+  .PARAMETER DeployManagementGroups
+    If true, run the management group workflow.
+
+  .PARAMETER DeployRoles
+    If true, run the role workflow.
+
+  .PARAMETER DeployLogging
+    If true, run the logging workflow.
+
+  .PARAMETER DeployPolicy
+    If true, run the policy workflow.
+
+  .PARAMETER DeployHubNetworkWithAzureFirewall
+    If true, run the Azure Firewall hub network workflow.
+
+  .PARAMETER DeployHubNetworkWithNVA
+    If true, run the NVA hub network workflow.
+
+  .PARAMETER DeploySubscriptionIds
+    Comma separated list of subscription ids to run the subscription workflow against.
+
+  .PARAMETER EnvironmentName
+    The name of the environment to run the workflow against.
+    Used primarily for running interactively.
+
+  .PARAMETER GitHubRepo
+    The GitHub repo to use for the workflow.
+
+  .PARAMETER GitHubRef
+    The GitHub ref to use for the workflow.
+
+  .PARAMETER LoginInteractiveTenantId
+    If set, prompt for credentials and login to the specified tenant.
+
+  .PARAMETER LoginServicePrincipalJson
+    If set, login using the JSON credentials for the specified service principal.
+
+  .PARAMETER WorkingDirectory
+    The directory to use for the workflow.
+
+  .PARAMETER NvaUsername
+    The firewall username to use for the Hub network with NVA workflow.
+
+  .PARAMETER NvaPassword
+    The firewall password to use for the Hub Network with NVA workflow.
+
+  .EXAMPLE
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups
+
+    Deploy management groups interactively.
+
+  .EXAMPLE
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups -DeployRoles -DeployLogging -DeployPolicies -DeployHubNetworkWithAzureFirewall
+
+    Deploy all platform components interactively, with Azure Firewall.
+
+  .EXAMPLE
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeploySubscriptionIds 'a188040e-6c67-4c5c-b112-36a304b66dad,7188030d-6c67-4c5c-b112-36a304b66dac'
+
+    Deploy 2 subscriptions interactively.
+
+  .EXAMPLE
+    PS> .\RunWorkflows.ps1 -GitHubRepo 'Azure/CanadaPubSecALZ' -GitHubRef 'refs/head/main' -LoginServicePrincipalJson '<output from: az ad sp create-for-rbac>' -DeployManagementGroups
+
+    Deploy management groups using service principal authentication.
+
+    The action in the GitHub workflow could look like this:
+
+    - name: Deploy Management Groups
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployManagementGroups `
+          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+#>
+
+[CmdletBinding()]
+Param(
+  # What to deploy
+  [switch]$DeployManagementGroups,
+  [switch]$DeployRoles,
+  [switch]$DeployLogging,
+  [switch]$DeployPolicy,
+  [switch]$DeployHubNetworkWithNVA,
+  [switch]$DeployHubNetworkWithAzureFirewall,
+  [string[]]$DeploySubscriptionIds=@(),
+
+  # How to deploy
+  [string]$EnvironmentName="CanadaESLZ-main",
+  [string]$GitHubRepo=$null,
+  [string]$GitHubRef=$null,
+  [string]$LoginInteractiveTenantId=$null,
+  [string]$LoginServicePrincipalJson=$null,
+  [string]$WorkingDirectory=(Resolve-Path "../.."),
+  [string]$NvaUsername=$null,
+  [string]$NvaPassword=$null
+)
+
 #Requires -Modules Az, powershell-yaml
 
 # In order to use this End to End script, you must configure ARM template configurations for Logging, Networking and Subscriptions.
 # Please follow the instructions on https://github.com/Azure/CanadaPubSecALZ/blob/main/docs/onboarding/azure-devops-pipelines.md
 # to setup the configuration files.  Once the configuration files are setup, you can choose to run this script or use Azure DevOps.
 
+# Construct environment name from GitHub repo and ref (result: <repo>-<branch>)
+if ((-not [string]::IsNullOrEmpty($GitHubRepo)) -and (-not [string]::IsNullOrEmpty($GitHubRef))) {
+  $EnvironmentName = `
+    $GitHubRepo.Split('/')[1] + '-' + `
+    $GitHubRef.Split('/')[$GitHubRef.Split('/').Count-1]
+  Write-Host "Environment name: $EnvironmentName"
+}
+
+# Construct environment name from Azure DevOps (result: <repo>-<branch>)
+<#
+  TO BE IMPLEMENTED
+#>
+
+# Load functions
+Write-Host "Loading functions..."
 . ".\Functions\EnvironmentContext.ps1"
 . ".\Functions\ManagementGroups.ps1"
 . ".\Functions\Roles.ps1"
@@ -24,64 +146,38 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 . ".\Functions\HubNetworkWithAzureFirewall.ps1"
 . ".\Functions\Subscriptions.ps1"
 
-# Set the environment name which is used to locate configuration files stored within the /config directory 
-$EnvironmentName = "CanadaESLZ-main"
-
-# Replace the Tenant ID with the GUID for your Azure Active Directory instance.
-# It can be found through https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview
-$AzureADTenantId = "343ddfdb-bef5-46d9-99cf-ed67d5948783"
-
-# Set the working directory.  It should point the root of this project.
-$WorkingDirectory = Resolve-Path "../.."
-
-$Features = @{
-  # Prompt to login to Azure AD and set the context for Azure deployments
-  PromptForLogin = $false
-
-  # Resource Organization
-  DeployManagementGroups = $false
-
-  # Access Control
-  DeployRoles = $false
-
-  # Logging
-  DeployLogging = $false
-
-  # Guardrail & Compliance
-  DeployPolicy = $false
-
-  # Hub Networking - With Network Virtual Appliance
-  DeployHubNetworkWithNVA = $false
-
-  # Hub Networking - With Azure Firewall
-  DeployHubNetworkWithAzureFirewall = $false
-
-  # Subscriptions
-  DeploySubscriptions = $false
-}
-
-Write-Output "Features configured for deployment:"
-$Features
-
-# Az Login
-if ($Features.PromptForLogin) {
+# Az Login interactively
+if (-not [string]::IsNullOrEmpty($LoginInteractiveTenantId)) {
+  Write-Host "Logging in to Azure interactively..."
   Connect-AzAccount `
     -UseDeviceAuthentication `
-    -TenantId $AzureADTenantId
+    -TenantId $LoginInteractiveTenantId
+}
+
+# Az Login via Service Principal
+if (-not [string]::IsNullOrEmpty($LoginServicePrincipalJson)) {
+  Write-Host "Logging in to Azure using service principal..."
+  $ServicePrincipal = $LoginServicePrincipalJson | ConvertFrom-Json
+  $Password = ConvertTo-SecureString $ServicePrincipal.password -AsPlainText -Force
+  $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $ServicePrincipal.appId, $Password
+  Connect-AzAccount -ServicePrincipal -TenantId $ServicePrincipal.tenant -Credential $Credential
 }
 
 # Set Azure Landing Zones Context
+Write-Host "Setting Azure Landing Zones Context..."
 $Context = New-EnvironmentContext -Environment $EnvironmentName -WorkingDirectory $WorkingDirectory
 
 # Deploy Management Groups
-if ($Features.DeployManagementGroups) {
+if ($DeployManagementGroups) {
+  Write-Host "Deploying Management Groups..."
   Set-ManagementGroups `
     -Context $Context `
     -ManagementGroupHierarchy $Context.ManagementGroupHierarchy
 }
 
 # Deploy Roles
-if ($Features.DeployRoles) {
+if ($DeployRoles) {
+  Write-Host "Deploying Roles..."
   Set-Roles `
     -Context $Context `
     -RolesDirectory $Context.RolesDirectory `
@@ -89,7 +185,8 @@ if ($Features.DeployRoles) {
 }
 
 # Deploy Logging
-if ($Features.DeployLogging) {
+if ($DeployLogging) {
+  Write-Host "Deploying Logging..."
   Set-Logging `
     -Region $Context.Variables['var-logging-region'] `
     -ManagementGroupId $Context.Variables['var-logging-managementGroupId'] `
@@ -98,7 +195,8 @@ if ($Features.DeployLogging) {
 }
 
 # Deploy Policy
-if ($Features.DeployPolicy) {
+if ($DeployPolicy) {
+  Write-Host "Deploying Policy..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
@@ -140,7 +238,8 @@ if ($Features.DeployPolicy) {
 }
 
 # Deploy Hub Networking with NVA
-if ($Features.DeployHubNetworkWithNVA) {
+if ($DeployHubNetworkWithNVA) {
+  Write-Host "Deploying Hub Networking with NVA..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
@@ -152,11 +251,14 @@ if ($Features.DeployHubNetworkWithNVA) {
     -ManagementGroupId $Context.Variables['var-hubnetwork-managementGroupId'] `
     -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
     -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-nva-configurationFileName'])" `
-    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
+    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
+    -NvaUsername $NvaUsername `
+    -NvaPassword $NvaPassword
 }
 
 # Hub Networking with Azure Firewall
-if ($Features.DeployHubNetworkWithAzureFirewall) {
+if ($DeployHubNetworkWithAzureFirewall) {
+  Write-Host "Deploying Hub Networking with Azure Firewall..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
@@ -185,7 +287,8 @@ if ($Features.DeployHubNetworkWithAzureFirewall) {
 }
 
 # Deploy Subscription archetypes
-if ($Features.DeploySubscriptions) {
+if ($DeploySubscriptionIds.Count -gt 0) {
+  Write-Host "Deploying Subscriptions..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
@@ -195,7 +298,7 @@ if ($Features.DeploySubscriptions) {
   # Replace subscription id example below with your subscription ids
   Set-Subscriptions `
     -Context $Context `
-    -Region "canadacentral" `
-    -SubscriptionIds $("4f9f8765-911a-4a6d-af60-4bc0473268c0") `
+    -Region $Context.DeploymentRegion `
+    -SubscriptionIds $DeploySubscriptionIds `
     -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
 }
