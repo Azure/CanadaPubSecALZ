@@ -123,7 +123,7 @@ Param(
 # to setup the configuration files.  Once the configuration files are setup, you can choose to run this script or use Azure DevOps.
 
 # Use $EnvironmentName parameter if specified, otherwise derive from GitHub or Azure DevOps environment.
-if (-not [string]::IsNullOrEmpty($EnvironmentName)) {
+if ([string]::IsNullOrEmpty($EnvironmentName)) {
 
   # Construct environment name from GitHub repo and ref (result: <repo>-<branch>)
   if ((-not [string]::IsNullOrEmpty($GitHubRepo)) -and (-not [string]::IsNullOrEmpty($GitHubRef))) {
