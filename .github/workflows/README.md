@@ -42,6 +42,8 @@ The subscription ids input value can be one of:
 
 There are two `Hub Networking` workflows, but you only need to run one of them. The networking workflow you run is based on whether you choose to implement the Azure Firewall or a Network Virtual Appliance (NVA).
 
+All workflows take an optional `Environment Name` input. By default, the environment name is derived from a combination of the GitHub repository name and branch name, i.e. `repo-branch`. You can use the `Environment Name` input value to override the derived value, forcing the workflow to use configuration folders and files for a specific `repo-branch`.
+
 In the default implementation, all workflows are run manually. This behavior can be changed by modifying the corresponding YAML workflow definition files. For example, to trigger workflow on a push or pull request to the repository.
 
 These workflow definitions are implemented using modularized PowerShell scripts in the `scripts/deployments`  path. The main entry point for these scripts is `scripts/deployments/RunWorkflows.ps1`.

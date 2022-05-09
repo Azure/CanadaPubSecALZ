@@ -14,8 +14,12 @@ on:
     inputs:
       subscriptionIds:
         type: string
-        description: The subscription ID(s) to use for the deployment.
-        required: true
+        description: Subscription ID(s)
+        required: false
+      environmentName:
+        type: string
+        description: Environment name
+        required: false
 
 defaults:
   run:
@@ -39,7 +43,8 @@ jobs:
     - name: Deploy Subscriptions
       run: |
         ./RunWorkflows.ps1 `
-          -DeploySubscriptionIds ${{github.event.inputs.subscriptionIds}} `
-          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
+          -DeploySubscriptionIds '${{github.event.inputs.subscriptionIds}}' `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
