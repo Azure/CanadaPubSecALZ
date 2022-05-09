@@ -259,8 +259,8 @@ if ($DeployHubNetworkWithNVA) {
     -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
     -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-nva-configurationFileName'])" `
     -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
-    -NvaUsername (ConvertFrom-SecureString -SecureString $NvaUsername -AsPlainText) `
-    -NvaPassword (ConvertFrom-SecureString -SecureString $NvaPassword -AsPlainText)
+    -NvaUsername $NvaUsername `
+    -NvaPassword $NvaPassword
 }
 
 # Hub Networking with Azure Firewall
