@@ -79,7 +79,7 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
     Deploy 2 subscriptions interactively.
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -GitHubRepo 'Azure/CanadaPubSecALZ' -GitHubRef 'refs/head/main' -LoginServicePrincipalJson '<output from: az ad sp create-for-rbac>' -DeployManagementGroups
+    PS> .\RunWorkflows.ps1 -GitHubRepo 'Azure/CanadaPubSecALZ' -GitHubRef 'refs/head/main' -LoginServicePrincipalJson (ConvertTo-SecureString -String '<output from: az ad sp create-for-rbac>' -AsPlainText -Force) -DeployManagementGroups
 
     Deploy management groups using service principal authentication.
 
@@ -89,7 +89,7 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
       run: |
         ./RunWorkflows.ps1 `
           -DeployManagementGroups `
-          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 #>
@@ -106,14 +106,14 @@ Param(
   [string[]]$DeploySubscriptionIds=@(),
 
   # How to deploy
-  [string]$EnvironmentName="CanadaESLZ-main",
+  [string]$EnvironmentName="",
   [string]$GitHubRepo=$null,
   [string]$GitHubRef=$null,
   [string]$LoginInteractiveTenantId=$null,
-  [string]$LoginServicePrincipalJson=$null,
+  [SecureString]$LoginServicePrincipalJson=$null,
   [string]$WorkingDirectory=(Resolve-Path "../.."),
-  [string]$NvaUsername=$null,
-  [string]$NvaPassword=$null
+  [SecureString]$NvaUsername=$null,
+  [SecureString]$NvaPassword=$null
 )
 
 #Requires -Modules Az, powershell-yaml
@@ -122,18 +122,22 @@ Param(
 # Please follow the instructions on https://github.com/Azure/CanadaPubSecALZ/blob/main/docs/onboarding/azure-devops-pipelines.md
 # to setup the configuration files.  Once the configuration files are setup, you can choose to run this script or use Azure DevOps.
 
-# Construct environment name from GitHub repo and ref (result: <repo>-<branch>)
-if ((-not [string]::IsNullOrEmpty($GitHubRepo)) -and (-not [string]::IsNullOrEmpty($GitHubRef))) {
-  $EnvironmentName = `
-    $GitHubRepo.Split('/')[1] + '-' + `
-    $GitHubRef.Split('/')[$GitHubRef.Split('/').Count-1]
-  Write-Host "Environment name: $EnvironmentName"
-}
+# Use $EnvironmentName parameter if specified, otherwise derive from GitHub or Azure DevOps environment.
+if (-not [string]::IsNullOrEmpty($EnvironmentName)) {
 
-# Construct environment name from Azure DevOps (result: <repo>-<branch>)
-<#
-  TO BE IMPLEMENTED
-#>
+  # Construct environment name from GitHub repo and ref (result: <repo>-<branch>)
+  if ((-not [string]::IsNullOrEmpty($GitHubRepo)) -and (-not [string]::IsNullOrEmpty($GitHubRef))) {
+    $EnvironmentName = `
+      $GitHubRepo.Split('/')[1] + '-' + `
+      $GitHubRef.Split('/')[$GitHubRef.Split('/').Count-1]
+    Write-Host "Environment name: $EnvironmentName"
+  }
+
+  # Construct environment name from Azure DevOps (result: <repo>-<branch>)
+  <#
+    TO BE IMPLEMENTED
+  #>
+}
 
 # Load functions
 Write-Host "Loading functions..."
@@ -155,9 +159,9 @@ if (-not [string]::IsNullOrEmpty($LoginInteractiveTenantId)) {
 }
 
 # Az Login via Service Principal
-if (-not [string]::IsNullOrEmpty($LoginServicePrincipalJson)) {
+if ($LoginServicePrincipalJson -ne $null) {
   Write-Host "Logging in to Azure using service principal..."
-  $ServicePrincipal = $LoginServicePrincipalJson | ConvertFrom-Json
+  $ServicePrincipal = ($LoginServicePrincipalJson | ConvertFrom-SecureString -AsPlainText) | ConvertFrom-Json
   $Password = ConvertTo-SecureString $ServicePrincipal.password -AsPlainText -Force
   $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $ServicePrincipal.appId, $Password
   Connect-AzAccount -ServicePrincipal -TenantId $ServicePrincipal.tenant -Credential $Credential
@@ -252,8 +256,8 @@ if ($DeployHubNetworkWithNVA) {
     -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
     -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-nva-configurationFileName'])" `
     -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
-    -NvaUsername $NvaUsername `
-    -NvaPassword $NvaPassword
+    -NvaUsername (ConvertFrom-SecureString -SecureString $NvaUsername -AsPlainText) `
+    -NvaPassword (ConvertFrom-SecureString -SecureString $NvaPassword -AsPlainText)
 }
 
 # Hub Networking with Azure Firewall
@@ -287,7 +291,7 @@ if ($DeployHubNetworkWithAzureFirewall) {
 }
 
 # Deploy Subscription archetypes
-if ($DeploySubscriptionIds.Count -gt 0) {
+if (($DeploySubscriptionIds -ne $null) -and ($DeploySubscriptionIds.Count -gt 0)) {
   Write-Host "Deploying Subscriptions..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `

@@ -9,7 +9,13 @@
 
 name: 5 - Hub Network with NVA
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      environmentName:
+        type: string
+        description: Environment name
+        required: false
 
 defaults:
   run:
@@ -34,8 +40,9 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployHubNetworkWithNVA `
-          -LoginServicePrincipalJson '${{secrets.ALZ_CREDENTIALS}}' `
+          -EnvironmentName ${{github.event.inputs.environmentName}} `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF} `
-          -NvaUsername '${{secrets.NVA_USERNAME}}' `
-          -NvaPassword '${{secrets.NVA_PASSWORD}}'
+          -NvaUsername (ConvertTo-SecureString -String '${{secrets.NVA_USERNAME}}' -AsPlainText -Force) `
+          -NvaPassword (ConvertTo-SecureString -String '${{secrets.NVA_PASSWORD}} '-AsPlainText -Force)
