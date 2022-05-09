@@ -1,0 +1,117 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+name: 0 - Everything
+
+on:
+  workflow_dispatch:
+    inputs:
+      hubNetworkType:
+        type: choice
+        description: "Select the hub network type"
+        required: true
+        options:
+          - "HubNetworkWithNVA"
+          - "HubNetworkWithAzureFirewall"
+        default: "HubNetworkWithAzureFirewall"
+      subscriptionIds:
+        type: string
+        description: Subscription ID(s)
+        required: false
+      environmentName:
+        type: string
+        description: Environment name
+        required: false
+
+defaults:
+  run:
+    shell: pwsh
+    working-directory: scripts/deployments
+
+jobs:
+  everything:
+    name: Everything (${{github.event.inputs.hubNetworkType}})
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Required modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy Management Groups
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployManagementGroups `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+    - name: Deploy Roles
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployRoles `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+    - name: Deploy Logging
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployLogging `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+    - name: Deploy Policy
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployPolicy `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+    - name: Deploy Hub Network with Azure Firewall
+      if: github.event.inputs.hubNetworkType == 'HubNetworkWithAzureFirewall'
+      run: |
+        ./RunWorkflows.ps1 `
+          -Deploy${{github.event.inputs.hubNetworkType}} `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+    - name: Deploy Hub Network with NVA
+      if: github.event.inputs.hubNetworkType == 'HubNetworkWithNVA'
+      run: |
+        ./RunWorkflows.ps1 `
+          -Deploy${{github.event.inputs.hubNetworkType}} `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF} `
+          -NvaUsername (ConvertTo-SecureString -String '${{secrets.NVA_USERNAME}}' -AsPlainText -Force) `
+          -NvaPassword (ConvertTo-SecureString -String '${{secrets.NVA_PASSWORD}} '-AsPlainText -Force)
+
+    - name: Deploy Subscriptions
+      if: github.event.inputs.subscriptionIds != ''
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeploySubscriptionIds '${{github.event.inputs.subscriptionIds}}' `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}

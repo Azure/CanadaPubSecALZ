@@ -26,26 +26,63 @@ function Set-HubNetwork-With-NVA {
     [String]$ConfigurationFilePath,
 
     [Parameter(Mandatory = $true)]
-    [String]$LogAnalyticsWorkspaceResourceId
+    [String]$LogAnalyticsWorkspaceResourceId,
+
+    [Parameter(Mandatory = $false)]
+    [String]$NvaUsername = $null,
+
+    [Parameter(Mandatory = $false)]
+    [String]$NvaPassword = $null
   )
 
   Set-AzContext -Subscription $SubscriptionId
+
+  $SchemaFilePath = "$($Context.SchemaDirectory)/landingzones/lz-platform-connectivity-hub-nva.json"
+  
+  Write-Output "Validation JSON parameter configuration using $SchemaFilePath"
+  Get-Content -Raw $ConfigurationFilePath | Test-Json -SchemaFile $SchemaFilePath
 
   # Load networking configuration
   $Configuration = Get-Content $ConfigurationFilePath | ConvertFrom-Json -Depth 100
 
   #region Check if Log Analytics Workspace Id is provided.  Otherwise set it.
+
   $LogAnalyticsWorkspaceResourceIdInFile = $Configuration.parameters | Get-Member -Name logAnalyticsWorkspaceResourceId
  
   if ($null -eq $LogAnalyticsWorkspaceResourceIdInFile -or $Configuration.parameters.logAnalyticsWorkspaceResourceId.value -eq "") {
+    Write-Output "Log Analytics Workspace Resource Id is not provided in the configuration file.  Setting it to the default value."
     $LogAnalyticsWorkspaceIdElement = @{
       logAnalyticsWorkspaceResourceId = @{
         value = $LogAnalyticsWorkspaceResourceId
       }
     }
-
     $Configuration.parameters | Add-Member $LogAnalyticsWorkspaceIdElement -Force
   }
+  
+  #endregion
+
+  #region Check if NVA username and password are provided.
+
+  if (-not [string]::IsNullOrEmpty($NvaUsername)) {
+    Write-Output "NVA username is provided.  Setting NVA username in configuration."
+    $NvaUsernameElement = @{
+      fwUsername = @{
+        value = $NvaUsername
+      }
+    }
+    $Configuration.parameters | Add-Member $NvaUsernameElement -Force
+  }
+
+  if (-not [string]::IsNullOrEmpty($NvaPassword)) {
+    Write-Output "NVA password is provided.  Setting NVA password in configuration."
+    $NvaPasswordElement = @{
+      fwPassword = @{
+        value = $NvaPassword
+      }
+    }
+    $Configuration.parameters | Add-Member $NvaPasswordElement -Force
+  }
+
   #endregion
 
   $PopulatedParametersFilePath = $ConfigurationFilePath.Split('.')[0] + '-populated.json'
@@ -70,7 +107,7 @@ function Set-HubNetwork-With-NVA {
     -TemplateFile "$($Context.WorkingDirectory)/landingzones/lz-platform-connectivity-hub-nva/main.bicep" `
     -TemplateParameterFile $PopulatedParametersFilePath `
     -Verbose
- 
+
   #region Check if Private DNS Zones are managed in the Hub.  If so, enable Private DNS Zones policy assignment
   if ($Configuration.parameters.privateDnsZones.value.enabled -eq $true) {
     $PolicyAssignmentFilePath = "$($Context.PolicySetCustomAssignmentsDirectory)/DNSPrivateEndpoints.bicep"

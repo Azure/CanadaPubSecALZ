@@ -1,0 +1,48 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+name: 5 - Hub Network with NVA
+
+on:
+  workflow_dispatch:
+    inputs:
+      environmentName:
+        type: string
+        description: Environment name
+        required: false
+
+defaults:
+  run:
+    shell: pwsh
+    working-directory: scripts/deployments
+
+jobs:
+  hub-network-with-nva:
+    name: Hub Network with NVA
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Required modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy Hub Network with NVA
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployHubNetworkWithNVA `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF} `
+          -NvaUsername (ConvertTo-SecureString -String '${{secrets.NVA_USERNAME}}' -AsPlainText -Force) `
+          -NvaPassword (ConvertTo-SecureString -String '${{secrets.NVA_PASSWORD}} '-AsPlainText -Force)
