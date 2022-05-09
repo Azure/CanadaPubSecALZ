@@ -35,16 +35,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Required modules
-      run: |
-        Install-Module Az -Force
-        Install-Module powershell-yaml -Force
+    # - name: Required modules
+    #   run: |
+    #     Install-Module Az -Force
+    #     Install-Module powershell-yaml -Force
 
     - name: Deploy Subscriptions
       if: ${{github.event.inputs.subscriptionIds != null}}
       run: |
         .\test.ps1 `
-          -SubscriptionIds @( ${{github.event.inputs.subscriptionIds}} ) `
+          -DeploySubscriptionIds @( ${{github.event.inputs.subscriptionIds}} ) `
 
         # ./RunWorkflows.ps1 `
         #   -DeploySubscriptionIds ${{github.event.inputs.subscriptionIds}} `
