@@ -34,6 +34,9 @@ function Get-AzureFirewallPolicy {
 function Set-AzureFirewallPolicy {
   param (
     [Parameter(Mandatory = $true)]
+    $Context,
+
+    [Parameter(Mandatory = $true)]
     [String]$Region,
 
     [Parameter(Mandatory = $true)]
@@ -44,6 +47,11 @@ function Set-AzureFirewallPolicy {
   )
 
   Set-AzContext -Subscription $SubscriptionId
+
+  $SchemaFilePath = "$($Context.SchemaDirectory)/landingzones/lz-platform-connectivity-hub-azfw-policy.json"
+  
+  Write-Output "Validation JSON parameter configuration using $SchemaFilePath"
+  Get-Content -Raw $ConfigurationFilePath | Test-Json -SchemaFile $SchemaFilePath
 
   Write-Output "Deploying to $SubscriptionId in $Region using $ConfigurationFilePath"
 
@@ -79,6 +87,11 @@ function Set-HubNetwork-With-AzureFirewall {
   )
 
   Set-AzContext -Subscription $SubscriptionId
+
+  $SchemaFilePath = "$($Context.SchemaDirectory)/landingzones/lz-platform-connectivity-hub-azfw.json"
+  
+  Write-Output "Validation JSON parameter configuration using $SchemaFilePath"
+  Get-Content -Raw $ConfigurationFilePath | Test-Json -SchemaFile $SchemaFilePath
 
   # Load networking configuration
   $Configuration = Get-Content $ConfigurationFilePath | ConvertFrom-Json -Depth 100

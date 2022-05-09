@@ -56,6 +56,13 @@ function Set-Subscriptions {
     Write-Output "  - Archetype: $ArchetypeName"
     Write-Output "  - Region: $DeploymentRegion"
 
+    Set-AzContext -Subscription $SubscriptionId
+
+    $SchemaFilePath = "$($Context.SchemaDirectory)/landingzones/lz-$ArchetypeName.json"
+    
+    Write-Output "Validation JSON parameter configuration using $SchemaFilePath"
+    Get-Content -Raw $FilePath | Test-Json -SchemaFile $SchemaFilePath
+
     $Configuration = Get-Content $FilePath | ConvertFrom-Json -Depth 100
 
     #region Check if Log Analytics Workspace Id is provided.  Otherwise set it.
