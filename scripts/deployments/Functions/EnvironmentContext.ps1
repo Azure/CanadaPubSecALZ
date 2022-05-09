@@ -38,16 +38,18 @@ function New-EnvironmentContext {
     WorkingDirectory = $WorkingDirectory
 
     RolesDirectory = "$WorkingDirectory/roles"
-   
+
     PolicyCustomDefinitionDirectory = "$PolicyDirectory/custom/definitions/policy"
     PolicySetCustomDefinitionDirectory = "$PolicyDirectory/custom/definitions/policyset"
     PolicySetCustomAssignmentsDirectory = "$PolicyDirectory/custom/assignments"
     PolicySetBuiltInAssignmentsDirectory = "$PolicyDirectory/builtin/assignments"
-      
+
+    SchemaDirectory = "$WorkingDirectory/schemas/latest"
+
     LoggingDirectory = "$WorkingDirectory/config/logging/$Environment"
     NetworkingDirectory = "$WorkingDirectory/config/networking/$Environment"
     SubscriptionsDirectory = "$WorkingDirectory/config/subscriptions/$Environment"
-  
+
     Variables = $Variables
     ManagementGroupHierarchy = $ManagementGroupHierarchy
 

@@ -37,6 +37,11 @@ function Set-HubNetwork-With-NVA {
 
   Set-AzContext -Subscription $SubscriptionId
 
+  $SchemaFilePath = "$($Context.SchemaDirectory)/landingzones/lz-platform-connectivity-hub-nva.json"
+  
+  Write-Output "Validation JSON parameter configuration using $SchemaFilePath"
+  Get-Content -Raw $ConfigurationFilePath | Test-Json -SchemaFile $SchemaFilePath
+
   # Load networking configuration
   $Configuration = Get-Content $ConfigurationFilePath | ConvertFrom-Json -Depth 100
 

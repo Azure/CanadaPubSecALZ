@@ -188,6 +188,7 @@ if ($DeployRoles) {
 if ($DeployLogging) {
   Write-Host "Deploying Logging..."
   Set-Logging `
+    -Context $Context `
     -Region $Context.Variables['var-logging-region'] `
     -ManagementGroupId $Context.Variables['var-logging-managementGroupId'] `
     -SubscriptionId $Context.Variables['var-logging-subscriptionId'] `
@@ -266,6 +267,7 @@ if ($DeployHubNetworkWithAzureFirewall) {
 
   # Create Azure Firewall Policy
   Set-AzureFirewallPolicy `
+    -Context $Context `
     -Region $Context.Variables['var-hubnetwork-region'] `
     -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
     -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfwPolicy-configurationFileName'])"
