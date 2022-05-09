@@ -38,6 +38,9 @@ function Get-LoggingConfiguration {
 function Set-Logging {
   param (
     [Parameter(Mandatory = $true)]
+    $Context,
+
+    [Parameter(Mandatory = $true)]
     [String]$Region,
 
     [Parameter(Mandatory = $true)]
@@ -51,6 +54,11 @@ function Set-Logging {
   )
 
   Set-AzContext -Subscription $SubscriptionId
+
+  $SchemaFilePath = "$($Context.SchemaDirectory)/landingzones/lz-platform-logging.json"
+  
+  Write-Output "Validation JSON parameter configuration using $SchemaFilePath"
+  Get-Content -Raw $ConfigurationFilePath | Test-Json -SchemaFile $SchemaFilePath
 
   Write-Output "Moving Subscription ($SubscriptionId) to Management Group ($ManagementGroupId)"
   New-AzManagementGroupDeployment `

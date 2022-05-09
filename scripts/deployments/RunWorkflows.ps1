@@ -118,6 +118,8 @@ Param(
 
 #Requires -Modules Az, powershell-yaml
 
+$ErrorActionPreference = "Stop"
+
 # In order to use this End to End script, you must configure ARM template configurations for Logging, Networking and Subscriptions.
 # Please follow the instructions on https://github.com/Azure/CanadaPubSecALZ/blob/main/docs/onboarding/azure-devops-pipelines.md
 # to setup the configuration files.  Once the configuration files are setup, you can choose to run this script or use Azure DevOps.
@@ -192,6 +194,7 @@ if ($DeployRoles) {
 if ($DeployLogging) {
   Write-Host "Deploying Logging..."
   Set-Logging `
+    -Context $Context `
     -Region $Context.Variables['var-logging-region'] `
     -ManagementGroupId $Context.Variables['var-logging-managementGroupId'] `
     -SubscriptionId $Context.Variables['var-logging-subscriptionId'] `
@@ -270,6 +273,7 @@ if ($DeployHubNetworkWithAzureFirewall) {
 
   # Create Azure Firewall Policy
   Set-AzureFirewallPolicy `
+    -Context $Context `
     -Region $Context.Variables['var-hubnetwork-region'] `
     -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
     -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfwPolicy-configurationFileName'])"
