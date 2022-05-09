@@ -43,7 +43,9 @@ jobs:
     - name: Deploy Subscriptions
       if: ${{github.event.inputs.subscriptionIds != null}}
       run: |
-        Write-Output "Deploying subscriptions with parameter: @( ${{github.event.inputs.subscriptionIds}} )"
+        .\test.ps1 `
+          -SubscriptionIds @( ${{github.event.inputs.subscriptionIds}} ) `
+
         # ./RunWorkflows.ps1 `
         #   -DeploySubscriptionIds ${{github.event.inputs.subscriptionIds}} `
         #   -EnvironmentName @( ${{github.event.inputs.environmentName}} ) `
