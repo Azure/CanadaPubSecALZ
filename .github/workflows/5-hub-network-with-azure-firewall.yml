@@ -40,7 +40,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployHubNetworkWithAzureFirewall `
-          -EnvironmentName ${{github.event.inputs.environmentName}} `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}

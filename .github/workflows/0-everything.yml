@@ -52,7 +52,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployManagementGroups `
-          -EnvironmentName ${{github.event.inputs.environmentName}} `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
@@ -61,7 +61,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployRoles `
-          -EnvironmentName ${{github.event.inputs.environmentName}} `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
@@ -70,7 +70,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployLogging `
-          -EnvironmentName ${{github.event.inputs.environmentName}} `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
@@ -79,7 +79,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployPolicy `
-          -EnvironmentName ${{github.event.inputs.environmentName}} `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
@@ -89,7 +89,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -Deploy${{github.event.inputs.hubNetworkType}} `
-          -EnvironmentName ${{github.event.inputs.environmentName}} `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
@@ -99,7 +99,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -Deploy${{github.event.inputs.hubNetworkType}} `
-          -EnvironmentName ${{github.event.inputs.environmentName}} `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF} `
@@ -111,7 +111,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeploySubscriptionIds ${{github.event.inputs.subscriptionIds}} `
-          -EnvironmentName ${{github.event.inputs.environmentName}} `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
