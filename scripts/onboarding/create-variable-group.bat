@@ -14,7 +14,6 @@ echo.
 echo   DevOps Organization:          %DEVOPS_ORG%
 echo   DevOps Project:               %DEVOPS_PROJECT_NAME%
 echo   DevOps Variable Group:        %DEVOPS_VARIABLES_GROUP_NAME%
-echo   DevOps Variables:             %DEVOPS_VARIABLES_VALUES%
 echo   DevOps Variables are Secret:  %DEVOPS_VARIABLES_ARE_SECRET%
 echo.
 choice /C YN /M "Do you want to proceed?"
@@ -33,8 +32,18 @@ if defined ID (
 )
 
 REM Create the variable group
-echo Creating variable group [%DEVOPS_VARIABLES_GROUP_NAME%] with variables: %DEVOPS_VARIABLES_VALUES%...
-call az pipelines variable-group create --name %DEVOPS_VARIABLES_GROUP_NAME% --authorize true --query "[?name=='%DEVOPS_VARIABLES_GROUP_NAME%'].id | [0]" -o tsv --org %DEVOPS_ORG% --project %DEVOPS_PROJECT_NAME% --variables %DEVOPS_VARIABLES_VALUES%
+echo Enter NVA username and password to set variables in DevOps variable group [%DEVOPS_VARIABLES_GROUP_NAME%]
+echo.
+echo **********************************************************************
+echo  CAUTION: your input is not masked, i.e. it will be visible on-screen
+echo **********************************************************************
+echo.
+set /P NVA_USERNAME=Enter the user name for the NVA firewall: 
+set /P NVA_PASSWORD=Enter the password for the NVA firewall: 
+echo.
+
+echo Creating variable group [%DEVOPS_VARIABLES_GROUP_NAME%]...
+call az pipelines variable-group create --name %DEVOPS_VARIABLES_GROUP_NAME% --authorize true --query "[?name=='%DEVOPS_VARIABLES_GROUP_NAME%'].id | [0]" -o tsv --org %DEVOPS_ORG% --project %DEVOPS_PROJECT_NAME% --variables var-hubnetwork-nva-fwUsername=%NVA_USERNAME% var-hubnetwork-nva-fwPassword=%NVA_PASSWORD%
 echo.
 echo Variable group [%DEVOPS_VARIABLES_GROUP_NAME%] has been created.
 echo.
@@ -43,9 +52,17 @@ echo.
 echo RECOMMENDED that you use the Azure DevOps portal to restrict access to this
 echo   variable group to only the `platform-connectivity-hub-nva` pipeline.
 echo.
-echo RECOMMENDED that you DO NOT commit to your repository any changes made
-echo   to this file that include a plaintext username or password.
-echo.
 
 REM Set variables as secret in Azure DevOps if requested
-if "%DEVOPS_VARIABLES_ARE_SECRET%" == "true" call update-variable-group.bat true
+if "%DEVOPS_VARIABLES_ARE_SECRET%" == "true" (
+    echo.
+    echo Setting variables in Azure DevOps variable group [%DEVOPS_VARIABLES_GROUP_NAME%] as secret...
+    echo.
+    call update-variable-group.bat true
+) else (
+    echo.
+    echo **************************************************************************
+    echo  WARNING: NVA firewall variables are not marked as secret in Azure DevOps
+    echo **************************************************************************
+    echo.
+)

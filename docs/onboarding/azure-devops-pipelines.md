@@ -1500,7 +1500,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     5. Select Existing Azure Pipeline YAML file
     6. Identify the pipeline in `.pipelines/subscriptions.yml`.
     7. Save the pipeline (don't run it yet)
-    8. Rename the pipeline to `subscription-ci`
+    8. Rename the pipeline to `subscriptions-ci`
 
 2. Create a subscription configuration file (JSON)
 
@@ -1525,9 +1525,9 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 3. Run the subscription pipeline
 
     1. In Azure DevOps, go to Pipelines
-    2. Select the `subscription-ci` pipeline and run it.
+    2. Select the `subscriptions-ci` pipeline and run it.
 
-       > The `subscription-ci` pipeline YAML is configured, by default, to **not** run automatically; you can change this if desired.
+       > The `subscriptions-ci` pipeline YAML is configured, by default, to **not** run automatically; you can change this if desired.
 
     3. In the Run Pipelines dialog window, enter the first 4 digits of your new subscription configuration file name (4 is usually enough of the GUID to uniquely identify the subscription) between the square brackets in the `subscriptions` parameter field. For example: `[802e]`.
 
