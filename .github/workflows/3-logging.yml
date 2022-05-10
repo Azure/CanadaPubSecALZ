@@ -14,7 +14,7 @@ on:
     inputs:
       environmentName:
         type: string
-        description: Environment name
+        description: Environment name (optional), e.g. CanadaESLZ-main
         required: false
 
 defaults:
@@ -31,7 +31,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Required modules
+    - name: Configure PowerShell modules
       run: |
         Install-Module Az -Force
         Install-Module powershell-yaml -Force

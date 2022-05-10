@@ -26,8 +26,11 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
   .PARAMETER DeployLogging
     If true, run the logging workflow.
 
-  .PARAMETER DeployPolicy
-    If true, run the policy workflow.
+  .PARAMETER DeployCustomPolicy
+    If true, run the policy workflow for deploying custom policy definitions and assignments such as custom logging, tagging, networking, etc.
+
+  .PARAMETER DeployBuiltinPolicy
+    If true, run the policy workflow for deploying builtin policy definitions and assignments such as regulatory compliances.
 
   .PARAMETER DeployHubNetworkWithAzureFirewall
     If true, run the Azure Firewall hub network workflow.
@@ -69,7 +72,7 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
     Deploy management groups interactively.
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups -DeployRoles -DeployLogging -DeployPolicies -DeployHubNetworkWithAzureFirewall
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups -DeployRoles -DeployLogging -DeployCustomPolicy -DeployBuiltInPolicy -DeployHubNetworkWithAzureFirewall
 
     Deploy all platform components interactively, with Azure Firewall.
 
@@ -100,7 +103,8 @@ Param(
   [switch]$DeployManagementGroups,
   [switch]$DeployRoles,
   [switch]$DeployLogging,
-  [switch]$DeployPolicy,
+  [switch]$DeployCustomPolicy,
+  [switch]$DeployBuiltinPolicy,
   [switch]$DeployHubNetworkWithNVA,
   [switch]$DeployHubNetworkWithAzureFirewall,
   [string[]]$DeploySubscriptionIds=@(),
@@ -202,46 +206,50 @@ if ($DeployLogging) {
 }
 
 # Deploy Policy
-if ($DeployPolicy) {
+if ($DeployBuiltinPolicy -or $DeployCustomPolicy) {
   Write-Host "Deploying Policy..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
     -SubscriptionId $Context.Variables['var-logging-subscriptionId']
 
-  # Custom Policy Definitions
-  Set-Policy-Definitions `
-    -PolicyDefinitionsDirectory $Context.PolicyCustomDefinitionDirectory `
-    -ManagementGroupId $Context.TopLevelManagementGroupId
+  if ($DeployBuiltinPolicy) {
+    # Built In Policy Set Assignments
+    Set-PolicySet-Assignments `
+      -Context $Context `
+      -PolicySetAssignmentsDirectory $Context.PolicySetBuiltInAssignmentsDirectory `
+      -PolicySetAssignmentManagementGroupId $Context.TopLevelManagementGroupId `
+      -PolicySetAssignmentNames $('asb', 'nist80053r4', 'nist80053r5', 'pbmm', 'cis-msft-130', 'fedramp-moderate', 'hitrust-hipaa', 'location') `
+      -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
+      -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
+      -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
+      -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
+  }
 
-  # Custom Policy Set Definitions
-  Set-PolicySet-Defintions `
-    -Context $Context `
-    -PolicySetDefinitionsDirectory $Context.PolicySetCustomDefinitionDirectory `
-    -ManagementGroupId $Context.TopLevelManagementGroupId `
-    -PolicySetDefinitionNames $('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'DNSPrivateEndpoints', 'Tags')
+  if ($DeployCustomPolicy) {
+    # Custom Policy Definitions
+    Set-Policy-Definitions `
+      -PolicyDefinitionsDirectory $Context.PolicyCustomDefinitionDirectory `
+      -ManagementGroupId $Context.TopLevelManagementGroupId
 
-  # Built In Policy Set Assignments
-  Set-PolicySet-Assignments `
-    -Context $Context `
-    -PolicySetAssignmentsDirectory $Context.PolicySetBuiltInAssignmentsDirectory `
-    -PolicySetAssignmentManagementGroupId $Context.TopLevelManagementGroupId `
-    -PolicySetAssignmentNames $('asb', 'nist80053r4', 'nist80053r5', 'pbmm', 'cis-msft-130', 'fedramp-moderate', 'hitrust-hipaa', 'location') `
-    -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
-    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
-    -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
-    -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
+    # Custom Policy Set Definitions
+    Set-PolicySet-Defintions `
+      -Context $Context `
+      -PolicySetDefinitionsDirectory $Context.PolicySetCustomDefinitionDirectory `
+      -ManagementGroupId $Context.TopLevelManagementGroupId `
+      -PolicySetDefinitionNames $('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'DNSPrivateEndpoints', 'Tags')
 
-  # Custom Policy Sets Assignments
-  Set-PolicySet-Assignments `
-    -Context $Context `
-    -PolicySetAssignmentsDirectory $Context.PolicySetCustomAssignmentsDirectory `
-    -PolicySetAssignmentManagementGroupId $Context.TopLevelManagementGroupId `
-    -PolicySetAssignmentNames $('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'Tags') `
-    -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
-    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
-    -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
-    -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
+    # Custom Policy Sets Assignments
+    Set-PolicySet-Assignments `
+      -Context $Context `
+      -PolicySetAssignmentsDirectory $Context.PolicySetCustomAssignmentsDirectory `
+      -PolicySetAssignmentManagementGroupId $Context.TopLevelManagementGroupId `
+      -PolicySetAssignmentNames $('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'Tags') `
+      -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
+      -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
+      -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
+      -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
+  }
 }
 
 # Deploy Hub Networking with NVA
@@ -295,7 +303,7 @@ if ($DeployHubNetworkWithAzureFirewall) {
 }
 
 # Deploy Subscription archetypes
-if (($DeploySubscriptionIds -ne $null) -and ($DeploySubscriptionIds.Count -gt 0)) {
+if (($null -ne $DeploySubscriptionIds) -and ($DeploySubscriptionIds.Count -gt 0)) {
   Write-Host "Deploying Subscriptions..."
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
