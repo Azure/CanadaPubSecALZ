@@ -39,7 +39,8 @@ jobs:
     - name: Deploy Policy
       run: |
         ./RunWorkflows.ps1 `
-          -DeployPolicy `
+          -DeployBuiltInPolicy `
+          -DeployCustomPolicy `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `

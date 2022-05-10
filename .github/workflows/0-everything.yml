@@ -37,6 +37,7 @@ defaults:
 jobs:
   ManagementGroups:
     name: Management Groups
+
     runs-on: ubuntu-latest
     steps:
 
@@ -63,6 +64,7 @@ jobs:
     needs: ManagementGroups
 
     name: Roles
+    
     runs-on: ubuntu-latest
     steps:
 
@@ -90,6 +92,7 @@ jobs:
       - Roles
 
     name: Logging
+
     runs-on: ubuntu-latest
     steps:
 
@@ -117,9 +120,16 @@ jobs:
       - Logging
 
     name: Policy
-    runs-on: ubuntu-latest
-    steps:
 
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        policyType:
+          - DeployBuiltInPolicy
+          - DeployCustomPolicy
+
+    steps:
     - name: Checkout
       uses: actions/checkout@v3
 
@@ -133,7 +143,7 @@ jobs:
       if: ${{ false }}
       run: |
         ./RunWorkflows.ps1 `
-          -DeployPolicy `
+          -${{ matrix.policyType }} `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
@@ -144,6 +154,7 @@ jobs:
       - Policy
 
     name: Hub Networking (${{github.event.inputs.hubNetworkType}})
+
     runs-on: ubuntu-latest
     steps:
 
@@ -182,10 +193,14 @@ jobs:
 
   SubscriptionMatrix:
     if: github.event.inputs.subscriptionIds != ''
+
     name: Create subscription deployment(s) as matrix
+    
     runs-on: ubuntu-latest
+    
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -207,7 +222,9 @@ jobs:
       - SubscriptionMatrix
 
     name: Subscriptions
+
     runs-on: ubuntu-latest
+
     strategy:
       matrix: ${{fromJSON(needs.SubscriptionMatrix.outputs.matrix)}}
 
