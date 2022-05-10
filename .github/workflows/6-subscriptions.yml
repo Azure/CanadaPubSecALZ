@@ -41,9 +41,10 @@ jobs:
         Install-Module powershell-yaml -Force
 
     - name: Deploy Subscriptions
+      if: github.event.inputs.subscriptionIds != null
       run: |
         ./RunWorkflows.ps1 `
-          -DeploySubscriptionIds '${{github.event.inputs.subscriptionIds}}' `
+          -DeploySubscriptionIds @( ${{github.event.inputs.subscriptionIds}} ) `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
