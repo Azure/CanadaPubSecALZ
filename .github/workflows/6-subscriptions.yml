@@ -14,7 +14,7 @@ on:
     inputs:
       subscriptionIds:
         type: string
-        description: Subscription ID(s) (optional), e.g. "abcd", "1234"
+        description: Subscription ID(s), e.g. "abcd", "1234"
         required: true
       environmentName:
         type: string
