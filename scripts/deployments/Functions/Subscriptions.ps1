@@ -84,25 +84,30 @@ function Set-Subscriptions {
     Write-Output "Creating new file with runtime populated parameters: $PopulatedParametersFilePath"
     $Configuration | ConvertTo-Json -Depth 100 | Set-Content $PopulatedParametersFilePath
 
+    $MoveDeploymentName="move-subscription-$SubscriptionId-$DeploymentRegion"
+    $MoveDeploymentName=-join $MoveDeploymentName[0..63] 
+
     Write-Output "Moving Subscription ($SubscriptionId) to Management Group ($ManagementGroupId)"
     New-AzManagementGroupDeployment `
+      -Name $MoveDeploymentName `
       -ManagementGroupId $ManagementGroupId `
       -Location $Context.DeploymentRegion `
       -TemplateFile "$($Context.WorkingDirectory)/landingzones/utils/mg-move/move-subscription.bicep" `
       -TemplateParameterObject @{
         managementGroupId = $ManagementGroupId
         subscriptionId = $SubscriptionId
-      }
+      } `
+      -Verbose
 
-      Write-Output "Deploying $PopulatedParametersFilePath to $SubscriptionId in $Region"
+    Write-Output "Deploying $PopulatedParametersFilePath to $SubscriptionId in $Region"
 
-      Set-AzContext -Subscription $SubscriptionId
-      New-AzSubscriptionDeployment `
-        -Name "main-$DeploymentRegion" `
-        -Location $DeploymentRegion `
-        -TemplateFile "$($Context.WorkingDirectory)/landingzones/lz-$ArchetypeName/main.bicep" `
-        -TemplateParameterFile $PopulatedParametersFilePath `
-        -Verbose
+    Set-AzContext -Subscription $SubscriptionId
+    New-AzSubscriptionDeployment `
+      -Name "main-$DeploymentRegion" `
+      -Location $DeploymentRegion `
+      -TemplateFile "$($Context.WorkingDirectory)/landingzones/lz-$ArchetypeName/main.bicep" `
+      -TemplateParameterFile $PopulatedParametersFilePath `
+      -Verbose
 
     Remove-Item $PopulatedParametersFilePath
   }
