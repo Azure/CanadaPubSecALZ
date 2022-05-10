@@ -181,6 +181,7 @@ jobs:
           -NvaPassword (ConvertTo-SecureString -String '${{secrets.NVA_PASSWORD}} '-AsPlainText -Force)
 
   SubscriptionMatrix:
+    if: github.event.inputs.subscriptionIds != ''
     name: Create subscription deployment(s) as matrix
     runs-on: ubuntu-latest
     outputs:
@@ -200,6 +201,7 @@ jobs:
           Write-Output "::set-output name=matrix::$SubscriptionIdJson"
 
   Subscriptions:
+    if: github.event.inputs.subscriptionIds != ''
     needs:
       - HubNetworking
       - SubscriptionMatrix
