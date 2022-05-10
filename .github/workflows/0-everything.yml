@@ -44,7 +44,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Required modules
+    - name: Configure PowerShell modules
       if: ${{ false }}
       run: |
         Install-Module Az -Force
@@ -71,7 +71,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Required modules
+    - name: Configure PowerShell modules
       if: ${{ false }}
       run: |
         Install-Module Az -Force
@@ -99,7 +99,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Required modules
+    - name: Configure PowerShell modules
       if: ${{ false }}
       run: |
         Install-Module Az -Force
@@ -133,7 +133,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Required modules
+    - name: Configure PowerShell modules
       if: ${{ false }}
       run: |
         Install-Module Az -Force
@@ -161,7 +161,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Required modules
+    - name: Configure PowerShell modules
       if: ${{ false }}
       run: |
         Install-Module Az -Force
@@ -232,7 +232,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Required modules
+    - name: Configure PowerShell modules
       if: ${{ false }}
       run: |
         Install-Module Az -Force
