@@ -35,20 +35,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    # - name: Required modules
-    #   run: |
-    #     Install-Module Az -Force
-    #     Install-Module powershell-yaml -Force
+    - name: Required modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
 
     - name: Deploy Subscriptions
-      if: ${{github.event.inputs.subscriptionIds != null}}
+      if: github.event.inputs.subscriptionIds != null
       run: |
-        .\test.ps1 `
+        ./RunWorkflows.ps1 `
           -DeploySubscriptionIds @( ${{github.event.inputs.subscriptionIds}} ) `
-
-        # ./RunWorkflows.ps1 `
-        #   -DeploySubscriptionIds ${{github.event.inputs.subscriptionIds}} `
-        #   -EnvironmentName @( ${{github.event.inputs.environmentName}} ) `
-        #   -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
-        #   -GitHubRepo ${env:GITHUB_REPOSITORY} `
-        #   -GitHubRef ${env:GITHUB_REF}
+          -EnvironmentName @( ${{github.event.inputs.environmentName}} ) `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
