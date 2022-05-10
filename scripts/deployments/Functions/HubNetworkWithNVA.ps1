@@ -29,10 +29,10 @@ function Set-HubNetwork-With-NVA {
     [String]$LogAnalyticsWorkspaceResourceId,
 
     [Parameter(Mandatory = $false)]
-    [String]$NvaUsername = $null,
+    [SecureString]$NvaUsername = $null,
 
     [Parameter(Mandatory = $false)]
-    [String]$NvaPassword = $null
+    [SecureString]$NvaPassword = $null
   )
 
   Set-AzContext -Subscription $SubscriptionId
@@ -67,7 +67,7 @@ function Set-HubNetwork-With-NVA {
     Write-Output "NVA username is provided.  Setting NVA username in configuration."
     $NvaUsernameElement = @{
       fwUsername = @{
-        value = $NvaUsername
+        value = ($NvaUsername | ConvertFrom-SecureString -AsPlainText)
       }
     }
     $Configuration.parameters | Add-Member $NvaUsernameElement -Force
@@ -77,7 +77,7 @@ function Set-HubNetwork-With-NVA {
     Write-Output "NVA password is provided.  Setting NVA password in configuration."
     $NvaPasswordElement = @{
       fwPassword = @{
-        value = $NvaPassword
+        value = ($NvaPassword | ConvertFrom-SecureString -AsPlainText)
       }
     }
     $Configuration.parameters | Add-Member $NvaPasswordElement -Force

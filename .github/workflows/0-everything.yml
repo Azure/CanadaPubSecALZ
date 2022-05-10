@@ -107,10 +107,10 @@ jobs:
           -NvaPassword (ConvertTo-SecureString -String '${{secrets.NVA_PASSWORD}} '-AsPlainText -Force)
 
     - name: Deploy Subscriptions
-      if: github.event.inputs.subscriptionIds != ''
+      if: github.event.inputs.subscriptionIds != null
       run: |
         ./RunWorkflows.ps1 `
-          -DeploySubscriptionIds '${{github.event.inputs.subscriptionIds}}' `
+          -DeploySubscriptionIds @( ${{github.event.inputs.subscriptionIds}} ) `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `

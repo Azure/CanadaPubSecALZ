@@ -36,7 +36,7 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
     If true, run the NVA hub network workflow.
 
   .PARAMETER DeploySubscriptionIds
-    Comma separated list of subscription ids to run the subscription workflow against.
+    Comma separated list of quoted subscription ids to run the subscription workflow against.
 
   .PARAMETER EnvironmentName
     The name of the environment to run the workflow against.
@@ -259,8 +259,8 @@ if ($DeployHubNetworkWithNVA) {
     -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
     -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-nva-configurationFileName'])" `
     -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
-    -NvaUsername (ConvertFrom-SecureString -SecureString $NvaUsername -AsPlainText) `
-    -NvaPassword (ConvertFrom-SecureString -SecureString $NvaPassword -AsPlainText)
+    -NvaUsername $NvaUsername `
+    -NvaPassword $NvaPassword
 }
 
 # Hub Networking with Azure Firewall
