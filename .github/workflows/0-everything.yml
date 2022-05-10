@@ -51,7 +51,6 @@ jobs:
         Install-Module powershell-yaml -Force
 
     - name: Deploy Management Groups
-      if: ${{ false }}
       run: |
         ./RunWorkflows.ps1 `
           -DeployManagementGroups `
@@ -61,7 +60,8 @@ jobs:
           -GitHubRef ${env:GITHUB_REF}
 
   Roles:
-    needs: ManagementGroups
+    needs:
+      - ManagementGroups
 
     name: Roles
     
@@ -72,13 +72,11 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Configure PowerShell modules
-      if: ${{ false }}
       run: |
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
     - name: Deploy Roles
-      if: ${{ false }}
       run: |
         ./RunWorkflows.ps1 `
           -DeployRoles `
@@ -100,13 +98,11 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Configure PowerShell modules
-      if: ${{ false }}
       run: |
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
     - name: Deploy Logging
-      if: ${{ false }}
       run: |
         ./RunWorkflows.ps1 `
           -DeployLogging `
@@ -134,13 +130,11 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Configure PowerShell modules
-      if: ${{ false }}
       run: |
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
     - name: Deploy Policy
-      if: ${{ false }}
       run: |
         ./RunWorkflows.ps1 `
           -${{ matrix.policyType }} `
@@ -162,14 +156,12 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Configure PowerShell modules
-      if: ${{ false }}
       run: |
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
     - name: Deploy Hub Network with Azure Firewall
-      if: ${{ false }}
-      #if: github.event.inputs.hubNetworkType == 'HubNetworkWithAzureFirewall'
+      if: github.event.inputs.hubNetworkType == 'HubNetworkWithAzureFirewall'
       run: |
         ./RunWorkflows.ps1 `
           -Deploy${{github.event.inputs.hubNetworkType}} `
@@ -179,11 +171,10 @@ jobs:
           -GitHubRef ${env:GITHUB_REF}
 
     - name: Deploy Hub Network with NVA
-      if: ${{ false }}
-      #if: github.event.inputs.hubNetworkType == 'HubNetworkWithNVA'
+      if: github.event.inputs.hubNetworkType == 'HubNetworkWithNVA'
       run: |
         ./RunWorkflows.ps1 `
-        #  -Deploy${{github.event.inputs.hubNetworkType}} `
+          -Deploy${{github.event.inputs.hubNetworkType}} `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
@@ -233,14 +224,11 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Configure PowerShell modules
-      if: ${{ false }}
       run: |
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
     - name: Deploy Subscriptions
-      #if: github.event.inputs.subscriptionIds != ''
-      if: ${{ false }}
       run: |
         ./RunWorkflows.ps1 `
           -DeploySubscriptionIds '${{ matrix.subscriptionId }}' `
