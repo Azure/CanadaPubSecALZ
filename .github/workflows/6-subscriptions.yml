@@ -15,7 +15,7 @@ on:
       subscriptionIds:
         type: string
         description: Subscription ID(s) (optional), e.g. "abcd", "1234"
-        required: false
+        required: true
       environmentName:
         type: string
         description: Environment name (optional), e.g. CanadaESLZ-main
