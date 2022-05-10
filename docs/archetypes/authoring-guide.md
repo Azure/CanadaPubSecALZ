@@ -116,12 +116,12 @@ Each archetype is intended to be self-contained and provides all deployment temp
 
 6. Create a JSON Schema definition for the archetype.  Consider using a tool such as [JSON to Jsonschema](https://jsonformatter.org/json-to-jsonschema) to generate the initial schema definition that you customize.  For all common features, you must reference the existing definitions for the types. See example: [schemas/latest/landingzones/lz-generic-subscription.json](../../schemas/latest/landingzones/lz-generic-subscription.json)
 
-7. Verify archetype deployment through `subscription-ci` Azure DevOps Pipeline.  More information on the pipeline can be found in [Azure DevOps Onboarding Guide](../onboarding/ado.md#step-8--configure-subscription-archetypes).
+7. Verify archetype deployment through `subscriptions-ci` Azure DevOps Pipeline.  More information on the pipeline can be found in [Azure DevOps Onboarding Guide](../onboarding/ado.md#step-8--configure-subscription-archetypes).
 
       - Create a subscription JSON Parameters file per [deployment instructions](#deployment-instructions).
       - Run the pipeline by providing the subscription guid
 
-    `subscription-ci` pipeline will automatically identify the archetype, the subscription and region based on the file name.  The JSON Schema is located by the archetype name and used for pre-deployment verification.  
+    `subscriptions-ci` pipeline will automatically identify the archetype, the subscription and region based on the file name.  The JSON Schema is located by the archetype name and used for pre-deployment verification.  
 
     Once verifications are complete, the pipeline will move the subscription to the target management group (based on the folder structure) and execute `main.bicep`.
 
@@ -175,7 +175,7 @@ An archetype can deploy & configure any number of Azure services.  For consisten
 - **Subscription Tags** - configures subscription tags
 - **Resource Tags** - configures tags on resource groups
 
-> **Log Analytics Workspace integration**: `main.bicep` must accept an input parameter named `logAnalyticsWorkspaceResourceId`.  This parameter is automatically set by `subscription-ci` Pipeline based on the environment configuration.  This parameter is used to link Microsoft Defender for Cloud to Log Analytics Workspace.
+> **Log Analytics Workspace integration**: `main.bicep` must accept an input parameter named `logAnalyticsWorkspaceResourceId`.  This parameter is automatically set by `subscriptions-ci` Pipeline based on the environment configuration.  This parameter is used to link Microsoft Defender for Cloud to Log Analytics Workspace.
 
 Input parameters for common features are:
 
@@ -276,7 +276,7 @@ As a result, we could either
 
 - have Azure deploy the archetype and fail on invalid inputs.  An administrator would have to deploy multiple times to fix all errors; or
 
-- attempt to detect invalid inputs as a pre-check in our `subscription-ci` pipeline.
+- attempt to detect invalid inputs as a pre-check in our `subscriptions-ci` pipeline.
 
 We chose to check the input parameters prior to deployment to identify misconfigurations faster.  Validations are performed using JSON Schema definitions.  These definitions are located in [schemas/latest/landingzones](../../schemas/latest/landingzones) folder.
 
@@ -341,7 +341,7 @@ These parameter files are located in [config/subscription](../../config/subscrip
 
 Immediate subfolder defines the environment which is based on Azure DevOps Organization (i.e. `CanadaESLZ`) & Git branch name (i.e. `main`), for example the subfolder will be called `CanadaESLZ-main`.  You can have many environments based on Git branch names such as `CanadaESLZ-feature-1`, `CanadaESLZ-dev`, etc.
 
-ARM parameter files are used by `subscription-ci` Azure DevOps Pipeline when configuring subscriptions with Azure resources.  The pipeline will detect environment, management group, subscription, deployment location and deployment parameters using the folder hierarchy, file name and file content.
+ARM parameter files are used by `subscriptions-ci` Azure DevOps Pipeline when configuring subscriptions with Azure resources.  The pipeline will detect environment, management group, subscription, deployment location and deployment parameters using the folder hierarchy, file name and file content.
 
 For example when the file path is:
 
@@ -395,7 +395,7 @@ There are two approaches for achieving uniquness:
 
     In this approach, you must ensure all management group ids are unique yourself.
 
-The `subscription-ci` management group detection logic is built to accommodate both scenarios.
+The `subscriptions-ci` management group detection logic is built to accommodate both scenarios.
 
 **To support approach #1:**
 
@@ -408,7 +408,7 @@ The `subscription-ci` management group detection logic is built to accommodate b
                     - DevTest
     ```
 
-- `subscription-ci` will then take the folder structure and concatenate it to create the management group id.  In this example `DevTest` management group id will be `pubsecLandingZonesDevTest`.
+- `subscriptions-ci` will then take the folder structure and concatenate it to create the management group id.  In this example `DevTest` management group id will be `pubsecLandingZonesDevTest`.
 
 **To support approach #2:**
 
@@ -421,4 +421,4 @@ The `subscription-ci` management group detection logic is built to accommodate b
             - DevTest
     ```
 
-- `subscription-ci` will then take the folder name as the structure (since there aren't any sub folders).  In this example `DevTest` management group id will be `DevTest`.
+- `subscriptions-ci` will then take the folder name as the structure (since there aren't any sub folders).  In this example `DevTest` management group id will be `DevTest`.
