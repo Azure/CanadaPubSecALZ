@@ -227,7 +227,6 @@ Next, edit the newly created file, using the guidance in the following table.
 | DEVOPS_SE_NAME | Azure DevOps service endpoint name. | spn-azure-platform-ops
 | DEVOPS_SE_TEMPLATE | File name for the generated Azure DevOps service endpoint template JSON file. | service-endpoint.AzDevOpsOrg.json
 | DEVOPS_VARIABLES_GROUP_NAME | Azure DevOps variable group name. Leave this set to `firewall-secrets` as the YAML pipeline for networking is hard-coded to use this value. | firewall-secrets
-| DEVOPS_VARIABLES_VALUES | Specify values for the NVA firewall username and password in format `key=value key=value`. Replace `YourUsername` and `YourPassword` in the example with your values. DO NOT commit changes that include username and password plaintext values to your repository. | var-hubnetwork-nva-fwUsername=YourUserName var-hubnetwork-nva-fwPassword=YourPassword
 | DEVOPS_VARIABLES_ARE_SECRET | Indicates whether variables in the variable group are marked as secret. Possible values are `true` or `false`. Recommend using `true` unless you plan to reconfigure your variable group to use another secure source such as KeyVault. | true
 | DEVOPS_OUTPUT_DIR | Name of temporary folder for generated files. | .\output
 
@@ -261,7 +260,7 @@ Run the `create-pipelines.bat` script to create the landing zone pipelines:
 - platform-connectivity-hub-nva-ci
 - platform-connectivity-hub-azfw-ci
 - platform-connectivity-hub-azfw-policy-ci
-- subscription-ci
+- subscriptions-ci
 
 If you would rather perform these steps manually, detailed guidance is available in the following sections of the [Azure DevOps Pipelines Onboarding Guide](./azure-devops-pipelines.md):
 
@@ -296,7 +295,7 @@ Detailed guidance on these configuration requirements is available in the [Azure
 
 ### Run pipelines
 
-Run the `run-pipelines.bat` script to interactively run individual landing zone pipelines. Note that at present time the `subscription-ci` pipeline is not included in the list of runnable pipelines as the script requires additional work to enable that capability.
+Run the `run-pipelines.bat` script to interactively run individual landing zone pipelines. Note that at present time the `subscriptions-ci` pipeline is not included in the list of runnable pipelines as the script requires additional work to enable that capability.
 
 ### Clear environment variables used by scripts
 
