@@ -25,6 +25,13 @@ defaults:
 jobs:
   policy:
     name: Policy
+
+    strategy:
+      matrix:
+        policyType:
+          - DeployBuiltInPolicy
+          - DeployCustomPolicy
+
     runs-on: ubuntu-latest
     steps:
 
@@ -39,8 +46,7 @@ jobs:
     - name: Deploy Policy
       run: |
         ./RunWorkflows.ps1 `
-          -DeployBuiltInPolicy `
-          -DeployCustomPolicy `
+          -${{ matrix.policyType }} `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
