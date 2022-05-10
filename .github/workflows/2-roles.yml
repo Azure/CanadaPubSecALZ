@@ -14,7 +14,7 @@ on:
     inputs:
       environmentName:
         type: string
-        description: Environment name, e.g. CanadaESLZ-main
+        description: Environment name (optional), e.g. CanadaESLZ-main
         required: false
 
 defaults:
