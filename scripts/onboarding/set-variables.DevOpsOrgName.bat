@@ -47,10 +47,6 @@ set DEVOPS_SE_TEMPLATE=service-endpoint.DEVOPS-ORG-NAME.json
 REM Do not change this value (hard-coded in YAML pipeline definition)
 set DEVOPS_VARIABLES_GROUP_NAME=firewall-secrets
 
-REM Variables is a space-delimited key=value string. Provide values for
-REM 'var-hubnetwork-nva-fwUsername' and 'var-hubnetwork-nva-fwPassword'.
-set DEVOPS_VARIABLES_VALUES=var-hubnetwork-nva-fwUsername=YourUserName var-hubnetwork-nva-fwPassword=YourPassword
-
 REM Are variables in the firewall-secrets group marked as secret? 'true' or 'false'.
 set DEVOPS_VARIABLES_ARE_SECRET=true
 
