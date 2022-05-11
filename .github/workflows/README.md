@@ -19,6 +19,7 @@ The following workflows are present in the `.github/workflows` repository folder
 | 2 | Roles | `2-roles.yml`
 | 3 | Logging | `3-logging.yml`
 | 4 | Policy | `policy.yml`
+| 5 | Azure Firewall Policy (required for Hub Networking with Azure Firewall) | `5-azure-firewall-policy.yml`
 | 5 | Hub Networking with Azure Firewall | `5-hub-network-with-azure-firewall.yml`
 | 5 | Hub Networking with NVA | `5-hub-network-with-nva.yml`
 | 6 | Subscriptions | `6-subscriptions.yml`
