@@ -35,7 +35,7 @@ var policyScopedId = resourceId('Microsoft.Authorization/policySetDefinitions', 
 // Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 var telemetry = json(loadTextContent('../../../config/telemetry.json'))
 module telemetryCustomerUsageAttribution '../../../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
-  name: 'pid-${telemetry.customerUsageAttribution.modules.policy}'
+  name: 'pid-${telemetry.customerUsageAttribution.modules.policy}-nist-80053-r5'
 }
 
 resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
