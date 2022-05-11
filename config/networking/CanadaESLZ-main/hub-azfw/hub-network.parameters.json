@@ -85,7 +85,7 @@
     },
     "ddosStandard": {
       "value": {
-        "enabled": true,
+        "enabled": false,
         "resourceGroupName": "pubsec-ddos-rg",
         "planName": "ddos-plan"
       }
