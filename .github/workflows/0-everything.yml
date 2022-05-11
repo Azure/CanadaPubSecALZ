@@ -159,11 +159,20 @@ jobs:
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
-    - name: Deploy Hub Network with Azure Firewall
+    - name: Deploy Azure Firewall Policy
       if: github.event.inputs.hubNetworkType == 'HubNetworkWithAzureFirewall'
       run: |
         ./RunWorkflows.ps1 `
           -DeployAzureFirewallPolicy `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+    - name: Deploy Hub Network with Azure Firewall
+      if: github.event.inputs.hubNetworkType == 'HubNetworkWithAzureFirewall'
+      run: |
+        ./RunWorkflows.ps1 `
           -DeployHubNetworkWithAzureFirewall `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
