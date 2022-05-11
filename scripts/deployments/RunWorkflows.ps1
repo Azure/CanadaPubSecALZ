@@ -72,7 +72,7 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
     Deploy management groups interactively.
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups -DeployRoles -DeployLogging -DeployCustomPolicy -DeployBuiltInPolicy -DeployHubNetworkWithAzureFirewall
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups -DeployRoles -DeployLogging -DeployCustomPolicy -DeployBuiltInPolicy -DeployAzureFirewallPolicy -DeployHubNetworkWithAzureFirewall
 
     Deploy all platform components interactively, with Azure Firewall.
 
@@ -105,6 +105,7 @@ Param(
   [switch]$DeployLogging,
   [switch]$DeployCustomPolicy,
   [switch]$DeployBuiltinPolicy,
+  [switch]$DeployAzureFirewallPolicy,
   [switch]$DeployHubNetworkWithNVA,
   [switch]$DeployHubNetworkWithAzureFirewall,
   [string[]]$DeploySubscriptionIds=@(),
@@ -271,6 +272,16 @@ if ($DeployHubNetworkWithNVA) {
     -NvaPassword $NvaPassword
 }
 
+# Azure Firewall Policy
+if ($DeployAzureFirewallPolicy) {
+  # Create Azure Firewall Policy
+  Set-AzureFirewallPolicy `
+    -Context $Context `
+    -Region $Context.Variables['var-hubnetwork-region'] `
+    -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
+    -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfwPolicy-configurationFileName'])"
+}
+
 # Hub Networking with Azure Firewall
 if ($DeployHubNetworkWithAzureFirewall) {
   Write-Host "Deploying Hub Networking with Azure Firewall..."
@@ -278,13 +289,6 @@ if ($DeployHubNetworkWithAzureFirewall) {
   $LoggingConfiguration = Get-LoggingConfiguration `
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
     -SubscriptionId $Context.Variables['var-logging-subscriptionId']
-
-  # Create Azure Firewall Policy
-  Set-AzureFirewallPolicy `
-    -Context $Context `
-    -Region $Context.Variables['var-hubnetwork-region'] `
-    -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
-    -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfwPolicy-configurationFileName'])"
   
   # Retrieve Azure Firewall Policy
   $AzureFirewallPolicyConfiguration = Get-AzureFirewallPolicy `

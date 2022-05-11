@@ -163,7 +163,8 @@ jobs:
       if: github.event.inputs.hubNetworkType == 'HubNetworkWithAzureFirewall'
       run: |
         ./RunWorkflows.ps1 `
-          -Deploy${{github.event.inputs.hubNetworkType}} `
+          -DeployAzureFirewallPolicy `
+          -DeployHubNetworkWithAzureFirewall `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
@@ -173,7 +174,7 @@ jobs:
       if: github.event.inputs.hubNetworkType == 'HubNetworkWithNVA'
       run: |
         ./RunWorkflows.ps1 `
-          -Deploy${{github.event.inputs.hubNetworkType}} `
+          -DeployHubNetworkWithNVA `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
