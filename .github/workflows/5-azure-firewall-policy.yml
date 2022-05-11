@@ -16,7 +16,7 @@ on:
         type: string
         description: Environment name (optional), e.g. CanadaESLZ-main
         required: false
-  pull_request:
+  push:
 
 defaults:
   run:
