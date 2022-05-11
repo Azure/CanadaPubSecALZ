@@ -59,7 +59,8 @@ function Set-AzureFirewallPolicy {
     -Name "main-$Region" `
     -Location $Region `
     -TemplateFile "$($Context.WorkingDirectory)/landingzones/lz-platform-connectivity-hub-azfw/main-azfw-policy.bicep" `
-    -TemplateParameterFile $ConfigurationFilePath
+    -TemplateParameterFile $ConfigurationFilePath `
+    -Verbose
 }
 
 function Set-HubNetwork-With-AzureFirewall {
