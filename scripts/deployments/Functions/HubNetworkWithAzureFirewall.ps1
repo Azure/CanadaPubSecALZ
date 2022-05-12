@@ -56,7 +56,7 @@ function Set-AzureFirewallPolicy {
   Write-Output "Deploying to $SubscriptionId in $Region using $ConfigurationFilePath"
 
   New-AzSubscriptionDeployment `
-    -Name "main-$Region" `
+    -Name "main-azure-firewall-policy-$Region" `
     -Location $Region `
     -TemplateFile "$($Context.WorkingDirectory)/landingzones/lz-platform-connectivity-hub-azfw/main-azfw-policy.bicep" `
     -TemplateParameterFile $ConfigurationFilePath `
