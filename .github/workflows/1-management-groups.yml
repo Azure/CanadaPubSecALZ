@@ -33,14 +33,23 @@ jobs:
 
     - name: Configure PowerShell modules
       run: |
-        Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        environment: 'AzureCloud'
+        enable-AzPSSession: true
+        allow-no-subscriptions: true
+
     - name: Deploy Management Groups
-      run: |
-        ./RunWorkflows.ps1 `
-          -DeployManagementGroups `
-          -EnvironmentName '${{github.event.inputs.environmentName}}' `
-          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
-          -GitHubRepo ${env:GITHUB_REPOSITORY} `
-          -GitHubRef ${env:GITHUB_REF}
+      uses: azure/powershell@v1
+      with:
+          inlineScript: |
+            ./RunWorkflows.ps1 `
+              -DeployManagementGroups `
+              -EnvironmentName '${{github.event.inputs.environmentName}}' `
+              -GitHubRepo ${env:GITHUB_REPOSITORY} `
+              -GitHubRef ${env:GITHUB_REF}
+          azPSVersion: "latest"
