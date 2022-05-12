@@ -54,7 +54,7 @@ jobs:
         ./RunWorkflows.ps1 `
           -DeployManagementGroups `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
-          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.AZURE_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
@@ -80,7 +80,7 @@ jobs:
         ./RunWorkflows.ps1 `
           -DeployRoles `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
-          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.AZURE_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
@@ -106,7 +106,7 @@ jobs:
         ./RunWorkflows.ps1 `
           -DeployLogging `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
-          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.AZURE_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
@@ -138,7 +138,7 @@ jobs:
         ./RunWorkflows.ps1 `
           -${{ matrix.policyType }} `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
-          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.AZURE_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
@@ -165,7 +165,7 @@ jobs:
         ./RunWorkflows.ps1 `
           -DeployAzureFirewallPolicy `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
-          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.AZURE_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
@@ -175,7 +175,7 @@ jobs:
         ./RunWorkflows.ps1 `
           -DeployHubNetworkWithAzureFirewall `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
-          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.AZURE_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
@@ -185,7 +185,7 @@ jobs:
         ./RunWorkflows.ps1 `
           -DeployHubNetworkWithNVA `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
-          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.AZURE_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF} `
           -NvaUsername (ConvertTo-SecureString -String '${{secrets.NVA_USERNAME}}' -AsPlainText -Force) `
@@ -242,6 +242,6 @@ jobs:
         ./RunWorkflows.ps1 `
           -DeploySubscriptionIds '${{ matrix.subscriptionId }}' `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
-          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.AZURE_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}

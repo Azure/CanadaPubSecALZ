@@ -65,16 +65,15 @@ Additional information on configuration files is available here:
 
 ## Workflow secrets
 
-In addition to the repository-based configuration files, you will also need to create a [GitHub encrypted secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) named `ALZ_CREDENTIALS`. This is the default secret name used by the workflows, but you can modify the workflow definition files if you would like to use different secret name(s). This secret should contain the JSON output from the `az ad sp create-for-rbac` command you used to create the service principal(s). Here is an example showing the format for this secret value as output by the `az ad sp create-for-rbac` command.
+In addition to the repository-based configuration files, you will also need to create a [GitHub encrypted secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) named `AZURE_CREDENTIALS`. This is the default secret name used by the workflows, but you can modify the workflow definition files if you would like to use different secret name(s). This secret should contain the JSON output from the `az ad sp create-for-rbac` command you used to create the service principal(s). Here is an example showing the format for this secret value as output by the `az ad sp create-for-rbac` command.
 
->**Note**: you will need to ensure there are no newline (carriage return / line feed) characters in the value stored in the `ALZ_CREDENTIALS` secret, as this will break the workflow definition.
+>**Note**: you will need to ensure there are no newline (carriage return / line feed) characters in the value stored in the `AZURE_CREDENTIALS` secret, as this will break the workflow definition.
 
 ```json
 {
-  "appId": "a1a1a1a1-b2b2-c3c3-d4d4-e5e5e5e5e5e5",
-  "displayName": "alz-credentials",
-  "password": "a1!b2@c3#d4$e5%f6^a1!b2@c3#d4$e5%f6^",
-  "tenant": "a6a6a6a6-b7b7-c8c8-d9d9-e0e0e0e0e0e0"
+  "clientId": "a1a1a1a1-b2b2-c3c3-d4d4-e5e5e5e5e5e5",
+  "clientSecret": "a1!b2@c3#d4$e5%f6^a1!b2@c3#d4$e5%f6^",
+  "tenantId": "a6a6a6a6-b7b7-c8c8-d9d9-e0e0e0e0e0e0"
 }
 ```
 

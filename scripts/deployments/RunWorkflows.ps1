@@ -92,7 +92,7 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
       run: |
         ./RunWorkflows.ps1 `
           -DeployManagementGroups `
-          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.AZURE_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 #>
@@ -169,9 +169,9 @@ if (-not [string]::IsNullOrEmpty($LoginInteractiveTenantId)) {
 if ($LoginServicePrincipalJson -ne $null) {
   Write-Host "Logging in to Azure using service principal..."
   $ServicePrincipal = ($LoginServicePrincipalJson | ConvertFrom-SecureString -AsPlainText) | ConvertFrom-Json
-  $Password = ConvertTo-SecureString $ServicePrincipal.password -AsPlainText -Force
-  $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $ServicePrincipal.appId, $Password
-  Connect-AzAccount -ServicePrincipal -TenantId $ServicePrincipal.tenant -Credential $Credential
+  $Password = ConvertTo-SecureString $ServicePrincipal.clientSecret -AsPlainText -Force
+  $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $ServicePrincipal.clientId, $Password
+  Connect-AzAccount -ServicePrincipal -TenantId $ServicePrincipal.tenantId -Credential $Credential
 }
 
 # Set Azure Landing Zones Context

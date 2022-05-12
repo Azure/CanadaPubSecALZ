@@ -41,6 +41,6 @@ jobs:
         ./RunWorkflows.ps1 `
           -DeployLogging `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
-          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.AZURE_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
