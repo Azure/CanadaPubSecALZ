@@ -75,7 +75,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployCustomPolicySetDefinitions `
-          -CustomPolicySetDefinitionNames '${{ matrix.policySetDefinitionName }}'
+          -CustomPolicySetDefinitionNames '${{ matrix.policySetDefinitionName }}' `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
@@ -111,7 +111,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployCustomPolicySetAssignments `
-          -CustomPolicySetAssignmentNames '${{ matrix.policySetAssignmentName }}'
+          -CustomPolicySetAssignmentNames '${{ matrix.policySetAssignmentName }}' `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
@@ -147,7 +147,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployBuiltinPolicySetAssignments `
-          -BuiltinPolicySetAssignmentNames '${{ matrix.policySetAssignmentName }}'
+          -BuiltinPolicySetAssignmentNames '${{ matrix.policySetAssignmentName }}' `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
