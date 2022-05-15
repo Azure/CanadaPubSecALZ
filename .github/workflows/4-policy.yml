@@ -23,14 +23,8 @@ defaults:
     working-directory: scripts/deployments
 
 jobs:
-  policy:
-    name: Policy
-
-    strategy:
-      matrix:
-        policyType:
-          - DeployBuiltInPolicy
-          - DeployCustomPolicy
+  custom_policy_definitions:
+    name: Custom policy definitions
 
     runs-on: ubuntu-latest
     steps:
@@ -43,10 +37,117 @@ jobs:
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
-    - name: Deploy Policy
+    - name: Deploy policy definitions
       run: |
         ./RunWorkflows.ps1 `
-          -${{ matrix.policyType }} `
+          -DeployCustomPolicyDefinitions `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  custom_policy_set_definitions:
+    name: Custom policy set definitions
+    needs: custom_policy_definitions
+
+    strategy:
+      matrix:
+        policySetDefinitionName:
+          - AKS
+          - DefenderForCloud
+          - LogAnalytics
+          - Network
+          - DNSPrivateEndpoints
+          - Tags
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy set definitions
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployCustomPolicySetDefinitions `
+          -CustomPolicySetDefinitionNames '${{ matrix.policySetDefinitionName }}'
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  custom_policy_set_assignments:
+    name: Custom policy set assignments
+    needs:
+      - custom_policy_definitions
+      - custom_policy_set_definitions
+
+    strategy:
+      matrix:
+        policySetAssignmentName:
+          - AKS
+          - DefenderForCloud
+          - LogAnalytics
+          - Network
+          - Tags
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy set assignments
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployCustomPolicySetAssignments `
+          -CustomPolicySetAssignmentNames '${{ matrix.policySetAssignmentName }}'
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  builtin_policy_set_assignments:
+    name: Builtin policy set assignments
+
+    strategy:
+      matrix:
+        policySetAssignmentName:
+          - asb
+          - nist80053r4
+          - nist80053r5
+          - pbmm
+          - cis-msft-130
+          - fedramp-moderate
+          - hitrust-hipaa
+          - location
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy set assignments
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployBuiltinPolicySetAssignments `
+          -BuiltinPolicySetAssignmentNames '${{ matrix.policySetAssignmentName }}'
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
