@@ -106,7 +106,10 @@ Param(
   [string[]]$RoleNames=@('la-vminsights-readonly', 'lz-appowner', 'lz-netops', 'lz-secops', 'lz-subowner'),
 
   [switch]$DeployLogging,
+
   [switch]$DeployCustomPolicy,
+  [string]$CustomPolicyAssignmentManagementGroupId=$null,
+  [string[]]$CustomPolicyAssignmentNames=$('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'Tags'),
 
   [switch]$DeployBuiltinPolicy,
   [string]$BuiltinPolicyAssignmentManagementGroupId=$null,
@@ -255,11 +258,16 @@ if ($DeployBuiltinPolicy -or $DeployCustomPolicy) {
       -PolicySetDefinitionNames $('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'DNSPrivateEndpoints', 'Tags')
 
     # Custom Policy Sets Assignments
+    $AssignmentScope = $Context.TopLevelManagementGroupId
+    if ([string]::IsNullOrEmpty($CustomPolicyAssignmentManagementGroupId) -eq $false) {
+      $AssignmentScope = $CustomPolicyAssignmentManagementGroupId
+    }
+
     Set-PolicySet-Assignments `
       -Context $Context `
       -PolicySetAssignmentsDirectory $Context.PolicySetCustomAssignmentsDirectory `
-      -PolicySetAssignmentManagementGroupId $Context.TopLevelManagementGroupId `
-      -PolicySetAssignmentNames $('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'Tags') `
+      -PolicySetAssignmentManagementGroupId $AssignmentScope `
+      -PolicySetAssignmentNames $CustomPolicyAssignmentNames `
       -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
       -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
       -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
