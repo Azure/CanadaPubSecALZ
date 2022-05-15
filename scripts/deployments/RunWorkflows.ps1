@@ -104,10 +104,15 @@ Param(
   [switch]$DeployRoles,
   [switch]$DeployLogging,
   [switch]$DeployCustomPolicy,
+
   [switch]$DeployBuiltinPolicy,
+  [string]$DeployBuiltinPolicyAssignmentManagementGroupId=$null,
+  [string[]]$DeployBuiltinPolicyAssignmentNames=$("asb", "nist80053r4", "nist80053r5", "pbmm", "cis-msft-130", "fedramp-moderate", "hitrust-hipaa", "location"),
+
   [switch]$DeployAzureFirewallPolicy,
   [switch]$DeployHubNetworkWithNVA,
   [switch]$DeployHubNetworkWithAzureFirewall,
+
   [string[]]$DeploySubscriptionIds=@(),
 
   # How to deploy
@@ -215,12 +220,17 @@ if ($DeployBuiltinPolicy -or $DeployCustomPolicy) {
     -SubscriptionId $Context.Variables['var-logging-subscriptionId']
 
   if ($DeployBuiltinPolicy) {
+    $AssignmentScope = $Context.TopLevelManagementGroupId
+    if ([string]::IsNullOrEmpty($DeployBuiltinPolicyAssignmentManagementGroupId) -eq $false) {
+      $AssignmentScope = $DeployBuiltinPolicyAssignmentManagementGroupId
+    }
+
     # Built In Policy Set Assignments
     Set-PolicySet-Assignments `
       -Context $Context `
       -PolicySetAssignmentsDirectory $Context.PolicySetBuiltInAssignmentsDirectory `
-      -PolicySetAssignmentManagementGroupId $Context.TopLevelManagementGroupId `
-      -PolicySetAssignmentNames $('asb', 'nist80053r4', 'nist80053r5', 'pbmm', 'cis-msft-130', 'fedramp-moderate', 'hitrust-hipaa', 'location') `
+      -PolicySetAssignmentManagementGroupId $AssignmentScope `
+      -PolicySetAssignmentNames $DeployBuiltinPolicyAssignmentNames `
       -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
       -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
       -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
