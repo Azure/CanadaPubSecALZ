@@ -25,6 +25,16 @@ defaults:
 jobs:
   roles:
     name: Roles
+
+    strategy:
+      matrix:
+        roleName:
+          - la-vminsights-readonly
+          - lz-appowner
+          - lz-netops
+          - lz-secops
+          - lz-subowner
+
     runs-on: ubuntu-latest
     steps:
 
@@ -40,6 +50,7 @@ jobs:
       run: |
         ./RunWorkflows.ps1 `
           -DeployRoles `
+          -RoleNames '{{ matrix.roleName }}' `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
