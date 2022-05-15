@@ -101,14 +101,16 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 Param(
   # What to deploy
   [switch]$DeployManagementGroups,
+
   [switch]$DeployRoles,
   [string[]]$RoleNames=@('la-vminsights-readonly', 'lz-appowner', 'lz-netops', 'lz-secops', 'lz-subowner'),
+
   [switch]$DeployLogging,
   [switch]$DeployCustomPolicy,
 
   [switch]$DeployBuiltinPolicy,
-  [string]$DeployBuiltinPolicyAssignmentManagementGroupId=$null,
-  [string[]]$DeployBuiltinPolicyAssignmentNames=$("asb", "nist80053r4", "nist80053r5", "pbmm", "cis-msft-130", "fedramp-moderate", "hitrust-hipaa", "location"),
+  [string]$BuiltinPolicyAssignmentManagementGroupId=$null,
+  [string[]]$BuiltinPolicyAssignmentNames=$("asb", "nist80053r4", "nist80053r5", "pbmm", "cis-msft-130", "fedramp-moderate", "hitrust-hipaa", "location"),
 
   [switch]$DeployAzureFirewallPolicy,
   [switch]$DeployHubNetworkWithNVA,
@@ -223,8 +225,8 @@ if ($DeployBuiltinPolicy -or $DeployCustomPolicy) {
 
   if ($DeployBuiltinPolicy) {
     $AssignmentScope = $Context.TopLevelManagementGroupId
-    if ([string]::IsNullOrEmpty($DeployBuiltinPolicyAssignmentManagementGroupId) -eq $false) {
-      $AssignmentScope = $DeployBuiltinPolicyAssignmentManagementGroupId
+    if ([string]::IsNullOrEmpty($BuiltinPolicyAssignmentManagementGroupId) -eq $false) {
+      $AssignmentScope = $BuiltinPolicyAssignmentManagementGroupId
     }
 
     # Built In Policy Set Assignments
@@ -232,7 +234,7 @@ if ($DeployBuiltinPolicy -or $DeployCustomPolicy) {
       -Context $Context `
       -PolicySetAssignmentsDirectory $Context.PolicySetBuiltInAssignmentsDirectory `
       -PolicySetAssignmentManagementGroupId $AssignmentScope `
-      -PolicySetAssignmentNames $DeployBuiltinPolicyAssignmentNames `
+      -PolicySetAssignmentNames $BuiltinPolicyAssignmentNames `
       -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
       -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
       -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
