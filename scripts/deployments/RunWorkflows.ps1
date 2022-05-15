@@ -116,7 +116,7 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
     Deploy Custom Policy Definitions only.
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -DeployCustomPolicySetAssignments -CustomPolicyAssignmentManagementGroupId pubsec -CustomPolicyAssignmentNames DefenderForCloud
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -DeployCustomPolicySetAssignments -CustomPolicySetAssignmentManagementGroupId pubsec -CustomPolicySetAssignmentNames DefenderForCloud
 
     Deploy one Custom Policy Set Assignment at management group
   
@@ -126,7 +126,7 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
     Deploy Built In Policy Assignments
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -DeployBuiltinPolicySetAssignments -BuiltinPolicyAssignmentManagementGroupId pubsec -BuiltinPolicyAssignmentNames asb
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -DeployBuiltinPolicySetAssignments -BuiltinPolicySetAssignmentManagementGroupId pubsec -BuiltinPolicySetAssignmentNames asb
 
     Deploy one Built In Policy Assignment at management group
 
@@ -323,23 +323,21 @@ if ($DeployBuiltinPolicySetAssignments) {
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
     -SubscriptionId $Context.Variables['var-logging-subscriptionId']
 
-  if ($DeployBuiltinPolicyAssignments) {
-    $AssignmentScope = $Context.TopLevelManagementGroupId
-    if ([string]::IsNullOrEmpty($BuiltinPolicySetAssignmentManagementGroupId) -eq $false) {
-      $AssignmentScope = $BuiltinPolicySetAssignmentManagementGroupId
-    }
-
-    # Built In Policy Set Assignments
-    Set-PolicySet-Assignments `
-      -Context $Context `
-      -PolicySetAssignmentsDirectory $Context.PolicySetBuiltInAssignmentsDirectory `
-      -PolicySetAssignmentManagementGroupId $AssignmentScope `
-      -PolicySetAssignmentNames $BuiltinPolicySetAssignmentNames `
-      -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
-      -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
-      -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
-      -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
+  $AssignmentScope = $Context.TopLevelManagementGroupId
+  if ([string]::IsNullOrEmpty($BuiltinPolicySetAssignmentManagementGroupId) -eq $false) {
+    $AssignmentScope = $BuiltinPolicySetAssignmentManagementGroupId
   }
+
+  # Built In Policy Set Assignments
+  Set-PolicySet-Assignments `
+    -Context $Context `
+    -PolicySetAssignmentsDirectory $Context.PolicySetBuiltInAssignmentsDirectory `
+    -PolicySetAssignmentManagementGroupId $AssignmentScope `
+    -PolicySetAssignmentNames $BuiltinPolicySetAssignmentNames `
+    -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
+    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
+    -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
+    -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
 }
 
 # Deploy Hub Networking with NVA
