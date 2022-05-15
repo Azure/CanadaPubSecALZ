@@ -70,6 +70,7 @@ function Set-PolicySet-Defintions {
     $ParametersContent | Set-Content -Path $PopulatedParametersFilePath
 
     Write-Output "Policy Set: $policySetDefinitionName"
+    Write-Output "   - Management Group Id: $ManagementGroupId"
     Write-Output "   - Definition: $PolicySetDefinitionFilePath"
     Write-Output "   - Parameters: $PolicySetDefinitionParametersFilePath"
     Write-Output "   - Populated (temp): $PopulatedParametersFilePath"
@@ -144,6 +145,7 @@ function Set-PolicySet-Assignments {
     $ParametersContent | Set-Content -Path $PopulatedParametersFilePath
 
     Write-Output "Policy: $policy"
+    Write-Output "   - Management Group Id: $PolicySetAssignmentManagementGroupId"
     Write-Output "   - Definition: $PolicySetAssignmentFilePath"
     Write-Output "   - Parameters: $PolicySetParameterFilePath"
     Write-Output "   - Populated (temp): $PopulatedParametersFilePath"
