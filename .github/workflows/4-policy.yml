@@ -47,7 +47,7 @@ jobs:
           -GitHubRef ${env:GITHUB_REF}
 
   Custom_Policy_Set_Definitions:
-    name: Custom policy set definitions
+    name: Define custom
     needs: Custom_Policy_Definitions
 
     strategy:
@@ -72,7 +72,7 @@ jobs:
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
-    - name: Deploy policy set definitions
+    - name: Deploy policy set definition
       run: |
         ./RunWorkflows.ps1 `
           -DeployCustomPolicySetDefinitions `
@@ -83,7 +83,7 @@ jobs:
           -GitHubRef ${env:GITHUB_REF}
 
   Custom_Policy_Set_Assignments:
-    name: Custom policy set assignments
+    name: Assign custom
     needs:
       - Custom_Policy_Definitions
       - Custom_Policy_Set_Definitions
@@ -109,7 +109,7 @@ jobs:
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
-    - name: Deploy policy set assignments
+    - name: Deploy policy set assignment
       run: |
         ./RunWorkflows.ps1 `
           -DeployCustomPolicySetAssignments `
@@ -120,7 +120,7 @@ jobs:
           -GitHubRef ${env:GITHUB_REF}
 
   Builtin_Policy_Set_Assignments:
-    name: Builtin policy set assignments
+    name: Assign built-in
 
     strategy:
       matrix:
@@ -146,7 +146,7 @@ jobs:
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
-    - name: Deploy policy set assignments
+    - name: Deploy policy set assignment
       run: |
         ./RunWorkflows.ps1 `
           -DeployBuiltinPolicySetAssignments `
