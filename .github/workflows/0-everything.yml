@@ -123,6 +123,7 @@ jobs:
         policyType:
           - DeployBuiltInPolicy
           - DeployCustomPolicy
+      fail-fast: false
 
     steps:
     - name: Checkout
@@ -227,6 +228,7 @@ jobs:
 
     strategy:
       matrix: ${{fromJSON(needs.SubscriptionMatrix.outputs.matrix)}}
+      fail-fast: false
 
     steps:
     - name: Checkout
