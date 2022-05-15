@@ -59,6 +59,7 @@ jobs:
           - Network
           - DNSPrivateEndpoints
           - Tags
+      fail-fast: false
 
     runs-on: ubuntu-latest
     steps:
@@ -95,6 +96,7 @@ jobs:
           - LogAnalytics
           - Network
           - Tags
+      fail-fast: false
 
     runs-on: ubuntu-latest
     steps:
@@ -131,6 +133,7 @@ jobs:
           - fedramp-moderate
           - hitrust-hipaa
           - location
+      fail-fast: false
 
     runs-on: ubuntu-latest
     steps:
