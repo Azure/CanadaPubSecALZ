@@ -306,7 +306,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
             value: '[parameters(\'logAnalytics\')]'
           }
           AllMetrics: {
-            value: 'false'
+            value: 'False'
           }
         }
       }
