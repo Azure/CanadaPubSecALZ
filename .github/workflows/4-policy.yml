@@ -47,6 +47,7 @@ jobs:
           -GitHubRef ${env:GITHUB_REF}
 
   Custom_Policy_Set_Definitions:
+    name: Custom policy set definitions
     needs: Custom_Policy_Definitions
 
     strategy:
