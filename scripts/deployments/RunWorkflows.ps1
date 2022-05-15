@@ -102,6 +102,7 @@ Param(
   # What to deploy
   [switch]$DeployManagementGroups,
   [switch]$DeployRoles,
+  [string[]]$RoleNames=@('la-vminsights-readonly', 'lz-appowner', 'lz-netops', 'lz-secops', 'lz-subowner'),
   [switch]$DeployLogging,
   [switch]$DeployCustomPolicy,
   [switch]$DeployBuiltinPolicy,
@@ -192,6 +193,7 @@ if ($DeployRoles) {
   Set-Roles `
     -Context $Context `
     -RolesDirectory $Context.RolesDirectory `
+    -RoleNames $RoleNames `
     -ManagementGroupId $Context.TopLevelManagementGroupId
 }
 

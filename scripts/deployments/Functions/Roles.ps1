@@ -18,6 +18,9 @@ function Set-Roles {
     [String] $RolesDirectory,
 
     [Parameter(Mandatory = $true)]
+    [string[]] $RoleNames,
+
+    [Parameter(Mandatory = $true)]
     [String] $ManagementGroupId
   )
 
@@ -29,13 +32,15 @@ function Set-Roles {
     assignableMgId = $ManagementGroupId
   }
 
-  foreach ($roleDefinition in Get-ChildItem -Path $RolesDirectory) {
-    Write-Output "Deploying $($roleDefinition.FullName)"
+  foreach ($RoleName in $RoleNames) {
+    $RoleDefinitionFilePath = "$RolesDirectory/$RoleName.bicep"
+
+    Write-Output "Deploying $RoleName ($RoleDefinitionFilePath)"
     
     New-AzManagementGroupDeployment `
       -ManagementGroupId $ManagementGroupId `
       -Location $Context.DeploymentRegion `
-      -TemplateFile $roleDefinition.FullName `
+      -TemplateFile $RoleDefinitionFilePath `
       -TemplateParameterObject $DeploymentParameters
   }
 }
