@@ -115,7 +115,7 @@ function Set-PolicySet-Assignments {
   )
 
   foreach ($policySetAssignmentName in $PolicySetAssignmentNames) {
-    Write-Output "Policy set assignment Name: $($policySetAssignmentName)"
+    Write-Output "Policy set assignment name: $($policySetAssignmentName)"
 
     $PolicySetAssignmentFilePath = "$($PolicySetAssignmentsDirectory)/$($policySetAssignmentName).bicep"
 
