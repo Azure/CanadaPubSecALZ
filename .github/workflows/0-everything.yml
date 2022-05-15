@@ -121,21 +121,13 @@ jobs:
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
-  Policy:
-    needs:
-      - Logging
-
-    name: Policy
+  Custom_Policy_Definitions:
+    name: Custom policy definitions
+    needs: Logging
 
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        policyType:
-          - DeployBuiltInPolicy
-          - DeployCustomPolicy
-
     steps:
+
     - name: Checkout
       uses: actions/checkout@v3
 
@@ -144,10 +136,118 @@ jobs:
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
 
-    - name: Deploy Policy
+    - name: Deploy policy definitions
       run: |
         ./RunWorkflows.ps1 `
-          -${{ matrix.policyType }} `
+          -DeployCustomPolicyDefinitions `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  Custom_Policy_Set_Definitions:
+    name: Custom policy set definitions
+    needs: Custom_Policy_Definitions
+
+    strategy:
+      matrix:
+        policySetDefinitionName:
+          - AKS
+          - DefenderForCloud
+          - LogAnalytics
+          - Network
+          - DNSPrivateEndpoints
+          - Tags
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy set definitions
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployCustomPolicySetDefinitions `
+          -CustomPolicySetDefinitionNames '${{ matrix.policySetDefinitionName }}' `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  Custom_Policy_Set_Assignments:
+    name: Custom policy set assignments
+    needs:
+      - Custom_Policy_Definitions
+      - Custom_Policy_Set_Definitions
+
+    strategy:
+      matrix:
+        policySetAssignmentName:
+          - AKS
+          - DefenderForCloud
+          - LogAnalytics
+          - Network
+          - Tags
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy set assignments
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployCustomPolicySetAssignments `
+          -CustomPolicySetAssignmentNames '${{ matrix.policySetAssignmentName }}' `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  Builtin_Policy_Set_Assignments:
+    name: Builtin policy set assignments
+    needs: Logging
+
+    strategy:
+      matrix:
+        policySetAssignmentName:
+          - asb
+          - nist80053r4
+          - nist80053r5
+          - pbmm
+          - cis-msft-130
+          - fedramp-moderate
+          - hitrust-hipaa
+          - location
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy set assignments
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployBuiltinPolicySetAssignments `
+          -BuiltinPolicySetAssignmentNames '${{ matrix.policySetAssignmentName }}' `
           -EnvironmentName '${{github.event.inputs.environmentName}}' `
           -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
@@ -155,7 +255,8 @@ jobs:
 
   HubNetworking:
     needs:
-      - Policy
+      - Custom_Policy_Set_Assignments
+      - Builtin_Policy_Set_Assignments
 
     name: Hub Networking (${{github.event.inputs.hubNetworkType}})
 
