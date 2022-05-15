@@ -30,27 +30,30 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
     If true, run the logging workflow.
 
   .PARAMETER DeployCustomPolicyDefinitions
-    If true, run the policy workflow for deploying custom policy & policy definitions
+    If true, run the policy workflow for deploying custom policy definitions
+
+  .PARAMETER DeployCustomPolicySetDefinitions
+    If true, run the policy workflow for deploying custom policy set definitions
 
   .PARAMETER CustomPolicySetDefinitionNames
     An array of custom policy set definitions to deploy.  When not set, defaults to 'AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'DNSPrivateEndpoints', 'Tags'.
 
-  .PARAMETER DeployCustomPolicyAssignments
+  .PARAMETER DeployCustomPolicySetAssignments
     If true, run the policy workflow for deploying custom policy set assignments
 
-  .PARAMETER CustomPolicyAssignmentManagementGroupId
+  .PARAMETER CustomPolicySetAssignmentManagementGroupId
     The management group ID to assign custom policy set assignments to.  When not set, defaults to top level management group (e.g. pubsec) based on management group hierarchy configuration.
 
-  .PARAMETER CustomPolicyAssignmentNames
+  .PARAMETER CustomPolicySetAssignmentNames
     An array of custom policy set assignments to deploy.  When not set, defaults to 'AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'Tags'.
 
-  .PARAMETER DeployBuiltinPolicyAssignments
+  .PARAMETER DeployBuiltinPolicySetAssignments
     If true, run the policy workflow for deploying builtin policy definitions and assignments such as regulatory compliances.
 
-  .PARAMETER BuiltinPolicyAssignmentManagementGroupId
+  .PARAMETER BuiltinPolicySetAssignmentManagementGroupId
     The management group ID to assign built-in policy set assignments to.  When not set, defaults to top level management group (e.g. pubsec) based on management group hierarchy configuration.
 
-  .PARAMETER BuiltinPolicyAssignmentNames
+  .PARAMETER BuiltinPolicySetAssignmentNames
     An array of built-in policy set assignments to deploy.  When not set, defaults to 'asb', 'nist80053r4', 'nist80053r5', 'pbmm', 'cis-msft-130', 'fedramp-moderate', 'hitrust-hipaa', 'location'.
 
   .PARAMETER DeployHubNetworkWithAzureFirewall
@@ -93,7 +96,7 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
     Deploy management groups interactively.
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups -DeployRoles -DeployLogging -DeployCustomPolicyDefinitions -DeployCustomPolicyAssignments -DeployBuiltinPolicyAssignments -DeployAzureFirewallPolicy -DeployHubNetworkWithAzureFirewall
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups -DeployRoles -DeployLogging -DeployCustomPolicyDefinitions -DeployCustomPolicySetDefinitions -DeployCustomPolicySetAssignments -DeployBuiltinPolicySetAssignments -DeployAzureFirewallPolicy -DeployHubNetworkWithAzureFirewall
 
     Deploy all platform components interactively, with Azure Firewall.
 
@@ -103,7 +106,7 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
     Deploy 2 subscriptions interactively.
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -DeployCustomPolicyDefinitions -DeployCustomPolicyAssignments -DeployBuiltinPolicyAssignments
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -DeployCustomPolicyDefinitions -DeployCustomPolicySetDefinitions -DeployCustomPolicySetAssignments -DeployBuiltinPolicySetAssignments
 
     Deploy Built-In & Custom Policy Sets, including all default custom policy/policy set definitions.
   
@@ -113,17 +116,17 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
     Deploy Custom Policy Definitions only.
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -DeployCustomPolicyAssignments -CustomPolicyAssignmentManagementGroupId pubsec -CustomPolicyAssignmentNames DefenderForCloud
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -DeployCustomPolicySetAssignments -CustomPolicyAssignmentManagementGroupId pubsec -CustomPolicyAssignmentNames DefenderForCloud
 
     Deploy one Custom Policy Set Assignment at management group
   
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -DeployBuiltinPolicyAssignments
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -DeployBuiltinPolicySetAssignments
 
     Deploy Built In Policy Assignments
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -DeployBuiltinPolicyAssignments -BuiltinPolicyAssignmentManagementGroupId pubsec -BuiltinPolicyAssignmentNames asb
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -DeployBuiltinPolicySetAssignments -BuiltinPolicyAssignmentManagementGroupId pubsec -BuiltinPolicyAssignmentNames asb
 
     Deploy one Built In Policy Assignment at management group
 
@@ -154,15 +157,17 @@ Param(
   [switch]$DeployLogging,
 
   [switch]$DeployCustomPolicyDefinitions,
+
+  [switch]$DeployCustomPolicySetDefinitions,
   [string[]]$CustomPolicySetDefinitionNames=$('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'DNSPrivateEndpoints', 'Tags'),
 
-  [switch]$DeployCustomPolicyAssignments,
-  [string]$CustomPolicyAssignmentManagementGroupId=$null,
-  [string[]]$CustomPolicyAssignmentNames=$('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'Tags'),
+  [switch]$DeployCustomPolicySetAssignments,
+  [string]$CustomPolicySetAssignmentManagementGroupId=$null,
+  [string[]]$CustomPolicySetAssignmentNames=$('AKS', 'DefenderForCloud', 'LogAnalytics', 'Network', 'Tags'),
 
-  [switch]$DeployBuiltinPolicyAssignments,
-  [string]$BuiltinPolicyAssignmentManagementGroupId=$null,
-  [string[]]$BuiltinPolicyAssignmentNames=$('asb', 'nist80053r4', 'nist80053r5', 'pbmm', 'cis-msft-130', 'fedramp-moderate', 'hitrust-hipaa', 'location'),
+  [switch]$DeployBuiltinPolicySetAssignments,
+  [string]$BuiltinPolicySetAssignmentManagementGroupId=$null,
+  [string[]]$BuiltinPolicySetAssignmentNames=$('asb', 'nist80053r4', 'nist80053r5', 'pbmm', 'cis-msft-130', 'fedramp-moderate', 'hitrust-hipaa', 'location'),
 
   [switch]$DeployAzureFirewallPolicy,
   [switch]$DeployHubNetworkWithNVA,
@@ -268,8 +273,51 @@ if ($DeployLogging) {
 }
 
 # Deploy Policy
-if ($DeployBuiltinPolicyAssignments -or $DeployCustomPolicyDefinitions -or $DeployCustomPolicyAssignments) {
-  Write-Host "Deploying Policy..."
+if ($DeployCustomPolicyDefinitions) {
+  Write-Host "Deploying custom policy definitions ..."
+
+  Set-Policy-Definitions `
+    -PolicyDefinitionsDirectory $Context.PolicyCustomDefinitionDirectory `
+    -ManagementGroupId $Context.TopLevelManagementGroupId
+}
+
+if ($DeployCustomPolicySetDefinitions) {
+  Write-Host "Deploying custom policy set definitions ..."
+
+  Set-PolicySet-Defintions `
+  -Context $Context `
+  -PolicySetDefinitionsDirectory $Context.PolicySetCustomDefinitionDirectory `
+  -ManagementGroupId $Context.TopLevelManagementGroupId `
+  -PolicySetDefinitionNames $CustomPolicySetDefinitionNames
+}
+
+if ($DeployCustomPolicySetAssignments) {
+  Write-Host "Deploying custom policy set assignments ..."
+
+  # Get Logging information using logging config file
+  $LoggingConfiguration = Get-LoggingConfiguration `
+    -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
+    -SubscriptionId $Context.Variables['var-logging-subscriptionId']
+
+  $AssignmentScope = $Context.TopLevelManagementGroupId
+  if ([string]::IsNullOrEmpty($CustomPolicySetAssignmentManagementGroupId) -eq $false) {
+    $AssignmentScope = $CustomPolicySetAssignmentManagementGroupId
+  }
+
+  Set-PolicySet-Assignments `
+    -Context $Context `
+    -PolicySetAssignmentsDirectory $Context.PolicySetCustomAssignmentsDirectory `
+    -PolicySetAssignmentManagementGroupId $AssignmentScope `
+    -PolicySetAssignmentNames $CustomPolicySetAssignmentNames `
+    -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
+    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
+    -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
+    -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
+}
+
+if ($DeployBuiltinPolicySetAssignments) {
+  Write-Host "Deploying built-in policy set assignments ..."
+
   # Get Logging information using logging config file
   $LoggingConfiguration = Get-LoggingConfiguration `
     -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
@@ -277,8 +325,8 @@ if ($DeployBuiltinPolicyAssignments -or $DeployCustomPolicyDefinitions -or $Depl
 
   if ($DeployBuiltinPolicyAssignments) {
     $AssignmentScope = $Context.TopLevelManagementGroupId
-    if ([string]::IsNullOrEmpty($BuiltinPolicyAssignmentManagementGroupId) -eq $false) {
-      $AssignmentScope = $BuiltinPolicyAssignmentManagementGroupId
+    if ([string]::IsNullOrEmpty($BuiltinPolicySetAssignmentManagementGroupId) -eq $false) {
+      $AssignmentScope = $BuiltinPolicySetAssignmentManagementGroupId
     }
 
     # Built In Policy Set Assignments
@@ -286,39 +334,7 @@ if ($DeployBuiltinPolicyAssignments -or $DeployCustomPolicyDefinitions -or $Depl
       -Context $Context `
       -PolicySetAssignmentsDirectory $Context.PolicySetBuiltInAssignmentsDirectory `
       -PolicySetAssignmentManagementGroupId $AssignmentScope `
-      -PolicySetAssignmentNames $BuiltinPolicyAssignmentNames `
-      -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
-      -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
-      -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
-      -LogAnalyticsWorkspaceRetentionInDays $LoggingConfiguration.LogRetentionInDays
-  }
-
-  if ($DeployCustomPolicyDefinitions) {
-    # Custom Policy Definitions
-    Set-Policy-Definitions `
-      -PolicyDefinitionsDirectory $Context.PolicyCustomDefinitionDirectory `
-      -ManagementGroupId $Context.TopLevelManagementGroupId
-
-    # Custom Policy Set Definitions
-    Set-PolicySet-Defintions `
-      -Context $Context `
-      -PolicySetDefinitionsDirectory $Context.PolicySetCustomDefinitionDirectory `
-      -ManagementGroupId $Context.TopLevelManagementGroupId `
-      -PolicySetDefinitionNames $CustomPolicySetDefinitionNames
-  }
-
-  if ($DeployCustomPolicyAssignments) {
-    # Custom Policy Sets Assignments
-    $AssignmentScope = $Context.TopLevelManagementGroupId
-    if ([string]::IsNullOrEmpty($CustomPolicyAssignmentManagementGroupId) -eq $false) {
-      $AssignmentScope = $CustomPolicyAssignmentManagementGroupId
-    }
-
-    Set-PolicySet-Assignments `
-      -Context $Context `
-      -PolicySetAssignmentsDirectory $Context.PolicySetCustomAssignmentsDirectory `
-      -PolicySetAssignmentManagementGroupId $AssignmentScope `
-      -PolicySetAssignmentNames $CustomPolicyAssignmentNames `
+      -PolicySetAssignmentNames $BuiltinPolicySetAssignmentNames `
       -LogAnalyticsWorkspaceResourceGroupName $LoggingConfiguration.ResourceGroupName `
       -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId `
       -LogAnalyticsWorkspaceId $LoggingConfiguration.LogAnalyticsWorkspaceId `
