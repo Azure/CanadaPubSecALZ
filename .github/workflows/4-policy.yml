@@ -23,7 +23,7 @@ defaults:
     working-directory: scripts/deployments
 
 jobs:
-  custom_policy_definitions:
+  Custom_Policy_Definitions:
     name: Custom policy definitions
 
     runs-on: ubuntu-latest
@@ -46,9 +46,9 @@ jobs:
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
-  custom_policy_set_definitions:
+  Custom_Policy_Set_Definitions:
     name: Custom policy set definitions
-    needs: custom_policy_definitions
+    needs: Custom_Policy_Definitions
 
     strategy:
       matrix:
@@ -81,11 +81,11 @@ jobs:
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
-  custom_policy_set_assignments:
+  Custom_Policy_Set_Assignments:
     name: Custom policy set assignments
     needs:
-      - custom_policy_definitions
-      - custom_policy_set_definitions
+      - Custom_Policy_Definitions
+      - Custom_Policy_Set_Definitions
 
     strategy:
       matrix:
@@ -117,7 +117,7 @@ jobs:
           -GitHubRepo ${env:GITHUB_REPOSITORY} `
           -GitHubRef ${env:GITHUB_REF}
 
-  builtin_policy_set_assignments:
+  Builtin_Policy_Set_Assignments:
     name: Builtin policy set assignments
 
     strategy:
