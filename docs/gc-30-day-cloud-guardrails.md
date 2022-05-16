@@ -663,9 +663,10 @@ Relevant Links:
 
 #### 11.1 Implement adequate level of logging and reporting, including a security audit log function in all information systems.
 
-In ALZCPS deployments, the default configuration collects logs from VMs and PaaS services into a central Log Analytics Workspace. 
+In ALZCPS deployments, the default configuration collects logs from VMs and PaaS services into a central Log Analytics Workspace.
 
 The included Log Analytics Workspace solutions include:
+
 - AgentHealthAssessment
 - AntiMalware
 - AzureActivity
@@ -673,7 +674,9 @@ The included Log Analytics Workspace solutions include:
 - Security
 - SecurityInsights
 - ServiceMap
+- SQLAdvancedThreatProtection
 - SQLAssessment
+- SQLAdvancedThreatProtection
 - Updates
 - VMInsights
 
@@ -739,7 +742,9 @@ The included Log Analytics Workspace solutions include:
 - Security
 - SecurityInsights
 - ServiceMap
+- SQLAdvancedThreatProtection
 - SQLAssessment
+- SQLVulnerabilityAssessment
 - Updates
 - VMInsights
 

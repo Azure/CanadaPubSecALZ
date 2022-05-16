@@ -36,7 +36,7 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Microsoft Defender for Cloud | Configures security contact information (email and phone). |
 | Subscription Role Assignments | Configures subscription scoped role assignments.  Roles can be built-in or custom. |
 | Subscription Budget | Configures monthly subscription budget with email notification. Budget is configured by default for 10 years and the amount. |
-| Log Analytics | Configures Automation Account, Log Analytics Workspace and Log Analytics Solutions (AgentHealthAssessment, AntiMalware, AzureActivity, ChangeTracking, Security, SecurityInsights, ServiceMap, SQLAssessment, Updates, VMInsights).  **SecurityInsights** solution pack will enable Microsoft Sentinel.  |
+| Log Analytics | Configures Automation Account, Log Analytics Workspace and Log Analytics Solutions (AgentHealthAssessment, AntiMalware, AzureActivity, ChangeTracking, Security, SecurityInsights, ServiceMap, SQLAdvancedThreatProtection, SQLAssessment, SQLVulnerabilityAssessment, Updates, VMInsights).  **SecurityInsights** solution pack will enable Microsoft Sentinel.  |
 | Subscription Tags | A set of tags that are assigned to the subscription. |
 | Resource Tags | A set of tags that are assigned to the resource group and resources.  These tags must include all required tags as defined the Tag Governance policy. |
 
