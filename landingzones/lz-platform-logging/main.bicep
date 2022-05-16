@@ -24,7 +24,9 @@ Platform Logging archetype provides infrastructure for centrally managed Log Ana
   * Security
   * SecurityInsights (Microsoft Sentinel)
   * ServiceMap
+  * SQLAdvancedThreatProtection
   * SQLAssessment
+  * SQLVulnerabilityAssessment
   * Updates
   * VMInsights
 * Role-based access control for Owner, Contributor & Reader 
