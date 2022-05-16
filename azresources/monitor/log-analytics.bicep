@@ -31,7 +31,9 @@ var solutions = [
   'Security'
   'SecurityInsights'
   'ServiceMap'
+  'SQLAdvancedThreatProtection'
   'SQLAssessment'
+  'SQLVulnerabilityAssessment'
   'Updates'
   'VMInsights'
 ]
