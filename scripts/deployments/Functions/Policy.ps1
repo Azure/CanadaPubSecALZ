@@ -69,7 +69,8 @@ function Set-PolicySet-Defintions {
     $PopulatedParametersFilePath = "$($PolicySetDefinitionsDirectory)/$($policySetDefinitionName)-populated.parameters.json"
     $ParametersContent | Set-Content -Path $PopulatedParametersFilePath
 
-    Write-Output "Policy Set: $policySetDefinitionName"
+    Write-Output "Policy set: $policySetDefinitionName"
+    Write-Output "   - Management Group Id: $ManagementGroupId"
     Write-Output "   - Definition: $PolicySetDefinitionFilePath"
     Write-Output "   - Parameters: $PolicySetDefinitionParametersFilePath"
     Write-Output "   - Populated (temp): $PopulatedParametersFilePath"
@@ -114,7 +115,7 @@ function Set-PolicySet-Assignments {
   )
 
   foreach ($policySetAssignmentName in $PolicySetAssignmentNames) {
-    Write-Output "Policy Set assignment Name: $($policySetAssignmentName)"
+    Write-Output "Policy set assignment name: $($policySetAssignmentName)"
 
     $PolicySetAssignmentFilePath = "$($PolicySetAssignmentsDirectory)/$($policySetAssignmentName).bicep"
 
@@ -144,6 +145,7 @@ function Set-PolicySet-Assignments {
     $ParametersContent | Set-Content -Path $PopulatedParametersFilePath
 
     Write-Output "Policy: $policy"
+    Write-Output "   - Management Group Id: $PolicySetAssignmentManagementGroupId"
     Write-Output "   - Definition: $PolicySetAssignmentFilePath"
     Write-Output "   - Parameters: $PolicySetParameterFilePath"
     Write-Output "   - Populated (temp): $PopulatedParametersFilePath"
