@@ -576,7 +576,7 @@ This role assignment is used to grant users access to the logging subscription b
               }
             },
             "logAnalyticsResourceGroupName": {
-              "value": "pubsec-central-logging-rg"
+              "value": "pubsec-central-logging"
             },
             "logAnalyticsWorkspaceName": {
               "value": "log-analytics-workspace"
@@ -759,7 +759,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                   }
                 },
                 "resourceGroupName": {
-                  "value": "pubsec-azure-firewall-policy-rg"
+                  "value": "pubsec-azure-firewall-policy"
                 },
                 "policyName": {
                   "value": "pubsecAzureFirewallPolicy"
@@ -878,26 +878,26 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                 "privateDnsZones": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "pubsec-dns-rg"
+                    "resourceGroupName": "pubsec-dns"
                   }
                 },
                 "ddosStandard": {
                   "value": {
                     "enabled": false,
-                    "resourceGroupName": "pubsec-ddos-rg",
+                    "resourceGroupName": "pubsec-ddos",
                     "planName": "ddos-plan"
                   }
                 },
                 "publicAccessZone": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "pubsec-public-access-zone-rg"
+                    "resourceGroupName": "pubsec-public-access-zone"
                   }
                 },
                 "managementRestrictedZone": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "pubsec-management-restricted-zone-rg",
+                    "resourceGroupName": "pubsec-management-restricted-zone",
                     "network": {
                       "name": "management-restricted-vnet",
                       "addressPrefixes": ["10.18.4.0/22"],
@@ -963,7 +963,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                 },
                 "hub": {
                   "value": {
-                    "resourceGroupName": "pubsec-hub-networking-rg",
+                    "resourceGroupName": "pubsec-hub-networking",
                     "bastion": {
                       "enabled": true,
                       "name": "bastion",
@@ -1137,26 +1137,26 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                 "privateDnsZones": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "pubsec-dns-rg"
+                    "resourceGroupName": "pubsec-dns"
                   }
                 },
                 "ddosStandard": {
                   "value": {
                     "enabled": false,
-                    "resourceGroupName": "pubsec-ddos-rg",
+                    "resourceGroupName": "pubsec-ddos",
                     "planName": "ddos-plan"
                   }
                 },
                 "publicAccessZone": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "pubsec-public-access-zone-rg"
+                    "resourceGroupName": "pubsec-public-access-zone"
                   }
                 },
                 "managementRestrictedZone": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "pubsec-management-restricted-zone-rg",
+                    "resourceGroupName": "pubsec-management-restricted-zone",
                     "network": {
                       "name": "management-restricted-vnet",
                       "addressPrefixes": ["10.18.4.0/22"],
@@ -1222,7 +1222,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                 },
                 "hub": {
                   "value": {
-                    "resourceGroupName": "pubsec-hub-networking-rg",
+                    "resourceGroupName": "pubsec-hub-networking",
                     "bastion": {
                       "enabled": true,
                       "name": "bastion",
@@ -1822,7 +1822,7 @@ Migration process:
               "value": < value from var-hubnetwork-resourceTags >
             },
             "resourceGroupName": {
-              "value": "< value from var-hubnetwork-azfw-rgPolicyName >"
+              "value": "< value from var-hubnetwork-azfwPolicyName >"
             },
             "policyName": {
               "value": "< value from var-hubnetwork-azfw-policyName >"
@@ -1866,26 +1866,26 @@ Migration process:
                 "privateDnsZones": {
                   "value": {
                     "enabled": < value from var-hubnetwork-deployPrivateDnsZones >,
-                    "resourceGroupName": "< value from var-hubnetwork-rgPrivateDnsZonesName >"
+                    "resourceGroupName": "< value from var-hubnetworkPrivateDnsZonesName >"
                   }
                 },
                 "ddosStandard": {
                   "value": {
                     "enabled": < value from var-hubnetwork-deployDdosStandard >,
-                    "resourceGroupName": "< value from var-hubnetwork-rgDdosName >",
+                    "resourceGroupName": "< value from var-hubnetworkDdosName >",
                     "planName": "< value from var-hubnetwork-ddosPlanName >"
                   }
                 },
                 "publicAccessZone": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "< value from var-hubnetwork-rgPazName >"
+                    "resourceGroupName": "< value from var-hubnetworkPazName >"
                   }
                 },
                 "managementRestrictedZone": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "< value from var-hubnetwork-rgMrzName >",
+                    "resourceGroupName": "< value from var-hubnetworkMrzName >",
                     "network": {
                       "name": "< value from var-hubnetwork-mrzVnetName >",
                       "addressPrefixes": [
@@ -1953,7 +1953,7 @@ Migration process:
                 },
                 "hub": {
                   "value": {
-                    "resourceGroupName": "< value from var-hubnetwork-azfw-rgHubName >",
+                    "resourceGroupName": "< value from var-hubnetwork-azfwHubName >",
                     "bastion": {
                       "enabled": true,
                       "name": "< value from var-hubnetwork-bastionName >",
@@ -2052,26 +2052,26 @@ Migration process:
             "privateDnsZones": {
               "value": {
                 "enabled": < value from var-hubnetwork-deployPrivateDnsZones >,
-                "resourceGroupName": "< value from var-hubnetwork-rgPrivateDnsZonesName >"
+                "resourceGroupName": "< value from var-hubnetworkPrivateDnsZonesName >"
               }
             },
             "ddosStandard": {
               "value": {
                 "enabled": < value from var-hubnetwork-deployDdosStandard >,
-                "resourceGroupName": "< value from var-hubnetwork-rgDdosName >",
+                "resourceGroupName": "< value from var-hubnetworkDdosName >",
                 "planName": "< value from var-hubnetwork-ddosPlanName >"
               }
             },
             "publicAccessZone": {
               "value": {
                 "enabled": true,
-                "resourceGroupName": "< value from var-hubnetwork-rgPazName >"
+                "resourceGroupName": "< value from var-hubnetworkPazName >"
               }
             },
             "managementRestrictedZone": {
               "value": {
                 "enabled": true,
-                "resourceGroupName": "< value from var-hubnetwork-rgMrzName >",
+                "resourceGroupName": "< value from var-hubnetworkMrzName >",
                 "network": {
                   "name": "< value from var-hubnetwork-mrzVnetName >",
                   "addressPrefixes": [
@@ -2139,7 +2139,7 @@ Migration process:
             },
             "hub": {
               "value": {
-                "resourceGroupName": "< value from var-hubnetwork-azfw-rgHubName >",
+                "resourceGroupName": "< value from var-hubnetwork-azfwHubName >",
                 "bastion": {
                   "enabled": true,
                   "name": "< value from var-hubnetwork-bastionName >",

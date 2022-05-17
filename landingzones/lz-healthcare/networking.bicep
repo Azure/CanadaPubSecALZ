@@ -15,26 +15,26 @@ param location string = resourceGroup().location
 // -----------------------------
 // "hubNetwork": {
 //   "value": {
-//       "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+//       "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet",
 //       "rfc1918IPRange": "10.18.0.0/22",
 //       "rfc6598IPRange": "100.60.0.0/16",
 //       "egressVirtualApplianceIp": "10.18.0.36",
 //       "privateDnsManagedByHub": true,
 //       "privateDnsManagedByHubSubscriptionId": "ed7f4eed-9010-4227-b115-2a5e37728f27",
-//       "privateDnsManagedByHubResourceGroupName": "pubsec-dns-rg"
+//       "privateDnsManagedByHubResourceGroupName": "pubsec-dns"
 //   }
 // }
 
 // Example (Bicep)
 // -----------------------------
 // {
-//   virtualNetworkId: '/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet'
+//   virtualNetworkId: '/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet'
 //   rfc1918IPRange: '10.18.0.0/22'
 //   rfc6598IPRange: '100.60.0.0/16'
 //   egressVirtualApplianceIp: '10.18.0.36'
 //   privateDnsManagedByHub: true,
 //   privateDnsManagedByHubSubscriptionId: 'ed7f4eed-9010-4227-b115-2a5e37728f27',
-//   privateDnsManagedByHubResourceGroupName: 'pubsec-dns-rg'
+//   privateDnsManagedByHubResourceGroupName: 'pubsec-dns'
 // }
 @description('Hub Network configuration that includes virtualNetworkId, rfc1918IPRange, rfc6598IPRange, egressVirtualApplianceIp, privateDnsManagedByHub flag, privateDnsManagedByHubSubscriptionId and privateDnsManagedByHubResourceGroupName.')
 param hubNetwork object

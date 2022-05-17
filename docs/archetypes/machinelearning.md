@@ -376,7 +376,7 @@ This example configures:
       }
     },
     "logAnalyticsWorkspaceResourceId": {
-        "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
+        "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
     },
     "resourceGroups": {
       "value": {
@@ -444,13 +444,13 @@ This example configures:
     },
     "hubNetwork": {
       "value": {
-        "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+        "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet",
         "rfc1918IPRange": "10.18.0.0/22",
         "rfc6598IPRange": "100.60.0.0/16",
         "egressVirtualApplianceIp": "10.18.1.4",
         "privateDnsManagedByHub": true,
         "privateDnsManagedByHubSubscriptionId": "ed7f4eed-9010-4227-b115-2a5e37728f27",
-        "privateDnsManagedByHubResourceGroupName": "pubsec-dns-rg"
+        "privateDnsManagedByHubResourceGroupName": "pubsec-dns"
       }
     },
     "network": {

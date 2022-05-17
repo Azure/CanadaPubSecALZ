@@ -13,7 +13,7 @@
       }
     },
     "resourceGroupName": {
-      "value": "pubsec-azure-firewall-policy-rg"
+      "value": "pubsec-azure-firewall-policy"
     },
     "policyName": {
       "value": "pubsecAzureFirewallPolicy"

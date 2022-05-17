@@ -92,26 +92,26 @@
         "privateDnsZones": {
           "value": {
             "enabled": true,
-            "resourceGroupName": "pubsec-dns-rg"
+            "resourceGroupName": "pubsec-dns"
           }
         },
         "ddosStandard": {
           "value": {
             "enabled": false,
-            "resourceGroupName": "pubsec-ddos-rg",
+            "resourceGroupName": "pubsec-ddos",
             "planName": "ddos-plan"
           }
         },
         "publicAccessZone": {
           "value": {
             "enabled": true,
-            "resourceGroupName": "pubsec-public-access-zone-rg"
+            "resourceGroupName": "pubsec-public-access-zone"
           }
         },
         "managementRestrictedZone": {
           "value": {
             "enabled": true,
-            "resourceGroupName": "pubsec-management-restricted-zone-rg",
+            "resourceGroupName": "pubsec-management-restricted-zone",
             "network": {
               "name": "management-restricted-vnet",
               "addressPrefixes": ["10.18.4.0/22"],
@@ -177,7 +177,7 @@
         },
         "hub": {
           "value": {
-            "resourceGroupName": "pubsec-hub-networking-rg",
+            "resourceGroupName": "pubsec-hub-networking",
             "bastion": {
               "enabled": true,
               "name": "bastion",
@@ -327,26 +327,26 @@
         "privateDnsZones": {
           "value": {
             "enabled": true,
-            "resourceGroupName": "pubsec-dns-rg"
+            "resourceGroupName": "pubsec-dns"
           }
         },
         "ddosStandard": {
           "value": {
             "enabled": false,
-            "resourceGroupName": "pubsec-ddos-rg",
+            "resourceGroupName": "pubsec-ddos",
             "planName": "ddos-plan"
           }
         },
         "publicAccessZone": {
           "value": {
             "enabled": true,
-            "resourceGroupName": "pubsec-public-access-zone-rg"
+            "resourceGroupName": "pubsec-public-access-zone"
           }
         },
         "managementRestrictedZone": {
           "value": {
             "enabled": true,
-            "resourceGroupName": "pubsec-management-restricted-zone-rg",
+            "resourceGroupName": "pubsec-management-restricted-zone",
             "network": {
               "name": "management-restricted-vnet",
               "addressPrefixes": ["10.18.4.0/22"],
@@ -412,7 +412,7 @@
         },
         "hub": {
           "value": {
-            "resourceGroupName": "pubsec-hub-networking-rg",
+            "resourceGroupName": "pubsec-hub-networking",
             "bastion": {
               "enabled": true,
               "name": "bastion",
