@@ -4,7 +4,7 @@
     "parameters": {
         "serviceHealthAlerts": {
             "value": {
-                "resourceGroupName": "pubsec-service-health",
+                "resourceGroupName": "service-health",
                 "incidentTypes": [ "Incident", "Security" ],
                 "regions": [ "Global", "Canada East", "Canada Central" ],
                 "receivers": {
@@ -13,10 +13,10 @@
                     "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
                     "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
                 },
-                "actionGroupName": "Sub2 ALZ action group",
-                "actionGroupShortName": "sub2-alert",
-                "alertRuleName": "Sub2 ALZ alert rule",
-                "alertRuleDescription": "Alert rule for Azure Landing Zone"
+                "actionGroupName": "Service health action group",
+                "actionGroupShortName": "health-alert",
+                "alertRuleName": "Incidents and Security",
+                "alertRuleDescription": "Service Health: Incidents and Security"
             }
         },
         "securityCenter": {
@@ -65,13 +65,13 @@
         },
         "resourceGroups": {
             "value": {
-                "automation": "health2022Q1Automation",
-                "compute": "health2022Q1Compute",
-                "monitor": "health2022Q1Monitor",
-                "networking": "health2022Q1Network",
+                "automation": "health-automation",
+                "compute": "health-compute",
+                "monitor": "health-monitor",
+                "networking": "health-network",
                 "networkWatcher": "NetworkWatcherRG",
-                "security": "health2022Q1Security",
-                "storage": "health2022Q1Storage"
+                "security": "health-security",
+                "storage": "health-storage"
             }
         },
         "useCMK": {
@@ -84,24 +84,24 @@
         },
         "automation": {
             "value": {
-                "name": "health2022Q1automation"
+                "name": "automation"
             }
         },
         "sqldb": {
             "value": {
-              "enabled": true,
-              "sqlAuthenticationUsername": "azadmin",
-              "aadAuthenticationOnly":false
+                "enabled": true,
+                "sqlAuthenticationUsername": "azadmin",
+                "aadAuthenticationOnly": false
             }
-          },
-          "synapse": {
+        },
+        "synapse": {
             "value": {
-              "aadAuthenticationOnly": true,
-              "aadLoginName": "az.admins",
-              "aadLoginObjectID": "e0357d81-55d8-44e9-9d9c-ab09dc710785",
-              "aadLoginType":"Group"
+                "aadAuthenticationOnly": true,
+                "aadLoginName": "az.admins",
+                "aadLoginObjectID": "e0357d81-55d8-44e9-9d9c-ab09dc710785",
+                "aadLoginType": "Group"
             }
-          },
+        },
         "hubNetwork": {
             "value": {
                 "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
@@ -117,7 +117,7 @@
             "value": {
                 "peerToHubVirtualNetwork": true,
                 "useRemoteGateway": false,
-                "name": "health2022Q1vnet",
+                "name": "health-vnet",
                 "dnsServers": [
                     "10.18.1.4"
                 ],
@@ -151,10 +151,10 @@
                             "name": "virtualMachines",
                             "addressPrefix": "10.5.9.0/25",
                             "nsg": {
-                            "enabled": true
+                                "enabled": true
                             },
                             "udr": {
-                            "enabled": true
+                                "enabled": true
                             }
                         },
                         {
@@ -162,10 +162,10 @@
                             "name": "NetappVolumes",
                             "addressPrefix": "10.5.10.0/25",
                             "nsg": {
-                            "enabled": false
+                                "enabled": false
                             },
                             "udr": {
-                            "enabled": false
+                                "enabled": false
                             },
                             "delegations": {
                                 "serviceName": "Microsoft.NetApp/volumes"
