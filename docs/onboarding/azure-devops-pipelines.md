@@ -496,40 +496,19 @@ This role assignment is used to grant users access to the logging subscription b
           "parameters": {
             "serviceHealthAlerts": {
               "value": {
-                "resourceGroupName": "pubsec-service-health",
-                "incidentTypes": [
-                  "Incident",
-                  "Security"
-                ],
-                "regions": [
-                  "Global",
-                  "Canada East",
-                  "Canada Central"
-                ],
-                "receivers": {
-                  "app": [
-                    "alzcanadapubsec@microsoft.com"
-                  ],
-                  "email": [
-                    "alzcanadapubsec@microsoft.com"
-                  ],
-                  "sms": [
-                    {
-                      "countryCode": "1",
-                      "phoneNumber": "5555555555"
-                    }
-                  ],
-                  "voice": [
-                    {
-                      "countryCode": "1",
-                      "phoneNumber": "5555555555"
-                    }
-                  ]
-                },
-                "actionGroupName": "ALZ action group",
-                "actionGroupShortName": "alz-alert",
-                "alertRuleName": "ALZ alert rule",
-                "alertRuleDescription": "Alert rule for Azure Landing Zone"
+                  "resourceGroupName": "service-health",
+                  "incidentTypes": [ "Incident", "Security" ],
+                  "regions": [ "Global", "Canada East", "Canada Central" ],
+                  "receivers": {
+                      "app": [ "alzcanadapubsec@microsoft.com" ],
+                      "email": [ "alzcanadapubsec@microsoft.com" ],
+                      "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+                      "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                  },
+                  "actionGroupName": "Service health action group",
+                  "actionGroupShortName": "health-alert",
+                  "alertRuleName": "Incidents and Security",
+                  "alertRuleDescription": "Service Health: Incidents and Security"
               }
             },
             "securityCenter": {
@@ -796,40 +775,19 @@ In order to configure audit stream for Azure Monitor, identify the following inf
               "parameters": {
                 "serviceHealthAlerts": {
                   "value": {
-                    "resourceGroupName": "pubsec-service-health",
-                    "incidentTypes": [
-                      "Incident",
-                      "Security"
-                    ],
-                    "regions": [
-                      "Global",
-                      "Canada East",
-                      "Canada Central"
-                    ],
-                    "receivers": {
-                      "app": [
-                        "alzcanadapubsec@microsoft.com"
-                      ],
-                      "email": [
-                        "alzcanadapubsec@microsoft.com"
-                      ],
-                      "sms": [
-                        {
-                          "countryCode": "1",
-                          "phoneNumber": "5555555555"
-                        }
-                      ],
-                      "voice": [
-                        {
-                          "countryCode": "1",
-                          "phoneNumber": "5555555555"
-                        }
-                      ]
-                    },
-                    "actionGroupName": "ALZ action group",
-                    "actionGroupShortName": "alz-alert",
-                    "alertRuleName": "ALZ alert rule",
-                    "alertRuleDescription": "Alert rule for Azure Landing Zone"
+                      "resourceGroupName": "service-health",
+                      "incidentTypes": [ "Incident", "Security" ],
+                      "regions": [ "Global", "Canada East", "Canada Central" ],
+                      "receivers": {
+                          "app": [ "alzcanadapubsec@microsoft.com" ],
+                          "email": [ "alzcanadapubsec@microsoft.com" ],
+                          "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+                          "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                      },
+                      "actionGroupName": "Service health action group",
+                      "actionGroupShortName": "health-alert",
+                      "alertRuleName": "Incidents and Security",
+                      "alertRuleDescription": "Service Health: Incidents and Security"
                   }
                 },
                 "securityCenter": {
@@ -1055,40 +1013,19 @@ In order to configure audit stream for Azure Monitor, identify the following inf
               "parameters": {
                 "serviceHealthAlerts": {
                   "value": {
-                    "resourceGroupName": "pubsec-service-health",
-                    "incidentTypes": [
-                      "Incident",
-                      "Security"
-                    ],
-                    "regions": [
-                      "Global",
-                      "Canada East",
-                      "Canada Central"
-                    ],
-                    "receivers": {
-                      "app": [
-                        "alzcanadapubsec@microsoft.com"
-                      ],
-                      "email": [
-                        "alzcanadapubsec@microsoft.com"
-                      ],
-                      "sms": [
-                        {
-                          "countryCode": "1",
-                          "phoneNumber": "5555555555"
-                        }
-                      ],
-                      "voice": [
-                        {
-                          "countryCode": "1",
-                          "phoneNumber": "5555555555"
-                        }
-                      ]
-                    },
-                    "actionGroupName": "ALZ action group",
-                    "actionGroupShortName": "alz-alert",
-                    "alertRuleName": "ALZ alert rule",
-                    "alertRuleDescription": "Alert rule for Azure Landing Zone"
+                      "resourceGroupName": "service-health",
+                      "incidentTypes": [ "Incident", "Security" ],
+                      "regions": [ "Global", "Canada East", "Canada Central" ],
+                      "receivers": {
+                          "app": [ "alzcanadapubsec@microsoft.com" ],
+                          "email": [ "alzcanadapubsec@microsoft.com" ],
+                          "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+                          "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                      },
+                      "actionGroupName": "Service health action group",
+                      "actionGroupShortName": "health-alert",
+                      "alertRuleName": "Incidents and Security",
+                      "alertRuleDescription": "Service Health: Incidents and Security"
                   }
                 },
                 "securityCenter": {
