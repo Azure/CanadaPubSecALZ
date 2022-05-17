@@ -141,7 +141,7 @@ This example configures:
         },
         "serviceHealthAlerts": {
             "value": {
-                "resourceGroupName": "pubsec-service-health",
+                "resourceGroupName": "service-health",
                 "incidentTypes": [ "Incident", "Security" ],
                 "regions": [ "Global", "Canada East", "Canada Central" ],
                 "receivers": {
@@ -150,10 +150,10 @@ This example configures:
                     "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
                     "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
                 },
-                "actionGroupName": "Sub1 ALZ action group",
-                "actionGroupShortName": "sub1-alert",
-                "alertRuleName": "Sub1 ALZ alert rule",
-                "alertRuleDescription": "Alert rule for Azure Landing Zone"
+                "actionGroupName": "Service health action group",
+                "actionGroupShortName": "health-alert",
+                "alertRuleName": "Incidents and Security",
+                "alertRuleDescription": "Service Health: Incidents and Security"
             }
         },
         "securityCenter": {
@@ -202,10 +202,10 @@ This example configures:
         },
         "resourceGroups": {
             "value": {
-                "automation": "rgAutomation2022Q1",
-                "networking": "rgVnet2022Q1",
+                "automation": "automation",
+                "networking": "networking",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecoveryVault2022Q1"
+                "backupRecoveryVault":"backup"
             }
         },
         "automation": {
@@ -216,7 +216,7 @@ This example configures:
         "backupRecoveryVault":{
             "value": {
                 "enabled":true,
-                "name":"bkupvault"
+                "name":"backup-vault"
             }
         },
         "hubNetwork": {
