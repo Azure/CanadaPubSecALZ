@@ -310,19 +310,19 @@ This example configures:
   "parameters": {
     "serviceHealthAlerts": {
       "value": {
-        "resourceGroupName": "pubsec-service-health",
-        "incidentTypes": [ "Incident", "Security" ],
-        "regions": [ "Global", "Canada East", "Canada Central" ],
-        "receivers": {
-          "app": [ "alzcanadapubsec@microsoft.com" ],
-          "email": [ "alzcanadapubsec@microsoft.com" ],
-          "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-          "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
-        },
-        "actionGroupName": "Sub5 ALZ action group",
-        "actionGroupShortName": "sub5-alert",
-        "alertRuleName": "Sub5 ALZ alert rule",
-        "alertRuleDescription": "Alert rule for Azure Landing Zone"
+          "resourceGroupName": "service-health",
+          "incidentTypes": [ "Incident", "Security" ],
+          "regions": [ "Global", "Canada East", "Canada Central" ],
+          "receivers": {
+              "app": [ "alzcanadapubsec@microsoft.com" ],
+              "email": [ "alzcanadapubsec@microsoft.com" ],
+              "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+              "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+          },
+          "actionGroupName": "Service health action group",
+          "actionGroupShortName": "health-alert",
+          "alertRuleName": "Incidents and Security",
+          "alertRuleDescription": "Service Health: Incidents and Security"
       }
     },
     "securityCenter": {
@@ -380,13 +380,13 @@ This example configures:
     },
     "resourceGroups": {
       "value": {
-        "automation": "azml-Automation",
-        "compute": "azml-Compute",
-        "monitor": "azml-Monitor",
-        "networking": "azml-Network",
+        "automation": "azml-automation",
+        "compute": "azml-compute",
+        "monitor": "azml-monitor",
+        "networking": "azml-networking",
         "networkWatcher": "NetworkWatcherRG",
-        "security": "azml-Security",
-        "storage": "azml-Storage"
+        "security": "azml-security",
+        "storage": "azml-storage"
       }
     },
     "useCMK": {
@@ -394,7 +394,7 @@ This example configures:
     },
     "automation": {
       "value": {
-        "name": "azml-automation"
+        "name": "automation"
       }
     },
     "keyVault": {

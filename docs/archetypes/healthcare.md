@@ -305,7 +305,7 @@ This example configures:
     "parameters": {
         "serviceHealthAlerts": {
             "value": {
-                "resourceGroupName": "pubsec-service-health",
+                "resourceGroupName": "service-health",
                 "incidentTypes": [ "Incident", "Security" ],
                 "regions": [ "Global", "Canada East", "Canada Central" ],
                 "receivers": {
@@ -314,10 +314,10 @@ This example configures:
                     "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
                     "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
                 },
-                "actionGroupName": "Sub2 ALZ action group",
-                "actionGroupShortName": "sub2-alert",
-                "alertRuleName": "Sub2 ALZ alert rule",
-                "alertRuleDescription": "Alert rule for Azure Landing Zone"
+                "actionGroupName": "Service health action group",
+                "actionGroupShortName": "health-alert",
+                "alertRuleName": "Incidents and Security",
+                "alertRuleDescription": "Service Health: Incidents and Security"
             }
         },
         "securityCenter": {
@@ -375,13 +375,13 @@ This example configures:
         },
         "resourceGroups": {
             "value": {
-                "automation": "healthcare-Automation",
-                "compute": "healthcare-Compute",
-                "monitor": "healthcare-Monitor",
-                "networking": "healthcare-Network",
+                "automation": "health-automation",
+                "compute": "health-compute",
+                "monitor": "health-monitor",
+                "networking": "health-network",
                 "networkWatcher": "NetworkWatcherRG",
-                "security": "healthcare-Security",
-                "storage": "healthcare-Storage"
+                "security": "health-security",
+                "storage": "health-storage"
             }
         },
         "useCMK": {
@@ -394,7 +394,7 @@ This example configures:
         },
         "automation": {
             "value": {
-                "name": "healthcare-automation"
+                "name": "automation"
             }
         },
         "sqldb": {
@@ -428,7 +428,7 @@ This example configures:
             "value": {
                 "peerToHubVirtualNetwork": true,
                 "useRemoteGateway": false,
-                "name": "healthcare-vnet",
+                "name": "health-vnet",
                 "dnsServers": [
                     "10.18.1.4"
                 ],

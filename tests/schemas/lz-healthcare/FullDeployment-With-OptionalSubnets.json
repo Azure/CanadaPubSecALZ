@@ -4,40 +4,19 @@
     "parameters": {
         "serviceHealthAlerts": {
             "value": {
-                "resourceGroupName": "pubsec-service-health",
-                "incidentTypes": [
-                    "Incident",
-                    "Security"
-                ],
-                "regions": [
-                    "Global",
-                    "Canada East",
-                    "Canada Central"
-                ],
+                "resourceGroupName": "service-health",
+                "incidentTypes": [ "Incident", "Security" ],
+                "regions": [ "Global", "Canada East", "Canada Central" ],
                 "receivers": {
-                    "app": [
-                        "alzcanadapubsec@microsoft.com"
-                    ],
-                    "email": [
-                        "alzcanadapubsec@microsoft.com"
-                    ],
-                    "sms": [
-                        {
-                            "countryCode": "1",
-                            "phoneNumber": "5555555555"
-                        }
-                    ],
-                    "voice": [
-                        {
-                            "countryCode": "1",
-                            "phoneNumber": "5555555555"
-                        }
-                    ]
+                    "app": [ "alzcanadapubsec@microsoft.com" ],
+                    "email": [ "alzcanadapubsec@microsoft.com" ],
+                    "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+                    "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
                 },
-                "actionGroupName": "Sub2 ALZ action group",
-                "actionGroupShortName": "sub2-alert",
-                "alertRuleName": "Sub2 ALZ alert rule",
-                "alertRuleDescription": "Alert rule for Azure Landing Zone"
+                "actionGroupName": "Service health action group",
+                "actionGroupShortName": "health-alert",
+                "alertRuleName": "Incidents and Security",
+                "alertRuleDescription": "Service Health: Incidents and Security"
             }
         },
         "securityCenter": {
@@ -95,13 +74,13 @@
         },
         "resourceGroups": {
             "value": {
-                "automation": "healthAutomation",
-                "compute": "healthCompute",
-                "monitor": "healthMonitor",
-                "networking": "healthNetwork",
+                "automation": "health-automation",
+                "compute": "health-compute",
+                "monitor": "health-monitor",
+                "networking": "health-network",
                 "networkWatcher": "NetworkWatcherRG",
-                "security": "healthSecurity",
-                "storage": "healthStorage"
+                "security": "health-security",
+                "storage": "health-storage"
             }
         },
         "useCMK": {
@@ -114,7 +93,7 @@
         },
         "automation": {
             "value": {
-                "name": "healthautomation"
+                "name": "automation"
             }
         },
         "sqldb": {
@@ -150,7 +129,7 @@
             "value": {
                 "peerToHubVirtualNetwork": true,
                 "useRemoteGateway": false,
-                "name": "healthvnet",
+                "name": "health-vnet",
                 "dnsServers": [
                     "10.18.1.4"
                 ],

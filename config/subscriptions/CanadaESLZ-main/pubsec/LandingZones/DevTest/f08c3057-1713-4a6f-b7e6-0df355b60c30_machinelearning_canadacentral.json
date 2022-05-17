@@ -4,19 +4,19 @@
   "parameters": {
     "serviceHealthAlerts": {
       "value": {
-        "resourceGroupName": "pubsec-service-health",
-        "incidentTypes": [ "Incident", "Security" ],
-        "regions": [ "Global", "Canada East", "Canada Central" ],
-        "receivers": {
-          "app": [ "alzcanadapubsec@microsoft.com" ],
-          "email": [ "alzcanadapubsec@microsoft.com" ],
-          "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-          "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
-        },
-        "actionGroupName": "Sub4 ALZ action group",
-        "actionGroupShortName": "sub4-alert",
-        "alertRuleName": "Sub4 ALZ alert rule",
-        "alertRuleDescription": "Alert rule for Azure Landing Zone"
+          "resourceGroupName": "service-health",
+          "incidentTypes": [ "Incident", "Security" ],
+          "regions": [ "Global", "Canada East", "Canada Central" ],
+          "receivers": {
+              "app": [ "alzcanadapubsec@microsoft.com" ],
+              "email": [ "alzcanadapubsec@microsoft.com" ],
+              "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+              "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+          },
+          "actionGroupName": "Service health action group",
+          "actionGroupShortName": "health-alert",
+          "alertRuleName": "Incidents and Security",
+          "alertRuleDescription": "Service Health: Incidents and Security"
       }
     },
     "securityCenter": {
@@ -65,13 +65,13 @@
     },
     "resourceGroups": {
       "value": {
-        "automation": "azmlnocmk2022Q1Automation",
-        "compute": "azmlnocmk2022Q1Compute",
-        "monitor": "azmlnocmk2022Q1Monitor",
-        "networking": "azmlnocmk2022Q1Network",
+        "automation": "azmlnocmk-automation",
+        "compute": "azmlnocmk-compute",
+        "monitor": "azmlnocmk-monitor",
+        "networking": "azmlnocmk-networking",
         "networkWatcher": "NetworkWatcherRG",
-        "security": "azmlnocmk2022Q1Security",
-        "storage": "azmlnocmk2022Q1Storage"
+        "security": "azmlnocmk-security",
+        "storage": "azmlnocmk-storage"
       }
     },
     "useCMK": {
@@ -79,7 +79,7 @@
     },
     "automation": {
       "value": {
-        "name": "azmlnocmk2022Q1automation"
+        "name": "automation"
       }
     },
     "keyVault": {
@@ -91,10 +91,10 @@
       "value": {
         "version": "1.22.6",
         "enabled": true,
-        "networkPlugin": "kubenet" ,
+        "networkPlugin": "kubenet",
         "networkPolicy": "calico",
         "podCidr": "11.0.0.0/16",
-        "serviceCidr": "20.0.0.0/16" ,
+        "serviceCidr": "20.0.0.0/16",
         "dnsServiceIP": "20.0.0.10",
         "dockerBridgeCidr": "30.0.0.1/16"
       }
@@ -111,7 +111,7 @@
       "value": {
         "enabled": true,
         "sqlAuthenticationUsername": "azadmin",
-        "aadAuthenticationOnly":false
+        "aadAuthenticationOnly": false
       }
     },
     "sqlmi": {
@@ -139,7 +139,7 @@
       "value": {
         "peerToHubVirtualNetwork": true,
         "useRemoteGateway": false,
-        "name": "azmlnocmk2022Q1vnet",
+        "name": "azmlnocmk-vnet",
         "dnsServers": [
           "10.18.1.4"
         ],
