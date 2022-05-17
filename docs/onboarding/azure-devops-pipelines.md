@@ -1759,7 +1759,7 @@ Migration process:
               "value": < value from var-hubnetwork-resourceTags >
             },
             "resourceGroupName": {
-              "value": "< value from var-hubnetwork-azfwPolicyName >"
+              "value": "< value from var-hubnetwork-azfw-rgPolicyName >"
             },
             "policyName": {
               "value": "< value from var-hubnetwork-azfw-policyName >"
@@ -1803,26 +1803,26 @@ Migration process:
                 "privateDnsZones": {
                   "value": {
                     "enabled": < value from var-hubnetwork-deployPrivateDnsZones >,
-                    "resourceGroupName": "< value from var-hubnetworkPrivateDnsZonesName >"
+                    "resourceGroupName": "< value from var-hubnetwork-rgPrivateDnsZonesName >"
                   }
                 },
                 "ddosStandard": {
                   "value": {
                     "enabled": < value from var-hubnetwork-deployDdosStandard >,
-                    "resourceGroupName": "< value from var-hubnetworkDdosName >",
+                    "resourceGroupName": "< value from var-hubnetwork-rgDdosName >",
                     "planName": "< value from var-hubnetwork-ddosPlanName >"
                   }
                 },
                 "publicAccessZone": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "< value from var-hubnetworkPazName >"
+                    "resourceGroupName": "< value from var-hubnetwork-rgPazName >"
                   }
                 },
                 "managementRestrictedZone": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "< value from var-hubnetworkMrzName >",
+                    "resourceGroupName": "< value from var-hubnetwork-rgMrzName >",
                     "network": {
                       "name": "< value from var-hubnetwork-mrzVnetName >",
                       "addressPrefixes": [
@@ -1890,7 +1890,7 @@ Migration process:
                 },
                 "hub": {
                   "value": {
-                    "resourceGroupName": "< value from var-hubnetwork-azfwHubName >",
+                    "resourceGroupName": "< value from var-hubnetwork-azfw-rgHubName >",
                     "bastion": {
                       "enabled": true,
                       "name": "< value from var-hubnetwork-bastionName >",
@@ -1989,26 +1989,26 @@ Migration process:
             "privateDnsZones": {
               "value": {
                 "enabled": < value from var-hubnetwork-deployPrivateDnsZones >,
-                "resourceGroupName": "< value from var-hubnetworkPrivateDnsZonesName >"
+                "resourceGroupName": "< value from var-hubnetwork-rgPrivateDnsZonesName >"
               }
             },
             "ddosStandard": {
               "value": {
                 "enabled": < value from var-hubnetwork-deployDdosStandard >,
-                "resourceGroupName": "< value from var-hubnetworkDdosName >",
+                "resourceGroupName": "< value from var-hubnetwork-rgDdosName >",
                 "planName": "< value from var-hubnetwork-ddosPlanName >"
               }
             },
             "publicAccessZone": {
               "value": {
                 "enabled": true,
-                "resourceGroupName": "< value from var-hubnetworkPazName >"
+                "resourceGroupName": "< value from var-hubnetwork-rgPazName >"
               }
             },
             "managementRestrictedZone": {
               "value": {
                 "enabled": true,
-                "resourceGroupName": "< value from var-hubnetworkMrzName >",
+                "resourceGroupName": "< value from var-hubnetwork-rgMrzName >",
                 "network": {
                   "name": "< value from var-hubnetwork-mrzVnetName >",
                   "addressPrefixes": [
@@ -2076,7 +2076,7 @@ Migration process:
             },
             "hub": {
               "value": {
-                "resourceGroupName": "< value from var-hubnetwork-azfwHubName >",
+                "resourceGroupName": "< value from var-hubnetwork-azfw-rgHubName >",
                 "bastion": {
                   "enabled": true,
                   "name": "< value from var-hubnetwork-bastionName >",
