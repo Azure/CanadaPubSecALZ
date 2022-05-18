@@ -496,40 +496,19 @@ This role assignment is used to grant users access to the logging subscription b
           "parameters": {
             "serviceHealthAlerts": {
               "value": {
-                "resourceGroupName": "pubsec-service-health",
-                "incidentTypes": [
-                  "Incident",
-                  "Security"
-                ],
-                "regions": [
-                  "Global",
-                  "Canada East",
-                  "Canada Central"
-                ],
-                "receivers": {
-                  "app": [
-                    "alzcanadapubsec@microsoft.com"
-                  ],
-                  "email": [
-                    "alzcanadapubsec@microsoft.com"
-                  ],
-                  "sms": [
-                    {
-                      "countryCode": "1",
-                      "phoneNumber": "5555555555"
-                    }
-                  ],
-                  "voice": [
-                    {
-                      "countryCode": "1",
-                      "phoneNumber": "5555555555"
-                    }
-                  ]
-                },
-                "actionGroupName": "ALZ action group",
-                "actionGroupShortName": "alz-alert",
-                "alertRuleName": "ALZ alert rule",
-                "alertRuleDescription": "Alert rule for Azure Landing Zone"
+                  "resourceGroupName": "service-health",
+                  "incidentTypes": [ "Incident", "Security" ],
+                  "regions": [ "Global", "Canada East", "Canada Central" ],
+                  "receivers": {
+                      "app": [ "alzcanadapubsec@microsoft.com" ],
+                      "email": [ "alzcanadapubsec@microsoft.com" ],
+                      "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+                      "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                  },
+                  "actionGroupName": "Service health action group",
+                  "actionGroupShortName": "health-alert",
+                  "alertRuleName": "Incidents and Security",
+                  "alertRuleDescription": "Service Health: Incidents and Security"
               }
             },
             "securityCenter": {
@@ -576,7 +555,7 @@ This role assignment is used to grant users access to the logging subscription b
               }
             },
             "logAnalyticsResourceGroupName": {
-              "value": "pubsec-central-logging-rg"
+              "value": "pubsec-central-logging"
             },
             "logAnalyticsWorkspaceName": {
               "value": "log-analytics-workspace"
@@ -759,7 +738,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                   }
                 },
                 "resourceGroupName": {
-                  "value": "pubsec-azure-firewall-policy-rg"
+                  "value": "pubsec-azure-firewall-policy"
                 },
                 "policyName": {
                   "value": "pubsecAzureFirewallPolicy"
@@ -796,40 +775,19 @@ In order to configure audit stream for Azure Monitor, identify the following inf
               "parameters": {
                 "serviceHealthAlerts": {
                   "value": {
-                    "resourceGroupName": "pubsec-service-health",
-                    "incidentTypes": [
-                      "Incident",
-                      "Security"
-                    ],
-                    "regions": [
-                      "Global",
-                      "Canada East",
-                      "Canada Central"
-                    ],
-                    "receivers": {
-                      "app": [
-                        "alzcanadapubsec@microsoft.com"
-                      ],
-                      "email": [
-                        "alzcanadapubsec@microsoft.com"
-                      ],
-                      "sms": [
-                        {
-                          "countryCode": "1",
-                          "phoneNumber": "5555555555"
-                        }
-                      ],
-                      "voice": [
-                        {
-                          "countryCode": "1",
-                          "phoneNumber": "5555555555"
-                        }
-                      ]
-                    },
-                    "actionGroupName": "ALZ action group",
-                    "actionGroupShortName": "alz-alert",
-                    "alertRuleName": "ALZ alert rule",
-                    "alertRuleDescription": "Alert rule for Azure Landing Zone"
+                      "resourceGroupName": "service-health",
+                      "incidentTypes": [ "Incident", "Security" ],
+                      "regions": [ "Global", "Canada East", "Canada Central" ],
+                      "receivers": {
+                          "app": [ "alzcanadapubsec@microsoft.com" ],
+                          "email": [ "alzcanadapubsec@microsoft.com" ],
+                          "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+                          "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                      },
+                      "actionGroupName": "Service health action group",
+                      "actionGroupShortName": "health-alert",
+                      "alertRuleName": "Incidents and Security",
+                      "alertRuleDescription": "Service Health: Incidents and Security"
                   }
                 },
                 "securityCenter": {
@@ -878,26 +836,26 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                 "privateDnsZones": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "pubsec-dns-rg"
+                    "resourceGroupName": "pubsec-dns"
                   }
                 },
                 "ddosStandard": {
                   "value": {
                     "enabled": false,
-                    "resourceGroupName": "pubsec-ddos-rg",
+                    "resourceGroupName": "pubsec-ddos",
                     "planName": "ddos-plan"
                   }
                 },
                 "publicAccessZone": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "pubsec-public-access-zone-rg"
+                    "resourceGroupName": "pubsec-public-access-zone"
                   }
                 },
                 "managementRestrictedZone": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "pubsec-management-restricted-zone-rg",
+                    "resourceGroupName": "pubsec-management-restricted-zone",
                     "network": {
                       "name": "management-restricted-vnet",
                       "addressPrefixes": ["10.18.4.0/22"],
@@ -963,7 +921,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                 },
                 "hub": {
                   "value": {
-                    "resourceGroupName": "pubsec-hub-networking-rg",
+                    "resourceGroupName": "pubsec-hub-networking",
                     "bastion": {
                       "enabled": true,
                       "name": "bastion",
@@ -1055,40 +1013,19 @@ In order to configure audit stream for Azure Monitor, identify the following inf
               "parameters": {
                 "serviceHealthAlerts": {
                   "value": {
-                    "resourceGroupName": "pubsec-service-health",
-                    "incidentTypes": [
-                      "Incident",
-                      "Security"
-                    ],
-                    "regions": [
-                      "Global",
-                      "Canada East",
-                      "Canada Central"
-                    ],
-                    "receivers": {
-                      "app": [
-                        "alzcanadapubsec@microsoft.com"
-                      ],
-                      "email": [
-                        "alzcanadapubsec@microsoft.com"
-                      ],
-                      "sms": [
-                        {
-                          "countryCode": "1",
-                          "phoneNumber": "5555555555"
-                        }
-                      ],
-                      "voice": [
-                        {
-                          "countryCode": "1",
-                          "phoneNumber": "5555555555"
-                        }
-                      ]
-                    },
-                    "actionGroupName": "ALZ action group",
-                    "actionGroupShortName": "alz-alert",
-                    "alertRuleName": "ALZ alert rule",
-                    "alertRuleDescription": "Alert rule for Azure Landing Zone"
+                      "resourceGroupName": "service-health",
+                      "incidentTypes": [ "Incident", "Security" ],
+                      "regions": [ "Global", "Canada East", "Canada Central" ],
+                      "receivers": {
+                          "app": [ "alzcanadapubsec@microsoft.com" ],
+                          "email": [ "alzcanadapubsec@microsoft.com" ],
+                          "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+                          "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                      },
+                      "actionGroupName": "Service health action group",
+                      "actionGroupShortName": "health-alert",
+                      "alertRuleName": "Incidents and Security",
+                      "alertRuleDescription": "Service Health: Incidents and Security"
                   }
                 },
                 "securityCenter": {
@@ -1137,26 +1074,26 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                 "privateDnsZones": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "pubsec-dns-rg"
+                    "resourceGroupName": "pubsec-dns"
                   }
                 },
                 "ddosStandard": {
                   "value": {
                     "enabled": false,
-                    "resourceGroupName": "pubsec-ddos-rg",
+                    "resourceGroupName": "pubsec-ddos",
                     "planName": "ddos-plan"
                   }
                 },
                 "publicAccessZone": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "pubsec-public-access-zone-rg"
+                    "resourceGroupName": "pubsec-public-access-zone"
                   }
                 },
                 "managementRestrictedZone": {
                   "value": {
                     "enabled": true,
-                    "resourceGroupName": "pubsec-management-restricted-zone-rg",
+                    "resourceGroupName": "pubsec-management-restricted-zone",
                     "network": {
                       "name": "management-restricted-vnet",
                       "addressPrefixes": ["10.18.4.0/22"],
@@ -1222,7 +1159,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                 },
                 "hub": {
                   "value": {
-                    "resourceGroupName": "pubsec-hub-networking-rg",
+                    "resourceGroupName": "pubsec-hub-networking",
                     "bastion": {
                       "enabled": true,
                       "name": "bastion",

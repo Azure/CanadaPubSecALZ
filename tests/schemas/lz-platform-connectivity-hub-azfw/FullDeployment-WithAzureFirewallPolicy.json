@@ -65,26 +65,26 @@
     "privateDnsZones": {
       "value": {
         "enabled": true,
-        "resourceGroupName": "pubsec-dns-rg"
+        "resourceGroupName": "pubsec-dns"
       }
     },
     "ddosStandard": {
       "value": {
         "enabled": false,
-        "resourceGroupName": "pubsec-ddos-rg",
+        "resourceGroupName": "pubsec-ddos",
         "planName": "ddos-plan"
       }
     },
     "publicAccessZone": {
       "value": {
         "enabled": true,
-        "resourceGroupName": "pubsec-public-access-zone-rg"
+        "resourceGroupName": "pubsec-public-access-zone"
       }
     },
     "managementRestrictedZone": {
       "value": {
         "enabled": true,
-        "resourceGroupName": "pubsec-management-restricted-zone-rg",
+        "resourceGroupName": "pubsec-management-restricted-zone",
         "network": {
           "name": "management-restricted-vnet",
           "addressPrefixes": [
@@ -152,7 +152,7 @@
     },
     "hub": {
       "value": {
-        "resourceGroupName": "pubsec-hub-networking-rg",
+        "resourceGroupName": "pubsec-hub-networking",
         "bastion": {
           "enabled": true,
           "name": "bastion",
@@ -168,7 +168,7 @@
           ],
           "forcedTunnelingEnabled": false,
           "forcedTunnelingNextHop": "10.17.1.4",
-          "firewallPolicyId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourcegroups/pubsec-azure-firewall-policy-rg/providers/Microsoft.Network/firewallPolicies/pubsecAzureFirewallPolicy"
+          "firewallPolicyId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourcegroups/pubsec-azure-firewall-policy/providers/Microsoft.Network/firewallPolicies/pubsecAzureFirewallPolicy"
         },
         "network": {
           "name": "hub-vnet",

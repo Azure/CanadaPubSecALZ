@@ -154,7 +154,7 @@ This example configures:
       }
     },
     "logAnalyticsResourceGroupName": {
-      "value": "pubsec-central-logging-rg"
+      "value": "pubsec-central-logging"
     },
     "logAnalyticsWorkspaceName": {
       "value": "log-analytics-workspace"

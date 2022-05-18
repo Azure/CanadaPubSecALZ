@@ -310,7 +310,7 @@ This example configures:
   "contentVersion": "1.0.0.0",
   "parameters": {
     "logAnalyticsWorkspaceResourceId": {
-      "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
+      "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
     },
     "serviceHealthAlerts": {
       "value": {
@@ -375,26 +375,26 @@ This example configures:
     "privateDnsZones": {
       "value": {
         "enabled": true,
-        "resourceGroupName": "pubsec-dns-rg"
+        "resourceGroupName": "pubsec-dns"
       }
     },
     "ddosStandard": {
       "value": {
         "enabled": false,
-        "resourceGroupName": "pubsec-ddos-rg",
+        "resourceGroupName": "pubsec-ddos",
         "planName": "ddos-plan"
       }
     },
     "publicAccessZone": {
       "value": {
         "enabled": true,
-        "resourceGroupName": "pubsec-public-access-zone-rg"
+        "resourceGroupName": "pubsec-public-access-zone"
       }
     },
     "managementRestrictedZone": {
       "value": {
         "enabled": true,
-        "resourceGroupName": "pubsec-management-restricted-zone-rg",
+        "resourceGroupName": "pubsec-management-restricted-zone",
         "network": {
           "name": "management-restricted-vnet",
           "addressPrefixes": ["10.18.4.0/22"],
@@ -460,7 +460,7 @@ This example configures:
     },
     "hub": {
       "value": {
-        "resourceGroupName": "pubsec-hub-networking-rg",
+        "resourceGroupName": "pubsec-hub-networking",
         "bastion": {
           "enabled": true,
           "name": "bastion",
