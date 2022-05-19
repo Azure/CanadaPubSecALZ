@@ -15,6 +15,7 @@
 * [Azure Deployment](#azure-deployment)
   * [Schema Definition](#schema-definition)
   * [Delete Locks](#delete-locks)
+  * [Service Health](#service-health)
   * [Deployment Scenarios](#deployment-scenarios)
   * [Example Deployment Parameters](#example-deployment-parameters)
 
@@ -278,6 +279,12 @@ By default, this archetype deploys `CanNotDelete` lock to prevent accidental del
 * Management Restricted Zone resource group
 * Public Access Zone resource group
 * DDoS resource group (when enabled)
+
+### Service Health
+
+[Service health notifications](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties) are published by Azure, and contain information about the resources under your subscription.  Service health notifications can be informational or actionable, depending on the category.
+
+Our examples configure service health alerts for `Security` and `Incident`.  However, these categories can be customized based on your need.  Please review the possible options in [Azure Docs](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties#details-on-service-health-level-information).
 
 ### Deployment Scenarios
 

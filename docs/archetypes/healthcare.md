@@ -13,6 +13,7 @@
 * [Azure Deployment](#azure-deployment)
   * [Schema Definition](#schema-definition)
   * [Delete Locks](#delete-locks)
+  * [Service Health](#service-health)
   * [Deployment Scenarios](#deployment-scenarios)
   * [Example Deployment Parameters](#example-deployment-parameters)
   * [Deployment Instructions](#deployment-instructions)
@@ -255,6 +256,12 @@ Reference implementation uses parameter files with `object` parameters to consol
 As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
 
 **This archetype does not use `CanNotDelete` nor `ReadOnly` locks as part of the deployment.  You may customize the deployment templates when it's required for your environment.**
+
+### Service Health
+
+[Service health notifications](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties) are published by Azure, and contain information about the resources under your subscription.  Service health notifications can be informational or actionable, depending on the category.
+
+Our examples configure service health alerts for `Security` and `Incident`.  However, these categories can be customized based on your need.  Please review the possible options in [Azure Docs](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties#details-on-service-health-level-information).
 
 ### Deployment Scenarios
 
