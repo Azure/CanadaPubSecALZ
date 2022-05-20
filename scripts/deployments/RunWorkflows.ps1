@@ -75,7 +75,7 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
   .PARAMETER GitHubRef
     The GitHub ref to use for the workflow.
 
-  .PARAMETER LoginInteractiveTenantId
+  .PARAMETER LoginInteractiveTenentId
     If set, prompt for credentials and login to the specified tenant.
 
   .PARAMETER LoginServicePrincipalJson
@@ -91,17 +91,17 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
     The firewall password to use for the Hub Network with NVA workflow.
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenentId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups
 
     Deploy management groups interactively.
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups -DeployRoles -DeployLogging -DeployCustomPolicyDefinitions -DeployCustomPolicySetDefinitions -DeployCustomPolicySetAssignments -DeployBuiltinPolicySetAssignments -DeployAzureFirewallPolicy -DeployHubNetworkWithAzureFirewall
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenentId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeployManagementGroups -DeployRoles -DeployLogging -DeployCustomPolicyDefinitions -DeployCustomPolicySetDefinitions -DeployCustomPolicySetAssignments -DeployBuiltinPolicySetAssignments -DeployAzureFirewallPolicy -DeployHubNetworkWithAzureFirewall
 
     Deploy all platform components interactively, with Azure Firewall.
 
   .EXAMPLE
-    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenantId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeploySubscriptionIds 'a188040e-6c67-4c5c-b112-36a304b66dad,7188030d-6c67-4c5c-b112-36a304b66dac'
+    PS> .\RunWorkflows.ps1 -EnvironmentName CanadaESLZ-main -LoginInteractiveTenentId '8188040d-6c67-4c5c-b112-36a304b66dad' -DeploySubscriptionIds 'a188040e-6c67-4c5c-b112-36a304b66dad,7188030d-6c67-4c5c-b112-36a304b66dac'
 
     Deploy 2 subscriptions interactively.
 
@@ -179,14 +179,14 @@ Param(
   [string]$EnvironmentName="",
   [string]$GitHubRepo=$null,
   [string]$GitHubRef=$null,
-  [string]$LoginInteractiveTenantId=$null,
+  [string]$LoginInteractiveTenentId=$null,
   [SecureString]$LoginServicePrincipalJson=$null,
   [string]$WorkingDirectory=(Resolve-Path "../.."),
   [SecureString]$NvaUsername=$null,
   [SecureString]$NvaPassword=$null
 )
 
-#Requires -Modules Az, powershell-yaml
+# Requires -Modules Az, powershell-yaml
 
 $ErrorActionPreference = "Stop"
 
@@ -223,11 +223,11 @@ Write-Host "Loading functions..."
 . ".\Functions\Subscriptions.ps1"
 
 # Az Login interactively
-if (-not [string]::IsNullOrEmpty($LoginInteractiveTenantId)) {
+if (-not [string]::IsNullOrEmpty($LoginInteractiveTenentId)) {
   Write-Host "Logging in to Azure interactively..."
   Connect-AzAccount `
     -UseDeviceAuthentication `
-    -TenantId $LoginInteractiveTenantId
+    -TenantId $LoginInteractiveTenentId
 }
 
 # Az Login via Service Principal
