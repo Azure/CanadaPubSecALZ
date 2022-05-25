@@ -28,10 +28,10 @@ variables:
   # Logging
   var-logging-managementGroupId: pubsecPlatform
   var-logging-subscriptionId: f27b081a-aa54-4ab4-9f26-a4c5375dc8fa
-  var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg
-  var-logging-logAnalyticsWorkspaceName: log-analytics-workspace
+  var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg-prod
+  var-logging-logAnalyticsWorkspaceName: log-analytics-workspace-prod
   var-logging-logAnalyticsRetentionInDays: 730
-  var-logging-logAnalyticsAutomationAccountName: automation-account
+  var-logging-logAnalyticsAutomationAccountName: automation-account-prod
   var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
   var-logging-serviceHealthAlerts: >
     {
