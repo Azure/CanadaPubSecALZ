@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('Function App Name.')
 param name string
 
@@ -44,7 +41,7 @@ param vnetIntegrationSubnetId string
 resource function_app 'Microsoft.Web/sites@2020-06-01' = {
   name: name
   tags: tags
-  location: location
+  location: resourceGroup().location
   kind: 'functionapp,linux'
   identity: {
     type: 'SystemAssigned'

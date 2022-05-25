@@ -9,9 +9,6 @@
 
 targetScope = 'managementGroup'
 
-@description('Location for the deployment.')
-param location string = deployment().location
-
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
@@ -48,7 +45,7 @@ resource rgLocationAssignment 'Microsoft.Authorization/policyAssignments@2020-03
     }
     enforcementMode: enforcementMode
   }
-  location: location
+  location: deployment().location
 }
 
 resource resourceLocationAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
@@ -65,5 +62,5 @@ resource resourceLocationAssignment 'Microsoft.Authorization/policyAssignments@2
     }
     enforcementMode: enforcementMode
   }
-  location: location
+  location: deployment().location
 }

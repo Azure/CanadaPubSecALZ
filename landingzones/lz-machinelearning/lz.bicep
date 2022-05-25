@@ -9,9 +9,6 @@
 
 targetScope = 'subscription'
 
-@description('Location for the deployment.')
-param location string = deployment().location
-
 /*
 
 For accepted parameter values, see:
@@ -101,43 +98,43 @@ var useDeploymentScripts = useCMK
 //resource group deployments
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.networkWatcher
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
 resource rgAutomation 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.automation
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
 resource rgVnet 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroups.networking
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
 resource rgStorage 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.storage
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
 resource rgCompute 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.compute
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
 resource rgSecurity 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.security
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
 resource rgMonitor 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroups.monitor
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
@@ -148,7 +145,6 @@ module automationAccount '../../azresources/automation/automation-account.bicep'
   params: {
     automationAccountName: automation.name
     tags: resourceTags
-    location: location
   }
 }
 
@@ -158,7 +154,6 @@ module deploymentScriptIdentity '../../azresources/iam/user-assigned-identity.bi
   scope: rgAutomation
   params: {
     name: 'deployment-scripts'
-    location: location
   }
 }
 
@@ -200,7 +195,6 @@ module rgStorageDeploymentScriptPermissionCleanup '../../azresources/util/deploy
     deploymentScript: format(azCliCommandDeploymentScriptPermissionCleanup, useDeploymentScripts ? deploymentScriptIdentity.outputs.identityPrincipalId : '', rgStorage.id)
     deploymentScriptIdentityId: useDeploymentScripts ? deploymentScriptIdentity.outputs.identityId : ''
     deploymentScriptName: 'ds-rbac-${resourceGroups.storage}-cleanup'
-    location: location
   }  
 }
 
@@ -215,7 +209,6 @@ module rgComputeDeploymentScriptPermissionCleanup '../../azresources/util/deploy
     deploymentScript: format(azCliCommandDeploymentScriptPermissionCleanup, useDeploymentScripts ? deploymentScriptIdentity.outputs.identityPrincipalId : '', rgCompute.id)
     deploymentScriptIdentityId: useDeploymentScripts ? deploymentScriptIdentity.outputs.identityId : ''
     deploymentScriptName: 'ds-rbac-${resourceGroups.compute}-cleanup'
-    location: location
   }  
 }
 
@@ -226,7 +219,6 @@ module networking 'networking.bicep' = {
   params: {
     hubNetwork: hubNetwork
     network: network
-    location: location
   }
 }
 
@@ -237,7 +229,6 @@ module akv '../../azresources/security/key-vault.bicep' = {
   params: {
     name: akvName
     tags: resourceTags
-    location: location
 
     enabledForDiskEncryption: true
 
@@ -250,8 +241,6 @@ module sqlMi '../../azresources/data/sqlmi/main.bicep' = if (sqlmi.enabled) {
   name: 'deploy-sqlmi'
   scope: rgStorage
   params: {
-    location: location
-
     tags: resourceTags
     
     sqlServerName: sqlMiName
@@ -275,8 +264,6 @@ module storageLogging '../../azresources/storage/storage-generalpurpose.bicep' =
   name: 'deploy-storage-for-logging'
   scope: rgStorage
   params: {
-    location: location
-
     tags: resourceTags
     name: storageLoggingName
 
@@ -298,7 +285,6 @@ module sqlDb '../../azresources/data/sqldb/main.bicep' = if (sqldb.enabled) {
   name: 'deploy-sqldb'
   scope: rgStorage
   params: {
-    location: location
     tags: resourceTags
     sqlServerName: sqlServerName
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
@@ -323,8 +309,6 @@ module dataLake '../../azresources/storage/storage-adlsgen2.bicep' = {
   name: 'deploy-datalake'
   scope: rgStorage
   params: {
-    location: location
-
     tags: resourceTags
     name: datalakeStorageName
 
@@ -346,7 +330,6 @@ module egressLb '../../azresources/network/lb-egress.bicep' = {
   params: {
     name: databricksEgressLbName
     tags: resourceTags
-    location: location
   }
 }
 
@@ -354,7 +337,6 @@ module databricks '../../azresources/analytics/databricks/main.bicep' = {
   name: 'deploy-databricks'
   scope: rgCompute
   params: {
-    location: location
     name: databricksName
     tags: resourceTags
     vnetId: networking.outputs.vnetId
@@ -371,8 +353,6 @@ module aksCluster '../../azresources/containers/aks/main.bicep' = if (aks.enable
   name: 'deploy-aks-${aks.enabled ? aks.networkPlugin : ''}'
   scope: rgCompute
   params: {
-    location: location
-
     tags: resourceTags
 
     name: aksName
@@ -414,8 +394,6 @@ module appServicePlan '../../azresources/compute/web/app-service-plan-linux.bice
   name: 'deploy-app-service-plan'
   scope: rgCompute
   params: {
-    location: location
-
     name: appServicePlanName
     skuName: appServiceLinuxContainer.skuName
     skuTier: appServiceLinuxContainer.skuTier
@@ -428,8 +406,6 @@ module appServiceLC '../../azresources/compute/web/appservice-linux-container.bi
   name: 'deploy-app-service'
   scope: rgCompute
   params: {
-    location: location
-
     name: appServiceLinuxContainerName
     appServicePlanId: appServiceLinuxContainer.enabled ? appServicePlan.outputs.planId : ''
     aiIKey: appInsights.outputs.aiIKey
@@ -438,10 +414,7 @@ module appServiceLC '../../azresources/compute/web/appservice-linux-container.bi
     storageId: dataLakeMetaData.outputs.storageId
     
     vnetIntegrationSubnetId: networking.outputs.appServiceSubnetId
-    enablePrivateEndpoint: appServiceLinuxContainer.enablePrivateEndpoint
-    privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
-    privateZoneId: networking.outputs.asPrivateDnsZoneId
-
+    
     tags: resourceTags
   }
 }
@@ -454,7 +427,6 @@ module adf '../../azresources/analytics/adf/main.bicep' = {
   params: {
     name: adfName
     tags: resourceTags
-    location: location
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     datafactoryPrivateZoneId: networking.outputs.adfDataFactoryPrivateDnsZoneId
@@ -471,7 +443,6 @@ module acr '../../azresources/containers/acr/main.bicep' = {
   params: {
     name: acrName
     tags: resourceTags
-    location: location
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     privateZoneId: networking.outputs.acrPrivateDnsZoneId
@@ -489,7 +460,6 @@ module appInsights '../../azresources/monitor/ai-web.bicep' = {
   params: {
     tags: resourceTags
     name: aiName
-    location: location
   }
 }
 
@@ -501,7 +471,6 @@ module dataLakeMetaData '../../azresources/storage/storage-generalpurpose.bicep'
   params: {
     tags: resourceTags
     name: amlMetaStorageName
-    location: location
 
     privateEndpointSubnetId: networking.outputs.privateEndpointSubnetId
     blobPrivateZoneId: networking.outputs.dataLakeBlobPrivateDnsZoneId
@@ -520,8 +489,6 @@ module machineLearning '../../azresources/analytics/aml/main.bicep' = {
   params: {
     name: amlName
     tags: resourceTags
-    location: location
-
     containerRegistryId: acr.outputs.acrId
     storageAccountId: dataLakeMetaData.outputs.storageId
     appInsightsId: appInsights.outputs.aiId

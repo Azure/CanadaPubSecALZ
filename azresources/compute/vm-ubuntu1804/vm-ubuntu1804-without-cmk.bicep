@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('Virtual Machine Name.')
 param vmName string
 
@@ -57,7 +54,7 @@ param storageAccountType string = 'StandardSSD_LRS'
 
 resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
     name: '${vmName}-nic'
-     location: location
+     location: resourceGroup().location
      properties: {
         enableAcceleratedNetworking: enableAcceleratedNetworking
         ipConfigurations: [
@@ -78,7 +75,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
 
 resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
     name: vmName
-    location: location
+    location: resourceGroup().location
     zones: [
         availabilityZone
     ]

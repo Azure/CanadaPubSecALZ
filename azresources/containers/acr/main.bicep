@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('Azure Container Registry Name.')
 param name string
 
@@ -41,7 +38,6 @@ module acrIdentity '../../iam/user-assigned-identity.bicep' = {
   name: '${name}-managed-identity'
   params: {
     name: '${name}-managed-identity'
-    location: location
   }
 }
 
@@ -50,7 +46,6 @@ module acrWithCMK 'acr-with-cmk.bicep' = if (useCMK) {
   params: {
     name: name
     tags: tags
-    location: location
 
     userAssignedIdentityId: acrIdentity.outputs.identityId
     userAssignedIdentityPrincipalId: acrIdentity.outputs.identityPrincipalId
@@ -70,7 +65,6 @@ module acrWithoutCMK 'acr-without-cmk.bicep' = if (!useCMK) {
   params: {
     name: name
     tags: tags
-    location: location
 
     userAssignedIdentityId: acrIdentity.outputs.identityId
 

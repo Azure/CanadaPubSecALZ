@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('General Purpose Storage Account Name')
 param name string
 
@@ -52,7 +49,7 @@ param deploymentScriptIdentityId string
 /* Storage Account */
 resource storage 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   tags: tags
-  location: location
+  location: resourceGroup().location
   name: name
   identity: {
     type: 'SystemAssigned'
@@ -114,7 +111,6 @@ module enableCMK 'storage-enable-cmk.bicep' = if (useCMK) {
   params: {
     storageAccountName: storage.name
     storageResourceGroupName: resourceGroup().name
-    location: location
 
     keyVaultName: akvName
     keyVaultResourceGroupName: akvResourceGroupName
@@ -125,7 +121,7 @@ module enableCMK 'storage-enable-cmk.bicep' = if (useCMK) {
 
 /* Private Endpoints */
 resource storage_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (!empty(blobPrivateZoneId)) {
-  location: location
+  location: resourceGroup().location
   name: '${storage.name}-blob-endpoint'
   properties: {
     subnet: {
@@ -160,7 +156,7 @@ resource storage_blob_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (!
 }
 
 resource storage_file_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (!empty(filePrivateZoneId)) {
-  location: location
+  location: resourceGroup().location
   name: '${storage.name}-file-endpoint'
   properties: {
     subnet: {

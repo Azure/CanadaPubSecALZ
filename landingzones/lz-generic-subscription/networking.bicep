@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 // Networking
 // Example (JSON)
 // -----------------------------
@@ -239,7 +236,7 @@ var allSubnets = union(requiredSubnets, network.subnets.optional)
 // Network Security Groups
 resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = [for subnet in allSubnets: if (subnet.nsg.enabled) {
   name: '${subnet.name}Nsg'
-  location: location
+  location: resourceGroup().location
   properties: {
     securityRules: []
   }
@@ -248,7 +245,7 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = [for subnet 
 // Route Tables
 resource udr 'Microsoft.Network/routeTables@2021-02-01' = [for subnet in allSubnets: if (subnet.udr.enabled) {
   name: '${subnet.name}Udr'
-  location: location
+  location: resourceGroup().location
   properties: {
     routes: network.peerToHubVirtualNetwork ? routesToHub : null
   }
@@ -257,7 +254,7 @@ resource udr 'Microsoft.Network/routeTables@2021-02-01' = [for subnet in allSubn
 // Virtual Network
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   name: network.name
-  location: location
+  location: resourceGroup().location
   properties: {
     dhcpOptions: {
       dnsServers: network.dnsServers

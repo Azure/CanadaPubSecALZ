@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('Egress Azure Load Balancer Name')
 param name string
 
@@ -25,7 +22,7 @@ var loadBalancerFrontendConfigId = resourceId('Microsoft.Network/loadBalancers/f
 resource lbPublicIp 'Microsoft.Network/publicIPAddresses@2020-06-01' = {
   name: '${name}PublicIp'
   tags: tags
-  location: location
+  location: resourceGroup().location
   sku: {
     name: 'Standard'
   }
@@ -37,7 +34,7 @@ resource lbPublicIp 'Microsoft.Network/publicIPAddresses@2020-06-01' = {
 resource lb 'Microsoft.Network/loadBalancers@2020-06-01' = {
   name: name
   tags: tags
-  location: location
+  location: resourceGroup().location
   sku: {
     name: 'Standard'
   }

@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('Internal Load Balancer Name.')
 param name string 
 
@@ -53,7 +50,7 @@ param lbProbeTcpPort int
 
 resource ILB 'Microsoft.Network/loadBalancers@2020-11-01' = {
   name: name
-  location: location
+  location: resourceGroup().location
   sku: {
     name: 'Standard'
     tier: 'Regional'

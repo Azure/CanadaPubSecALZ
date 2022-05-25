@@ -7,14 +7,11 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('User Defined Route Name.')
 param name string
 
 resource udr 'Microsoft.Network/routeTables@2020-06-01' = {
-  location: location
+  location: resourceGroup().location
   name: name
   properties: {
     disableBgpRoutePropagation: false

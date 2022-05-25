@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('Deployment Script Name.')
 param deploymentScriptName string
 
@@ -19,8 +16,8 @@ param deploymentScript string
 @description('Identity for the deployment script to execute in Azure Container Instance.')
 param deploymentScriptIdentityId string
 
-@description('Azure CLI Version.  Default: 2.32.0')
-param azCliVersion string = '2.32.0'
+@description('Azure CLI Version.  Default: 2.26.0')
+param azCliVersion string = '2.26.0'
 
 @description('Force Update Tag.  Default:  utcNow()')
 param forceUpdateTag string = utcNow()
@@ -33,7 +30,7 @@ param retentionInterval string = 'PT1H'
 
 resource ds 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: deploymentScriptName
-  location: location
+  location: resourceGroup().location
   kind: 'AzureCLI'
   identity: {
     type: 'UserAssigned'

@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('Azure Bastion Name')
 param name string
 
@@ -33,7 +30,7 @@ param tags object = {}
 param subnetId string
 
 resource bastionPublicIP 'Microsoft.Network/publicIPAddresses@2020-06-01' = {
-  location: location
+  location: resourceGroup().location
   name: '${name}PublicIp'
   tags: tags
   sku: {
@@ -46,7 +43,7 @@ resource bastionPublicIP 'Microsoft.Network/publicIPAddresses@2020-06-01' = {
 }
 
 resource bastion 'Microsoft.Network/bastionHosts@2021-03-01' = {
-  location: location
+  location: resourceGroup().location
   name: name
   tags: tags
   sku: {

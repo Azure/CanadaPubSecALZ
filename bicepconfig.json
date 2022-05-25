@@ -27,12 +27,6 @@
                 },
                 "simplify-interpolation": {
                     "level": "error"
-                },
-                "no-loc-expr-outside-params": {
-                    "level": "error"
-                },
-                "explicit-values-for-loc-params": {
-                    "level": "error"
                 }
             }
         }

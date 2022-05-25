@@ -4,9 +4,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 // VNET
 @description('Virtual Network Name.')
 param vnetName string
@@ -58,7 +55,6 @@ module publicAccessZoneNsg '../../../azresources/network/nsg/nsg-appgwv2.bicep' 
   name: 'deploy-nsg-${pazSubnetName}Nsg'
   params: {
     name: '${pazSubnetName}Nsg'
-    location: location
   }
 }
 
@@ -66,7 +62,6 @@ module bastionNsg '../../../azresources/network/nsg/nsg-bastion.bicep' = {
   name: 'deploy-nsg-AzureBastionNsg'
   params: {
     name: 'AzureBastionNsg'
-    location: location
   }
 }
 
@@ -86,12 +81,11 @@ module azureFirewallSubnetUdr '../../../azresources/network/udr/udr-custom.bicep
   params: {
     name: 'AzureFirewallSubnetUdr'
     routes: azureFirewallForcedTunnelRoutes
-    location: location
   }
 }
 
 resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
-  location: location
+  location: resourceGroup().location
   name: vnetName
   properties: {
     enableDdosProtection: !empty(ddosStandardPlanId)

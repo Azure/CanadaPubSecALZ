@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('Log Analytics Workspace Name.')
 param workspaceName string
 
@@ -42,7 +39,6 @@ module automationAccount '../automation/automation-account.bicep' = {
   params: {
     automationAccountName: automationAccountName
     tags: tags
-    location: location
   }
 }
 
@@ -50,7 +46,7 @@ module automationAccount '../automation/automation-account.bicep' = {
 resource workspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' = {
   name: workspaceName
   tags: tags
-  location: location
+  location: resourceGroup().location
   properties: {
     sku: {
       name: 'PerNode'
@@ -72,7 +68,7 @@ resource automationAccountLinkedToWorkspace 'Microsoft.OperationalInsights/works
 resource workspaceSolutions 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = [for solution in solutions: {
   name: '${solution}(${workspace.name})'
   tags: tags
-  location: location
+  location: resourceGroup().location
   properties: {
     workspaceResourceId: workspace.id
   }

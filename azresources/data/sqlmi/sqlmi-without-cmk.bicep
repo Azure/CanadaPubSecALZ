@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('SQL Managed Instance Name.')
 param name string
 
@@ -50,7 +47,7 @@ param sqlmiPassword string
 
 resource sqlmi 'Microsoft.Sql/managedInstances@2020-11-01-preview' = {
   name: name
-  location: location
+  location: resourceGroup().location
   tags: tags
   identity: {
     type: 'SystemAssigned'

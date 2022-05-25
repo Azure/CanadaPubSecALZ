@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('Stream Analytics name.')
 param name string
 
@@ -19,7 +16,7 @@ param tags object = {}
 resource streamanalytics 'Microsoft.StreamAnalytics/streamingjobs@2017-04-01-preview' = {
   name: name
   tags: tags
-  location: location
+  location: resourceGroup().location
   identity: {
     type: 'SystemAssigned'
   }

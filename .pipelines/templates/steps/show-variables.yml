@@ -14,18 +14,16 @@ parameters:
 
 steps:
 
-# Show variables
+# Show variables (hard-coded)
 - task: Bash@3
-  displayName: Show Variables
+  displayName: Variables
   inputs:
     targetType: inline
     script: |
-      # $(var-bashPreInjectScript)
+      $(var-bashPreInjectScript)
 
       echo
-      echo
       echo "COMMON"
-      echo
       echo "  deploymentRegion = $(deploymentRegion)"
       echo "  serviceConnection = $(serviceConnection)"
       echo "  vmImage = $(vmImage)"
@@ -33,41 +31,24 @@ steps:
       echo "  subscriptionsPathFromRoot = $(subscriptionsPathFromRoot)"
       echo "  var-TriggerSubscriptionDeployOn = $(var-TriggerSubscriptionDeployOn)"
 
-      echo
-      echo
-      echo "MANAGEMENT GROUPS (modern)"
-      echo
-      echo "  var-managementgroup-hierarchy = $(var-managementgroup-hierarchy)"
+      # echo "  var-bashPreInjectScript = $(var-bashPreInjectScript)"
+      # echo "  var-bashPostInjectScript = $(var-bashPostInjectScript)"
 
       echo
-      echo
-      echo "MANAGEMENT GROUPS (legacy)"
-      echo
+      echo "MANAGEMENT GROUPS"
       echo "  var-parentManagementGroupId = $(var-parentManagementGroupId)"
       echo "  var-topLevelManagementGroupName = $(var-topLevelManagementGroupName)"
-
-      echo
+    
       echo
       echo "LOGGING"
+      echo "  var-logging-managementGroupId = $(var-logging-managementGroupId)"
+      echo "  var-logging-subscriptionId = $(var-logging-subscriptionId)"
+      echo "  var-logging-logAnalyticsResourceGroupName = $(var-logging-logAnalyticsResourceGroupName)"
+      echo "  var-logging-logAnalyticsWorkspaceName = $(var-logging-logAnalyticsWorkspaceName)"
+    
       echo
-      printenv -0 | grep -zi "^var-logging-" | xargs -0 -L 1 echo
-
-      echo
-      echo
-      echo "HUB NETWORKING (core)"
-      echo
-      printenv -0 | grep -zi -P '^var-hubnetwork-(?!nva|azfw)' | xargs -0 -L 1 echo
-
-      echo
-      echo
-      echo "HUB NETWORKING WITH AZURE FIREWALL"
-      echo
-      printenv -0 | grep -zi '^var-hubnetwork-azfw-' | xargs -0 -L 1 echo
-
-      echo
-      echo
-      echo "HUB NETWORKING WITH NETWORK VIRTUAL APPLIANCE"
-      echo
-      printenv -0 | grep -zi '^var-hubnetwork-nva-' | xargs -0 -L 1 echo
-
+      echo "HUB NETWORKING"
+      echo "  var-hubnetwork-managementGroupId = $(var-hubnetwork-managementGroupId)"
+      echo "  var-hubnetwork-subscriptionId = $(var-hubnetwork-subscriptionId)"
+    
       $(var-bashPostInjectScript)

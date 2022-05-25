@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = deployment().location
-
 /*
 
 Hub Networking with Fortigate Virtual Network Appliance archetype infrastructure to support Hub & Spoke network topology.  This archetype will provide:
@@ -274,7 +271,7 @@ param hubBastionSubnetAddressPrefix string //= '192.168.0.0/24'
 @description('Boolean flag to determine whether virtual machines will be deployed, either Ubuntu (for internal testing) or Fortinet (for workloads).  Default: true')
 param deployFirewallVMs bool = true
 
-@description('Boolean flag to determine whether Fortinet firewalls will be deployed.  Default: true')
+@description('Boolean flag to dtermine whether Fortinet firewalls will eb deployed.  Default: true')
 param useFortigateFW bool = true
 
 // Firewall Virtual Appliances - For Non-production Traffic
@@ -449,8 +446,6 @@ module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
   scope: subscription()
   params: {
-    location: location
-
     serviceHealthAlerts: serviceHealthAlerts
     subscriptionRoleAssignments: subscriptionRoleAssignments
     subscriptionBudget: subscriptionBudget
@@ -465,42 +460,42 @@ module subScaffold '../scaffold-subscription.bicep' = {
 // Create Network Watcher Resource Group
 resource rgNetworkWatcher 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgNetworkWatcherName
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
 // Create Private DNS Zone Resource Group - optional
 resource rgPrivateDnsZones 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployPrivateDnsZones) {
   name: rgPrivateDnsZonesName
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
 // Create Azure DDOS Standard Resource Group - optional
 resource rgDdos 'Microsoft.Resources/resourceGroups@2020-06-01' = if (deployDdosStandard) {
   name: rgDdosName
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
 // Create Hub Virtual Network Resource Group
 resource rgHubVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgHubName
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
 // Create Managemend Restricted Virtual Network Resource Group
 resource rgMrzVnet 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgMrzName
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
 // Create Public Access Zone Resource Group
 resource rgPaz 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: rgPazName
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
@@ -531,7 +526,6 @@ module ddosPlan '../../azresources/network/ddos-standard.bicep' = if (deployDdos
   scope: rgDdos
   params: {
     name: ddosPlanName
-    location: location
   }
 }
 
@@ -540,7 +534,6 @@ module udrPrdSpokes '../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-PrdSpokesUdr'
   scope: rgHubVnet
   params: {
-    location: location
     name: 'PrdSpokesUdr'
     routes: [
       {
@@ -577,7 +570,6 @@ module udrMrzSpoke '../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-MrzSpokeUdr'
   scope: rgHubVnet
   params: {
-    location: location
     name: 'MrzSpokeUdr'
     routes: [
       {
@@ -614,7 +606,6 @@ module udrPaz '../../azresources/network/udr/udr-custom.bicep' = {
   name: 'deploy-route-table-PazSubnetUdr'
   scope: rgHubVnet
   params: {
-    location: location
     name: 'PazSubnetUdr'
     routes: [
       {
@@ -634,8 +625,6 @@ module hubVnet 'hub-vnet/hub-vnet.bicep' = {
   name: 'deploy-hub-vnet-${hubVnetName}'
   scope: rgHubVnet
   params: {
-    location: location
-
     vnetName: hubVnetName
     vnetAddressPrefixRFC1918: hubVnetAddressPrefixRFC1918
     vnetAddressPrefixRFC6598: hubVnetAddressPrefixRFC6598
@@ -676,8 +665,6 @@ module mrzVnet 'mrz-vnet/mrz-vnet.bicep' = {
   name: 'deploy-management-vnet-${mrzVnetName}'
   scope: rgMrzVnet
   params: {
-    location: location
-    
     vnetName: mrzVnetName
     vnetAddressPrefix: mrzVnetAddressPrefixRFC1918
 
@@ -753,7 +740,6 @@ module bastion '../../azresources/network/bastion.bicep' = {
   name: 'deploy-bastion'
   scope: rgHubVnet
   params: {
-    location: location
     name: bastionName
     sku: bastionSku
     scaleUnits: bastionScaleUnits
@@ -766,8 +752,6 @@ module ProdFW1_fortigate 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useF
   name: 'deploy-nva-ProdFW1_fortigate'
   scope: rgHubVnet
   params: {
-    location: location
-
     availabilityZone: '1' //make it a parameter with a default value (in the params.json file)
     vmName: fwProdVM1Name
     vmSku: fwProdVMSku
@@ -789,8 +773,6 @@ module ProdFW1_ubuntu 'nva/ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFo
   name: 'deploy-nva-ProdFW1_ubuntu'
   scope: rgHubVnet
   params: {
-    location: location
-
     availabilityZone: fwProdVM1AvailabilityZone //make it a parameter with a default value (in the params.json file)
     vmName: fwProdVM1Name
     vmSku: fwProdVMSku
@@ -812,8 +794,6 @@ module ProdFW2_fortigate 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useF
   name: 'deploy-nva-ProdFW2_fortigate'
   scope: rgHubVnet
   params: {
-    location: location
-
     availabilityZone: fwProdVM2AvailabilityZone
     vmName: fwProdVM2Name
     vmSku: fwProdVMSku
@@ -835,8 +815,6 @@ module ProdFW2_ubuntu 'nva/ubuntu-fw-vm.bicep' = if (deployFirewallVMs && !useFo
   name: 'deploy-nva-ProdFW2_ubuntu'
   scope: rgHubVnet
   params: {
-    location: location
-
     availabilityZone: '2'
     vmName: fwProdVM2Name
     vmSku: fwProdVMSku
@@ -858,8 +836,6 @@ module DevFW1 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW)
   name: 'deploy-nva-DevFW1_fortigate'
   scope: rgHubVnet
   params: {
-    location: location
-
     availabilityZone: fwDevVM1AvailabilityZone
     vmName: fwDevVM1Name
     vmSku: fwDevVMSku
@@ -881,8 +857,6 @@ module DevFW2 'nva/fortinet-vm.bicep' = if (deployFirewallVMs && useFortigateFW)
   name: 'deploy-nva-DevFW2_fortigate'
   scope: rgHubVnet
   params: {
-    location: location
-
     availabilityZone: fwDevVM2AvailabilityZone
     vmName: fwDevVM2Name
     vmSku: fwDevVMSku
@@ -904,8 +878,6 @@ module ProdFWs_ILB 'hub-vnet/lb-firewalls-hub.bicep' = {
   name: 'deploy-internal-loadblancer-ProdFWs_ILB'
   scope: rgHubVnet
   params: {
-    location: location
-
     name: fwProdILBName
     backendVnetId: hubVnet.outputs.vnetId
     frontendIPExt: fwProdILBExternalFacingIP
@@ -926,8 +898,6 @@ module DevFWs_ILB 'hub-vnet/lb-firewalls-hub.bicep' = {
   name: 'deploy-internal-loadblancer-DevFWs_ILB'
   scope: rgHubVnet
   params: {
-    location: location
-
     name: fwDevILBName
     backendVnetId: hubVnet.outputs.vnetId
     frontendIPExt: fwDevILBExternalFacingIP

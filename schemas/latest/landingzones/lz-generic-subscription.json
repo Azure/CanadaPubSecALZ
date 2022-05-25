@@ -34,9 +34,6 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "location": {
-          "$ref": "types/location.json#/definitions/Location"
-        },
         "serviceHealthAlerts": {
           "$ref": "types/serviceHealthAlerts.json#/definitions/ServiceHealthAlerts"
         },

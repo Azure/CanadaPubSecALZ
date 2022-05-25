@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('Azure Data Factory Name.')
 param name string
 
@@ -70,7 +67,7 @@ resource adf 'Microsoft.DataFactory/factories@2018-06-01' = {
     akvRoleAssignmentForCMK
   ]
 
-  location: location
+  location: resourceGroup().location
   name: name
   tags: tags
   identity: {
@@ -115,7 +112,7 @@ resource adf 'Microsoft.DataFactory/factories@2018-06-01' = {
 
 // Create Private Endpoints and register their IPs with Private DNS Zone
 resource adf_datafactory_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: location
+  location: resourceGroup().location
   name: '${adf.name}-df-endpoint'
   properties: {
     subnet: {

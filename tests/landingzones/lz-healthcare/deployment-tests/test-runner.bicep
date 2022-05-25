@@ -9,9 +9,6 @@
 
 targetScope = 'subscription'
 
-@description('Location for the deployment.')
-param location string = deployment().location
-
 param deploymentScriptIdentityId string
 param deploymentScriptResourceGroupName string
 
@@ -41,8 +38,6 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
   name: 'execute-test-${testRunnerId}'
   scope: subscription()
   params: {
-    location: location
-
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
     securityCenter: {
@@ -194,8 +189,6 @@ module testCleanup '../../../../azresources/util/deployment-script.bicep' = if (
   scope: resourceGroup(deploymentScriptResourceGroupName)
   name: 'cleanup-test-${testRunnerId}'
   params: {
-    location: location
-
     deploymentScript: format(cleanUpScript, subscription().subscriptionId, rgAutomationName, rgMonitorName, rgSecurityName, rgComputeName, rgStorageName, rgNetworking)
     deploymentScriptName: 'cleanup-test-${testRunnerId}'
     deploymentScriptIdentityId: deploymentScriptIdentityId

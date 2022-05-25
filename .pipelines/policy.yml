@@ -77,8 +77,6 @@ stages:
 
     - template: templates/steps/load-log-analytics-vars.yml
 
-    - template: templates/steps/load-variables.yml
-
     - template: templates/steps/show-variables.yml
       parameters:
         json: ${{ convertToJson(variables) }}
@@ -100,7 +98,6 @@ stages:
         description: 'Assign Policy Set'
         deployTemplates: [AKS, DefenderForCloud, LogAnalytics, Network, Tags]
         deployOperation: ${{ variables['deployOperation'] }}
-        policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
         workingDir: $(System.DefaultWorkingDirectory)/policy/custom/assignments
   
   - job: BuiltInPolicyJob
@@ -113,8 +110,6 @@ stages:
 
     - template: templates/steps/load-log-analytics-vars.yml
 
-    - template: templates/steps/load-variables.yml
-
     - template: templates/steps/show-variables.yml
       parameters:
         json: ${{ convertToJson(variables) }}
@@ -124,6 +119,4 @@ stages:
         description: 'Assign Policy Set'
         deployTemplates: [asb, cis-msft-130, location, nist80053r4, nist80053r5, pbmm]
         deployOperation: ${{ variables['deployOperation'] }}
-        policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
         workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
-

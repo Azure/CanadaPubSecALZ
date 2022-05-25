@@ -2,30 +2,6 @@
 
 ## Landing Zone Schemas
 
-### February 14, 2022
-
-Added location schema object.  This is an optional setting for archetypes.  This setting will default to `deployment().location`.
-
-**Example**
-
-```json
-    "location": {
-        "value": "canadacentral"
-    }
-```
-
-### January 16, 2021
-Changed `appServiceLinuxContainer` schema object to support optional inbound private endpoint.
-
-**Example**
-```json
-"appServiceLinuxContainer": {
-  "value": {
-    "enablePrivateEndpoint": true
-  }
-}
-```
-
 ### December 30, 2021
 
 Changed `aks` schema object to support optional deployment of AKS using the `enabled` key as a required field.

@@ -9,9 +9,6 @@
 
 targetScope = 'managementGroup'
 
-@description('Location for the deployment.')
-param location string = deployment().location
-
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
@@ -62,19 +59,13 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
        listOfMembersToIncludeInWindowsVMAdministratorsGroup: {
         value: listOfMembersToIncludeInWindowsVMAdministratorsGroup
        }
-       'logsEnabled-7f89b1eb-583c-429a-8828-af049802c1d9': {
-         value: true
-       }
-       'metricsEnabled-7f89b1eb-583c-429a-8828-af049802c1d9': {
-         value: false
-       }
     }
     enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'
   }
-  location: location
+  location: deployment().location
 }
 
 // These role assignments are required to allow Policy Assignment to remediate.

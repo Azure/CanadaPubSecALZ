@@ -6,10 +6,6 @@
 // EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
-
-@description('Location for the deployment.')
-param location string = deployment().location
-
 /*
 
 Platform Logging archetype provides infrastructure for centrally managed Log Analytics Workspace & Microsoft Sentinel that includes:
@@ -197,7 +193,7 @@ module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-u
 // Create Log Analytics Workspace Resource Group
 resource rgLogging 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: logAnalyticsResourceGroupName
-  location: location
+  location: deployment().location
   tags: resourceTags
 }
 
@@ -206,12 +202,9 @@ module logAnalytics '../../azresources/monitor/log-analytics.bicep' = {
   name: logAnalyticsWorkspaceName
   scope: rgLogging
   params: {
-    location: location
-
     workspaceName: logAnalyticsWorkspaceName
     workspaceRetentionInDays: logAnalyticsRetentionInDays
     automationAccountName: logAnalyticsAutomationAccountName
-
     tags: resourceTags
   }
 }
@@ -230,8 +223,6 @@ module subScaffold '../scaffold-subscription.bicep' = {
   name: 'subscription-scaffold'
   scope: subscription()
   params: {
-    location: location
-    
     serviceHealthAlerts: serviceHealthAlerts
     subscriptionRoleAssignments: subscriptionRoleAssignments
     subscriptionBudget: subscriptionBudget    

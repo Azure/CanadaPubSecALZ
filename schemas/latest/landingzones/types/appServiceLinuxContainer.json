@@ -22,20 +22,12 @@
                 },
                 "skuTier": {
                   "type": "string"
-                },
-                "enablePrivateEndpoint": {
-                  "type": "boolean",
-                  "enum": [
-                    true,
-                    false
-                  ]
                 }
               },
               "required": [
                 "enabled",
                 "skuName",
-                "skuTier",
-                "enablePrivateEndpoint"
+                "skuTier"
               ]
             },
             {

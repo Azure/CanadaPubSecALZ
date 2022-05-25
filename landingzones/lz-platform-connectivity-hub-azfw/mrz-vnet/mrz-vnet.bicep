@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 // Management Restricted Zone Virtual Network
 
 // VNET
@@ -76,7 +73,6 @@ module nsgmaz '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${mazSubnetName}'
   params: {
     name: '${mazSubnetName}Nsg'
-    location: location
   }
 }
 
@@ -84,7 +80,6 @@ module nsginf '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${infSubnetName}'
   params: {
     name: '${infSubnetName}Nsg'
-    location: location
   }
 }
 
@@ -92,7 +87,6 @@ module nsgsec '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${secSubnetName}'
   params: {
     name: '${secSubnetName}Nsg'
-    location: location
   }
 }
 
@@ -100,7 +94,6 @@ module nsglog '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${logSubnetName}'
   params: {
     name: '${logSubnetName}Nsg'
-    location: location
   }
 }
 
@@ -108,12 +101,11 @@ module nsgmgmt '../../../azresources/network/nsg/nsg-empty.bicep' = {
   name: 'deploy-nsg-${mgmtSubnetName}'
   params: {
     name: '${mgmtSubnetName}Nsg'
-    location: location
   }
 }
 
 resource mrzVnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
-  location: location
+  location: resourceGroup().location
   name: vnetName
   properties: {
     enableDdosProtection: !empty(ddosStandardPlanId)

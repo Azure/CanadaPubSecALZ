@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('Azure Application Insights Name.')
 param name string
 
@@ -19,7 +16,7 @@ param tags object = {}
 resource ai 'Microsoft.Insights/components@2020-02-02-preview' = {
   name: name
   tags: tags
-  location: location
+  location: resourceGroup().location
   kind: 'web'
   properties: {
     Application_Type: 'web'

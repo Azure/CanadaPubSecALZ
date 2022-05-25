@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 // VM
 @description('Virtual Machine Name.')
 param vmName string
@@ -66,7 +63,7 @@ param password string
 
 resource nic1 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   name: '${vmName}-nic1'
-  location: location
+  location: resourceGroup().location
   tags: {}
   properties: {
     ipConfigurations: [
@@ -93,7 +90,7 @@ resource nic1 'Microsoft.Network/networkInterfaces@2020-11-01' = {
 
 resource nic2 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   name: '${vmName}-nic2'
-  location: location
+  location: resourceGroup().location
   tags: {}
   properties: {
     ipConfigurations: [
@@ -119,7 +116,7 @@ resource nic2 'Microsoft.Network/networkInterfaces@2020-11-01' = {
 }
 resource nic3 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   name: '${vmName}-nic3'
-  location: location
+  location: resourceGroup().location
   tags: {}
   properties: {
     ipConfigurations: [
@@ -145,7 +142,7 @@ resource nic3 'Microsoft.Network/networkInterfaces@2020-11-01' = {
 }
 resource nic4 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   name: '${vmName}-nic4'
-  location: location
+  location: resourceGroup().location
   tags: {}
   properties: {
     ipConfigurations: [
@@ -172,7 +169,7 @@ resource nic4 'Microsoft.Network/networkInterfaces@2020-11-01' = {
 
 resource vm 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   name: vmName
-  location: location
+  location: resourceGroup().location
   tags: {}
   zones: [
     availabilityZone

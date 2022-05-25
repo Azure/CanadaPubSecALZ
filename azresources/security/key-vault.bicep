@@ -7,9 +7,6 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
-@description('Location for the deployment.')
-param location string = resourceGroup().location
-
 @description('Azure Key Vault Name.')
 param name string
 
@@ -36,7 +33,7 @@ param privateEndpointSubnetId string = ''
 param privateZoneId string = ''
 
 resource akv 'Microsoft.KeyVault/vaults@2019-09-01' = {
-  location: location
+  location: resourceGroup().location
   name: name
   tags: tags
   properties: {
@@ -63,7 +60,7 @@ resource akv 'Microsoft.KeyVault/vaults@2019-09-01' = {
 }
 
 resource akv_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = if (!(empty(privateZoneId))) {
-  location: location
+  location: resourceGroup().location
   name: '${akv.name}-endpoint'
   properties: {
     subnet: {
