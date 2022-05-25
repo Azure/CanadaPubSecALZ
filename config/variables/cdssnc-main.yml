@@ -21,7 +21,7 @@
 #         currently executing pipeline.
 
 variables:
-  # Management Groups
+  # Management Groups 
   var-parentManagementGroupId: 221ca1d3-b3f2-4346-8abc-88f802495c7d
   var-topLevelManagementGroupName: pubsec
 
