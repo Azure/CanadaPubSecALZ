@@ -25,6 +25,8 @@ As part of the Government of Canada (GC) Cloud Operationalization Framework, the
 
 See [GC 30-Day Cloud Guardrails](docs/gc-30-day-cloud-guardrails.md) to find out how the reference implementations meet (or can meet) these requirements.
 
+We recommend deploying the [Guardrails Solution Accelerator](https://github.com/Azure/GuardrailsSolutionAccelerator) for evidence collection. The solution provides continuous audit to the Canadian Public Sector customers' environment with a comprehensive workbook revealing the compliance status for each of the [12 GC 30-Day Cloud Guardrails controls](https://github.com/canada-ca/cloud-guardrails#summary---initial-30-days).
+
 ## Onboarding to Azure DevOps
 
 See the following onboarding guides for setup instructions:
