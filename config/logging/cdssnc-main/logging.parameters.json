@@ -49,7 +49,7 @@
       }
     },
     "logAnalyticsResourceGroupName": {
-      "value": "pubsec-central-logging-prod"
+      "value": "pubsec-central-logging-rg-prod"
     },
     "logAnalyticsWorkspaceName": {
       "value": "log-analytics-workspace-prod"
