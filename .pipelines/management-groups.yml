@@ -7,7 +7,7 @@
 # OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 # ----------------------------------------------------------------------------------
 
-trigger: 
+trigger:
   batch: true
   branches:
     include:
@@ -46,6 +46,8 @@ stages:
         deploy:
           steps:
           - checkout: self
+
+          - template: templates/steps/load-variables.yml
 
           - template: templates/steps/show-variables.yml
             parameters:

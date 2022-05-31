@@ -1,0 +1,157 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+name: 4 - Policy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environmentName:
+        type: string
+        description: Environment name (optional), e.g. CanadaESLZ-main
+        required: false
+
+defaults:
+  run:
+    shell: pwsh
+    working-directory: scripts/deployments
+
+jobs:
+  Custom_Policy_Definitions:
+    name: Custom policy definitions
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy definitions
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployCustomPolicyDefinitions `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  Custom_Policy_Set_Definitions:
+    name: Define custom
+    needs: Custom_Policy_Definitions
+
+    strategy:
+      matrix:
+        policySetDefinitionName:
+          - AKS
+          - DefenderForCloud
+          - LogAnalytics
+          - Network
+          - DNSPrivateEndpoints
+          - Tags
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy set definition
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployCustomPolicySetDefinitions `
+          -CustomPolicySetDefinitionNames '${{ matrix.policySetDefinitionName }}' `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  Custom_Policy_Set_Assignments:
+    name: Assign custom
+    needs:
+      - Custom_Policy_Definitions
+      - Custom_Policy_Set_Definitions
+
+    strategy:
+      matrix:
+        policySetAssignmentName:
+          - AKS
+          - DefenderForCloud
+          - LogAnalytics
+          - Network
+          - Tags
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy set assignment
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployCustomPolicySetAssignments `
+          -CustomPolicySetAssignmentNames '${{ matrix.policySetAssignmentName }}' `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  Builtin_Policy_Set_Assignments:
+    name: Assign built-in
+
+    strategy:
+      matrix:
+        policySetAssignmentName:
+          - asb
+          - nist80053r4
+          - nist80053r5
+          - pbmm
+          - cis-msft-130
+          - fedramp-moderate
+          - hitrust-hipaa
+          - location
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy set assignment
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployBuiltinPolicySetAssignments `
+          -BuiltinPolicySetAssignmentNames '${{ matrix.policySetAssignmentName }}' `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}

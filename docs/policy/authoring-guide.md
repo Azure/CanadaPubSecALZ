@@ -284,7 +284,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
         "contentVersion": "1.0.0.0",
         "parameters": {
             "policyAssignmentManagementGroupId": {
-                "value": "{{var-topLevelManagementGroupName}}"
+                "value": "{{var-policyAssignmentManagementGroupId}}"
             },
             "enforcementMode": {
                 "value": "Default"
@@ -307,7 +307,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
         "contentVersion": "1.0.0.0",
         "parameters": {
             "policyAssignmentManagementGroupId": {
-                "value": "{{var-topLevelManagementGroupName}}"
+                "value": "{{var-policyAssignmentManagementGroupId}}"
             },
             "enforcementMode": {
                 "value": "Default"
@@ -827,7 +827,7 @@ When there are deployment errors:
               "value": "{{var-topLevelManagementGroupName}}"
           },
           "policyAssignmentManagementGroupId": {
-              "value": "{{var-topLevelManagementGroupName}}"
+              "value": "{{var-policyAssignmentManagementGroupId}}"
           },
           "enforcementMode": {
               "value": "Default"
@@ -853,7 +853,7 @@ When there are deployment errors:
                 "value": "{{var-topLevelManagementGroupName}}"
             },
             "policyAssignmentManagementGroupId": {
-                "value": "{{var-topLevelManagementGroupName}}"
+                "value": "{{var-policyAssignmentManagementGroupId}}"
             },
             "enforcementMode": {
                 "value": "Default"

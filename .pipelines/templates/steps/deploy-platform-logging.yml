@@ -8,35 +8,46 @@
 # ----------------------------------------------------------------------------------
 
 parameters:
-  - name: description
-    type: string
-  - name: moveTemplate
-    type: string
-  - name: configTemplate
-    type: string
-  - name: workingDir
-    type: string
   - name: deployOperation
     type: string
     default: create
     values:
       - create
       - what-if
+  - name: loggingManagementGroupId
+    type: string
+  - name: loggingSubscriptionId
+    type: string
+  - name: loggingConfigurationPath
+    type: string
+  - name: loggingRegion
+    type: string
 
 steps:
 
+- task: PowerShell@2
+  displayName: Validate Logging Parameters - ${{ parameters.loggingRegion }}
+  inputs:
+    targetType: 'inline'
+    script: |
+      $schemaFile="$(Build.SourcesDirectory)/schemas/latest/landingzones/lz-platform-logging.json"
+
+      Write-Host "Parameters File: ${{ parameters.loggingConfigurationPath }}"
+      Write-Host "Schema File: ${schemaFile}"
+
+      Get-Content -Raw "${{ parameters.loggingConfigurationPath }}" | Test-Json -SchemaFile "${schemaFile}"
+
 - template: ./move-subscription.yml
   parameters:
-    managementGroup: $(var-logging-managementGroupId)
-    subscriptionGuid: $(var-logging-subscriptionId)
-    subscriptionLocation: $(deploymentRegion)
+    managementGroup: ${{ parameters.loggingManagementGroupId }}
+    subscriptionGuid: ${{ parameters.loggingSubscriptionId }}
+    subscriptionLocation: ${{ parameters.loggingRegion }}
     templateDirectory: $(Build.SourcesDirectory)/landingzones/utils/mg-move
     templateFile: move-subscription.bicep
-    workingDir: ${{ parameters.workingDir }}/utils/mg-move
-
+    workingDir: $(System.DefaultWorkingDirectory)/landingzones/utils/mg-move
 
 - task: AzureCLI@2
-  displayName: Register Resource Providers
+  displayName: Register Resource Providers - ${{ parameters.loggingRegion }}
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
@@ -44,15 +55,15 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      az account set -s $(var-logging-subscriptionId)
+      az account set -s ${{ parameters.loggingSubscriptionId }}
       
-      az provider register -n Microsoft.ContainerService --subscription '$(var-logging-subscriptionId)'
+      az provider register -n Microsoft.ContainerService --subscription '${{ parameters.loggingSubscriptionId }}'
 
       $(var-bashPostInjectScript)
 
 
 - task: AzureCLI@2
-  displayName: Configure Logging
+  displayName: Configure Logging - ${{ parameters.loggingRegion }}
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: 'bash'
@@ -60,23 +71,14 @@ steps:
     inlineScript: |
       $(var-bashPreInjectScript)
 
-      echo "Deploying ${{ parameters.configTemplate }} using ${{ parameters.deployOperation}} operation..."
+      echo "Deploying logging using ${{ parameters.deployOperation}} operation with ${{ parameters.loggingConfigurationPath }} to ${{ parameters.loggingSubscriptionId }} ..."
 
       az deployment sub ${{ parameters.deployOperation }} \
-        --location $(deploymentRegion) \
-        --subscription $(var-logging-subscriptionId) \
-        --template-file ${{ parameters.configTemplate }} \
-        --parameters \
-            serviceHealthAlerts='$(var-logging-serviceHealthAlerts)' \
-            securityCenter='$(var-logging-securityCenter)' \
-            subscriptionRoleAssignments='$(var-logging-subscriptionRoleAssignments)' \
-            subscriptionBudget='$(var-logging-subscriptionBudget)'\
-            subscriptionTags='$(var-logging-subscriptionTags)' \
-            resourceTags='$(var-logging-resourceTags)' \
-            logAnalyticsResourceGroupName='$(var-logging-logAnalyticsResourceGroupName)' \
-            logAnalyticsWorkspaceName='$(var-logging-logAnalyticsWorkspaceName)' \
-            logAnalyticsAutomationAccountName='$(var-logging-logAnalyticsAutomationAccountName)' \
-            logAnalyticsRetentionInDays='$(var-logging-logAnalyticsRetentionInDays)'
+        --name 'main-${{ parameters.loggingRegion }}' \
+        --location ${{ parameters.loggingRegion }} \
+        --subscription ${{ parameters.loggingSubscriptionId }} \
+        --template-file main.bicep \
+        --parameters @${{ parameters.loggingConfigurationPath }}
 
       $(var-bashPostInjectScript)
-    workingDirectory: '${{ parameters.workingDir }}/lz-platform-logging'
+    workingDirectory: $(System.DefaultWorkingDirectory)/landingzones/lz-platform-logging

@@ -164,6 +164,14 @@ resource ascAzureDefender 'Microsoft.Authorization/policySetDefinitions@2020-03-
         policyDefinitionReferenceId: toLower(replace('Configure Microsoft Defender for Containers to be enabled', ' ', '-'))
         parameters: {}
       }
+      {
+        groupNames: [
+          'EXTRA'
+        ]
+        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/82bf5b87-728b-4a74-ba4d-6123845cf542'
+        policyDefinitionReferenceId: toLower(replace('Configure Microsoft Defender for Azure Cosmos DB to be enabled', ' ', '-'))
+        parameters: {}
+      }
     ]
   }
 }

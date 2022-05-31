@@ -41,6 +41,7 @@ Azure DevOps Pipeline ([.pipelines/policy.yml](../../.pipelines/policy.yml)) is 
         description: 'Assign Policy Set'
         deployTemplates: [asb, cis-msft-130, location, nist80053r4, nist80053r5, pbmm, hitrust-hipaa, fedramp-moderate]
         deployOperation: ${{ variables['deployOperation'] }}
+        policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
         workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
 ```
 
@@ -101,6 +102,7 @@ Azure DevOps Pipeline ([.pipelines/policy.yml](../../.pipelines/policy.yml)) is 
         description: 'Define Policy Set'
         deployTemplates: [AKS, DefenderForCloud, LogAnalytics, Network, DNSPrivateEndpoints, Tags]
         deployOperation: ${{ variables['deployOperation'] }}
+        policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
         workingDir: $(System.DefaultWorkingDirectory)/policy/custom/definitions/policyset
 ```
 
@@ -130,6 +132,7 @@ Azure DevOps Pipeline ([.pipelines/policy.yml](../../.pipelines/policy.yml)) is 
         description: 'Assign Policy Set'
         deployTemplates: [AKS, DefenderForCloud, LogAnalytics, Network, Tags]
         deployOperation: ${{ variables['deployOperation'] }}
+        policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
         workingDir: $(System.DefaultWorkingDirectory)/policy/custom/assignments
 ```
 
@@ -152,11 +155,12 @@ Parameters can be templated using the syntax `{{PARAMETER_NAME}}`.  Following pa
 | Templated Parameter | Source Value | Example |
 | --- | --- | --- |
 | {{var-topLevelManagementGroupName}} | Environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml)  | `pubsec`
-| {{var-logging-logAnalyticsWorkspaceResourceId}} | Resource ID is inferred using Log Analytics settings in environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml)  | `/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging-rg/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace`
+| {{var-logging-logAnalyticsWorkspaceResourceId}} | Resource ID is inferred using Log Analytics settings in environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml)  | `/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace`
 | {{var-logging-logAnalyticsWorkspaceId}} |  Workspace ID is inferred using Log Analytics settings in environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml) | `fcce3f30-158a-4561-a714-361623f42168`
-| {{var-logging-logAnalyticsResourceGroupName}} | Environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml)  | `pubsec-central-logging-rg`
+| {{var-logging-logAnalyticsResourceGroupName}} | Environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml)  | `pubsec-central-logging`
 | {{var-logging-logAnalyticsRetentionInDays}} | Environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml) | `730`
 | {{var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix}} | Environment configuration file such as [config/variables/CanadaESLZ-main.yml](../../config/variables/CanadaESLZ-main.yml)  | `pubsecnsg`
+| {{var-policyAssignmentManagementGroupId}} | The management group scope for policy assignment. | `pubsec`
 
 ---
 

@@ -19,10 +19,21 @@ Deployment to Azure is supported using Azure DevOps Pipelines and can be adopted
 
 The automation is built with [Project Bicep](https://github.com/Azure/bicep/blob/main/README.md) and Azure Resource Manager template.
 
+## GC 30-Day Cloud Guardrails
+
+As part of the Government of Canada (GC) Cloud Operationalization Framework, the GC has provided a set of [minimum guardrails](https://canada-ca.github.io/cloud-guardrails) to be implemented within the first 30-days of standing up a cloud environment.
+
+See [GC 30-Day Cloud Guardrails](docs/gc-30-day-cloud-guardrails.md) to find out how the reference implementations meet (or can meet) these requirements.
+
+We recommend deploying the [Guardrails Solution Accelerator](https://github.com/Azure/GuardrailsSolutionAccelerator) for evidence collection. The solution provides continuous audit to the Canadian Public Sector customers' environment with a comprehensive workbook revealing the compliance status for each of the [12 GC 30-Day Cloud Guardrails controls](https://github.com/canada-ca/cloud-guardrails#summary---initial-30-days).
+
 ## Onboarding to Azure DevOps
 
-See the [Azure DevOps Setup](docs/onboarding/azure-devops-setup.md) and [Azure DevOps Pipelines](docs/onboarding/azure-devops-pipelines.md) onboarding guides for setup instructions.
+See the following onboarding guides for setup instructions:
 
+* [Azure DevOps Setup](docs/onboarding/azure-devops-setup.md) provides guidance on considerations and recommended practices when creating and configuring your Azure DevOps Services environment.
+* [Azure DevOps Scripts](docs/onboarding/azure-devops-scripts.md) provides guidance on the scripts available to help simplify the onboarding process to Azure Landing Zones design using Azure DevOps pipelines.
+* [Azure DevOps Pipelines](docs/onboarding/azure-devops-pipelines.md) provides guidance on the manual steps for onboarding to the Azure Landing Zones design using Azure DevOps Pipelines.
 
 ## Goals
 

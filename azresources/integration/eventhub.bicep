@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Event Hub Name.')
 param name string
 
@@ -25,7 +28,7 @@ param privateZoneEventHubId string
 
 resource eventhub 'Microsoft.EventHub/namespaces@2021-01-01-preview' = {
   name: name
-  location: resourceGroup().location
+  location: location
   tags: tags
   sku: {
     name: 'Standard'
@@ -42,7 +45,7 @@ resource eventhub 'Microsoft.EventHub/namespaces@2021-01-01-preview' = {
 }
 
 resource eventhub_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: '${eventhub.name}-endpoint'
   properties: {
     subnet: {

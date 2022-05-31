@@ -12,6 +12,8 @@ trigger: none
 variables:
 - name: devops-org-name
   value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: networking-config-directory
+  value: $(System.DefaultWorkingDirectory)/$(networkPathFromRoot)/${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}
 - name: variable-template-file
   value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
 - template: ../config/variables/common.yml
@@ -38,9 +40,16 @@ stages:
           steps:
           - checkout: self
 
+          - template: templates/steps/load-variables.yml
+
+          - template: templates/steps/show-variables.yml
+            parameters:
+              json: ${{ convertToJson(variables) }}
+
           - template: templates/steps/deploy-platform-connectivity-hub-azfw-policy.yml
             parameters:
-              description: 'Deploy Azure Firewall Policy'
-              templateFile: main-azfw-policy.bicep
               deployOperation: ${{ variables['deployOperation'] }}
+              networkingSubscriptionId: $(var-hubnetwork-subscriptionId)
+              azureFirewallPolicyConfigurationPath: ${{ variables['networking-config-directory'] }}/$(var-hubnetwork-azfwPolicy-configurationFileName)
+              networkingRegion: $(var-hubnetwork-region)
               workingDir: $(System.DefaultWorkingDirectory)/landingzones

@@ -11,8 +11,13 @@
 * [Subnets and IP Ranges](#subnets-and-ip-ranges)
 * [Required Routes](#required-routes)
 * [Firewall configuration details](#firewall-configuration-details)
-* [Fortigate Licences](#fortigate-licences)
-
+* [Fortigate Licenses](#fortigate-licenses)
+* [Azure Deployment](#azure-deployment)
+  * [Schema Definition](#schema-definition)
+  * [Delete Locks](#delete-locks)
+  * [Service Health](#service-health)
+  * [Deployment Scenarios](#deployment-scenarios)
+  * [Example Deployment Parameters](#example-deployment-parameters)
 
 ## Overview
 
@@ -44,11 +49,11 @@ There will be at least one shared Application Gateway instance and multiple dedi
 
 Network design will require 3 IP blocks:
 
-* [RFC 1918][rfc1918] for Azure native-traffic (including IaaS and PaaS).  Example:  `10.18.0.0/16`
+* [RFC 1918][rfc1918] for Azure native-traffic (including IaaS and PaaS). This will also include the Azure Gateway subnet. Example:  `10.18.0.0/16`
 * [RFC 1918][rfc1918] for Azure Bastion.  Example:  `192.168.0.0/16`
 * [RFC 6598][rfc1918] for department to department traffic through GCnet. Example:  `100.60.0.0/16`
 
-> This document will reference the example IP addresses above to illustrate network flow and configuration. 
+> This document will reference the example IP addresses above to illustrate network flow and configuration.
 
 **Virtual Network Address Space**
 ![Hub Virtual Network Address Space](../media/architecture/hubnetwork-nva/hubvnet-address-space.jpg)
@@ -63,7 +68,7 @@ Network design will require 3 IP blocks:
 
 ## Management Restricted Zone Virtual Network
 
-* Management Access Zone (OZ) - to host any privileged access workstations (PAW), with Management Public IPs forwarded via the hub's firewall. 
+* Management Access Zone (OZ) - to host any privileged access workstations (PAW), with Management Public IPs forwarded via the hub's firewall.
 * Management (OZ) – hosting the management servers (domain controllers).
 * Infrastructure (OZ) – hosting other common infrastructure, like file shares.
 * Security Management (OZ) – hosting security, proxies and patching servers.
@@ -75,18 +80,20 @@ Network design will require 3 IP blocks:
 
 ## Shared Public Access Zone subnet in the Hub
 
-To simplify management and compliance, all public-facing web servers, reverse proxies and application delivery controllers will be hosted in this subnet, as a sort of DMZ. 
+To simplify management and compliance, all public-facing web servers, reverse proxies and application delivery controllers will be hosted in this subnet, as a sort of DMZ.
 
 Application Gateway can have either public or private frontends (also with [RFC 6598][rfc6598] space) and it requires a full subnet for it's instances.
 
 The Backend URL should map to a VIP and Port mapping in the firewall's External network. In the future, Backend URLs could be directly pointed to the Frontend subnets in the spoke. The firewall performs DNAT and sends to the webserver, which will answer to the source IP (Application Gateway's internal IP), which means the webserver may need a UDR to force traffic destined to Application Gateway to re-traverse the firewall (next-hop), which is considered asymmetric routing ([other example topologies](https://docs.microsoft.com/azure/architecture/example-scenario/gateway/firewall-application-gateway#application-gateway-before-firewall)).
 
 ## User Defined Routes
+
 All traffic to be sent to the Hub's firewall via the Internal Load Balancer in the Int_Prod Zone (or for Dev Landing Zones, the Int_Dev ILB) Private Endpoints and Private DNS Design.
 
 Azure supports connecting to PaaS services using [RFC 1918][rfc1918] private IPs, avoiding all traffic from the internet and only allowing connections from designated private endpoints as a special kind of NICs in the subnet of choice. Private DNS resolution must be implemented so the PaaS service URLs properly translate to the individual private IP of the private endpoint.
 
 ## Network Security Groups
+
 Below is a list of requirements for the NSGs in each subnet:
 
 * Hub Virtual Network
@@ -99,9 +106,9 @@ Below is a list of requirements for the NSGs in each subnet:
     * Defaults (Allow [AzureLoadBalancer][nsgAzureLoadBalancer])
   * HASubnet
   * PazSubnet – must follow [Application Gateway's guidelines][nsgAppGatewayV2]
-    *	TCP ports 65200-65535 for the v2 SKU with the destination subnet as Any and source as GatewayManager service tag
-    *	Defaults (Allow [AzureLoadBalancer][nsgAzureLoadBalancer])
-  *	AzureBastionSubnet - See [documentation][nsgAzureBastion]
+    * TCP ports 65200-65535 for the v2 SKU with the destination subnet as Any and source as GatewayManager service tag
+    * Defaults (Allow [AzureLoadBalancer][nsgAzureLoadBalancer])
+  * AzureBastionSubnet - See [documentation][nsgAzureBastion]
 
 ## Subnets and IP Ranges
 
@@ -111,7 +118,7 @@ We'll use as few IPs as possible for the Core, MRZ and PAZ virtual networks, and
 
 We also use a [RFC 6598][rfc6598] range for external networking, which makes this design compatible with SCED requirements for future hybrid. connectivity.
 
-To leverage Azure Bastion as a shared service for all spoke virtual networks, we use a third IP range (outside of the [RFC 1918][rfc1918] and [RFC 6598][rfc6598] ranges). 
+To leverage Azure Bastion as a shared service for all spoke virtual networks, we use a third IP range (outside of the [RFC 1918][rfc1918] and [RFC 6598][rfc6598] ranges).
 
 ### Core network (Firewall and future VPN/ExpressRoute Gateway)
 
@@ -121,7 +128,7 @@ To leverage Azure Bastion as a shared service for all spoke virtual networks, we
 **Subnets with Network Security Group & User Defined Routes**
 ![Hub Virtual Network Subnets](../media/architecture/hubnetwork-nva/hubvnet-subnets.jpg)
 
-| Hub Virtual Network - 10.18.0.0/22, 100.60.0.0/24, 192.168.0.0/16	| Function | IP block |
+| Hub Virtual Network - 10.18.0.0/22, 100.60.0.0/24, 192.168.0.0/16 | Function | IP block |
 | --- | --- | --- |
 | PublicSubnet | External Facing (Internet/Ground) | 100.60.0.0/24 |
 | PAZSubnet | Shared Application Gateways | 100.60.1.0/24 |
@@ -141,7 +148,7 @@ To leverage Azure Bastion as a shared service for all spoke virtual networks, we
 **Subnets with Network Security Group & User Defined Routes**
 ![Hub Virtual Network Subnets](../media/architecture/hubnetwork-nva/mrzvnet-subnets.jpg)
 
-| Hub Virtual Network - 10.18.4.0/22	| Function | IP block |
+| Hub Virtual Network - 10.18.4.0/22 | Function | IP block |
 | --- | --- | --- |
 | MazSubnet | Management (Access Zone) | 10.18.4.0/25 |
 | InfSubnet | Infrastructure Services (Restricted Zone)| 10.18.4.128/25 |
@@ -151,7 +158,7 @@ To leverage Azure Bastion as a shared service for all spoke virtual networks, we
 
 ### Example Spoke:  Generic Subscription Archetype
 
-| Spoke Virtual Network - 10.18.16.0/21	| Function | IP block |
+| Spoke Virtual Network - 10.18.16.0/21 | Function | IP block |
 | --- | --- | --- |
 | oz-subnet | Internal Foundational Elements (OZ) | /25 |
 | paz-subnet | Presentation Zone (PAZ) | /25 |
@@ -170,7 +177,7 @@ Required routing rules to enforce the security controls required to protect the 
 | PrdSpokesUdr | 0.0.0.0/0 via PrdInt ILB VIP<br />10.18.0.0/16 via PrdInt ILB VIP<br />100.60.0.0/16 via PrdInt ILB VIP | All production spoke virtual networks. | Via peering, spokes learn static routes to reach any IP in the Hub. Hence, we override the Hub virtual network's IPs (10.18/16 and 100.60/16) and force traffic via Firewall. |
 | DevSpokesUdr | 0.0.0.0/0 via DevInt ILB VIP<br />10.18.0.0/16 via DevInt ILB VIP<br />100.60.0.0/16 via DevInt ILB VIP | All development spoke virtual networks. | Same as above. |
 | MrzSpokeUdr | 0.0.0.0/0 via PrdInt ILB VIP<br />10.18.0.0/16 via PrdInt ILB VIP<br />100.60.0.0/16 via PrdInt ILB VIP | Mrz spoke virtual network  | Same as above |
-| PazSubnetUdr | 10.18.4.0/24 via PrdExtFW VIP<br />(Future) ProdSpokeIPs via PrdExt ILB VIP<br />(Future) DevSpokeIPs via DevExt ILB VIP | Shared PAZ subnet (Application Gateway) | Force traffic from Application Gateway to be sent via the Firewall External ILBs |
+| PazSubnetUdr | 10.18.4.0/24 via PrdExtFW VIP<br />(Future) ProdSpokeIPs via PrdExt ILB VIP<br />(Future) DevSpokeIPs via DevExt ILB VIP | Shared PAZ subnet (Application Gateway) | Force traffic from Application Gateway to be sent via the Firewall External ILBs. The 0.0.0.0./0 "Next hop type" should be updated as "Internet" and not the Virtual Appliance IP if deploying Azure Application Gateway |
 
 ## Firewall configuration details
 
@@ -182,32 +189,32 @@ Note:  In order to use automation to provision Marketplace images, the terms nee
 az vm image terms accept --publisher fortinet --offer fortinet_fortigate-vm_v5 --plan fortinet_fg-vm --subscription SUBSCRIPTION_ID
 ```
 
-They will have different sizes: vm8v (Prod)  and vm04v (Dev), however both need an Azure VM with 4 NICs. For more information, see https://www.fortinet.com/content/dam/fortinet/assets/data-sheets/fortigate-vm.pdf  and https://github.com/fortinetsolutions/Azure-Templates/tree/master/FortiGate/Active-Passive-HA-w-Azure-LBs
+They will have different sizes: vm8v (Prod)  and vm04v (Dev), however both need an Azure VM with 4 NICs. For more information, see <https://www.fortinet.com/content/dam/fortinet/assets/data-sheets/fortigate-vm.pdf>  and <https://github.com/fortinetsolutions/Azure-Templates/tree/master/FortiGate/Active-Passive-HA-w-Azure-LBs>
 
 The 4 NICs will be mapped as follows (IPs shown for firewall 1 and 2, and the VIP is the ILB frontend).
 
 * **NIC 1 – Public Network** – used as SNAT, so all traffic received on other NICs gets natted when leaving the firewall via this NIC.
 
-    * Prod Firewall: (100.60.0.5, 100.60.0.6), VIP is .4
-    * Dev Firewall: (100.60.0.8, 100.60.0.9), VIP is .7
+  * Prod Firewall: (100.60.0.5, 100.60.0.6), VIP is .4
+  * Dev Firewall: (100.60.0.8, 100.60.0.9), VIP is .7
 
-*	**NIC 2 – Management Network**
+* **NIC 2 – Management Network**
 
-    * Prod Firewall: (10.18.0.101, 10.18.0.102), VIP is .100
-    * Dev Firewall: (10.18.0.104, 10.18.0.105), VIP is .103
+  * Prod Firewall: (10.18.0.101, 10.18.0.102), VIP is .100
+  * Dev Firewall: (10.18.0.104, 10.18.0.105), VIP is .103
 
-*	**NIC 3 for prod – Internal Prod Area Network**
+* **NIC 3 for prod – Internal Prod Area Network**
 
-    * Prod Firewall: (10.18.0.37, 10.18.0.38), VIP is .36
+  * Prod Firewall: (10.18.0.37, 10.18.0.38), VIP is .36
 
-*	**NIC 3 for dev – Internal Dev Area Network**
+* **NIC 3 for dev – Internal Dev Area Network**
 
-    * Dev Firewall: (10.18.0.69, 10.18.0.70), VIP is .68
+  * Dev Firewall: (10.18.0.69, 10.18.0.70), VIP is .68
 
-*	**NIC 4 – HA clustering**
+* **NIC 4 – HA clustering**
 
-    * Prod Firewall: (10.18.0.132, 10.18.0.133), VIP is .131
-    * Dev Firewall: (10.18.0.134, 10.18.0.135), VIP is .133
+  * Prod Firewall: (10.18.0.132, 10.18.0.133), VIP is .131
+  * Dev Firewall: (10.18.0.134, 10.18.0.135), VIP is .133
 
 ### Flows will enter the FW via the following NICs
 
@@ -218,30 +225,398 @@ The 4 NICs will be mapped as follows (IPs shown for firewall 1 and 2, and the VI
 | PAZ (via Public) | NIC 1 | NIC 1 | - | NIC 1 |
 | Internal (LZ Spokes) | NIC 3 | NIC 3 | NIC 3 | -
 
-
-## Fortigate Licences
+## Fortigate Licenses
 
 The Fortigate firewall can be consumed in two modes: bring-your-own-license (BYOL) or pay-as-you-go (PAYG), where the hourly fee includes the fortigate license premium. Both require acceptance of the Fortigate license and billing plans, which can be automated with the following CLI:
 
 **Bring your own license (BYOL)**
-```
+
+```bash
 az vm image accept-terms --plan fortinet_fw-vm --offer fortinet_fortiweb-vm_v5 --publish fortinet --subscription XXX
 ```
 
 **Pay as you go license (PAYG)**
-```
+
+```bash
 az vm image accept-terms --plan fortinet_fw-vm-payg_20190624 --offer fortinet_fortiweb-vm_v5 --publish fortinet --subscription XXX
 ```
 
 The BYOL boots the VM and expects a first login to its Web UI via https on its first nic, to upload the license, which will unlock the firewall and its SSH port.
 
-For that reason, it's recommended to boot a Windows management VM in the MRZ (Management Restricted Zone Virtual Network) and use Azure Bastion to RDP in Windows and then open the Edge browser and navigate to https://firewall-ip . For more information, visit the following links:
+For that reason, it's recommended to boot a Windows management VM in the MRZ (Management Restricted Zone Virtual Network) and use Azure Bastion to RDP in Windows and then open the Edge browser and navigate to <https://firewall-ip> . For more information, visit the following links:
 
-* https://docs.fortinet.com/vm/azure/fortigate/6.2/azure-cookbook/6.2.0/358099/locating-fortigate-ha-for-azure-in-the-azure-portal-marketplace
+* <https://docs.fortinet.com/vm/azure/fortigate/6.2/azure-cookbook/6.2.0/358099/locating-fortigate-ha-for-azure-in-the-azure-portal-marketplace>
 
-* https://portal.azure.com/#create/fortinet.fortigatengfw-high-availabilityfortigate-ha
+* <https://portal.azure.com/#create/fortinet.fortigatengfw-high-availabilityfortigate-ha>
 
+## Azure Deployment
 
+### Schema Definition
+
+Reference implementation uses parameter files with `object` parameters to consolidate parameters based on their context.  The schemas types are:
+
+* Schema (version: `latest`)
+
+  * [Hub Networking with NVA deployment parameters definition](../../schemas/latest/landingzones/lz-platform-connectivity-hub-nva.json)
+
+  * Common types
+    * [Location](../../schemas/latest/landingzones/types/location.json)
+    * [Service Health Alerts](../../schemas/latest/landingzones/types/serviceHealthAlerts.json)
+    * [Microsoft Defender for Cloud](../../schemas/latest/landingzones/types/securityCenter.json)
+    * [Subscription Role Assignments](../../schemas/latest/landingzones/types/subscriptionRoleAssignments.json)
+    * [Subscription Budget](../../schemas/latest/landingzones/types/subscriptionBudget.json)
+    * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
+    * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
+    * [Log Analytics Workspace](../../schemas/latest/landingzones/types/logAnalyticsWorkspaceId.json)
+
+### Delete Locks
+
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+
+By default, this archetype deploys `CanNotDelete` lock to prevent accidental deletion at:
+
+* Hub Virtual Network resource group
+* Management Restricted Zone resource group
+* Public Access Zone resource group
+* DDoS resource group (when enabled)
+
+### Service Health
+
+[Service health notifications](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties) are published by Azure, and contain information about the resources under your subscription.  Service health notifications can be informational or actionable, depending on the category.
+
+Our examples configure service health alerts for `Security` and `Incident`.  However, these categories can be customized based on your need.  Please review the possible options in [Azure Docs](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties#details-on-service-health-level-information).
+
+### Deployment Scenarios
+
+> Sample deployment scenarios are based on the latest JSON parameters file schema definition.  If you have an older version of this repository, please use the examples from your repository.
+
+| Scenario | Example JSON Parameters | Notes |
+|:-------- |:----------------------- |:----- |
+| Full Deployment with Fortigate Firewalls (BYOL) | [tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-With-FortigateBYOL.json](../../tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-With-FortigateBYOL.json) | `parameters.hub.value.nvaFirewall.image` configured with Fortigate BYOL image. |
+| Full Deployment with Ubuntu | [tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-With-Ubuntu.json](../../tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-With-Ubuntu.json) | `parameters.hub.value.nvaFirewall.image` configured with Ubuntu image. |
+| Full Deployment with optional subnets in Hub Virtual Network | [tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-With-OptionalHubSubnets.json](../../tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-With-OptionalHubSubnets.json) | `parameters.hub.value.nvaFirewall.subnets.optional` array set. |
+| Full Deployment with Log Analytics Workspace  | [tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-WithLogAnalyticsWorkspace.json](../../tests/schemas/lz-platform-connectivity-hub-nva/FullDeployment-WithLogAnalyticsWorkspace.json) | `parameters.logAnalyticsWorkspaceResourceId.value` is configured.  When it's not defined, this setting is added by Azure DevOps pipeline during deployment. |
+| Deployment without subscription budget | [tests/schemas/lz-platform-connectivity-hub-nva/BudgetIsFalse.json](../../tests/schemas/lz-platform-connectivity-hub-nva/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
+
+### Example Deployment Parameters
+
+This example configures:
+
+1. Service Health Alerts
+2. Microsoft Defender for Cloud
+3. Subscription Role Assignments using built-in and custom roles
+4. Subscription Budget with $1000
+5. Subscription Tags
+6. Resource Tags (aligned to the default tags defined in [Policies](../../policy/custom/definitions/policyset/Tags.parameters.json))
+7. Log Analytics Workspace integration through Azure Defender for Cloud
+8. Hub Networking with Fortigate Firewalls
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
+    },
+    "serviceHealthAlerts": {
+      "value": {
+          "resourceGroupName": "service-health",
+          "incidentTypes": [ "Incident", "Security" ],
+          "regions": [ "Global", "Canada East", "Canada Central" ],
+          "receivers": {
+              "app": [ "alzcanadapubsec@microsoft.com" ],
+              "email": [ "alzcanadapubsec@microsoft.com" ],
+              "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+              "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+          },
+          "actionGroupName": "Service health action group",
+          "actionGroupShortName": "health-alert",
+          "alertRuleName": "Incidents and Security",
+          "alertRuleDescription": "Service Health: Incidents and Security"
+      }
+    },
+    "securityCenter": {
+      "value": {
+        "email": "alzcanadapubsec@microsoft.com",
+        "phone": "5555555555"
+      }
+    },
+    "subscriptionRoleAssignments": {
+      "value": [
+        {
+          "comments": "Built-in Contributor Role",
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+          "securityGroupObjectIds": [
+            "38f33f7e-a471-4630-8ce9-c6653495a2ee"
+          ]
+        }
+      ]
+    },
+    "subscriptionBudget": {
+      "value": {
+        "createBudget": true,
+        "name": "MonthlySubscriptionBudget",
+        "amount": 1000,
+        "timeGrain": "Monthly",
+        "contactEmails": [
+          "alzcanadapubsec@microsoft.com"
+        ]
+      }
+    },
+    "subscriptionTags": {
+      "value": {
+        "ISSO": "isso-tbd"
+      }
+    },
+    "resourceTags": {
+      "value": {
+        "ClientOrganization": "client-organization-tag",
+        "CostCenter": "cost-center-tag",
+        "DataSensitivity": "data-sensitivity-tag",
+        "ProjectContact": "project-contact-tag",
+        "ProjectName": "project-name-tag",
+        "TechnicalContact": "technical-contact-tag"
+      }
+    },
+    "privateDnsZones": {
+      "value": {
+        "enabled": true,
+        "resourceGroupName": "pubsec-dns"
+      }
+    },
+    "ddosStandard": {
+      "value": {
+        "enabled": false,
+        "resourceGroupName": "pubsec-ddos",
+        "planName": "ddos-plan"
+      }
+    },
+    "publicAccessZone": {
+      "value": {
+        "enabled": true,
+        "resourceGroupName": "pubsec-public-access-zone"
+      }
+    },
+    "managementRestrictedZone": {
+      "value": {
+        "enabled": true,
+        "resourceGroupName": "pubsec-management-restricted-zone",
+        "network": {
+          "name": "management-restricted-vnet",
+          "addressPrefixes": ["10.18.4.0/22"],
+          "subnets": [
+            {
+              "comments": "Management (Access Zone) Subnet",
+              "name": "MazSubnet",
+              "addressPrefix": "10.18.4.0/25",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Infrastructure Services (Restricted Zone) Subnet",
+              "name": "InfSubnet",
+              "addressPrefix": "10.18.4.128/25",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Security Services (Restricted Zone) Subnet",
+              "name": "SecSubnet",
+              "addressPrefix": "10.18.5.0/26",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Logging Services (Restricted Zone) Subnet",
+              "name": "LogSubnet",
+              "addressPrefix": "10.18.5.64/26",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            },
+            {
+              "comments": "Core Management Interfaces (Restricted Zone) Subnet",
+              "name": "MgmtSubnet",
+              "addressPrefix": "10.18.5.128/26",
+              "nsg": {
+                  "enabled": true
+              },
+              "udr": {
+                  "enabled": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    "hub": {
+      "value": {
+        "resourceGroupName": "pubsec-hub-networking",
+        "bastion": {
+          "enabled": true,
+          "name": "bastion",
+          "sku": "Standard",
+          "scaleUnits": 2
+        },
+        "network": {
+          "name": "hub-vnet",
+          "addressPrefixes": [
+            "10.18.0.0/22",
+            "100.60.0.0/16"
+          ],
+          "addressPrefixBastion": "192.168.0.0/16",
+          "subnets": {
+            "gateway": {
+              "comments": "Gateway Subnet used for VPN and/or Express Route connectivity",
+              "name": "GatewaySubnet",
+              "addressPrefix": "10.18.1.0/27"
+            },
+            "bastion": {
+              "comments": "Azure Bastion",
+              "name": "AzureBastionSubnet",
+              "addressPrefix": "192.168.0.0/24"
+            },
+            "public": {
+              "comments": "Public Subnet Name (External Facing (Internet/Ground))",
+              "name": "PublicSubnet",
+              "addressPrefix": "100.60.0.0/24"
+            },
+            "publicAccessZone": {
+              "comments": "Public Access Zone (i.e. Application Gateway)",
+              "name": "PAZSubnet",
+              "addressPrefix": "100.60.1.0/24"
+            },
+            "externalAccessNetwork": {
+              "comments": "External Access Network",
+              "name": "EanSubnet",
+              "addressPrefix": "10.18.0.0/27"
+            },
+            "nonProductionInternal": {
+              "comments": "Non-production Internal for firewall appliances (Internal Facing Non-Production Traffic)",
+              "name": "DevIntSubnet",
+              "addressPrefix": "10.18.0.64/27"
+            },
+            "productionInternal": {
+              "comments": "Production Internal for firewall appliances (Internal Facing Production Traffic)",
+              "name": "PrdIntSubnet",
+              "addressPrefix": "10.18.0.32/27"
+            },
+            "managementRestrictedZoneInternal": {
+              "comments": "Management Restricted Zone",
+              "name": "MrzSubnet",
+              "addressPrefix": "10.18.0.96/27"
+            },
+            "highAvailability": {
+              "comments": "High Availability (Firewall to Firewall heartbeat)",
+              "name": "HASubnet",
+              "addressPrefix": "10.18.0.128/28"
+            },
+            "optional": []
+          }
+        },
+        "nvaFirewall": {
+          "image": {
+            "publisher": "fortinet",
+            "offer": "fortinet_fortigate-vm_v5",
+            "sku": "fortinet_fg-vm",
+            "version": "6.4.5",
+            "plan": "fortinet_fg-vm"
+          },
+          "nonProduction": {
+            "internalLoadBalancer": {
+              "name": "pubsecDevFWILB",
+              "tcpProbe": {
+                "name": "lbprobe",
+                "port": 8008,
+                "intervalInSeconds": 5,
+                "numberOfProbes": 2 
+              },
+              "internalIp": "10.18.0.68",
+              "externalIp": "100.60.0.7"
+            },
+            "deployVirtualMachines": true,
+            "virtualMachines": [
+              {
+                "name": "pubsecDevFW1",
+                "vmSku": "Standard_D8s_v4",
+                "internalIp": "10.18.0.69",
+                "externalIp": "100.60.0.8",
+                "mrzInternalIp": "10.18.0.104",
+                "highAvailabilityIp": "10.18.0.134",
+                "availabilityZone": "2"
+              },
+              {
+                "name": "pubsecDevFW2",
+                "vmSku": "Standard_D8s_v4",
+                "internalIp": "10.18.0.70",
+                "externalIp": "100.60.0.9",
+                "mrzInternalIp": "10.18.0.105",
+                "highAvailabilityIp": "10.18.0.135",
+                "availabilityZone": "3"
+              }
+            ]
+          },
+          "production": {
+            "internalLoadBalancer": {
+              "name": "pubsecProdFWILB",
+              "tcpProbe": {
+                "name": "lbprobe",
+                "port": 8008,
+                "intervalInSeconds": 5,
+                "numberOfProbes": 2 
+              },
+              "internalIp": "10.18.0.36",
+              "externalIp": "100.60.0.4"
+            },
+            "deployVirtualMachines": true,
+            "virtualMachines": [
+              {
+                "name": "pubsecProdFW1",
+                "vmSku": "Standard_F8s_v2",
+                "internalIp": "10.18.0.37",
+                "externalIp": "100.60.0.5",
+                "mrzInternalIp": "10.18.0.101",
+                "highAvailabilityIp": "10.18.0.132",
+                "availabilityZone": "1"
+              },
+              {
+                "name": "pubsecProdFW2",
+                "vmSku": "Standard_F8s_v2",
+                "internalIp": "10.18.0.38",
+                "externalIp": "100.60.0.6",
+                "mrzInternalIp": "10.18.0.102",
+                "highAvailabilityIp": "10.18.0.133",
+                "availabilityZone": "2"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "networkWatcher": {
+      "value": {
+        "resourceGroupName": "NetworkWatcherRG"
+      }
+    }
+  }
+}
+```
 
 [itsg22]: https://www.cyber.gc.ca/sites/default/files/publications/itsg-22-eng.pdf
 [cloudUsageProfiles]: https://github.com/canada-ca/cloud-guardrails/blob/master/EN/00_Applicable-Scope.md

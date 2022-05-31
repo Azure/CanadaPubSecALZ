@@ -9,6 +9,9 @@
 
 targetScope = 'managementGroup'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 @description('Management Group scope for the policy definition.')
 param policyDefinitionManagementGroupId string
 
@@ -32,7 +35,7 @@ var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyD
 // Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 var telemetry = json(loadTextContent('../../../config/telemetry.json'))
 module telemetryCustomerUsageAttribution '../../../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
-  name: 'pid-${telemetry.customerUsageAttribution.modules.policy}'
+  name: 'pid-${telemetry.customerUsageAttribution.modules.policy}-network'
 }
 
 resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
@@ -48,5 +51,5 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }

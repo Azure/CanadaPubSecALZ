@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Azure Data Factory Name.')
 param name string
 
@@ -36,6 +39,7 @@ module identity '../../iam/user-assigned-identity.bicep' = {
   name: 'deploy-create-user-assigned-identity'
   params: {
     name: '${name}-managed-identity'
+    location: location
   }
 }
 
@@ -45,6 +49,7 @@ module adfWithoutCMK 'adf-without-cmk.bicep' = if (!useCMK) {
   params: {
     name:name
     tags: tags
+    location: location
 
     privateEndpointSubnetId: privateEndpointSubnetId
     datafactoryPrivateZoneId: datafactoryPrivateZoneId
@@ -59,6 +64,7 @@ module adfWithCMK 'adf-with-cmk.bicep' = if (useCMK) {
   params: {
     name:name
     tags: tags
+    location: location
 
     privateEndpointSubnetId: privateEndpointSubnetId
     datafactoryPrivateZoneId: datafactoryPrivateZoneId

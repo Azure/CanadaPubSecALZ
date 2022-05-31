@@ -32,6 +32,8 @@ variables:
   value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
 - name: environment
   value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}
+- name: logging-config-directory
+  value: $(System.DefaultWorkingDirectory)/$(loggingPathFromRoot)/${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}
 - template: ../config/variables/common.yml
 - template: ../config/variables/${{ variables['environment'] }}.yml
 
@@ -44,7 +46,6 @@ stages:
   displayName: Deploy Subscription Stage
 
   jobs:
-
   # This job is run when the CI trigger is fired based on a change to one or more
   # subscription configuration files *OR* when the pipeline is run manually and the
   # default empty array value is passed for the 'subscriptions' suparameter. 
@@ -83,4 +84,5 @@ stages:
         config: ${{ variables['subscriptionsPathFromRoot'] }}
         enviro: ${{ variables['environment'] }}
         subscription: ${{ subscription }}
-
+        logAnalyticsSubscriptionId: $(var-logging-subscriptionId)
+        logAnalyticsConfigurationFile: ${{ variables['logging-config-directory'] }}/$(var-logging-configurationFileName)

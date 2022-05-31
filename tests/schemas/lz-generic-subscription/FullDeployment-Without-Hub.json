@@ -4,40 +4,19 @@
     "parameters": {
         "serviceHealthAlerts": {
             "value": {
-                "resourceGroupName": "pubsec-service-health",
-                "incidentTypes": [
-                    "Incident",
-                    "Security"
-                ],
-                "regions": [
-                    "Global",
-                    "Canada East",
-                    "Canada Central"
-                ],
+                "resourceGroupName": "service-health",
+                "incidentTypes": [ "Incident", "Security" ],
+                "regions": [ "Global", "Canada East", "Canada Central" ],
                 "receivers": {
-                    "app": [
-                        "alzcanadapubsec@microsoft.com"
-                    ],
-                    "email": [
-                        "alzcanadapubsec@microsoft.com"
-                    ],
-                    "sms": [
-                        {
-                            "countryCode": "1",
-                            "phoneNumber": "5555555555"
-                        }
-                    ],
-                    "voice": [
-                        {
-                            "countryCode": "1",
-                            "phoneNumber": "5555555555"
-                        }
-                    ]
+                    "app": [ "alzcanadapubsec@microsoft.com" ],
+                    "email": [ "alzcanadapubsec@microsoft.com" ],
+                    "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
+                    "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
                 },
-                "actionGroupName": "Sub1 ALZ action group",
-                "actionGroupShortName": "sub1-alert",
-                "alertRuleName": "Sub1 ALZ alert rule",
-                "alertRuleDescription": "Alert rule for Azure Landing Zone"
+                "actionGroupName": "Service health action group",
+                "actionGroupShortName": "health-alert",
+                "alertRuleName": "Incidents and Security",
+                "alertRuleDescription": "Service Health: Incidents and Security"
             }
         },
         "securityCenter": {
@@ -90,12 +69,15 @@
                 "TechnicalContact": "technical-contact-tag"
             }
         },
+        "logAnalyticsWorkspaceResourceId": {
+            "value": "/subscriptions/bc0a4f9f-07fa-4284-b1bd-fbad38578d3a/resourcegroups/pubsec-central-logging/providers/microsoft.operationalinsights/workspaces/log-analytics-workspace"
+        },
         "resourceGroups": {
             "value": {
-                "automation": "rgAutomation102021W1",
-                "networking": "rgVnet102021W1",
+                "automation": "automation",
+                "networking": "networking",
                 "networkWatcher": "NetworkWatcherRG",
-                "backupRecoveryVault":"rgRecovervyVault102021W1"
+                "backupRecoveryVault": "backup"
             }
         },
         "automation": {
@@ -103,10 +85,10 @@
                 "name": "automation"
             }
         },
-        "backupRecoveryVault":{
+        "backupRecoveryVault": {
             "value": {
-                "enabled":true,
-                "name":"bkupvault"
+                "enabled": true,
+                "name": "backup-vault"
             }
         },
         "hubNetwork": {
@@ -127,9 +109,9 @@
                 "addressPrefixes": [
                     "10.2.0.0/16"
                 ],
-                "subnets": {
-                    "oz": {
-                        "comments": "Foundational Elements Zone (OZ)",
+                "subnets": [
+                    {
+                        "comments": "App Management Zone (OZ)",
                         "name": "oz",
                         "addressPrefix": "10.2.1.0/25",
                         "nsg": {
@@ -139,7 +121,7 @@
                             "enabled": true
                         }
                     },
-                    "paz": {
+                    {
                         "comments": "Presentation Zone (PAZ)",
                         "name": "paz",
                         "addressPrefix": "10.2.2.0/25",
@@ -150,7 +132,7 @@
                             "enabled": true
                         }
                     },
-                    "rz": {
+                    {
                         "comments": "Application Zone (RZ)",
                         "name": "rz",
                         "addressPrefix": "10.2.3.0/25",
@@ -161,7 +143,7 @@
                             "enabled": true
                         }
                     },
-                    "hrz": {
+                    {
                         "comments": "Data Zone (HRZ)",
                         "name": "hrz",
                         "addressPrefix": "10.2.4.0/25",
@@ -172,23 +154,21 @@
                             "enabled": true
                         }
                     },
-                    "optional": [
-                        {
-                            "comments": "App Service",
-                            "name": "appservice",
-                            "addressPrefix": "10.2.5.0/25",
-                            "nsg": {
-                                "enabled": false
-                            },
-                            "udr": {
-                                "enabled": false
-                            },
-                            "delegations": {
-                                "serviceName": "Microsoft.Web/serverFarms"
-                            }
+                    {
+                        "comments": "App Service",
+                        "name": "appservice",
+                        "addressPrefix": "10.2.5.0/25",
+                        "nsg": {
+                            "enabled": false
+                        },
+                        "udr": {
+                            "enabled": false
+                        },
+                        "delegations": {
+                            "serviceName": "Microsoft.Web/serverFarms"
                         }
-                    ]
-                }
+                    }
+                ]
             }
         }
     }

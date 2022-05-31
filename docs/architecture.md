@@ -23,7 +23,6 @@ This document describes the architecture and design decisions for building a **[
 8. [Archetypes](\#8-archetypes)
 9. [Automation](\#9-automation)
 
-
 ---
 
 ## 1. Key Decisions
@@ -35,7 +34,7 @@ The table below outlines the key decisions each department must consider as part
 | Private IP range for Cloud | Based on [RFC 1918][rfc1918] and [RFC 6598][rfc6598], to allow seamless routing for hybrid connectivity. | | | |
 | Ground to Cloud Network Connectivity | Use either: Express Route; or SCED for hybrid connectivity. | | | |
 | Firewalls | Central firewalls for all egress and non-HTTP/S ingress traffic to VMs. | | | |
-| Spoke Network Segmentations | Subnet Addressing & Network Security Groups. | | | |
+| Spoke Network Segmentation | Subnet Addressing & Network Security Groups. | | | |
 | Application Gateway + WAF | Application Gateway per spoke subscription to allow direct delivery for HTTP/S traffic.  WAF and routing rules are managed by CloudOps.  | | | |
 | Security Incident & Monitoring | Centralized security monitoring. | | | |
 | Logging (IaaS & PaaS) | Centralized Log Analytics Workspace with RBAC permissions to allow resource owners to access resource logs & Security Monitor to access all logs. | | | |
@@ -64,7 +63,7 @@ Azure Policy Compliance dashboard provides an up-to-date compliance view across 
 
 Custom policy sets have been designed to increase compliance for logging, networking & tagging requirements.
 
-### 2.3 Policy Remediations
+### 2.3 Policy Remediation
 
 Resources that are non-compliant can be put into a compliant state through [Remediation][policyRemediation]. Remediation is accomplished by instructing Azure Policy to run the deployment instructions of the assigned policy on your existing resources and subscriptions, whether that assignment is to a management group, a subscription, a resource group, or an individual resource. This article shows the steps needed to understand and accomplish remediation with Azure Policy.
 
@@ -94,7 +93,7 @@ The compliance reporting will outline the Azure Policies, the resource types, th
 
 For custom reporting requirements, the raw compliance data can be exported using [Azure Resource Graph](https://docs.microsoft.com/azure/governance/resource-graph/overview).  This export allows for additional analysis and align to operational requirements.  A custom data export pipeline and processes will be needed to operationalize the dataset.  Primary queries to access the data are:
 
-```
+```none
 securityresources
 | where type == "microsoft.security/regulatorycompliancestandards"
 
@@ -116,9 +115,62 @@ Management groups give you enterprise-grade management at a large scale no matte
 Azure Landing Zones for Canadian Public Sector recommends the following Management Group structure.  This structure can be customized based on your organization's requirements.  Specifically:
 
 * Landing Zones will be split by 3 groups of environments (DEV/TEST, QA, PROD).
+  > Note that this is just one example of a management group hierarchy structure. Other hierarchy structures can be defined via configuration in CanadaPubSecALZ v0.9.0 or later. More on this below.
+
 * Sandbox management group is used for any new subscriptions that will be created.  This will remove the subscription sprawl from the Root Tenant Group and will pull all subscriptions into the security compliance.
 
 ![Management Group Structure](media/architecture/management-group-structure.jpg)
+
+In **CanadaPubSecALZ v0.9.0 or later**, the management group hierarchy can be defined in the environment configuration file. The following configuration illustrates how you can adopt the [Enterprise Scale Management Group Structure](https://github.com/Azure/Enterprise-Scale/wiki/How-Enterprise-Scale-Works#enterprise-scale-management-group-structure) as defined by the [Azure / Enterprise-Scale](https://github.com/Azure/Enterprise-Scale) project:
+
+```yml
+var-managementgroup-hierarchy: >
+  {
+    "name": "Tenant Root Group",
+    "id": "<azure-ad-tenant-guid>",
+    "children": [
+      {
+        "name": "Top Level",
+        "id": "Top-Level",
+        "children": [
+          {
+            "name": "Platform", "id": "Platform",
+            "children": [
+              { "name": "Identity", "id": "PlatformIdentity", "children": [] },
+              { "name": "Connectivity", "id": "PlatformConnectivity", "children": [] },
+              { "name": "Management", "id": "PlatformManagement", "children": [] }
+            ]
+          },
+          {
+            "name": "Landing Zones", "id": "LandingZones",
+            "children": [
+              { "name": "Corp", "id": "LandingZonesCorp", "children": [] },
+              { "name": "Online", "id": "LandingZonesOnline", "children": [] }
+            ]
+          },
+          {
+            "name": "Sandbox", "id": "Sandbox",
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+```
+
+The main difference between the original `pubsec` management group hierarchy and the example above is in the subdivision of the `LandingZones` management group; i.e. child management groups of `Corp` and `Online` rather than `DevTest`, `QA`, and `Prod`.
+
+Other variations on possible child management groups of the `LandingZones` management group that have arisen in discussions with customers include:
+
+* `Prod` and `NonProd`
+* `Classified` and `Unclassified`
+
+When choosing a management group hierarchy, consider the following:
+
+* Authoritative guidance from subject matter experts
+* Your organizational requirements
+* Recommended best practices
+* [Important facts about management groups](https://docs.microsoft.com/azure/governance/management-groups/overview#important-facts-about-management-groups)
 
 Customers with existing management group structure can consider merging the recommended structure to continue to use the existing structure.  The new structure deployed side-by-side will enable the ability to:
 
@@ -141,7 +193,7 @@ Azure Landing Zones for Canadian Public Sector assumes that Azure Active Directo
 * App Registration - Consider disabling for all users and created on-demand by CloudOps teams.
 * Sign-In Logs - Logs are exported to Log Analytics workspace & Microsoft Sentinel used for threat hunting (Security Monitoring Team).
 * Break-glass procedure - Process documented and implemented including 2 break glass accounts with different MFA devices & split up passwords.
-*  Azure Directory to Azure Active Directory synchronization - Are the identities synchronized or using cloud only account?
+* Azure Directory to Azure Active Directory synchronization - Are the identities synchronized or using cloud only account?
 
 ### 4.1 Service Principal Accounts
 
@@ -157,6 +209,7 @@ The service principal requires `Owner` role to configure role assignments for:
 Additional service principal accounts must be created and scoped to child management groups, subscriptions or resource groups based on tasks that are expected of the service principal accounts.
 
 ### 4.2 User Accounts
+
 It is common for user accounts to have access to an Azure environment with permanent permissions.  Our recommendation is to limit permanent permissions and elevate roles using time-limited, MFA verified access through Privilege Identity Management (Azure AD PIM).
 
 All user accounts should be assigned to Security Groups and access should be granted to user accounts based on membership.
@@ -175,6 +228,7 @@ Access Control at Management Group scope enables management and oversight at sca
 | Cost Management | [Billing Reader](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#billing-reader) | - |
 
 ### 4.4 Recommendations for Subscriptions
+
 The table provides the 3 generic roles that are commonly used in Azure environment.  Granular built-in roles can be used based on use case to further limit the access control.  Our recommendation is to assign the least privileged role that is required for a person or service principal to complete the tasks.
 
 Review the [Azure Built-In roles](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles) to evaluate applicability.
@@ -186,10 +240,12 @@ Review the [Azure Built-In roles](https://docs.microsoft.com/azure/role-based-ac
 | Production | Manage Azure resources | No standing management permissions in Production.<br /><br />Owner role is only required for RBAC changes, otherwise, use Contributor role or another built-in role for all other operations. | - | [Contributor](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor) or [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner)
 
 ### 4.5 Recommendations for Resource Groups
+
 Follow the same guidance as Subscriptions.
 
 ### 4.6 Recommendations for Resources
-Due to overhead of access control and assignments, avoid assigning permissions per resource.  Consider using Resource Group or Subscription scope permissions. 
+
+Due to overhead of access control and assignments, avoid assigning permissions per resource.  Consider using Resource Group or Subscription scope permissions.
 
 ---
 
@@ -215,12 +271,12 @@ Reference implementation provides two topologies for Hub Network design:
 
 2. [Hub Networking with Fortigate Firewalls](archetypes/hubnetwork-nva-fortigate.md) (departments must configure the firewalls).  Implementation can be adopted for additional firewall ISVs.
 
-
-
 ### Azure Bastion
+
 Bastion [does not support User Defined Route](https://docs.microsoft.com/azure/bastion/bastion-faq#udr) but can work with Virtual Machines on peered virtual networks as long as the [Network Security Groups allow][nsgAzureBastion] it and the user has the [required role based access control](https://docs.microsoft.com/azure/bastion/bastion-faq#i-have-access-to-the-peered-vnet-but-i-cant-see-the-vm-deployed-there)
 
 ### Azure Application Gateway
+
 Application Gateway [does not support default UDRs to an NVA](https://docs.microsoft.com/en-us/azure/application-gateway/configuration-infrastructure):
 
 > "Any scenario where 0.0.0.0/0 needs to be redirected through any virtual appliance, a hub/spoke virtual network, or on-premise (forced tunneling) isn't supported for V2.".
@@ -263,25 +319,29 @@ The reference implementation does not deploy DNS Servers (as Virtual Machines) i
 * Leverage DNS Servers on virtual machines that are managed by department's IT.
 
 ### Spoke Landing Zone Networks
+
 Following the nomenclature of [ITSG-22][itsg22], these would be the default subnets created in the spokes as part of new subscriptions.
 
-* Presentation (PAZ) - frontend web servers (not exposed to the internet, using RFC1918 IPs that only receive traffic via the application delivery controllers or L7 firewalls in the PAZ).
-* Application (RZ) - middleware application servers (only allow connections from the frontend).
-* Data (HRZ) - backend servers (only allow connections from the application RZ).
+* Presentation Zone (PAZ) - frontend web servers (not exposed to the internet, using RFC1918 IPs that only receive traffic via the application delivery controllers or L7 firewalls in the PAZ).
+* Application Zone (RZ) - middleware application servers (only allow connections from the frontend).
+* Data Zone (HRZ) - backend servers (only allow connections from the application RZ).
 * App Management Zone (OZ), an optional network for app management servers in the spoke.
 * All zones would allow management traffic from the Management Access Zone (OZ).
+
+> Automation code deploys generic network security groups (NSGs) without the above traffic flow restrictions as they are dependent on the application architecture.  The NSG rules can be customized to control subnet-to-subnet traffic within a virtual network by customizing the automation code. Each subnet in the spoke virtual network has its own User Defined Route (UDR).  This allows for scenarios in which subnets can have different routing rules. It is possible for a single User Defined Route to be associated with many spoke subnets by customizing the automation code.
 
 ---
 
 ## 6. Logging
 
 ### 6.1 Scope
+
 Microsoft's recommendation is [one central Log Analytics workspace](https://docs.microsoft.com/azure/azure-monitor/logs/design-logs-deployment#important-considerations-for-an-access-control-strategy) that will be shared by IT, Security Analysts and Application Teams.
 
 The design and recommendation are based on the following requirements:
 
 * Collect all logs from VMs and PaaS services.
-* Central Logging for security monitoring.
+* Logging for security monitoring.
 * Limit data access based on resource permissions granted to individuals and teams.
 * Tune alerting based on environments (i.e., less alerts from non-production environments).
 
@@ -336,24 +396,28 @@ For example, when you grant access to your team responsible for infrastructure s
 | IT Teams responsible for one or more line of business with permissions to one or more subscriptions, resource groups or resources with at least Reader role. | Access the logs through the resource's Logs menu for the Azure resource (i.e., VM or Storage Account or Database). | Only to Azure resources based on RBAC.  User can query logs for specific resources, resource groups, or subscription they have access to from any workspace but can't query logs for other resources. |
 | Application Team with permissions to one or more subscriptions, resource groups or resources with at least Reader role. | Access the logs through the resource's Logs menu for the Azure resource (i.e., VM or Storage Account or Database). | Only to Azure resources based on RBAC.  User can query logs for specific resources, resource groups, or subscription they have access to from any workspace but can't query logs for other resources. |
 
-
 ---
-
 
 ## 7. Tagging
 
-Organize cloud assets to support governance, operational management, and accounting requirements. Well-defined metadata tagging conventions help to quickly locate and manage resources. These conventions also help associate cloud usage costs with business teams via chargeback and show back accounting mechanisms.
+Organize cloud assets to support governance, operational management, and accounting requirements. Well-defined metadata tagging conventions help to quickly locate and manage resources. These conventions also help associate cloud usage costs with business teams via charge back and show back accounting mechanisms.
 
 A tagging strategy include business and operational details:
 
 * The business side of this strategy ensures that tags include the organizational information needed to identify the teams. Use a resource along with the business owners who are responsible for resource costs.
 * The operational side ensures that tags include information that IT teams use to identify the workload, application, environment, criticality, and other information useful for managing resources.
 
-Tags can be assigned to resources using 3 approaches:
+Tags can be assigned to resource groups using 2 approaches:
 
 | Approach | Mechanism |
 | --- | --- |
-| Automatically assigned from the Subscription tags | Azure Policy:  Inherit a tag from the subscription if missing |
+| Automatically assigned from the Subscription tags | Azure Policy:  Inherit a tag from the subscription to resource group if missing |
+| Explicitly set on a Resource Group | Azure Portal, ARM templates, CLI, PowerShell, etc. All tags can be inherited by default from subscription and can be changed as needed per resource group. |
+
+Tags can be assigned to resources using 2 approaches:
+
+| Approach | Mechanism |
+| --- | --- |
 | Automatically assigned from the Resource Group tags | Azure Policy:  Inherit a tag from the resource group if missing |
 | Explicitly set on a Resource | Azure Portal, ARM templates, CLI, PowerShell, etc.<br /><br />**Note:**  It's recommended to inherit tags that are required by the organization through Subscription & Resource Group.  Per resource tags are typically added by Application Teams for their own purposes. |
 
@@ -363,18 +427,43 @@ Azure Landing Zones for Canadian Public Sector recommends the following tagging 
 
 ![Tags](media/architecture/tags.jpg)
 
-To achieve this design, built-in and custom Azure Policies are used to automatically propagate tags from Resource Group, validate mandatory tags at Resource Groups and to provide remediation to back-fill resources with missing tags.  Azure Policies used to achieve this design are:
+To achieve this design, custom Azure Policies are used to automatically propagate tags from subscription & resource group, validate mandatory tags at resource groups and to provide remediation to back-fill resource groups and resources with missing tags.  Azure Policies used to achieve this design are:
 
-* [Built-in] Inherit a tag from the resource group if missing
+* [Custom] Inherit a tag from the subscription to resource group if missing (1 policy per tag)
+* [Custom] Inherit a tag from the resource group if missing (1 policy per tag)
 * [Custom] Require a tag on resource groups (1 policy per tag)
 * [Custom] Audit missing tag on resource (1 policy per tag)
 
 This approach ensures that:
 
 * All resource groups contain the expected tags; and
+* All resource groups can inherit common tags from subscription when missing; and
 * All resources in that resource groups will automatically inherit those tags.
 
-This helps remove deployment friction by eliminating the explicit tagging requirement per resource.  The tags can be override per resource if required. 
+This helps remove deployment friction by eliminating the explicit tagging requirement per resource.  The tags can be overridden per resource group & resource if required.
+
+**Example scenarios for inheriting from subscription to resource group**
+
+These example scenarios outline the behaviour when using Azure Policy for inheriting tag values.
+
+To simplify, let's assume a single `CostCenter` tag is required for every resource group.
+
+| Subscription Tags | Resource Group Tags | Outcome |
+| --- | --- | --- |
+| `CostCenter=123` | `CostCenter` tag not defined when creating a resource group. | `CostCenter=123` is inherited from subscription.  Resource group is created. |
+| `CostCenter=123` | `CostCenter=ABC` defined when creating the resource group. | `CostCenter=ABC` takes precedence since it's explicitly defined on the resource group.  Resource group is created. |
+| `CostCenter` tag is not defined. | `CostCenter` tag not defined when creating a resource group. | Policy violation since tag can't be inherited from subscription nor it hasn't been defined on resource group. Resource group is not created. |
+
+**Example scenarios for inheriting from resource group to resources**
+
+These example scenarios outline the behaviour when using Azure Policy for inheriting tag values.
+
+To simplify, let's assume a single `CostCenter` tag is required for every resource.
+
+| Resource Group Tags | Resource Tags | Outcome |
+| --- | --- | --- |
+| `CostCenter=123` | `CostCenter` tag not defined when creating a resource. | `CostCenter=123` is inherited from resource group.  Resource is created. |
+| `CostCenter=123` | `CostCenter=ABC` defined when creating the resource. | `CostCenter=ABC` takes precedence since it's explicitly defined on the resource.  Resource is created. |
 
 *We chose custom policies so that they can be grouped in a policy set (initiative) and have unique names to describe their purpose.*
 
@@ -392,10 +481,10 @@ This helps remove deployment friction by eliminating the explicit tagging requir
 
 | Archetype | Design | Documentation |
 | --- | --- | --- |
-| **Central Logging** | ![Archetype:  Central Logging](media/architecture/archetype-logging.jpg) | [Archetype definition](archetypes/logging.md) |
-| **Generic Subscription** | ![Archetype:  Generic Subscription](media/architecture/archetype-generic-subscription.jpg) | [Archetype definition](archetypes/generic-subscription.md)
-| **Machine Learning** | ![Archetype:  Machine Learning](media/architecture/archetype-machinelearning.jpg) | [Archetype definition](archetypes/machinelearning.md) |
-| **Healthcare** | ![Archetype:  Healthcare](media/architecture/archetype-healthcare.jpg) | [Archetype definition](archetypes/healthcare.md) |
+| **Logging** | ![Archetype: Logging](media/architecture/archetype-logging.jpg) | [Archetype definition](archetypes/logging.md) |
+| **Generic Subscription** | ![Archetype: Generic Subscription](media/architecture/archetype-generic-subscription.jpg) | [Archetype definition](archetypes/generic-subscription.md)
+| **Machine Learning** | ![Archetype: Machine Learning](media/architecture/archetype-machinelearning.jpg) | [Archetype definition](archetypes/machinelearning.md) |
+| **Healthcare** | ![Archetype: Healthcare](media/architecture/archetype-healthcare.jpg) | [Archetype definition](archetypes/healthcare.md) |
 
 ---
 
@@ -403,7 +492,7 @@ This helps remove deployment friction by eliminating the explicit tagging requir
 
 There are 3 principles that are being followed to help automate Azure Landing Zones for Canadian Public Sector design:
 
-* Start with Automation – We must automate all configurations.  There will be activities that are needed once or twice, but those too should be automated so that they can be applied consistently in many tenants.  Procedures that don't have a reasonable means to automate should be documented as manual steps. 
+* Start with Automation – We must automate all configurations.  There will be activities that are needed once or twice, but those too should be automated so that they can be applied consistently in many tenants.  Procedures that don't have a reasonable means to automate should be documented as manual steps.
 
 * Reduce security surface – Automation accounts can have broad access control and we must limit the permissions when reasonably possible.  Start with least-privilege accounts as described in this document.  Least-privilege accounts will reduce the attack surface and create separation of duty.
 
@@ -447,12 +536,12 @@ All pipelines are in **.pipelines/** folder.
 
 Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.  To import a pipeline:
 
-1.  Go to Pipelines
-2.  New Pipeline
-3.  Choose Azure Repos Git
-4.  Select Repository
-5.  Select Existing Azure Pipeline YAML file
-6.  Identify the pipeline using the table below and add.
+1. Go to Pipelines
+2. New Pipeline
+3. Choose Azure Repos Git
+4. Select Repository
+5. Select Existing Azure Pipeline YAML file
+6. Identify the pipeline using the table below and add.
 
 Use the [Azure DevOps Pipelines](onboarding/azure-devops-pipelines.md) onboarding guide to configure each pipeline.
 
@@ -467,9 +556,8 @@ Use the [Azure DevOps Pipelines](onboarding/azure-devops-pipelines.md) onboardin
 | Platform – Hub Networking using NVAs | platform-connectivity-hub-nva.yml | platform-connectivity-hub-nva-ci | Configures Hub Networking with Fortigate Firewalls. | spn-azure-platform-ops | None |
 | Platform – Hub Networking with Azure Firewall - Firewall Policy | platform-connectivity-hub-azfw-policy.yml | platform-connectivity-hub-azfw-policy-ci | Configures Azure Firewall Policy.  A policy contains firewall rules and firewall configuration such as enabling DNS Proxy.  Firewall policies can be updated independently of Azure Firewall. | spn-azure-platform-ops | None |
 | Platform – Hub Networking with Azure Firewall | platform-connectivity-hub-azfw.yml | platform-connectivity-hub-azfw-ci | Configures Hub Networking with Azure Firewall. | spn-azure-platform-ops | None |
-| Subscriptions | subscription.yml | subscription-ci | Configures a new subscription based on the archetype defined in the configuration file name. | spn-azure-platform-ops | None |
+| Subscriptions | subscriptions.yml | subscriptions-ci | Configures a new subscription based on the archetype defined in the configuration file name. | spn-azure-platform-ops | None |
 | Pull Request Validation | pull-request-check.yml | pull-request-validation-ci | Checks for breaking changes to Bicep templates & parameter schemas prior to merging the change to main branch.  This pipeline must be configured as a check for the `main` branch. | spn-azure-platform-ops | None |
-
 
 ### 9.4 Release Process
 
@@ -492,9 +580,9 @@ You can combine all three techniques within a release pipeline to fully achieve 
 
 Manual validation can be done in one of two ways:
 
-1.  Add an agentless (server) job before the existing pipeline job(s) where you want to enforce pre-deployment user validation.
+1. Add an agentless (server) job before the existing pipeline job(s) where you want to enforce pre-deployment user validation.
 
-2.  Create an Environment (or multiple environments) in your Azure DevOps project where you can specify pre-deployment user validations via "Approvals and checks".
+2. Create an Environment (or multiple environments) in your Azure DevOps project where you can specify pre-deployment user validations via "Approvals and checks".
 
 We will focus on the second option, as it allows for the following additional types of approvals and checks:
 
@@ -502,17 +590,17 @@ We will focus on the second option, as it allows for the following additional ty
 
 Steps to implement user validation (approval) check:
 
-1.  Create an Environment named after the branch (e.g. "main", "sandbox") you want to protect. You can do this manually through the web UI or by running the pipeline (if the environment does not exist, it will be created).
+1. Create an Environment named after the branch (e.g. "main", "sandbox") you want to protect. You can do this manually through the web UI or by running the pipeline (if the environment does not exist, it will be created).
 
-2.  In the web UI, navigate to Pipelines | Environments, select the environment corresponding to the branch you want to protect, and select "Approvals and checks" from the context menu.
+2. In the web UI, navigate to Pipelines | Environments, select the environment corresponding to the branch you want to protect, and select "Approvals and checks" from the context menu.
 
-3.  Select the "Approval" option to add a new user validation approval.
+3. Select the "Approval" option to add a new user validation approval.
 
-4.  Add user(s)/group(s) to the "Approvers" field. Approval check will require approval from all listed users/groups. For a group approval, any one member of the group is sufficient for approval. Note that you may use Azure DevOps and Azure Active Directory groups and may want to do this to minimize administrative overhead associated with managing individual users roles and responsibilities.
+4. Add user(s)/group(s) to the "Approvers" field. Approval check will require approval from all listed users/groups. For a group approval, any one member of the group is sufficient for approval. Note that you may use Azure DevOps and Azure Active Directory groups and may want to do this to minimize administrative overhead associated with managing individual users roles and responsibilities.
 
-5.  Under "Advanced" options, decide if you want to allow users in the Approvers list to approve their own pipeline runs.
+5. Under "Advanced" options, decide if you want to allow users in the Approvers list to approve their own pipeline runs.
 
-6.  Under "Control options", set an appropriate "Timeout" after which approval requests will expire. The default is 30 days, however you may wish to reduce this time window. 
+6. Under "Control options", set an appropriate "Timeout" after which approval requests will expire. The default is 30 days, however you may wish to reduce this time window.
 
 [itsg33]: https://www.cyber.gc.ca/en/guidance/it-security-risk-management-lifecycle-approach-itsg-33
 [itsg22]: https://www.cyber.gc.ca/sites/default/files/publications/itsg-22-eng.pdf

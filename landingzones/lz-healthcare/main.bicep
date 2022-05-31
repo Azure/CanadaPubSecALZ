@@ -19,6 +19,9 @@ For accepted parameter values, see:
 
 */
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 // Service Health
 @description('Service Health alerts')
 param serviceHealthAlerts object = {}
@@ -73,7 +76,7 @@ param synapse object
 @description('Hub Network configuration that includes virtualNetworkId, rfc1918IPRange, rfc6598IPRange, egressVirtualApplianceIp, privateDnsManagedByHub flag, privateDnsManagedByHubSubscriptionId and privateDnsManagedByHubResourceGroupName.')
 param hubNetwork object
 
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, databricksPublic, databricksPrivate, web) ')
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (privateEndpoints, databricksPublic, databricksPrivate, web, optional [array of optional subnets]) ')
 param network object
 
 // Telemetry - Azure customer usage attribution
@@ -97,6 +100,8 @@ module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
   scope: subscription()
   params: {
+    location: location
+
     serviceHealthAlerts: serviceHealthAlerts
     subscriptionRoleAssignments: subscriptionRoleAssignments
     subscriptionBudget: subscriptionBudget
@@ -114,6 +119,8 @@ module landingZone 'lz.bicep' = {
   name: 'deploy-healthcare-archetype'
   scope: subscription()
   params: {
+    location: location
+    
     securityContactEmail: securityCenter.email
 
     resourceTags: resourceTags

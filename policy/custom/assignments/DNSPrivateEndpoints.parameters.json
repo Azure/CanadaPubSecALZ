@@ -6,7 +6,7 @@
             "value": "{{var-topLevelManagementGroupName}}"
         },
         "policyAssignmentManagementGroupId": {
-            "value": "{{var-topLevelManagementGroupName}}"
+            "value": "{{var-policyAssignmentManagementGroupId}}"
         },
         "enforcementMode": {
             "value": "Default"

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serviceHealthAlerts": {
+      "value": {
+          "resourceGroupName": "pubsec-service-health",
+          "incidentTypes": [ "Incident", "Security" ],
+          "regions": [ "Global", "Canada East", "Canada Central" ],
+          "receivers": {
+            "app": [ "security@cds-snc.ca" ],
+            "email": [ "security@cds-snc.ca" ],
+            "sms": [],
+            "voice": []
+          },
+          "actionGroupName": "ALZ action group",
+          "actionGroupShortName": "alz-alert",
+          "alertRuleName": "ALZ alert rule",
+          "alertRuleDescription": "Alert rule for Azure Landing Zone"
+      }
+    },
+    "securityCenter": {
+      "value": {
+        "email": "security@cds-snc.ca",
+        "phone": ""
+      }
+    },
+    "subscriptionRoleAssignments": {
+      "value": []
+    },
+    "subscriptionBudget": {
+      "value": {
+        "createBudget": false
+      }
+    },
+    "subscriptionTags": {
+      "value": {
+        "ISSO": "security@cds-snc.ca"
+      }
+    },
+    "resourceTags": {
+      "value": {
+        "ClientOrganization": "cds-snc",
+        "CostCenter": "sentinel",
+        "DataSensitivity": "U",
+        "ProjectContact": "Security@CDS",
+        "ProjectName": "Sentinel",
+        "TechnicalContact": "security@cds-snc.ca"
+      }
+    },
+    "logAnalyticsResourceGroupName": {
+      "value": "pubsec-central-logging-prod"
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "log-analytics-workspace-prod"
+    },
+    "logAnalyticsRetentionInDays": {
+      "value": 730
+    },
+    "logAnalyticsAutomationAccountName": {
+      "value": "automation-account-prod"
+    }
+  }
+}

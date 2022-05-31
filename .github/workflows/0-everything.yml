@@ -1,0 +1,363 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+name: 0 - Everything
+
+on:
+  workflow_dispatch:
+    inputs:
+      hubNetworkType:
+        type: choice
+        description: "Select the hub network type"
+        required: true
+        options:
+          - "HubNetworkWithNVA"
+          - "HubNetworkWithAzureFirewall"
+        default: "HubNetworkWithAzureFirewall"
+      subscriptionIds:
+        type: string
+        description: Subscription ID(s) (optional), e.g. "abcd", "1234"
+        required: false
+      environmentName:
+        type: string
+        description: Environment name (optional), e.g. CanadaESLZ-main
+        required: false
+
+defaults:
+  run:
+    shell: pwsh
+    working-directory: scripts/deployments
+
+jobs:
+  ManagementGroups:
+    name: Management Groups
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy Management Groups
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployManagementGroups `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  Roles:
+    needs:
+      - ManagementGroups
+
+    name: Roles
+
+    strategy:
+      matrix:
+        roleName:
+          - la-vminsights-readonly
+          - lz-appowner
+          - lz-netops
+          - lz-secops
+          - lz-subowner
+      fail-fast: false
+    
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy Roles
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployRoles `
+          -RoleNames '${{ matrix.roleName }}' `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  Logging:
+    needs:
+      - Roles
+
+    name: Logging
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy Logging
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployLogging `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  Custom_Policy_Definitions:
+    name: Custom policy definitions
+    needs: Logging
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy definitions
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployCustomPolicyDefinitions `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  Custom_Policy_Set_Definitions:
+    name: Define custom
+    needs: Custom_Policy_Definitions
+
+    strategy:
+      matrix:
+        policySetDefinitionName:
+          - AKS
+          - DefenderForCloud
+          - LogAnalytics
+          - Network
+          - DNSPrivateEndpoints
+          - Tags
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy set definition
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployCustomPolicySetDefinitions `
+          -CustomPolicySetDefinitionNames '${{ matrix.policySetDefinitionName }}' `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  Custom_Policy_Set_Assignments:
+    name: Assign custom
+    needs:
+      - Custom_Policy_Definitions
+      - Custom_Policy_Set_Definitions
+
+    strategy:
+      matrix:
+        policySetAssignmentName:
+          - AKS
+          - DefenderForCloud
+          - LogAnalytics
+          - Network
+          - Tags
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy set assignment
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployCustomPolicySetAssignments `
+          -CustomPolicySetAssignmentNames '${{ matrix.policySetAssignmentName }}' `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  Builtin_Policy_Set_Assignments:
+    name: Assign built-in
+    needs: Logging
+
+    strategy:
+      matrix:
+        policySetAssignmentName:
+          - asb
+          - nist80053r4
+          - nist80053r5
+          - pbmm
+          - cis-msft-130
+          - fedramp-moderate
+          - hitrust-hipaa
+          - location
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy policy set assignment
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployBuiltinPolicySetAssignments `
+          -BuiltinPolicySetAssignmentNames '${{ matrix.policySetAssignmentName }}' `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+  HubNetworking:
+    needs:
+      - Custom_Policy_Set_Assignments
+      - Builtin_Policy_Set_Assignments
+
+    name: Hub Networking (${{github.event.inputs.hubNetworkType}})
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy Azure Firewall Policy
+      if: github.event.inputs.hubNetworkType == 'HubNetworkWithAzureFirewall'
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployAzureFirewallPolicy `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+    - name: Deploy Hub Network with Azure Firewall
+      if: github.event.inputs.hubNetworkType == 'HubNetworkWithAzureFirewall'
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployHubNetworkWithAzureFirewall `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
+
+    - name: Deploy Hub Network with NVA
+      if: github.event.inputs.hubNetworkType == 'HubNetworkWithNVA'
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployHubNetworkWithNVA `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF} `
+          -NvaUsername (ConvertTo-SecureString -String '${{secrets.NVA_USERNAME}}' -AsPlainText -Force) `
+          -NvaPassword (ConvertTo-SecureString -String '${{secrets.NVA_PASSWORD}} '-AsPlainText -Force)
+
+  SubscriptionMatrix:
+    if: github.event.inputs.subscriptionIds != ''
+
+    name: Create subscription deployment(s) as matrix
+    
+    runs-on: ubuntu-latest
+    
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - id: set-matrix
+        run: |
+          $SubscriptionIdJsonObject = @{
+              SubscriptionId = ${{github.event.inputs.subscriptionIds}} -Split ","
+          }
+
+          $SubscriptionIdJson = $SubscriptionIdJsonObject | ConvertTo-Json -Compress
+
+          Write-Output "::set-output name=matrix::$SubscriptionIdJson"
+
+  Subscriptions:
+    if: github.event.inputs.subscriptionIds != ''
+    needs:
+      - HubNetworking
+      - SubscriptionMatrix
+
+    name: Subscriptions
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix: ${{fromJSON(needs.SubscriptionMatrix.outputs.matrix)}}
+      fail-fast: false
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy Subscriptions
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeploySubscriptionIds '${{ matrix.subscriptionId }}' `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}

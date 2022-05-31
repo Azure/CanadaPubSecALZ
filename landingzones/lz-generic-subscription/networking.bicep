@@ -7,12 +7,15 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 // Networking
 // Example (JSON)
 // -----------------------------
 // "hubNetwork": {
 //   "value": {
-//       "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+//       "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet",
 //       "rfc1918IPRange": "10.18.0.0/22",
 //       "rfc6598IPRange": "100.60.0.0/16",
 //       "egressVirtualApplianceIp": "10.18.0.36"
@@ -22,7 +25,7 @@
 // Example (Bicep)
 // -----------------------------
 // {
-//   virtualNetworkId: '/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet'
+//   virtualNetworkId: '/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet'
 //   rfc1918IPRange: '10.18.0.0/22'
 //   rfc6598IPRange: '100.60.0.0/16'
 //   egressVirtualApplianceIp: '10.18.0.36'
@@ -35,21 +38,19 @@ param hubNetwork object
 // "network": {
 //   "value": {
 //       "deployVnet": true,
-//
 //       "peerToHubVirtualNetwork": true,
 //       "useRemoteGateway": false,
-//
 //       "name": "vnet",
 //       "dnsServers": [
-//          "10.18.1.4"
+//           "10.18.1.4"
 //       ],
 //       "addressPrefixes": [
 //           "10.2.0.0/16"
 //       ],
-//       "subnets": {
-//           "oz": {
-//               "comments": "Foundational Elements Zone (OZ)",
-//               "name": "oz",
+//       "subnets": [
+//           {
+//               "comments": "App Management Zone (OZ)",
+//               "name": "appManagement",
 //               "addressPrefix": "10.2.1.0/25",
 //               "nsg": {
 //                   "enabled": true
@@ -58,9 +59,9 @@ param hubNetwork object
 //                   "enabled": true
 //               }
 //           },
-//           "paz": {
+//           {
 //               "comments": "Presentation Zone (PAZ)",
-//               "name": "paz",
+//               "name": "web",
 //               "addressPrefix": "10.2.2.0/25",
 //               "nsg": {
 //                   "enabled": true
@@ -69,9 +70,9 @@ param hubNetwork object
 //                   "enabled": true
 //               }
 //           },
-//           "rz": {
+//           {
 //               "comments": "Application Zone (RZ)",
-//               "name": "rz",
+//               "name": "app",
 //               "addressPrefix": "10.2.3.0/25",
 //               "nsg": {
 //                   "enabled": true
@@ -80,9 +81,9 @@ param hubNetwork object
 //                   "enabled": true
 //               }
 //           },
-//           "hrz": {
+//           {
 //               "comments": "Data Zone (HRZ)",
-//               "name": "hrz",
+//               "name": "data",
 //               "addressPrefix": "10.2.4.0/25",
 //               "nsg": {
 //                   "enabled": true
@@ -91,24 +92,23 @@ param hubNetwork object
 //                   "enabled": true
 //               }
 //           },
-//           "optional": [
-//               {
-//                   "comments": "App Service",
-//                   "name": "appservice",
-//                   "addressPrefix": "10.2.5.0/25",
-//                   "nsg": {
-//                       "enabled": false
-//                   },
-//                   "udr": {
-//                       "enabled": false
-//                   },
-//                   "delegations": {
-//                       "serviceName": "Microsoft.Web/serverFarms"
-//                   }
+//           {
+//               "comments": "App Service",
+//               "name": "appservice",
+//               "addressPrefix": "10.2.5.0/25",
+//               "nsg": {
+//                   "enabled": false
+//               },
+//               "udr": {
+//                   "enabled": false
+//               },
+//               "delegations": {
+//                   "serviceName": "Microsoft.Web/serverFarms"
 //               }
-//           ]
-//       }
-//   }
+//           }
+//       ]
+//    }
+//  }
 // }
 
 // Example (Bicep)
@@ -126,10 +126,10 @@ param hubNetwork object
 //   addressPrefixes: [
 //     '10.2.0.0/16'
 //   ]
-//   subnets: {
-//     oz: {
-//       comments: 'Foundational Elements Zone (OZ)'
-//       name: 'oz'
+//   subnets: [
+//     {
+//       comments: 'App Management Zone (OZ)'
+//       name: 'appManagement'
 //       addressPrefix: '10.2.1.0/25'
 //       nsg: {
 //         enabled: true
@@ -138,9 +138,9 @@ param hubNetwork object
 //         enabled: true
 //       }
 //     }
-//     paz: {
+//     {
 //       comments: 'Presentation Zone (PAZ)'
-//       name: 'paz'
+//       name: 'web'
 //       addressPrefix: '10.2.2.0/25'
 //       nsg: {
 //         enabled: true
@@ -149,9 +149,9 @@ param hubNetwork object
 //         enabled: true
 //       }
 //     }
-//     rz: {
+//     {
 //       comments: 'Application Zone (RZ)'
-//       name: 'rz'
+//       name: 'app'
 //       addressPrefix: '10.2.3.0/25'
 //       nsg: {
 //         enabled: true
@@ -160,9 +160,9 @@ param hubNetwork object
 //         enabled: true
 //       }
 //     }
-//     hrz: {
+//     {
 //       comments: 'Data Zone (HRZ)'
-//       name: 'hrz'
+//       name: 'data'
 //       addressPrefix: '10.2.4.0/25'
 //       nsg: {
 //         enabled: true
@@ -171,22 +171,20 @@ param hubNetwork object
 //         enabled: true
 //       }
 //     }
-//     optional: [
-//       {
-//         comments: 'App Service'
-//         name: 'appservice'
-//         addressPrefix: '10.2.5.0/25'
-//         nsg: {
-//           enabled: false
-//         }
-//         udr: {
-//           enabled: false
-//         }
-//         delegations: {
-//           'serviceName: 'Microsoft.Web/serverFarms'
-//         }
+//     {
+//       comments: 'App Service'
+//       name: 'appservice'
+//       addressPrefix: '10.2.5.0/25'
+//       nsg: {
+//         enabled: false
 //       }
-//     ]
+//       udr: {
+//         enabled: false
+//       }
+//       delegations: {
+//         'serviceName: 'Microsoft.Web/serverFarms'
+//       }
+//     }
 //   }
 // }
 @description('Network configuration for the spoke virtual network.  It includes name, dnsServers, address spaces, vnet peering and subnets.')
@@ -197,7 +195,7 @@ var hubVnetIdSplit = split(hubNetwork.virtualNetworkId, '/')
 var routesToHub = [
   // Force Routes to Hub IPs (RFC1918 range) via FW despite knowing that route via peering
   {
-    name: 'PrdSpokesUdrHubRFC1918FWRoute'
+    name: 'SpokeUdrHubRFC1918FWRoute'
     properties: {
       addressPrefix: hubNetwork.rfc1918IPRange
       nextHopType: 'VirtualAppliance'
@@ -206,7 +204,7 @@ var routesToHub = [
   }
   // Force Routes to Hub IPs (CGNAT range) via FW despite knowing that route via peering
   {
-    name: 'PrdSpokesUdrHubRFC6598FWRoute'
+    name: 'SpokeUdrHubRFC6598FWRoute'
     properties: {
       addressPrefix: hubNetwork.rfc6598IPRange
       nextHopType: 'VirtualAppliance'
@@ -223,38 +221,28 @@ var routesToHub = [
   }
 ]
 
-// Merge the required and optional subnets into a single array and use this array to create the resources
-var requiredSubnets = [
-  network.subnets.oz
-  network.subnets.paz
-  network.subnets.rz
-  network.subnets.hrz
-]
-
-var allSubnets = union(requiredSubnets, network.subnets.optional)
-
 // Network Security Groups
-resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = [for subnet in allSubnets: if (subnet.nsg.enabled) {
+resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = [for subnet in network.subnets: if (subnet.nsg.enabled) {
   name: '${subnet.name}Nsg'
-  location: resourceGroup().location
+  location: location
   properties: {
     securityRules: []
   }
 }]
 
 // Route Tables
-resource udr 'Microsoft.Network/routeTables@2021-02-01' = [for subnet in allSubnets: if (subnet.udr.enabled) {
-  name: '${subnet.name}Udr'
-  location: resourceGroup().location
+resource udr 'Microsoft.Network/routeTables@2021-02-01' = {
+  name: 'RouteTable'
+  location: location
   properties: {
     routes: network.peerToHubVirtualNetwork ? routesToHub : null
   }
-}]
+}
 
 // Virtual Network
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   name: network.name
-  location: resourceGroup().location
+  location: location
   properties: {
     dhcpOptions: {
       dnsServers: network.dnsServers
@@ -262,7 +250,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
     addressSpace: {
       addressPrefixes: network.addressPrefixes
     }
-    subnets: [for (subnet, i) in allSubnets: {
+    subnets: [for (subnet, i) in network.subnets: {
       name: subnet.name
       properties: {
         addressPrefix: subnet.addressPrefix
@@ -270,7 +258,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
           id: nsg[i].id
         } : null
         routeTable: (subnet.udr.enabled) ? {
-          id: udr[i].id
+          id: udr.id
         } : null
         delegations: contains(subnet, 'delegations') ? [
           {
@@ -320,11 +308,6 @@ output vnetId string = vnet.id
 output vnetName string = vnet.name
 output vnetPeered bool = network.peerToHubVirtualNetwork
 
-output ozSubnetId string = '${vnet.id}/subnets/${network.subnets.oz.name}'
-output pazSubnetId string = '${vnet.id}/subnets/${network.subnets.paz.name}'
-output rzSubnetId string = '${vnet.id}/subnets/${network.subnets.rz.name}'
-output hrzSubnetId string = '${vnet.id}/subnets/${network.subnets.hrz.name}'
-
-output optionalSubnets array = [for subnet in network.subnets.optional: {
+output subnets array = [for subnet in network.subnets: {
   'id': '${vnet.id}/subnets/${subnet.name}'
 }]

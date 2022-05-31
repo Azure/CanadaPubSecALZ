@@ -9,6 +9,9 @@
 
 targetScope = 'subscription'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 param deploymentScriptIdentityId string
 param deploymentScriptResourceGroupName string
 
@@ -39,6 +42,8 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
   name: 'execute-test-${testRunnerId}'
   scope: subscription()
   params: {
+    location: location
+
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
     securityCenter: {
@@ -108,6 +113,7 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
       enabled: true
       skuName: 'P1V2'
       skuTier: 'Premium'
+      enablePrivateEndpoint: true
     }
 
     hubNetwork: {
@@ -131,26 +137,6 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
         '10.2.0.0/16'
       ]
       subnets: {
-        oz: {
-          comments: 'Foundational Elements Zone (OZ)'
-          name: 'oz'
-          addressPrefix: '10.2.1.0/25'
-        }
-        paz: {
-          comments: 'Presentation Zone (PAZ)'
-          name: 'paz'
-          addressPrefix: '10.2.2.0/25'
-        }
-        rz: {
-          comments: 'Application Zone (RZ)'
-          name: 'rz'
-          addressPrefix: '10.2.3.0/25'
-        }
-        hrz: {
-          comments: 'Data Zone (HRZ)'
-          name: 'hrz'
-          addressPrefix: '10.2.4.0/25'
-        }
         privateEndpoints: {
           comments: 'Private Endpoints Subnet'
           name: 'privateendpoints'
@@ -181,6 +167,7 @@ module test '../../../../landingzones/lz-machinelearning/main.bicep' = {
           name: 'appService'
           addressPrefix: '10.2.10.0/25'
         }
+        optional: []
       }
     }
   }
@@ -219,5 +206,7 @@ module testCleanup '../../../../azresources/util/deployment-script.bicep' = if (
     deploymentScriptName: 'cleanup-test-${testRunnerId}'
     deploymentScriptIdentityId: deploymentScriptIdentityId
     timeout: 'PT6H'
+
+    location: location
   }
 }

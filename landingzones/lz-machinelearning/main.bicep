@@ -9,6 +9,9 @@
 
 targetScope = 'subscription'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 /*
 
 For accepted parameter values, see:
@@ -86,7 +89,7 @@ param aml object
 param hubNetwork object
 
 // Example (JSON)
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (oz, paz, rz, hrz, privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, appService) ')
+@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, appService, optional [array of optional subnets]).')
 param network object
 
 // Telemetry - Azure customer usage attribution
@@ -110,6 +113,8 @@ module subScaffold '../scaffold-subscription.bicep' = {
   name: 'configure-subscription'
   scope: subscription()
   params: {
+    location: location
+
     serviceHealthAlerts: serviceHealthAlerts
     subscriptionRoleAssignments: subscriptionRoleAssignments
     subscriptionBudget: subscriptionBudget
@@ -127,6 +132,8 @@ module landingZone 'lz.bicep' = {
   name: 'deploy-machinelearning-archetype'
   scope: subscription()
   params: {
+    location: location
+
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
     securityContactEmail: securityCenter.email

@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for IoT Hub to Log Analytics Workspaces",
+    "mode": "indexed"
+}

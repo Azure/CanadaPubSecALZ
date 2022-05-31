@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('FHIR Name.')
 param name string
 
@@ -24,7 +27,7 @@ param privateEndpointSubnetId string
 param privateZoneId string
 
 resource fhir 'Microsoft.HealthcareApis/services@2021-01-11' = {
-  location: resourceGroup().location
+  location: location
   name: name
   tags: tags
   kind: version
@@ -37,7 +40,7 @@ resource fhir 'Microsoft.HealthcareApis/services@2021-01-11' = {
 }
 
 resource fhir_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: '${fhir.name}-endpoint'
   properties: {
     subnet: {

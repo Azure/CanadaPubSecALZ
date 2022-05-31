@@ -50,6 +50,7 @@ var azureDefenderServices = [
   'Arm'
   'AppServices'
   'Containers'
+  'CosmosDbs'
   'Dns'
   'KeyVaults'
   'OpenSourceRelationalDatabases'
@@ -59,6 +60,7 @@ var azureDefenderServices = [
   'VirtualMachines'
 ]
 
+@batchSize(1)
 resource ascDefender 'Microsoft.Security/pricings@2018-06-01' = [for service in azureDefenderServices: {
   name: service
   properties: {

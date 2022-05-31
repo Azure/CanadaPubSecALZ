@@ -21,59 +21,60 @@
 #         currently executing pipeline.
 
 variables:
-  # Management Groups 
-  var-parentManagementGroupId: 221ca1d3-b3f2-4346-8abc-88f802495c7d
-  var-topLevelManagementGroupName: pubsec
+  deploymentRegion: canadacentral
+
+  # Management Groups
+  var-managementgroup-hierarchy: >
+    {
+      "name": "Tenant Root Group",
+      "id": "221ca1d3-b3f2-4346-8abc-88f802495c7d",
+      "children": [
+        {
+          "name": "pubsec",
+          "id": "pubsec",
+          "children": [
+            {
+              "name": "pubsecPlatform", "id": "pubsecPlatform",
+              "children": [
+                { "name": "pubsecPlatformIdentity", "id": "pubsecPlatformIdentity", "children": [] },
+                { "name": "pubsecPlatformConnectivity", "id": "pubsecPlatformConnectivity", "children": [] },
+                { "name": "pubsecPlatformManagement", "id": "pubsecPlatformManagement", "children": [] }
+              ]
+            },
+            {
+              "name": "LandingZones", "id": "pubsecLandingZones",
+              "children": [
+                { "name": "pubsecLandingZonesDevTest", "id": "pubsecLandingZonesDevTest", "children": [] },
+                { "name": "pubsecLandingZonesQA", "id": "pubsecLandingZonesQA", "children": [] },
+                { "name": "pubsecLandingZonesProd", "id": "pubsecLandingZonesProd", "children": [] }
+              ]
+            },
+            {
+              "name": "pubsecSandbox", "id": "pubsecSandbox",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
 
   # Logging
+  var-logging-region: canadacentral
   var-logging-managementGroupId: pubsecPlatform
   var-logging-subscriptionId: f27b081a-aa54-4ab4-9f26-a4c5375dc8fa
-  var-logging-logAnalyticsResourceGroupName: pubsec-central-logging-rg-prod
-  var-logging-logAnalyticsWorkspaceName: log-analytics-workspace-prod
-  var-logging-logAnalyticsRetentionInDays: 730
-  var-logging-logAnalyticsAutomationAccountName: automation-account-prod
+  var-logging-configurationFileName: logging.parameters.json
+
+  ## This parameter is only used for HIPAA/HITRUST Policy Assignment
   var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
-  var-logging-serviceHealthAlerts: >
-    {
-      "resourceGroupName": "pubsec-service-health",
-      "incidentTypes": [ "Incident", "Security" ],
-      "regions": [ "Global", "Canada East", "Canada Central" ],
-      "receivers": {
-          "app": [ "security@cds-snc.ca" ],
-          "email": [ "security@cds-snc.ca" ],
-          "sms": [],
-          "voice": []
-      },
-      "actionGroupName": "ALZ action group",
-      "actionGroupShortName": "alz-alert",
-      "alertRuleName": "ALZ alert rule",
-      "alertRuleDescription": "Alert rule for Azure Landing Zone"
-    }
-  var-logging-securityCenter: >
-    {
-      "email": "security@cds-snc.ca",
-      "phone": ""
-    }
-  var-logging-subscriptionRoleAssignments: >
-    [ ]
-  var-logging-subscriptionBudget: >
-    {
-      "createBudget": false,
-      "name": "MonthlySubscriptionBudget",
-      "amount": 1000,
-      "timeGrain": "Monthly",
-      "contactEmails": [ "security@cds-snc.ca" ]
-    }
-  var-logging-subscriptionTags: >
-    {
-      "ISSO": "security@cds-snc.ca"
-    }
-  var-logging-resourceTags: >
-    {
-      "ClientOrganization": "cds-snc",
-      "CostCenter": "sentinel",
-      "DataSensitivity": "U",
-      "ProjectContact": "Security@CDS",
-      "ProjectName": "Sentinel",
-      "TechnicalContact": "security@cds-snc.ca"
-    }
+
+  # # Hub Networking
+  # var-hubnetwork-region: canadacentral
+  # var-hubnetwork-managementGroupId: pubsecPlatformConnectivity
+  # var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
+
+  # ## Hub Network configuration using Azure Firewall - required when Azure Firewall is used
+  # var-hubnetwork-azfwPolicy-configurationFileName: hub-azfw-policy/azure-firewall-policy.parameters.json
+  # var-hubnetwork-azfw-configurationFileName: hub-azfw/hub-network.parameters.json
+
+  # ## Hub Network configuration using Network Virtual Appliance (NVA) - required when Network Virtual Appliance (NVA) like Fortigate Firewalls are used
+  # var-hubnetwork-nva-configurationFileName: hub-nva/hub-network.parameters.json

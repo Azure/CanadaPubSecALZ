@@ -7,6 +7,9 @@
 // OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 // ----------------------------------------------------------------------------------
 
+@description('Location for the deployment.')
+param location string = resourceGroup().location
+
 @description('Synapse Analytics name.')
 param name string
 
@@ -27,13 +30,30 @@ param adlsName string
 param adlsFSName string
 
 // Credentials
+@description('use Azure AD only authentication or mix of both AAD and SQL authentication')
+param aadAuthenticationOnly bool
+
+@description('Azure AD principal name, in the format of firstname last name')
+param aadLoginName string =''
+
+@description('AAD account object id')
+param aadLoginObjectID string=''
+
+@description('AAD account type with options User, Group, Application. Default: Group')
+@allowed([
+  'User'
+  'Group'
+  'Application'
+])
+param aadLoginType string = 'Group'
+
 @description('Synapse Analytics Username.')
 @secure()
-param synapseUsername string
+param sqlAuthenticationUsername string
 
 @description('Synapse Analytics Password.')
 @secure()
-param synapsePassword string
+param sqlAuthenticationPassword string
 
 // Networking
 @description('Private Endpoint Subnet Resource Id.')
@@ -82,21 +102,22 @@ module dataLakeSynapseFS '../../storage/storage-adlsgen2-fs.bicep' = {
 resource synapsePrivateLinkHub 'Microsoft.Synapse/privateLinkHubs@2021-03-01' = {
   name: '${toLower(name)}plhub'
   tags: tags
-  location: resourceGroup().location
+  location: location
 }
 
-resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
+resource synapse 'Microsoft.Synapse/workspaces@2021-06-01' = {
   dependsOn: [
     dataLakeSynapseFS
   ]
 
   name: name
   tags: tags
-  location: resourceGroup().location
+  location: location
   properties: {
-    sqlAdministratorLoginPassword: synapsePassword
+    azureADOnlyAuthentication: aadAuthenticationOnly
+    sqlAdministratorLoginPassword: sqlAuthenticationPassword
     managedResourceGroupName: managedResourceGroupName
-    sqlAdministratorLogin: synapseUsername
+    sqlAdministratorLogin: sqlAuthenticationUsername
 
     managedVirtualNetwork: 'default'
     managedVirtualNetworkSettings: {
@@ -123,28 +144,43 @@ resource synapse 'Microsoft.Synapse/workspaces@2021-03-01' = {
       }
     }
   }
+}
 
-  resource synapse_audit 'auditingSettings@2021-05-01' = {
-    name: 'default'
-    properties: {
-      isAzureMonitorTargetEnabled: true
-      state: 'Enabled'
-    }
-  }
 
-  resource synapse_securityAlertPolicies 'securityAlertPolicies@2021-05-01' = {
-    name: 'Default'
-    properties: {
-      state: 'Enabled'
-      emailAccountAdmins: false
-    }
+resource synapse_audit 'Microsoft.Synapse/workspaces/auditingSettings@2021-05-01' = {
+  name: '${synapse.name}/default'
+  properties: {
+    isAzureMonitorTargetEnabled: true
+    state: 'Enabled'
   }
 }
 
-resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-05-01' = {
+resource synapse_securityAlertPolicies 'Microsoft.Synapse/workspaces/securityAlertPolicies@2021-05-01' = {
+  name: '${synapse.name}/Default'
+  properties: {
+    state: 'Enabled'
+    emailAccountAdmins: false
+  }
+}
+
+// Azure AD administrators
+resource synapse_aad_admins 'Microsoft.Synapse/workspaces/administrators@2021-06-01' = if(aadLoginName != '') {
+  name: 'activeDirectory'
+  parent: synapse
+  properties: {
+    administratorType: aadLoginType
+    login: aadLoginName
+    sid: aadLoginObjectID
+    tenantId: subscription().tenantId
+  }
+}
+
+resource synapse_va 'Microsoft.Synapse/workspaces/vulnerabilityAssessments@2021-06-01' = {
   name: '${synapse.name}/default'
   dependsOn: [
     roleAssignSynapseToSALogging
+    synapse_securityAlertPolicies
+    synapse_audit
   ]
   properties: {
     storageContainerPath: '${sqlVulnerabilityLoggingStoragePath}vulnerability-assessment'
@@ -169,7 +205,7 @@ module roleAssignSynapseToSALogging '../../iam/resource/storage-role-assignment-
 }
 
 resource synapse_workspace_web_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: '${synapse.name}-web-endpoint'
   properties: {
     subnet: {
@@ -204,7 +240,7 @@ resource synapse_workspace_web_pe 'Microsoft.Network/privateEndpoints@2020-06-01
 }
 
 resource synapse_workspace_dev_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: '${synapse.name}-workspace-dev-endpoint'
   properties: {
     subnet: {
@@ -239,7 +275,7 @@ resource synapse_workspace_dev_pe 'Microsoft.Network/privateEndpoints@2020-06-01
 }
 
 resource synapse_workspace_sql_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: '${synapse.name}-workspace-sql-endpoint'
   properties: {
     subnet: {
@@ -274,7 +310,7 @@ resource synapse_workspace_sql_pe 'Microsoft.Network/privateEndpoints@2020-06-01
 }
 
 resource synapse_workspace_sql_on_demand_pe 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  location: resourceGroup().location
+  location: location
   name: '${synapse.name}-workspace-sql-ondemand-endpoint'
   properties: {
     subnet: {
@@ -336,5 +372,6 @@ module addResourceAccess '../../util/deployment-script.bicep' = {
     deploymentScript: format(azCliCommand, synapse.id, subscription().tenantId, adlsResourceGroupName, adlsName)
     deploymentScriptName: 'grant-access-${synapse.name}-${adlsName}'
     deploymentScriptIdentityId: deploymentScriptIdentityId
+    location: location
   }
 }

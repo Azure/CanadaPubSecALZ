@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Load Balancer to Log Analytics Workspaces",
+    "mode": "indexed"
+}

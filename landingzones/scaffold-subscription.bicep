@@ -9,6 +9,9 @@
 
 targetScope = 'subscription'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 // Service Health
 // Example (JSON)
 // -----------------------------
@@ -162,7 +165,7 @@ resource setTagISSO 'Microsoft.Resources/tags@2020-10-01' = {
 
 // Configure Microsoft Defender for Cloud
 module asc '../azresources/security-center/asc.bicep' = {
-  name: 'configure-security-center'
+  name: 'configure-security-center-${uniqueString(location)}'
   scope: subscription()
   params: {
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
@@ -173,7 +176,7 @@ module asc '../azresources/security-center/asc.bicep' = {
 
 // Configure Budget
 module budget '../azresources/cost/budget-subscription.bicep' = if (!empty(subscriptionBudget) && subscriptionBudget.createBudget) {
-  name: 'configure-budget'
+  name: 'configure-budget-${uniqueString(location)}'
   scope: subscription()
   params: {
     budgetName: subscriptionBudget.name
@@ -186,13 +189,13 @@ module budget '../azresources/cost/budget-subscription.bicep' = if (!empty(subsc
 // Create Service Health resource group for managing alerts and action groups
 resource rgServiceHealth 'Microsoft.Resources/resourceGroups@2021-04-01' = if (!empty(serviceHealthAlerts)) {
   name: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.resourceGroupName : 'rgServiceHealth'
-  location: deployment().location
+  location: location
   tags: resourceTags
 }
 
 // Create Service Health alerts
 module serviceHealth '../azresources/service-health/service-health.bicep' = if (!empty(serviceHealthAlerts)) {
-  name: 'deploy-service-health'
+  name: 'deploy-service-health-${uniqueString(location)}'
   scope: rgServiceHealth
   params: {
     incidentTypes: (!empty(serviceHealthAlerts)) ? serviceHealthAlerts.incidentTypes : []
@@ -207,7 +210,7 @@ module serviceHealth '../azresources/service-health/service-health.bicep' = if (
 
 // Role Assignments based on Security Groups
 module assignSubscriptionRBAC '../azresources/iam/subscription/role-assignment-to-group.bicep' = [for roleAssignment in subscriptionRoleAssignments: {
-  name: 'rbac-${roleAssignment.roleDefinitionId}'
+  name: 'rbac-${roleAssignment.roleDefinitionId}-${uniqueString(location)}'
   scope: subscription()
   params: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionId)

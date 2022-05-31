@@ -14,6 +14,10 @@ parameters:
     type: string
   - name: subscription
     type: string
+  - name: logAnalyticsSubscriptionId
+    type: string
+  - name: logAnalyticsConfigurationFile
+    type: string
 
 jobs:
 
@@ -26,6 +30,8 @@ jobs:
       deploy:
         steps:
         - checkout: self
+
+        - template: ../steps/load-variables.yml
 
         - template: ../steps/show-variables.yml
           parameters:
@@ -48,7 +54,8 @@ jobs:
               # Resolve partial configuration file specification
               if [[ ! ${subscription} =~ .*/.* ]]; then
                 echo
-                echo "Resolving partial configuration file specifier: ${subscription} ..."
+                echo "Resolving partial configuration file specifier: ${subscription}"
+                echo "Finding matching configuration file(s) under path ${config}/${enviro}"
                 readarray -t lines < <(find ${config}/${enviro} -type f -name "*${subscription}*" | sed "s/^${config_sed}\///g")
                 if [[ ${#lines[@]} < 1 || ${#lines[@]} > 1 ]]; then
                   echo "##vso[task.logissue type=error]Found ${#lines[@]} subscription configuration file matches based on qualifier: ${subscription}. Partial configuration file name search must have exactly 1 match."
@@ -155,4 +162,5 @@ jobs:
             subguid: $(ParseSubscription.SubGuid)
             subtype: $(ParseSubscription.SubType)
             sublocation: $(ParseSubscription.SubLocation)
-
+            logAnalyticsSubscriptionId: ${{ parameters.logAnalyticsSubscriptionId }}
+            logAnalyticsConfigurationFile: ${{ parameters.logAnalyticsConfigurationFile }}

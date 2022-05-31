@@ -9,6 +9,9 @@
 
 targetScope = 'subscription'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 param deploymentScriptIdentityId string
 param deploymentScriptResourceGroupName string
 
@@ -38,6 +41,8 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
   name: 'execute-test-${testRunnerId}'
   scope: subscription()
   params: {
+    location: location
+
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
     securityCenter: {
@@ -91,8 +96,13 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
     }
 
     synapse: {
-      username: 'azadmin'
-    }
+      value: {
+          aadAuthenticationOnly: true
+          aadLoginName: 'synapse.admins'
+          aadLoginObjectID: 'e0357d81-55d8-44e9-9d9c-ab09dc710785'
+          aadLoginType:'Group'
+      }
+  }
 
     hubNetwork: {
       virtualNetworkId: hubVnetId
@@ -115,26 +125,6 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
         '10.1.0.0/16'
       ]
       subnets: {
-        oz: {
-          comments: 'Foundational Elements Zone (OZ)'
-          name: 'oz'
-          addressPrefix: '10.1.1.0/25'
-        }
-        paz: {
-          comments: 'Presentation Zone (PAZ)'
-          name: 'paz'
-          addressPrefix: '10.1.2.0/25'
-        }
-        rz: {
-          comments: 'Application Zone (RZ)'
-          name: 'rz'
-          addressPrefix: '10.1.3.0/25'
-        }
-        hrz: {
-          comments: 'Data Zone (HRZ)'
-          name: 'hrz'
-          addressPrefix: '10.1.4.0/25'
-        }
         databricksPublic: {
           comments: 'Databricks Public Delegated Subnet'
           name: 'databrickspublic'
@@ -155,6 +145,7 @@ module test '../../../../landingzones/lz-healthcare/main.bicep' = {
           name: 'webapp'
           addressPrefix: '10.1.8.0/25'
         }
+        optional: []
       }
     }
   }
@@ -189,6 +180,8 @@ module testCleanup '../../../../azresources/util/deployment-script.bicep' = if (
   scope: resourceGroup(deploymentScriptResourceGroupName)
   name: 'cleanup-test-${testRunnerId}'
   params: {
+    location: location
+
     deploymentScript: format(cleanUpScript, subscription().subscriptionId, rgAutomationName, rgMonitorName, rgSecurityName, rgComputeName, rgStorageName, rgNetworking)
     deploymentScriptName: 'cleanup-test-${testRunnerId}'
     deploymentScriptIdentityId: deploymentScriptIdentityId

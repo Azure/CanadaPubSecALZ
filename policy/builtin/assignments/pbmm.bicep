@@ -9,6 +9,9 @@
 
 targetScope = 'managementGroup'
 
+@description('Location for the deployment.')
+param location string = deployment().location
+
 @description('Management Group scope for the policy assignment.')
 param policyAssignmentManagementGroupId string
 
@@ -38,7 +41,7 @@ var policyScopedId = resourceId('Microsoft.Authorization/policySetDefinitions', 
 // Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 var telemetry = json(loadTextContent('../../../config/telemetry.json'))
 module telemetryCustomerUsageAttribution '../../../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
-  name: 'pid-${telemetry.customerUsageAttribution.modules.policy}'
+  name: 'pid-${telemetry.customerUsageAttribution.modules.policy}-pbmm'
 }
 
 resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-01' = {
@@ -59,13 +62,69 @@ resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2020-03-
        listOfMembersToIncludeInWindowsVMAdministratorsGroup: {
         value: listOfMembersToIncludeInWindowsVMAdministratorsGroup
        }
+       'logsEnabled-7f89b1eb-583c-429a-8828-af049802c1d9': {
+         value: true
+       }
+       'metricsEnabled-7f89b1eb-583c-429a-8828-af049802c1d9': {
+         value: false
+       }
+       listOfResourceTypesWithDiagnosticLogsEnabled: {
+         value: [
+          'Microsoft.AnalysisServices/servers'
+          'Microsoft.ApiManagement/service'
+          'Microsoft.Network/applicationGateways'
+          'Microsoft.Automation/automationAccounts'
+          // 'Microsoft.ContainerInstance/containerGroups'  # Removed since it doesn't have any logs
+          'Microsoft.ContainerRegistry/registries'
+          'Microsoft.ContainerService/managedClusters'
+          'Microsoft.Batch/batchAccounts'
+          'Microsoft.Cdn/profiles/endpoints'
+          'Microsoft.CognitiveServices/accounts'
+          'Microsoft.DocumentDB/databaseAccounts'
+          'Microsoft.DataFactory/factories'
+          'Microsoft.DataLakeAnalytics/accounts'
+          'Microsoft.DataLakeStore/accounts'
+          'Microsoft.EventGrid/eventSubscriptions'
+          'Microsoft.EventGrid/topics'
+          'Microsoft.EventHub/namespaces'
+          'Microsoft.Network/expressRouteCircuits'
+          'Microsoft.Network/azureFirewalls'
+          'Microsoft.HDInsight/clusters'
+          'Microsoft.Devices/IotHubs'
+          'Microsoft.KeyVault/vaults'
+          'Microsoft.Network/loadBalancers'
+          'Microsoft.Logic/integrationAccounts'
+          'Microsoft.Logic/workflows'
+          'Microsoft.DBforMySQL/servers'
+          //'Microsoft.Network/networkInterfaces' # Removed since it doesn't have any logs
+          'Microsoft.Network/networkSecurityGroups'
+          'Microsoft.DBforPostgreSQL/servers'
+          'Microsoft.PowerBIDedicated/capacities'
+          'Microsoft.Network/publicIPAddresses'
+          'Microsoft.RecoveryServices/vaults'
+          'Microsoft.Cache/redis'
+          'Microsoft.Relay/namespaces'
+          'Microsoft.Search/searchServices'
+          'Microsoft.ServiceBus/namespaces'
+          'Microsoft.SignalRService/SignalR'
+          'Microsoft.Sql/servers/databases'
+          //'Microsoft.Sql/servers/elasticPools' # Removed since it doesn't have any logs
+          'Microsoft.StreamAnalytics/streamingjobs'
+          'Microsoft.TimeSeriesInsights/environments'
+          'Microsoft.Network/trafficManagerProfiles'
+          //'Microsoft.Compute/virtualMachines' # Logs are collected through Microsoft Monitoring Agent
+          //'Microsoft.Compute/virtualMachineScaleSets' Removed since it is not supported
+          'Microsoft.Network/virtualNetworks'
+          'Microsoft.Network/virtualNetworkGateways'
+         ]
+       }
     }
     enforcementMode: enforcementMode
   }
   identity: {
     type: 'SystemAssigned'
   }
-  location: deployment().location
+  location: location
 }
 
 // These role assignments are required to allow Policy Assignment to remediate.
