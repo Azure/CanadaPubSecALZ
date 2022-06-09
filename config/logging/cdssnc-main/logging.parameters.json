@@ -55,7 +55,7 @@
       "value": "log-analytics-workspace-prod"
     },
     "logAnalyticsRetentionInDays": {
-      "value": 730
+      "value": 180
     },
     "logAnalyticsAutomationAccountName": {
       "value": "automation-account-prod"
