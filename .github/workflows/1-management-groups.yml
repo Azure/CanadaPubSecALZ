@@ -31,10 +31,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Configure PowerShell modules
+    - name: Install PowerShell modules
       run: |
         Install-Module Az -Force
         Install-Module powershell-yaml -Force
+
+    - name: Install Bicep CLI
+      run: |
+        curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
+        chmod +x ./bicep
+        mv ./bicep /usr/local/bin/bicep
+        bicep --version
 
     - name: Deploy Management Groups
       run: |
