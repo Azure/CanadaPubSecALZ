@@ -1319,7 +1319,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
       * For **CanadaPubSecALZ v0.8.0 or earlier**, this is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-hubnetwork-managementGroupId` will be `contosoPlatformConnectivity`.
 
      * Set `var-hubnetwork-region` with preferred Azure region.
-     * Set `var-hubnetwork-subscriptionId` with subscription id for logging.
+     * Set `var-hubnetwork-subscriptionId` with subscription id for networking.
      * When using Hub Networking with Azure Firewall
         * Set `var-hubnetwork-azfwPolicy-configurationFileName` with the file name of the Azure Firewall Policy configuration.  i.e. `hub-azfw-policy/azure-firewall-policy.parameters.json`
         * Set `var-hubnetwork-azfw-configurationFileName` with the file name of the Hub Networking configuration.  i.e. `hub-azfw/hub-network.parameters.json`
