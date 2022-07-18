@@ -125,7 +125,7 @@ Once the machine learning archetype is deployed and available to use, access con
 | SQL Mananged Instance | N/A | N/A | `sqlmi`|
 | SQL Database | Deny public network access | Private endpoint on `sqlserver` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Data Lake Gen 2 | Network ACL deny | Private endpoint on `blob`, `dfs` + DNS registration to either hub or spoke | `privateEndpoints`|
-| Azure Databricks | No public IP enabled (secure cluster connectivity), load balancer for egress with IP and outbound rules, virtual network ibjection | N/A |  `databricksPrivate`, `databricksPublic`|
+| Azure Databricks | No public IP enabled (secure cluster connectivity), load balancer for egress with IP and outbound rules, virtual network injection | N/A |  `databricksPrivate`, `databricksPublic`|
 | Azure Machine Learning | No public workspace access | Private endpoint on `amlWorkspace` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Storage Account for Azure ML | Network ACL deny | Private endpoint on `blob`, `file` + DNS registration to either hub or spoke | `privateEndpoints`|
 | Azure Data Factory | Public network access disabled, Azure integration runtime with managed virtual network | Private endpoint on `dataFactory` + DNS registration to either hub or spoke | `privateEndpoints`|
