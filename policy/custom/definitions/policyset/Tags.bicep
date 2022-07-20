@@ -36,7 +36,7 @@ resource tagsInheritedFromSubscriptionToResourceGroupPolicy 'Microsoft.Authoriza
   name: toLower(replace('tags-inherited-from-sub-to-rg-${tag}', ' ', '-'))
   properties: {
     metadata: {
-      'tag': tag
+      tag: tag
     }
     displayName: '${tagsInheritedFromSubscriptionToResourceGroupPolicyTemplate.properties.displayName}: ${tag}'
     mode: tagsInheritedFromSubscriptionToResourceGroupPolicyTemplate.properties.mode
@@ -66,7 +66,7 @@ resource tagsInheritedFromResourceGroupPolicy 'Microsoft.Authorization/policyDef
   name: toLower(replace('tags-inherited-from-rg-${tag}', ' ', '-'))
   properties: {
     metadata: {
-      'tag': tag
+      tag: tag
     }
     displayName: '${tagsInheritedFromResourceGroupPolicyTemplate.properties.displayName}: ${tag}'
     mode: tagsInheritedFromResourceGroupPolicyTemplate.properties.mode
@@ -96,7 +96,7 @@ resource tagsRequiredOnResourceGroupPolicy 'Microsoft.Authorization/policyDefini
   name: toLower(replace('Tags-Require-Tag-ResourceGroup-${tag}', ' ', '-'))
   properties: {
     metadata: {
-      'tag': tag
+      tag: tag
     }
     displayName: '${tagsRequiredOnResourceGroupPolicyTemplate.properties.displayName}: ${tag}'
     mode: tagsRequiredOnResourceGroupPolicyTemplate.properties.mode
@@ -129,7 +129,7 @@ resource tagsAuditOnResourcePolicy 'Microsoft.Authorization/policyDefinitions@20
   name: toLower(replace('Tags-Audit-Missing-Tag-Resource-${tag}', ' ', '-'))
   properties: {
     metadata: {
-      'tag': tag
+      tag: tag
     }
     displayName: '${tagsAuditOnResourcePolicyTemplate.properties.displayName}: ${tag}'
     mode: tagsAuditOnResourcePolicyTemplate.properties.mode
