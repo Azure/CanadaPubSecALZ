@@ -309,5 +309,5 @@ output vnetName string = vnet.name
 output vnetPeered bool = network.peerToHubVirtualNetwork
 
 output subnets array = [for subnet in network.subnets: {
-  'id': '${vnet.id}/subnets/${subnet.name}'
+  id: '${vnet.id}/subnets/${subnet.name}'
 }]
