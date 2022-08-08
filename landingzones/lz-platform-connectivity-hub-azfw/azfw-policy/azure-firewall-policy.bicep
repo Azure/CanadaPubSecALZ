@@ -563,6 +563,8 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
               name: 'Azure Global - IP'
               destinationAddresses: [
                 '23.102.135.246'
+                '20.118.99.224' // see: https://azure.microsoft.com/en-us/updates/new-kms-dns-in-azure-global-cloud/
+                '40.83.235.53' // see: https://azure.microsoft.com/en-us/updates/new-kms-dns-in-azure-global-cloud/
               ]
               destinationPorts: [
                 '1688'
@@ -579,6 +581,7 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
               name: 'Azure Global - FQDN'
               destinationFqdns: [
                 'kms.core.windows.net'
+                'azkms.core.windows.net' // see: https://azure.microsoft.com/en-us/updates/new-kms-dns-in-azure-global-cloud/
               ]
               destinationPorts: [
                 '1688'
