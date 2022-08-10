@@ -70,7 +70,7 @@
     },
     "dataCollectionRule": {
       "value": {
-        "enabled": true,
+        "enabled": false,
         "name": "DCR-AzureMonitorLogs",
         "windowsEventLogs": [
           {
