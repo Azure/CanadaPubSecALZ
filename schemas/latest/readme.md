@@ -12,7 +12,7 @@
     ```json
     "dataCollectionRule": {
       "value": {
-        "enabled": false,
+        "enabled": true,
         "name": "DCR-AzureMonitorLogs",
         "windowsEventLogs": [
           {
