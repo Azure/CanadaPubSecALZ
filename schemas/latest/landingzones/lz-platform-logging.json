@@ -198,7 +198,17 @@
                                     "logLevels": {
                                         "type": "array",
                                         "items": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "enum": [
+                                                "Debug",
+                                                "Info",
+                                                "Notice",
+                                                "Warning",
+                                                "Error",
+                                                "Critical",
+                                                "Alert",
+                                                "Emergency"
+                                            ]
                                         }
                                     }
                                 }
