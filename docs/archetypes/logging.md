@@ -37,7 +37,8 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Microsoft Defender for Cloud | Configures security contact information (email and phone). |
 | Subscription Role Assignments | Configures subscription scoped role assignments.  Roles can be built-in or custom. |
 | Subscription Budget | Configures monthly subscription budget with email notification. Budget is configured by default for 10 years and the amount. |
-| Log Analytics | Configures Automation Account, Log Analytics Workspace and Log Analytics Solutions (AgentHealthAssessment, AntiMalware, AzureActivity, ChangeTracking, Security, SecurityInsights, ServiceMap, SQLAdvancedThreatProtection, SQLAssessment, SQLVulnerabilityAssessment, Updates, VMInsights).  **SecurityInsights** solution pack will enable Microsoft Sentinel.  |
+| Log Analytics | Configures Automation Account, Log Analytics Workspace and Log Analytics Solutions (AgentHealthAssessment, AntiMalware, AzureActivity, ChangeTracking, Security, SecurityInsights, ServiceMap, SQLAdvancedThreatProtection, SQLAssessment, SQLVulnerabilityAssessment, Updates, VMInsights).  **SecurityInsights** solution pack will enable Microsoft Sentinel. |
+| Data Collection Rule | Configures one data collection rule with Windows Event Logs & syslog data sources. |
 | Subscription Tags | A set of tags that are assigned to the subscription. |
 | Resource Tags | A set of tags that are assigned to the resource group and resources.  These tags must include all required tags as defined the Tag Governance policy. |
 
@@ -94,6 +95,7 @@ This example configures:
 6. Resource Tags (aligned to the default tags defined in [Policies](../../policy/custom/definitions/policyset/Tags.parameters.json))
 7. Automation Account
 8. Log Analytics Workspace
+9. Data Collection Rule
 
 ```json
 {
@@ -171,6 +173,62 @@ This example configures:
     },
     "logAnalyticsAutomationAccountName": {
       "value": "automation-account"
+    },
+    "dataCollectionRule": {
+      "value": {
+        "enabled": true,
+        "name": "DCR-AzureMonitorLogs",
+        "windowsEventLogs": [
+          {
+              "streams": [
+                  "Microsoft-Event"
+              ],
+              "xPathQueries": [
+                  "Application!*[System[(Level=1 or Level=2 or Level=3)]]",
+                  "Security!*[System[(band(Keywords,13510798882111488))]]",
+                  "System!*[System[(Level=1 or Level=2 or Level=3)]]"
+              ],
+              "name": "eventLogsDataSource"
+          }
+        ],
+        "syslog": [
+          {
+              "streams": [
+                  "Microsoft-Syslog"
+              ],
+              "facilityNames": [
+                  "auth",
+                  "authpriv",
+                  "cron",
+                  "daemon",
+                  "mark",
+                  "kern",
+                  "local0",
+                  "local1",
+                  "local2",
+                  "local3",
+                  "local4",
+                  "local5",
+                  "local6",
+                  "local7",
+                  "lpr",
+                  "mail",
+                  "news",
+                  "syslog",
+                  "user",
+                  "uucp"
+              ],
+              "logLevels": [
+                  "Warning",
+                  "Error",
+                  "Critical",
+                  "Alert",
+                  "Emergency"
+              ],
+              "name": "sysLogsDataSource"
+          }
+        ]
+      }
     }
   }
 }
