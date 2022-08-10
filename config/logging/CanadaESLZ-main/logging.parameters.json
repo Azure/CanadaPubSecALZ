@@ -113,9 +113,6 @@
                   "uucp"
               ],
               "logLevels": [
-                  "Debug",
-                  "Info",
-                  "Notice",
                   "Warning",
                   "Error",
                   "Critical",
