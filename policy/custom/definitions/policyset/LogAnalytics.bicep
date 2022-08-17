@@ -1295,7 +1295,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
             value: '[parameters(\'logAnalytics\')]'
           }
           profileName: {
-            value: 'setByPolicy'
+            value: 'setbypolicy_logAnalytics'
           }
           azureRegions: {
             value: [
