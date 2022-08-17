@@ -227,18 +227,6 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/1f6e93e8-6b31-41b1-83f6-36e449a42579'
-        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Event Hub to Log Analytics workspace', ' ', '-'))
-        parameters: {
-          logAnalytics: {
-            value: '[parameters(\'logAnalytics\')]'
-          }
-        }
-      }
-      {
-        groupNames: [
-          'BUILTIN'
-        ]
         policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/bef3f64c-5290-43b7-85b0-9b254eef4c47'
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Key Vault to Log Analytics workspace', ' ', '-'))
         parameters: {
@@ -1281,6 +1269,27 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         ]
         policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.Network-virtualNetworkGateways')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Virtual Network Gateway to Log Analytics Workspaces', ' ', '-'))
+        parameters: {
+          logAnalytics: {
+            value: '[parameters(\'logAnalytics\')]'
+          }
+          profileName: {
+            value: 'setByPolicy'
+          }
+          azureRegions: {
+            value: [
+              'canadacentral'
+              'canadaeast'
+            ]
+          }
+        }
+      }
+      {
+        groupNames: [
+          'CUSTOM'
+        ]
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'LA-Microsoft.EventHub-namespaces')
+        policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Event Hub to Log Analytics workspace', ' ', '-'))
         parameters: {
           logAnalytics: {
             value: '[parameters(\'logAnalytics\')]'
