@@ -66,6 +66,9 @@
                 },
                 "logAnalyticsAutomationAccountName": {
                     "$ref": "#/definitions/logAnalyticsAutomationAccountName"
+                },
+                "dataCollectionRule": {
+                    "$ref": "#/definitions/dataCollectionRule"
                 }
             },
             "required": [
@@ -78,7 +81,8 @@
                 "logAnalyticsResourceGroupName",
                 "logAnalyticsWorkspaceName",
                 "logAnalyticsRetentionInDays",
-                "logAnalyticsAutomationAccountName"
+                "logAnalyticsAutomationAccountName",
+                "dataCollectionRule"
             ],
             "title": "Parameters"
         },
@@ -133,6 +137,87 @@
                 }
             },
             "title": "logAnalyticsAutomationAccountName"
+        },
+        "dataCollectionRule": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "windowsEventLogs": {
+                            "type": "array",
+                            "items": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "streams": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "xPathQueries": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "syslog": {
+                            "type": "array",
+                            "items": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "streams": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "facilityNames": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "logLevels": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Debug",
+                                                "Info",
+                                                "Notice",
+                                                "Warning",
+                                                "Error",
+                                                "Critical",
+                                                "Alert",
+                                                "Emergency"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "title": "dataCollectionRule"
         }
     }
 }

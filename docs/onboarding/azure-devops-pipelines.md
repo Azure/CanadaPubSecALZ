@@ -565,6 +565,62 @@ This role assignment is used to grant users access to the logging subscription b
             },
             "logAnalyticsAutomationAccountName": {
               "value": "automation-account"
+            },
+            "dataCollectionRule": {
+              "value": {
+                "enabled": true,
+                "name": "DCR-AzureMonitorLogs",
+                "windowsEventLogs": [
+                  {
+                      "streams": [
+                          "Microsoft-Event"
+                      ],
+                      "xPathQueries": [
+                          "Application!*[System[(Level=1 or Level=2 or Level=3)]]",
+                          "Security!*[System[(band(Keywords,13510798882111488))]]",
+                          "System!*[System[(Level=1 or Level=2 or Level=3)]]"
+                      ],
+                      "name": "eventLogsDataSource"
+                  }
+                ],
+                "syslog": [
+                  {
+                      "streams": [
+                          "Microsoft-Syslog"
+                      ],
+                      "facilityNames": [
+                          "auth",
+                          "authpriv",
+                          "cron",
+                          "daemon",
+                          "mark",
+                          "kern",
+                          "local0",
+                          "local1",
+                          "local2",
+                          "local3",
+                          "local4",
+                          "local5",
+                          "local6",
+                          "local7",
+                          "lpr",
+                          "mail",
+                          "news",
+                          "syslog",
+                          "user",
+                          "uucp"
+                      ],
+                      "logLevels": [
+                          "Warning",
+                          "Error",
+                          "Critical",
+                          "Alert",
+                          "Emergency"
+                      ],
+                      "name": "sysLogsDataSource"
+                  }
+                ]
+              }
             }
           }
         }
@@ -1683,6 +1739,62 @@ Migration process:
           },
           "logAnalyticsAutomationAccountName": {
             "value": "< value from var-logging-logAnalyticsAutomationAccountName >"
+          },
+          "dataCollectionRule": {
+            "value": {
+              "enabled": true,
+              "name": "DCR-AzureMonitorLogs",
+              "windowsEventLogs": [
+                {
+                    "streams": [
+                        "Microsoft-Event"
+                    ],
+                    "xPathQueries": [
+                        "Application!*[System[(Level=1 or Level=2 or Level=3)]]",
+                        "Security!*[System[(band(Keywords,13510798882111488))]]",
+                        "System!*[System[(Level=1 or Level=2 or Level=3)]]"
+                    ],
+                    "name": "eventLogsDataSource"
+                }
+              ],
+              "syslog": [
+                {
+                    "streams": [
+                        "Microsoft-Syslog"
+                    ],
+                    "facilityNames": [
+                        "auth",
+                        "authpriv",
+                        "cron",
+                        "daemon",
+                        "mark",
+                        "kern",
+                        "local0",
+                        "local1",
+                        "local2",
+                        "local3",
+                        "local4",
+                        "local5",
+                        "local6",
+                        "local7",
+                        "lpr",
+                        "mail",
+                        "news",
+                        "syslog",
+                        "user",
+                        "uucp"
+                    ],
+                    "logLevels": [
+                        "Warning",
+                        "Error",
+                        "Critical",
+                        "Alert",
+                        "Emergency"
+                    ],
+                    "name": "sysLogsDataSource"
+                }
+              ]
+            }
           }
         }
       }
