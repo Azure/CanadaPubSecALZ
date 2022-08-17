@@ -230,6 +230,14 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = [for subnet 
   }
 }]
 
+module nsgPrivateEndpoints '../../azresources/network/nsg/nsg-empty.bicep' = {
+  name: 'deploy-nsg-private-endpoints'
+  params: {
+    name: '${network.subnets.privateEndpoints.name}Nsg'
+    location: location
+  }
+}
+
 module nsgDatabricks '../../azresources/network/nsg/nsg-databricks.bicep' = {
   name: 'deploy-nsg-databricks'
   params: {
@@ -310,7 +318,10 @@ var requiredSubnets = [
     name: network.subnets.privateEndpoints.name
     properties: {
       addressPrefix: network.subnets.privateEndpoints.addressPrefix
-      privateEndpointNetworkPolicies: 'Disabled'
+      privateEndpointNetworkPolicies: 'Enabled'
+      networkSecurityGroup: {
+        id: nsgPrivateEndpoints.outputs.nsgId
+      }
     }
   }
   {

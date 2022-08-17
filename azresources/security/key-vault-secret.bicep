@@ -18,6 +18,7 @@ param secretName string
 param secretValue string
 
 @description('Secret Expiry in days.')
+#disable-next-line secure-secrets-in-params   // defines the secret expiry period in days.  It is not a secret.
 param secretExpiryInDays int
 
 @description('Expiry Year.')
