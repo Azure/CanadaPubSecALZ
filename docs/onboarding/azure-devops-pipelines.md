@@ -565,6 +565,62 @@ This role assignment is used to grant users access to the logging subscription b
             },
             "logAnalyticsAutomationAccountName": {
               "value": "automation-account"
+            },
+            "dataCollectionRule": {
+              "value": {
+                "enabled": true,
+                "name": "DCR-AzureMonitorLogs",
+                "windowsEventLogs": [
+                  {
+                      "streams": [
+                          "Microsoft-Event"
+                      ],
+                      "xPathQueries": [
+                          "Application!*[System[(Level=1 or Level=2 or Level=3)]]",
+                          "Security!*[System[(band(Keywords,13510798882111488))]]",
+                          "System!*[System[(Level=1 or Level=2 or Level=3)]]"
+                      ],
+                      "name": "eventLogsDataSource"
+                  }
+                ],
+                "syslog": [
+                  {
+                      "streams": [
+                          "Microsoft-Syslog"
+                      ],
+                      "facilityNames": [
+                          "auth",
+                          "authpriv",
+                          "cron",
+                          "daemon",
+                          "mark",
+                          "kern",
+                          "local0",
+                          "local1",
+                          "local2",
+                          "local3",
+                          "local4",
+                          "local5",
+                          "local6",
+                          "local7",
+                          "lpr",
+                          "mail",
+                          "news",
+                          "syslog",
+                          "user",
+                          "uucp"
+                      ],
+                      "logLevels": [
+                          "Warning",
+                          "Error",
+                          "Critical",
+                          "Alert",
+                          "Emergency"
+                      ],
+                      "name": "sysLogsDataSource"
+                  }
+                ]
+              }
             }
           }
         }
@@ -1319,7 +1375,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
       * For **CanadaPubSecALZ v0.8.0 or earlier**, this is based on the prefix defined in `var-topLevelManagementGroupName`.  For example, if `var-topLevelManagementGroupName` is set to `contoso`, then `var-hubnetwork-managementGroupId` will be `contosoPlatformConnectivity`.
 
      * Set `var-hubnetwork-region` with preferred Azure region.
-     * Set `var-hubnetwork-subscriptionId` with subscription id for logging.
+     * Set `var-hubnetwork-subscriptionId` with subscription id for networking.
      * When using Hub Networking with Azure Firewall
         * Set `var-hubnetwork-azfwPolicy-configurationFileName` with the file name of the Azure Firewall Policy configuration.  i.e. `hub-azfw-policy/azure-firewall-policy.parameters.json`
         * Set `var-hubnetwork-azfw-configurationFileName` with the file name of the Hub Networking configuration.  i.e. `hub-azfw/hub-network.parameters.json`
@@ -1683,6 +1739,62 @@ Migration process:
           },
           "logAnalyticsAutomationAccountName": {
             "value": "< value from var-logging-logAnalyticsAutomationAccountName >"
+          },
+          "dataCollectionRule": {
+            "value": {
+              "enabled": true,
+              "name": "DCR-AzureMonitorLogs",
+              "windowsEventLogs": [
+                {
+                    "streams": [
+                        "Microsoft-Event"
+                    ],
+                    "xPathQueries": [
+                        "Application!*[System[(Level=1 or Level=2 or Level=3)]]",
+                        "Security!*[System[(band(Keywords,13510798882111488))]]",
+                        "System!*[System[(Level=1 or Level=2 or Level=3)]]"
+                    ],
+                    "name": "eventLogsDataSource"
+                }
+              ],
+              "syslog": [
+                {
+                    "streams": [
+                        "Microsoft-Syslog"
+                    ],
+                    "facilityNames": [
+                        "auth",
+                        "authpriv",
+                        "cron",
+                        "daemon",
+                        "mark",
+                        "kern",
+                        "local0",
+                        "local1",
+                        "local2",
+                        "local3",
+                        "local4",
+                        "local5",
+                        "local6",
+                        "local7",
+                        "lpr",
+                        "mail",
+                        "news",
+                        "syslog",
+                        "user",
+                        "uucp"
+                    ],
+                    "logLevels": [
+                        "Warning",
+                        "Error",
+                        "Critical",
+                        "Alert",
+                        "Emergency"
+                    ],
+                    "name": "sysLogsDataSource"
+                }
+              ]
+            }
           }
         }
       }

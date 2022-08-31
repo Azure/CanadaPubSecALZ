@@ -3,7 +3,7 @@
     "allOf": [
       {
         "field": "type",
-        "equals": "Microsoft.Network/azureFirewalls"
+        "equals": "Microsoft.EventHub/namespaces"
       },
       {
         "field": "location",
@@ -63,7 +63,7 @@
             "variables": {},
             "resources": [
               {
-                "type": "Microsoft.Network/azureFirewalls/providers/diagnosticSettings",
+                "type": "Microsoft.EventHub/namespaces/providers/diagnosticSettings",
                 "apiVersion": "2017-05-01-preview",
                 "name": "[concat(parameters('name'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
                 "location": "[parameters('location')]",
@@ -81,55 +81,39 @@
                   ],
                   "logs": [
                     {
-                      "category": "AzureFirewallApplicationRule",
+                      "category": "ArchiveLogs",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AzureFirewallNetworkRule",
+                      "category": "OperationalLogs",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AzureFirewallDnsProxy",
+                      "category": "AutoScaleLogs",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AZFWNetworkRule",
+                      "category": "KafkaCoordinatorLogs",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AZFWApplicationRule",
+                      "category": "KafkaUserErrorLogs",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AZFWNatRule",
+                      "category": "EventHubVNetConnectionEvent",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AZFWThreatIntel",
+                      "category": "CustomerManagedKeyUserLogs",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AZFWIdpsSignature",
+                      "category": "RuntimeAuditLogs",
                       "enabled": "[parameters('logsEnabled')]"
                     },
                     {
-                      "category": "AZFWDnsQuery",
-                      "enabled": "[parameters('logsEnabled')]"
-                    },
-                    {
-                      "category": "AZFWFqdnResolveFailure",
-                      "enabled": "[parameters('logsEnabled')]"
-                    },
-                    {
-                      "category": "AZFWApplicationRuleAggregation",
-                      "enabled": "[parameters('logsEnabled')]"
-                    },
-                    {
-                      "category": "AZFWNetworkRuleAggregation",
-                      "enabled": "[parameters('logsEnabled')]"
-                    },
-                    {
-                      "category": "AZFWNatRuleAggregation",
+                      "category": "ApplicationMetricsLogs",
                       "enabled": "[parameters('logsEnabled')]"
                     }
                   ]
