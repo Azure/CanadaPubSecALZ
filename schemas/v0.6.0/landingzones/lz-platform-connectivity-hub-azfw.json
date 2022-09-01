@@ -1,0 +1,433 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/PlatformConnectivityHubNetworkAzureFirewall",
+  "definitions": {
+    "PlatformConnectivityHubNetworkAzureFirewall": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": [
+            "https"
+          ],
+          "qt-uri-extensions": [
+            ".json"
+          ]
+        },
+        "contentVersion": {
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/definitions/Parameters"
+        }
+      },
+      "required": [
+        "$schema",
+        "contentVersion",
+        "parameters"
+      ],
+      "title": "PlatformConnectivityHubNetworkAzureFirewall"
+    },
+    "Parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "$ref": "types/location.json#/definitions/Location"
+        },
+        "serviceHealthAlerts": {
+          "$ref": "types/serviceHealthAlerts.json#/definitions/ServiceHealthAlerts"
+        },
+        "securityCenter": {
+          "$ref": "types/securityCenter.json#/definitions/SecurityCenter"
+        },
+        "subscriptionRoleAssignments": {
+          "$ref": "types/subscriptionRoleAssignments.json#/definitions/SubscriptionRoleAssignments"
+        },
+        "subscriptionBudget": {
+          "$ref": "types/subscriptionBudget.json#/definitions/SubscriptionBudget"
+        },
+        "subscriptionTags": {
+          "$ref": "types/subscriptionTags.json#/definitions/SubscriptionTags"
+        },
+        "resourceTags": {
+          "$ref": "types/resourceTags.json#/definitions/ResourceTags"
+        },
+        "logAnalyticsWorkspaceResourceId": {
+          "$ref": "types/logAnalyticsWorkspaceId.json#/definitions/LogAnalyticsWorkspaceId"
+        },
+        "privateDnsZones": {
+          "$ref": "#/definitions/privateDnsZones"
+        },
+        "ddosStandard": {
+          "$ref": "#/definitions/ddosStandard"
+        },
+        "publicAccessZone": {
+          "$ref": "#/definitions/publicAccessZone"
+        },
+        "managementRestrictedZone": {
+          "$ref": "#/definitions/managementRestrictedZone"
+        },
+        "hub": {
+          "$ref": "#/definitions/hub"
+        },
+        "networkWatcher": {
+          "$ref": "#/definitions/networkWatcher"
+        }
+      },
+      "required": [
+        "resourceTags",
+        "securityCenter",
+        "serviceHealthAlerts",
+        "subscriptionBudget",
+        "subscriptionRoleAssignments",
+        "subscriptionTags",
+        "privateDnsZones",
+        "ddosStandard",
+        "publicAccessZone",
+        "managementRestrictedZone",
+        "hub",
+        "networkWatcher"
+      ],
+      "title": "Parameters"
+    },
+    "privateDnsZones": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "resourceGroupName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "enabled",
+            "resourceGroupName"
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "ddosStandard": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "resourceGroupName": {
+              "type": "string"
+            },
+            "planName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "enabled",
+            "resourceGroupName",
+            "planName"
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "publicAccessZone": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "resourceGroupName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "enabled",
+            "resourceGroupName"
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "managementRestrictedZone": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "resourceGroupName": {
+              "type": "string"
+            },
+            "network": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "addressPrefixes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "subnets": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/optionalSubnet"
+                  }
+                }
+              },
+              "required": [
+                "name",
+                "addressPrefixes",
+                "subnets"
+              ]
+            }
+          },
+          "required": [
+            "enabled",
+            "resourceGroupName",
+            "network"
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "hub": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "object",
+          "properties": {
+            "resourceGroupName": {
+              "type": "string"
+            },
+            "bastion": {
+              "$ref": "#/definitions/bastion"
+            },
+            "azureFirewall": {
+              "$ref": "#/definitions/azureFirewall"
+            },
+            "network": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "addressPrefixes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "subnets": {
+                  "type": "object",
+                  "properties": {
+                    "gateway": {
+                      "$ref": "#/definitions/requiredSubnet"
+                    },
+                    "firewall": {
+                      "$ref": "#/definitions/requiredSubnet"
+                    },
+                    "bastion": {
+                      "$ref": "#/definitions/requiredSubnet"
+                    },
+                    "publicAccess": {
+                      "$ref": "#/definitions/requiredSubnet"
+                    },
+                    "optional": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/optionalSubnet"
+                      }
+                    }
+                  }
+                }
+              },
+              "required": [
+                "name",
+                "addressPrefixes",
+                "subnets"
+              ]
+            }
+          },
+          "required": [
+            "resourceGroupName",
+            "bastion",
+            "azureFirewall",
+            "network"
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "networkWatcher": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "object",
+          "properties": {
+            "resourceGroupName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "resourceGroupName"
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "requiredSubnet": {
+      "type": "object",
+      "properties": {
+        "comments": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "addressPrefix": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "comments",
+        "name",
+        "addressPrefix"
+      ]
+    },
+    "optionalSubnet": {
+      "type": "object",
+      "properties": {
+        "comments": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "addressPrefix": {
+          "type": "string"
+        },
+        "nsg": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "enabled"
+          ]
+        },
+        "udr": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "enabled"
+          ]
+        },
+        "delegations": {
+          "type": "object",
+          "properties": {
+            "serviceName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "serviceName"
+          ]
+        }
+      },
+      "required": [
+        "comments",
+        "name",
+        "addressPrefix",
+        "nsg",
+        "udr"
+      ]
+    },
+    "bastion": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "sku": {
+          "type": "string"
+        },
+        "scaleUnits": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "enabled",
+        "name",
+        "sku",
+        "scaleUnits"
+      ]
+    },
+    "azureFirewall": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "availabilityZones": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "forcedTunnelingEnabled": {
+          "type": "boolean"
+        },
+        "forcedTunnelingNextHop": {
+          "type": "string"
+        },
+        "firewallPolicyId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "availabilityZones",
+        "forcedTunnelingEnabled",
+        "forcedTunnelingNextHop"
+      ]
+    }
+  }
+}

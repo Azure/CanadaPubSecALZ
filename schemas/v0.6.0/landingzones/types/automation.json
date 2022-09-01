@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "definitions": {
+      "Automation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+              "value": {
+                  "$ref": "#/definitions/Value"
+              }
+          },
+          "required": [
+              "value"
+          ],
+          "title": "Automation"
+      },
+      "Value": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+              "name": {
+                  "type": "string"
+              }
+          },
+          "required": [
+              "name"
+          ],
+          "title": "Value"
+      }
+  }
+}
