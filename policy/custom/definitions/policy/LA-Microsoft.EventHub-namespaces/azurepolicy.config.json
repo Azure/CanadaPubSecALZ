@@ -1,0 +1,4 @@
+{
+    "name": "Deploy Diagnostic Settings for Event Hub to Log Analytics workspace",
+    "mode": "indexed"
+}

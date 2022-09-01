@@ -156,7 +156,7 @@ resource aks 'Microsoft.ContainerService/managedClusters@2021-07-01' = {
       clientId: 'msi'
     }
     addonProfiles: {
-      'omsagent': (!empty(containerInsightsLogAnalyticsResourceId)) ? {
+      omsagent: (!empty(containerInsightsLogAnalyticsResourceId)) ? {
         enabled: true
         config: {
           logAnalyticsWorkspaceResourceID: containerInsightsLogAnalyticsResourceId

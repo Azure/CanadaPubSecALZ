@@ -38,13 +38,7 @@
     },
     "subscriptionBudget": {
       "value": {
-        "createBudget": true,
-        "name": "MonthlySubscriptionBudget",
-        "amount": 1000,
-        "timeGrain": "Monthly",
-        "contactEmails": [
-          "alzcanadapubsec@microsoft.com"
-        ]
+        "createBudget": false
       }
     },
     "subscriptionTags": {
@@ -119,9 +113,6 @@
                   "uucp"
               ],
               "logLevels": [
-                  "Debug",
-                  "Info",
-                  "Notice",
                   "Warning",
                   "Error",
                   "Critical",
