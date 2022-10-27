@@ -1,0 +1,223 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/PlatformLoggingArchetypeDefinition",
+    "definitions": {
+        "PlatformLoggingArchetypeDefinition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "$schema": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "https"
+                    ],
+                    "qt-uri-extensions": [
+                        ".json"
+                    ]
+                },
+                "contentVersion": {
+                    "type": "string"
+                },
+                "parameters": {
+                    "$ref": "#/definitions/Parameters"
+                }
+            },
+            "required": [
+                "$schema",
+                "contentVersion",
+                "parameters"
+            ],
+            "title": "PlatformLoggingArchetypeDefinition"
+        },
+        "Parameters": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "location": {
+                    "$ref": "types/location.json#/definitions/Location"
+                },
+                "serviceHealthAlerts": {
+                    "$ref": "types/serviceHealthAlerts.json#/definitions/ServiceHealthAlerts"
+                },
+                "securityCenter": {
+                    "$ref": "types/securityCenter.json#/definitions/SecurityCenter"
+                },
+                "subscriptionRoleAssignments": {
+                    "$ref": "types/subscriptionRoleAssignments.json#/definitions/SubscriptionRoleAssignments"
+                },
+                "subscriptionBudget": {
+                    "$ref": "types/subscriptionBudget.json#/definitions/SubscriptionBudget"
+                },
+                "subscriptionTags": {
+                    "$ref": "types/subscriptionTags.json#/definitions/SubscriptionTags"
+                },
+                "resourceTags": {
+                    "$ref": "types/resourceTags.json#/definitions/ResourceTags"
+                },
+                "logAnalyticsResourceGroupName": {
+                    "$ref": "#/definitions/logAnalyticsResourceGroupName"
+                },
+                "logAnalyticsWorkspaceName": {
+                    "$ref": "#/definitions/logAnalyticsWorkspaceName"
+                },
+                "logAnalyticsRetentionInDays": {
+                    "$ref": "#/definitions/logAnalyticsRetentionInDays"
+                },
+                "logAnalyticsAutomationAccountName": {
+                    "$ref": "#/definitions/logAnalyticsAutomationAccountName"
+                },
+                "dataCollectionRule": {
+                    "$ref": "#/definitions/dataCollectionRule"
+                }
+            },
+            "required": [
+                "resourceTags",
+                "securityCenter",
+                "serviceHealthAlerts",
+                "subscriptionBudget",
+                "subscriptionRoleAssignments",
+                "subscriptionTags",
+                "logAnalyticsResourceGroupName",
+                "logAnalyticsWorkspaceName",
+                "logAnalyticsRetentionInDays",
+                "logAnalyticsAutomationAccountName",
+                "dataCollectionRule"
+            ],
+            "title": "Parameters"
+        },
+        "logAnalyticsResourceGroupName": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            },
+            "title": "logAnalyticsResourceGroupName"
+        },
+        "logAnalyticsWorkspaceName": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            },
+            "title": "logAnalyticsWorkspaceName"
+        },
+        "logAnalyticsRetentionInDays": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "integer"
+                }
+            },
+            "title": "logAnalyticsRetentionInDays"
+        },
+        "logAnalyticsAutomationAccountName": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            },
+            "title": "logAnalyticsAutomationAccountName"
+        },
+        "dataCollectionRule": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "windowsEventLogs": {
+                            "type": "array",
+                            "items": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "streams": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "xPathQueries": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "syslog": {
+                            "type": "array",
+                            "items": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "streams": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "facilityNames": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "logLevels": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Debug",
+                                                "Info",
+                                                "Notice",
+                                                "Warning",
+                                                "Error",
+                                                "Critical",
+                                                "Alert",
+                                                "Emergency"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "title": "dataCollectionRule"
+        }
+    }
+}
