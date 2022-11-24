@@ -73,7 +73,7 @@ Network design will require 3 IP blocks:
 ## Management Restricted Zone Virtual Network
 
 * Management Access Zone (OZ) - to host any privileged access workstations (PAW), with Management Public IPs forwarded via the hub's firewall.
-* Management (OZ) – hosting the management servers (domain controllers).
+* Management (OZ) – hosting the management servers (DNS Servers).
 * Infrastructure (OZ) – hosting other common infrastructure, like file shares.
 * Security Management (OZ) – hosting security, proxies and patching servers.
 * Logging (OZ) – hosting logging relays.
