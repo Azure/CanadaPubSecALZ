@@ -17,13 +17,13 @@ var roleName = 'Custom - Network Operations (NetOps)'
 var roleDescription = 'Platform-wide global connectivity management: virtual networks, UDRs, NSGs, NVAs, VPN, Azure ExpressRoute, and others.'
 
 // Telemetry - Azure customer usage attribution
-// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+// Reference:  https://learn.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 var telemetry = json(loadTextContent('../config/telemetry.json'))
 module telemetryCustomerUsageAttribution '../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
   name: 'pid-${telemetry.customerUsageAttribution.modules.roles}-lznetops'
 }
 
-// Reference:  https://docs.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/identity-access
+// Reference:  https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/identity-access
 resource roleDefn 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' = {
   name: guid(roleName)
   scope: managementGroup()

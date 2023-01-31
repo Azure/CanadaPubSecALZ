@@ -390,7 +390,7 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
               targetFqdns: [
                 'adf.azure.com'
 
-                // https://docs.microsoft.com/en-us/azure/data-factory/data-factory-ux-troubleshoot-guide
+                // https://learn.microsoft.com/en-us/azure/data-factory/data-factory-ux-troubleshoot-guide
                 'dpcanadacentral.svc.datafactory.azure.com'
                 'dpcanadaeast.svc.datafactory.azure.com'
               ]
@@ -474,7 +474,7 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
             type: 'Allow'
           }
           rules: [
-            // Reference:  https://docs.microsoft.com/azure/security-center/deploy-vulnerability-assessment-vm#deploy-the-integrated-scanner-to-your-azure-and-hybrid-machines
+            // Reference:  https://learn.microsoft.com/azure/security-center/deploy-vulnerability-assessment-vm#deploy-the-integrated-scanner-to-your-azure-and-hybrid-machines
             {
               ruleType: 'ApplicationRule'
               name: 'US Data Center'
@@ -739,8 +739,8 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
           ]
         }
         {
-          // https://docs.microsoft.com/azure/firewall/fqdn-tags
-          // https://docs.microsoft.com/mem/configmgr/sum/get-started/install-a-software-update-point
+          // https://learn.microsoft.com/azure/firewall/fqdn-tags
+          // https://learn.microsoft.com/mem/configmgr/sum/get-started/install-a-software-update-point
           name: 'Windows Update'
           ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
           priority: 1000
@@ -771,7 +771,7 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
   }
 
   // AKS required FQDNs 
-  // https://docs.microsoft.com/en-us/azure/aks/limit-egress-traffic
+  // https://learn.microsoft.com/en-us/azure/aks/limit-egress-traffic
   resource AKSCollectionGroup 'ruleCollectionGroups@2021-02-01' = {
     dependsOn: [
       windowsCollectionGroup
@@ -904,7 +904,7 @@ resource policy 'Microsoft.Network/firewallPolicies@2021-02-01' = {
       priority: 2000
       ruleCollections: [
         {
-          // https://docs.microsoft.com/azure/virtual-machines/workloads/redhat/redhat-rhui#the-ips-for-the-rhui-content-delivery-servers
+          // https://learn.microsoft.com/azure/virtual-machines/workloads/redhat/redhat-rhui#the-ips-for-the-rhui-content-delivery-servers
           name: 'RedHat Update Infrastructure'
           ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
           priority: 100

@@ -13,7 +13,7 @@
 
 ## Overview
 
-Guardrails in Azure are deployed through [Azure Policy](https://docs.microsoft.com/azure/governance/policy/overview).  Azure Policy helps to enforce organizational standards and to assess compliance at-scale. Through its compliance dashboard, it provides an aggregated view to evaluate the overall state of the environment, with the ability to drill down to the per-resource, per-policy granularity. It also helps to bring your resources to compliance through bulk remediation for existing resources and automatic remediation for new resources.
+Guardrails in Azure are deployed through [Azure Policy](https://learn.microsoft.com/azure/governance/policy/overview).  Azure Policy helps to enforce organizational standards and to assess compliance at-scale. Through its compliance dashboard, it provides an aggregated view to evaluate the overall state of the environment, with the ability to drill down to the per-resource, per-policy granularity. It also helps to bring your resources to compliance through bulk remediation for existing resources and automatic remediation for new resources.
 
 Common use cases for Azure Policy include implementing governance for resource consistency, regulatory compliance, security, cost, and management. Policy definitions for these common use cases are already available in your Azure environment as built-ins to help you get started.
 
@@ -170,10 +170,10 @@ See [Azure Policy Authoring Guide](authoring-guide.md) for step-by-step instruct
 
 
 
-[nist80053r4Policyset]: https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r4
-[nist80053r5Policyset]: https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r5
-[pbmmPolicyset]: https://docs.microsoft.com/azure/governance/policy/samples/canada-federal-pbmm
-[asbPolicySet]: https://docs.microsoft.com/security/benchmark/azure/overview
-[cisMicrosoftAzureFoundationPolicySet]: https://docs.microsoft.com/azure/governance/policy/samples/cis-azure-1-3-0
-[fedrampmPolicySet]: https://docs.microsoft.com/azure/governance/policy/samples/fedramp-moderate
-[hipaaHitrustPolicySet]: https://docs.microsoft.com/azure/governance/policy/samples/hipaa-hitrust-9-2
+[nist80053r4Policyset]: https://learn.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r4
+[nist80053r5Policyset]: https://learn.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r5
+[pbmmPolicyset]: https://learn.microsoft.com/azure/governance/policy/samples/canada-federal-pbmm
+[asbPolicySet]: https://learn.microsoft.com/security/benchmark/azure/overview
+[cisMicrosoftAzureFoundationPolicySet]: https://learn.microsoft.com/azure/governance/policy/samples/cis-azure-1-3-0
+[fedrampmPolicySet]: https://learn.microsoft.com/azure/governance/policy/samples/fedramp-moderate
+[hipaaHitrustPolicySet]: https://learn.microsoft.com/azure/governance/policy/samples/hipaa-hitrust-9-2

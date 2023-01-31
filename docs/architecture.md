@@ -51,7 +51,7 @@ The table below outlines the key decisions each department must consider as part
 
 Departments are targeting workloads with **Unclassified**, **Protected A** and **Protected B** data classifications in Azure.  These classifications are based on [ITSG-33][itsg33] which is derived from [NIST SP 800-53 Revision 4][nist80053R4].
 
-Guardrails in Azure are deployed through [Azure Policy](https://docs.microsoft.com/azure/governance/policy/overview).  Azure Policy helps to enforce organizational standards and to assess compliance at-scale. Through its compliance dashboard, it provides an aggregated view to evaluate the overall state of the environment, with the ability to drill down to the per-resource, per-policy granularity. It also helps to bring your resources to compliance through bulk remediation for existing resources and automatic remediation for new resources.
+Guardrails in Azure are deployed through [Azure Policy](https://learn.microsoft.com/azure/governance/policy/overview).  Azure Policy helps to enforce organizational standards and to assess compliance at-scale. Through its compliance dashboard, it provides an aggregated view to evaluate the overall state of the environment, with the ability to drill down to the per-resource, per-policy granularity. It also helps to bring your resources to compliance through bulk remediation for existing resources and automatic remediation for new resources.
 
 Common use cases for Azure Policy include implementing governance for resource consistency, regulatory compliance, security, cost, and management. Policy definitions for these common use cases are already available in your Azure environment as built-ins to help you get started.
 
@@ -91,7 +91,7 @@ The compliance reporting will outline the Azure Policies, the resource types, th
 
 ### 2.5 Compliance Data Export
 
-For custom reporting requirements, the raw compliance data can be exported using [Azure Resource Graph](https://docs.microsoft.com/azure/governance/resource-graph/overview).  This export allows for additional analysis and align to operational requirements.  A custom data export pipeline and processes will be needed to operationalize the dataset.  Primary queries to access the data are:
+For custom reporting requirements, the raw compliance data can be exported using [Azure Resource Graph](https://learn.microsoft.com/azure/governance/resource-graph/overview).  This export allows for additional analysis and align to operational requirements.  A custom data export pipeline and processes will be needed to operationalize the dataset.  Primary queries to access the data are:
 
 ```none
 securityresources
@@ -108,7 +108,7 @@ securityresources
 
 ## 3. Management Groups
 
-[Management Groups](https://docs.microsoft.com/azure/governance/management-groups/overview) enable organizations to efficiently manage access, governance and compliance across all subscriptions.  Azure management groups provide a level of scope above subscriptions. Subscriptions are organized into containers called "management groups" and apply Azure Policies and role-based access control to the management groups. All subscriptions within a management group automatically inherit the settings applied to the management group.
+[Management Groups](https://learn.microsoft.com/azure/governance/management-groups/overview) enable organizations to efficiently manage access, governance and compliance across all subscriptions.  Azure management groups provide a level of scope above subscriptions. Subscriptions are organized into containers called "management groups" and apply Azure Policies and role-based access control to the management groups. All subscriptions within a management group automatically inherit the settings applied to the management group.
 
 Management groups give you enterprise-grade management at a large scale no matter what type of subscriptions you might have. All subscriptions within a single management group must trust the same Azure Active Directory tenant.
 
@@ -170,7 +170,7 @@ When choosing a management group hierarchy, consider the following:
 * Authoritative guidance from subject matter experts
 * Your organizational requirements
 * Recommended best practices
-* [Important facts about management groups](https://docs.microsoft.com/azure/governance/management-groups/overview#important-facts-about-management-groups)
+* [Important facts about management groups](https://learn.microsoft.com/azure/governance/management-groups/overview#important-facts-about-management-groups)
 
 Customers with existing management group structure can consider merging the recommended structure to continue to use the existing structure.  The new structure deployed side-by-side will enable the ability to:
 
@@ -204,7 +204,7 @@ The service principal requires `Owner` role to configure role assignments for:
 * Policy Assignments that provide remediation (i.e. `deployIfNotExists` policies)
 * Archetype deployments (i.e. workload deployments) with role assignments between Azure Services for integration and to Security Groups for user access
 
-> **Recommendation:**  Consider setting up approval flow through Azure DevOps to ensure better control over pipeline execution.  See [Release gates and approvals overview](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/?view=azure-devops) in Azure Docs.
+> **Recommendation:**  Consider setting up approval flow through Azure DevOps to ensure better control over pipeline execution.  See [Release gates and approvals overview](https://learn.microsoft.com/azure/devops/pipelines/release/approvals/?view=azure-devops) in Azure Docs.
 
 Additional service principal accounts must be created and scoped to child management groups, subscriptions or resource groups based on tasks that are expected of the service principal accounts.
 
@@ -220,24 +220,24 @@ Access Control at Management Group scope enables management and oversight at sca
 
 | Scenario | Permanent Assignment | On-Demand Assignment (through Azure AD PIM) |
 | --- | --- | --- |
-| Global Reader | [Reader](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#reader) | - |
-| Governance | - | [Resource Policy Contributor](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#resource-policy-contributor) |
-| Log Management | [Log Analytics Reader](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#log-analytics-reader) | [Log Analytics Contributor](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#log-analytics-contributor) |
-| Security Management | [Security Reader](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#security-reader) | [Security Admin](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#security-admin) | 
-| User Management | - | [User Access Administrator](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator) |
-| Cost Management | [Billing Reader](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#billing-reader) | - |
+| Global Reader | [Reader](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#reader) | - |
+| Governance | - | [Resource Policy Contributor](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#resource-policy-contributor) |
+| Log Management | [Log Analytics Reader](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#log-analytics-reader) | [Log Analytics Contributor](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#log-analytics-contributor) |
+| Security Management | [Security Reader](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#security-reader) | [Security Admin](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#security-admin) | 
+| User Management | - | [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator) |
+| Cost Management | [Billing Reader](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#billing-reader) | - |
 
 ### 4.4 Recommendations for Subscriptions
 
 The table provides the 3 generic roles that are commonly used in Azure environment.  Granular built-in roles can be used based on use case to further limit the access control.  Our recommendation is to assign the least privileged role that is required for a person or service principal to complete the tasks.
 
-Review the [Azure Built-In roles](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles) to evaluate applicability.
+Review the [Azure Built-In roles](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles) to evaluate applicability.
 
 | Environment | Scenario | Considerations | Permanent Assignment | On-Demand Assignment (through Azure AD PIM)
 | --- | --- | --- | --- | --- |
-| All | Read Access | Permanent role assigned to all users who need access to the Azure resources. | [Reader](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#reader) | - |
-| Dev/Test, QA | Manage Azure resources |  Contributor role can deploy all Azure resources, however any RBAC assignments will require the permissions to be elevated to Owner.<br /><br />Alternative is to leverage DevOps Pipeline and the Service Principal Account with elevated permissions. | [Contributor](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor) | [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) |
-| Production | Manage Azure resources | No standing management permissions in Production.<br /><br />Owner role is only required for RBAC changes, otherwise, use Contributor role or another built-in role for all other operations. | - | [Contributor](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor) or [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner)
+| All | Read Access | Permanent role assigned to all users who need access to the Azure resources. | [Reader](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#reader) | - |
+| Dev/Test, QA | Manage Azure resources |  Contributor role can deploy all Azure resources, however any RBAC assignments will require the permissions to be elevated to Owner.<br /><br />Alternative is to leverage DevOps Pipeline and the Service Principal Account with elevated permissions. | [Contributor](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#contributor) | [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner) |
+| Production | Manage Azure resources | No standing management permissions in Production.<br /><br />Owner role is only required for RBAC changes, otherwise, use Contributor role or another built-in role for all other operations. | - | [Contributor](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#contributor) or [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner)
 
 ### 4.5 Recommendations for Resource Groups
 
@@ -273,11 +273,11 @@ Reference implementation provides two topologies for Hub Network design:
 
 ### Azure Bastion
 
-Bastion [does not support User Defined Route](https://docs.microsoft.com/azure/bastion/bastion-faq#udr) but can work with Virtual Machines on peered virtual networks as long as the [Network Security Groups allow][nsgAzureBastion] it and the user has the [required role based access control](https://docs.microsoft.com/azure/bastion/bastion-faq#i-have-access-to-the-peered-vnet-but-i-cant-see-the-vm-deployed-there)
+Bastion [does not support User Defined Route](https://learn.microsoft.com/azure/bastion/bastion-faq#udr) but can work with Virtual Machines on peered virtual networks as long as the [Network Security Groups allow][nsgAzureBastion] it and the user has the [required role based access control](https://learn.microsoft.com/azure/bastion/bastion-faq#i-have-access-to-the-peered-vnet-but-i-cant-see-the-vm-deployed-there)
 
 ### Azure Application Gateway
 
-Application Gateway [does not support default UDRs to an NVA](https://docs.microsoft.com/en-us/azure/application-gateway/configuration-infrastructure):
+Application Gateway [does not support default UDRs to an NVA](https://learn.microsoft.com/en-us/azure/application-gateway/configuration-infrastructure):
 
 > "Any scenario where 0.0.0.0/0 needs to be redirected through any virtual appliance, a hub/spoke virtual network, or on-premise (forced tunneling) isn't supported for V2.".
 
@@ -301,7 +301,7 @@ The following diagram shows a typical high-level architecture for enterprise env
 
 ![Hub Managed DNS](media/architecture/hubnetwork-private-link-central-dns.png)
 
-**Reference:** [Private Link and DNS integration at scale](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/private-link-and-dns-integration-at-scale)
+**Reference:** [Private Link and DNS integration at scale](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/private-link-and-dns-integration-at-scale)
 
 Reference implementation provides the following capabilities:
 
@@ -314,7 +314,7 @@ The reference implementation does not deploy DNS Servers (as Virtual Machines) i
 
 * Leverage Azure Firewall's DNS Proxy where the Private DNS Zones are linked only to the Hub Virtual Network.  DNS resolution for all spokes will be through the VIP provided by Azure Firewall.
 
-* Link Private DNS Zones directly to the spoke virtual networks and use the [built-in DNS resolver in each virtual network](https://docs.microsoft.com/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances). Virtual network(s) in spoke subscriptions be configured through Virtual Network Link for name resolution. DNS resolution is automatic once the Private DNS Zone is linked to the virtual network.
+* Link Private DNS Zones directly to the spoke virtual networks and use the [built-in DNS resolver in each virtual network](https://learn.microsoft.com/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances). Virtual network(s) in spoke subscriptions be configured through Virtual Network Link for name resolution. DNS resolution is automatic once the Private DNS Zone is linked to the virtual network.
 
 * Leverage DNS Servers on virtual machines that are managed by department's IT.
 
@@ -336,7 +336,7 @@ Following the nomenclature of [ITSG-22][itsg22], these would be the default subn
 
 ### 6.1 Scope
 
-Microsoft's recommendation is [one central Log Analytics workspace](https://docs.microsoft.com/azure/azure-monitor/logs/design-logs-deployment#important-considerations-for-an-access-control-strategy) that will be shared by IT, Security Analysts and Application Teams.
+Microsoft's recommendation is [one central Log Analytics workspace](https://learn.microsoft.com/azure/azure-monitor/logs/design-logs-deployment#important-considerations-for-an-access-control-strategy) that will be shared by IT, Security Analysts and Application Teams.
 
 The design and recommendation are based on the following requirements:
 
@@ -367,9 +367,9 @@ The workspace will be configured as:
 
 As the logging strategy evolves, Microsoft recommends considering the following improvements:
 
-* To optimize cost, configure [data retention periods by data type](https://docs.microsoft.com/azure/azure-monitor/logs/manage-cost-storage#retention-by-data-type).
+* To optimize cost, configure [data retention periods by data type](https://learn.microsoft.com/azure/azure-monitor/logs/manage-cost-storage#retention-by-data-type).
 * To optimize cost, collect only the logs that are required for operations and security monitoring.  Current requirement is to collect all logs.
-* For data retention greater than 2 years, export logs to Azure Storage and [leverage immutable storage](https://docs.microsoft.com/azure/storage/blobs/storage-blob-immutable-storage) with WORM policy (Write Once, Read Many) to make data non-erasable and non-modifiable.
+* For data retention greater than 2 years, export logs to Azure Storage and [leverage immutable storage](https://learn.microsoft.com/azure/storage/blobs/storage-blob-immutable-storage) with WORM policy (Write Once, Read Many) to make data non-erasable and non-modifiable.
 * Use Security Groups to control access to all or per-resource logs.
 
 ### 6.2 Design considerations for multiple Log Analytics workspaces
@@ -380,7 +380,7 @@ As the logging strategy evolves, Microsoft recommends considering the following 
 | Avoid outbound data transfer charges by having a workspace in the same region as the Azure resources it manages. | Not applicable to current environment since all Azure deployments will be in Canada Central. |
 | Manage multiple departments or business groups, and need each to see their own data, but not data from others. Also, there is no business requirement for a consolidated cross department or business group view. | Not applicable since security analysts require cross department querying capabilities, but each department or Application Team can only see their data.  Data access control is achieved through role-based access control. |
 
-**Reference**: [Designing your Azure Monitor Logs deployment](https://docs.microsoft.com/en-ca/azure/azure-monitor/logs/design-logs-deployment#important-considerations-for-an-access-control-strategy)
+**Reference**: [Designing your Azure Monitor Logs deployment](https://learn.microsoft.com/en-ca/azure/azure-monitor/logs/design-logs-deployment#important-considerations-for-an-access-control-strategy)
 
 ### 6.3 Access Control - Use resource or workspace permissions
 
@@ -388,11 +388,11 @@ With Azure role-based access control (Azure RBAC), you can grant users and group
 
 For example, when you grant access to your team responsible for infrastructure services hosted on Azure virtual machines (VMs), and as a result they'll have access to only the logs generated by those VMs. This is following **resource-context** log model. The basis for this model is for every log record emitted by an Azure resource, it is automatically associated with this resource. Logs are forwarded to a central workspace that respects scoping and Azure RBAC based on the resources.
 
-**Reference**:  [Designing your Azure Monitor Logs deployment - Access Control](https://docs.microsoft.com/en-ca/azure/azure-monitor/logs/design-logs-deployment?WT.mc_id=modinfra-11671-pierrer#access-control-overview)
+**Reference**:  [Designing your Azure Monitor Logs deployment - Access Control](https://learn.microsoft.com/en-ca/azure/azure-monitor/logs/design-logs-deployment?WT.mc_id=modinfra-11671-pierrer#access-control-overview)
 
 | Scenario | Log Access Mode | Log Data Visibility |
 | --- | --- | --- |
-| Security Analyst with [Log Analytics Reader or Log Analytics Contributor](https://docs.microsoft.com/en-ca/azure/azure-monitor/logs/manage-access#manage-access-using-azure-permissions) RBAC role assignment. | Access the Log Analytics workspace directly through Azure Portal or through Microsoft Sentinel. | All data in the Log Analytics Workspace. |
+| Security Analyst with [Log Analytics Reader or Log Analytics Contributor](https://learn.microsoft.com/en-ca/azure/azure-monitor/logs/manage-access#manage-access-using-azure-permissions) RBAC role assignment. | Access the Log Analytics workspace directly through Azure Portal or through Microsoft Sentinel. | All data in the Log Analytics Workspace. |
 | IT Teams responsible for one or more line of business with permissions to one or more subscriptions, resource groups or resources with at least Reader role. | Access the logs through the resource's Logs menu for the Azure resource (i.e., VM or Storage Account or Database). | Only to Azure resources based on RBAC.  User can query logs for specific resources, resource groups, or subscription they have access to from any workspace but can't query logs for other resources. |
 | Application Team with permissions to one or more subscriptions, resource groups or resources with at least Reader role. | Access the logs through the resource's Logs menu for the Azure resource (i.e., VM or Storage Account or Database). | Only to Azure resources based on RBAC.  User can query logs for specific resources, resource groups, or subscription they have access to from any workspace but can't query logs for other resources. |
 
@@ -565,13 +565,13 @@ By using gates, approvals, and manual intervention you can take full control of 
 
 | Scenario | Feature(s) to use |
 | --- | --- |
-| A user must manually validate the change request and approve the deployment to a certain stage. | [Pre-deployment approvals](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/approvals?view=azure-devops) |
-| A user must manually sign off after deployment before the release is triggered to other stages. | [Post-deployment approvals](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/approvals?view=azure-devops) |
-| A team wants to ensure there are no active issues in the work item or problem management system before deploying a build to a stage. | [Pre-deployment gates](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/gates?view=azure-devops) |
-| A team wants to ensure there are no reported incidents after deployment, before triggering a release. | [Post-deployment gates](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/gates?view=azure-devops) |
-| After deployment, a team wants to wait for a specified time before prompting users to sign out. | [Post-deployment gates](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/gates?view=azure-devops) and [post-deployment approvals](https://docs.microsoft.com/azure/devops/pipelines/release/approvals/approvals?view=azure-devops) |
-| During deployment, a user must manually follow specific instructions and then resume the deployment. | [Manual Intervention](https://docs.microsoft.com/azure/devops/pipelines/release/deploy-using-approvals?view=azure-devops#configure-maninter) or [Manual Validation](https://docs.microsoft.com/azure/devops/pipelines/release/deploy-using-approvals?view=azure-devops#view-approvals) |
-| During deployment, a team wants to prompt users to enter a value for a parameter used by the deployment tasks or allow users to edit the release. | [Manual Intervention](https://docs.microsoft.com/azure/devops/pipelines/release/deploy-using-approvals?view=azure-devops#configure-maninter) or [Manual Validation](https://docs.microsoft.com/azure/devops/pipelines/release/deploy-using-approvals?view=azure-devops#view-approvals) |
+| A user must manually validate the change request and approve the deployment to a certain stage. | [Pre-deployment approvals](https://learn.microsoft.com/azure/devops/pipelines/release/approvals/approvals?view=azure-devops) |
+| A user must manually sign off after deployment before the release is triggered to other stages. | [Post-deployment approvals](https://learn.microsoft.com/azure/devops/pipelines/release/approvals/approvals?view=azure-devops) |
+| A team wants to ensure there are no active issues in the work item or problem management system before deploying a build to a stage. | [Pre-deployment gates](https://learn.microsoft.com/azure/devops/pipelines/release/approvals/gates?view=azure-devops) |
+| A team wants to ensure there are no reported incidents after deployment, before triggering a release. | [Post-deployment gates](https://learn.microsoft.com/azure/devops/pipelines/release/approvals/gates?view=azure-devops) |
+| After deployment, a team wants to wait for a specified time before prompting users to sign out. | [Post-deployment gates](https://learn.microsoft.com/azure/devops/pipelines/release/approvals/gates?view=azure-devops) and [post-deployment approvals](https://learn.microsoft.com/azure/devops/pipelines/release/approvals/approvals?view=azure-devops) |
+| During deployment, a user must manually follow specific instructions and then resume the deployment. | [Manual Intervention](https://learn.microsoft.com/azure/devops/pipelines/release/deploy-using-approvals?view=azure-devops#configure-maninter) or [Manual Validation](https://learn.microsoft.com/azure/devops/pipelines/release/deploy-using-approvals?view=azure-devops#view-approvals) |
+| During deployment, a team wants to prompt users to enter a value for a parameter used by the deployment tasks or allow users to edit the release. | [Manual Intervention](https://learn.microsoft.com/azure/devops/pipelines/release/deploy-using-approvals?view=azure-devops#configure-maninter) or [Manual Validation](https://learn.microsoft.com/azure/devops/pipelines/release/deploy-using-approvals?view=azure-devops#view-approvals) |
 | During deployment, a team wants to wait for monitoring or information portals to detect any active incidents, before continuing with other deployment jobs. | Planned, but not yet implemented for YAML pipelines |
 
 You can combine all three techniques within a release pipeline to fully achieve your own deployment requirements.
@@ -609,9 +609,9 @@ Steps to implement user validation (approval) check:
 [rfc1918]: https://tools.ietf.org/html/rfc1918
 [rfc6598]: https://tools.ietf.org/html/rfc6598
 [nist80053r4]: https://csrc.nist.gov/publications/detail/sp/800-53/rev-4/archive/2015-01-22
-[nist80053r4Policyset]: https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r4
-[nist80053r5Policyset]: https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r5
-[pbmmPolicyset]: https://docs.microsoft.com/azure/governance/policy/samples/canada-federal-pbmm
-[cafLandingZones]: https://docs.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/
-[policyRemediation]: https://docs.microsoft.com/azure/governance/policy/how-to/remediate-resources
-[nsgAzureBastion]: https://docs.microsoft.com/azure/bastion/bastion-nsg#apply
+[nist80053r4Policyset]: https://learn.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r4
+[nist80053r5Policyset]: https://learn.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r5
+[pbmmPolicyset]: https://learn.microsoft.com/azure/governance/policy/samples/canada-federal-pbmm
+[cafLandingZones]: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/
+[policyRemediation]: https://learn.microsoft.com/azure/governance/policy/how-to/remediate-resources
+[nsgAzureBastion]: https://learn.microsoft.com/azure/bastion/bastion-nsg#apply

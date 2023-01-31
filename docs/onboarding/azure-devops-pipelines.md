@@ -12,7 +12,7 @@ This document provides steps required to onboard to the Azure Landing Zones desi
 
 > Telemetry is introduced on November 11, 2021.
 
-Microsoft can identify the deployments of the Azure Resource Manager and Bicep templates with the deployed Azure resources. Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business.  The telemetry is collected through [customer usage attribution](https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution). The data is collected and governed by Microsoft's privacy policies, located at [https://www.microsoft.com/trustcenter](https://www.microsoft.com/trustcenter).
+Microsoft can identify the deployments of the Azure Resource Manager and Bicep templates with the deployed Azure resources. Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business.  The telemetry is collected through [customer usage attribution](https://learn.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution). The data is collected and governed by Microsoft's privacy policies, located at [https://www.microsoft.com/trustcenter](https://www.microsoft.com/trustcenter).
 
 The automation is instrumented to identify the modules that are being deployed.  At this time, we don't differentiate the deployments and tracked under a single GUID (`a83f6385-f514-415f-991b-2d9bd7aed658`).
 
@@ -196,9 +196,9 @@ An Azure service principal is an identity created for use with applications, hos
 
   * **Scope:**  Tenant Root Group (this is a management group in the Azure environment)
 
-  * **Role:**  [Owner](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in [Azure RBAC](https://docs.microsoft.com/azure/role-based-access-control/overview).  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
+  * **Role:**  [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner) (Grants full access to manage all resources, including the ability to assign roles in [Azure RBAC](https://learn.microsoft.com/azure/role-based-access-control/overview).  Owner permission is required so that the Azure DevOps Pipelines can create resources and role assignments.)
 
-  * **Instructions**:  [Create an Azure service principal with the Azure CLI | Microsoft Docs](https://docs.microsoft.com/cli/azure/create-an-azure-service-principal-azure-cli)
+  * **Instructions**:  [Create an Azure service principal with the Azure CLI | Microsoft Docs](https://learn.microsoft.com/cli/azure/create-an-azure-service-principal-azure-cli)
 
 To create the service principal account and role assignment through Azure CLI:
 
@@ -263,11 +263,11 @@ Note down the `appId`, `tenant` and `password`.  These will be required to for s
 
   * Verify and save
 
-* **Reference**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml).  Use the settings described above when following the instructions.
+* **Reference**:  [Service connections in Azure Pipelines - Azure Pipelines | Microsoft Docs](https://learn.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml).  Use the settings described above when following the instructions.
 
 ### Step 2.2: Configure Azure DevOps Pipeline Environment
 
-An environment is a collection of resources that you can target with deployments from a pipeline. Typical examples of environment names are Dev, Test, QA, Staging, and Production.  More information such as benefits of using Environments can be found in [Azure Docs](https://docs.microsoft.com/azure/devops/pipelines/process/environments).
+An environment is a collection of resources that you can target with deployments from a pipeline. Typical examples of environment names are Dev, Test, QA, Staging, and Production.  More information such as benefits of using Environments can be found in [Azure Docs](https://learn.microsoft.com/azure/devops/pipelines/process/environments).
 
 Azure DevOps may create an environment if it doesn't exist, however, it's recommended to explicitly create an empty environment and reference it from deployment jobs. This lets you record the deployment history against the environment.
 
@@ -688,7 +688,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     3. Navigate to Agents Management
     4. Select either Primary or Secondary Key
 
-**Instructions**: [Create an audit stream in Azure DevOps for Azure Monitor](https://docs.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops#create-a-stream).
+**Instructions**: [Create an audit stream in Azure DevOps for Azure Monitor](https://learn.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops#create-a-stream).
 
 ---
 
@@ -1534,7 +1534,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 You can migrate to the management group hierarchy implemented in v0.9.0 by populating the hierarchy from your existing Azure environment.  By migrating to the hierarchy, you can take advantage of simplified configuration without modifying Bicep templates.  To generate the hierarchy:
 
-1. Install [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) & [jq](https://stedolan.github.io/jq/download/) on your environment.
+1. Install [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) & [jq](https://stedolan.github.io/jq/download/) on your environment.
 
 2. Login to Azure CLI.
 

@@ -78,17 +78,17 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 
 | Category | Service | Configuration | Reference |
 | --- | --- | --- | --- |
-| Storage | Azure Data Lake Gen 2 - Cloud storage enabling big data analytics | Hierarchical namespace enabled.  Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/storage/blobs/data-lake-storage-introduction)
-| Compute | Azure Databricks - Managed Spark cloud platform for data analytics and data science | Premium tier; Secured Cluster Connectivity enabled with load balancer for egress | [Azure Docs](https://docs.microsoft.com/azure/databricks/scenarios/what-is-azure-databricks) |
-| Ingestion | Azure Data Factory - Managed cloud service for data integration and orchestration | Managed virtual network.  Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/data-factory/introduction) |
-| Machine learning and deployment | Azure Machine Learning - Cloud platform for end-to-end machine learning workflows | Optional – Customer Managed Keys, High Business Impact Workspace | [Azure Docs](https://docs.microsoft.com/azure/machine-learning/overview-what-is-azure-ml) |
-| Machine learning and deployment | Azure Container Registry - Managed private Docker cloud registry | Premium SKU.  Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/container-registry/container-registry-intro) |
-| Machine learning and deployment | Azure Kubernetes Service - Cloud hosted Kubernetes service | Private cluster enabled; Managed identity type; Network plugin set to kubenet.  Optional – Customer Managed Keys for Managed Disks | [Azure Docs](https://docs.microsoft.com/azure/aks/intro-kubernetes) |
-| Machine learning and deployment | Azure App Service on Linux (container) - Cloud hosted web app for model deployment | With App Service Plan SKU default as Premium 1 V2. Virtual network integration | [Azure Docs](https://docs.microsoft.com/en-us/azure/app-service/overview) |
-| SQL Storage | Azure SQL Managed Instance - Cloud database storage enabling lift and shift on-premise application migrations | Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/azure-sql/managed-instance/sql-managed-instance-paas-overview)
-| SQL Storage | Azure SQL Database - Fully managed cloud database engine | Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/azure-sql/database/sql-database-paas-overview) |
-| Key Management | Azure Key Vault - Centralized cloud storage of secrets and keys | Private Endpoint | [Azure Docs](https://docs.microsoft.com/azure/key-vault/general/overview)
-| Monitoring | Application Insights - Application performance and monitoring cloud service | - | [Azure Docs](https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview)
+| Storage | Azure Data Lake Gen 2 - Cloud storage enabling big data analytics | Hierarchical namespace enabled.  Optional – Customer Managed Keys | [Azure Docs](https://learn.microsoft.com/azure/storage/blobs/data-lake-storage-introduction)
+| Compute | Azure Databricks - Managed Spark cloud platform for data analytics and data science | Premium tier; Secured Cluster Connectivity enabled with load balancer for egress | [Azure Docs](https://learn.microsoft.com/azure/databricks/scenarios/what-is-azure-databricks) |
+| Ingestion | Azure Data Factory - Managed cloud service for data integration and orchestration | Managed virtual network.  Optional – Customer Managed Keys | [Azure Docs](https://learn.microsoft.com/azure/data-factory/introduction) |
+| Machine learning and deployment | Azure Machine Learning - Cloud platform for end-to-end machine learning workflows | Optional – Customer Managed Keys, High Business Impact Workspace | [Azure Docs](https://learn.microsoft.com/azure/machine-learning/overview-what-is-azure-ml) |
+| Machine learning and deployment | Azure Container Registry - Managed private Docker cloud registry | Premium SKU.  Optional – Customer Managed Keys | [Azure Docs](https://learn.microsoft.com/azure/container-registry/container-registry-intro) |
+| Machine learning and deployment | Azure Kubernetes Service - Cloud hosted Kubernetes service | Private cluster enabled; Managed identity type; Network plugin set to kubenet.  Optional – Customer Managed Keys for Managed Disks | [Azure Docs](https://learn.microsoft.com/azure/aks/intro-kubernetes) |
+| Machine learning and deployment | Azure App Service on Linux (container) - Cloud hosted web app for model deployment | With App Service Plan SKU default as Premium 1 V2. Virtual network integration | [Azure Docs](https://learn.microsoft.com/en-us/azure/app-service/overview) |
+| SQL Storage | Azure SQL Managed Instance - Cloud database storage enabling lift and shift on-premise application migrations | Optional – Customer Managed Keys | [Azure Docs](https://learn.microsoft.com/azure/azure-sql/managed-instance/sql-managed-instance-paas-overview)
+| SQL Storage | Azure SQL Database - Fully managed cloud database engine | Optional – Customer Managed Keys | [Azure Docs](https://learn.microsoft.com/azure/azure-sql/database/sql-database-paas-overview) |
+| Key Management | Azure Key Vault - Centralized cloud storage of secrets and keys | Private Endpoint | [Azure Docs](https://learn.microsoft.com/azure/key-vault/general/overview)
+| Monitoring | Application Insights - Application performance and monitoring cloud service | - | [Azure Docs](https://learn.microsoft.com/azure/azure-monitor/app/app-insights-overview)
 
 The intended cloud service workflows and data movements for this archetype include:
 
@@ -134,7 +134,7 @@ Once the machine learning archetype is deployed and available to use, access con
 | Azure Container Registry | Network ACL deny, public network access disabled | Private endpoint on `registry` + DNS registration to either hub or spoke | `privateEndpoints`|f
 | Azure Application Insights | N/A | N/A | N/A |
 
-> For App Service, private endpoint requires the SKU tier `Premium`: https://docs.microsoft.com/azure/app-service/networking/private-endpoint so this may require a quota increase.
+> For App Service, private endpoint requires the SKU tier `Premium`: https://learn.microsoft.com/azure/app-service/networking/private-endpoint so this may require a quota increase.
 
 This archetype also has the following security features as options for deployment:
 
@@ -254,15 +254,15 @@ Reference implementation uses parameter files with `object` parameters to consol
 
 ### Delete Locks
 
-As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
 
 **This archetype does not use `CanNotDelete` nor `ReadOnly` locks as part of the deployment.  You may customize the deployment templates when it's required for your environment.**
 
 ### Service Health
 
-[Service health notifications](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties) are published by Azure, and contain information about the resources under your subscription.  Service health notifications can be informational or actionable, depending on the category.
+[Service health notifications](https://learn.microsoft.com/azure/service-health/service-health-notifications-properties) are published by Azure, and contain information about the resources under your subscription.  Service health notifications can be informational or actionable, depending on the category.
 
-Our examples configure service health alerts for `Security` and `Incident`.  However, these categories can be customized based on your need.  Please review the possible options in [Azure Docs](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties#details-on-service-health-level-information).
+Our examples configure service health alerts for `Security` and `Incident`.  However, these categories can be customized based on your need.  Please review the possible options in [Azure Docs](https://learn.microsoft.com/azure/service-health/service-health-notifications-properties#details-on-service-health-level-information).
 
 ### Deployment Scenarios
 

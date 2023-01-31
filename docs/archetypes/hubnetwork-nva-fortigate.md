@@ -41,7 +41,7 @@ The recommended network design achieves the purpose of hosting [**Protected B** 
 
 Application Gateway with WAFv2 will be used for ingress traffic and application delivery.  Application Gateways will be placed on the shared Public Access Zone (a subnet in the Hub), where public IPs will be protected with Azure DDoS (either Basic or Standard).
 
-Other possible topologies are explained in [Azure documentation](https://docs.microsoft.com/azure/architecture/example-scenario/gateway/firewall-application-gateway) and we recommend reviewing to ensure the topology aligns to your department's network design.
+Other possible topologies are explained in [Azure documentation](https://learn.microsoft.com/azure/architecture/example-scenario/gateway/firewall-application-gateway) and we recommend reviewing to ensure the topology aligns to your department's network design.
 
 There will be at least one shared Application Gateway instance and multiple dedicated Application Gateways for those line of businesses that require their own deployment (i.e. performance or cost allocation). All egress traffic from the spokes will be routed to the hub's edge firewall, inspected, and authorized/denied based on network (IP/Port) or application rules (FQDNs).
 
@@ -84,7 +84,7 @@ To simplify management and compliance, all public-facing web servers, reverse pr
 
 Application Gateway can have either public or private frontends (also with [RFC 6598][rfc6598] space) and it requires a full subnet for it's instances.
 
-The Backend URL should map to a VIP and Port mapping in the firewall's External network. In the future, Backend URLs could be directly pointed to the Frontend subnets in the spoke. The firewall performs DNAT and sends to the webserver, which will answer to the source IP (Application Gateway's internal IP), which means the webserver may need a UDR to force traffic destined to Application Gateway to re-traverse the firewall (next-hop), which is considered asymmetric routing ([other example topologies](https://docs.microsoft.com/azure/architecture/example-scenario/gateway/firewall-application-gateway#application-gateway-before-firewall)).
+The Backend URL should map to a VIP and Port mapping in the firewall's External network. In the future, Backend URLs could be directly pointed to the Frontend subnets in the spoke. The firewall performs DNAT and sends to the webserver, which will answer to the source IP (Application Gateway's internal IP), which means the webserver may need a UDR to force traffic destined to Application Gateway to re-traverse the firewall (next-hop), which is considered asymmetric routing ([other example topologies](https://learn.microsoft.com/azure/architecture/example-scenario/gateway/firewall-application-gateway#application-gateway-before-firewall)).
 
 ## User Defined Routes
 
@@ -271,7 +271,7 @@ Reference implementation uses parameter files with `object` parameters to consol
 
 ### Delete Locks
 
-As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
 
 By default, this archetype deploys `CanNotDelete` lock to prevent accidental deletion at:
 
@@ -282,9 +282,9 @@ By default, this archetype deploys `CanNotDelete` lock to prevent accidental del
 
 ### Service Health
 
-[Service health notifications](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties) are published by Azure, and contain information about the resources under your subscription.  Service health notifications can be informational or actionable, depending on the category.
+[Service health notifications](https://learn.microsoft.com/azure/service-health/service-health-notifications-properties) are published by Azure, and contain information about the resources under your subscription.  Service health notifications can be informational or actionable, depending on the category.
 
-Our examples configure service health alerts for `Security` and `Incident`.  However, these categories can be customized based on your need.  Please review the possible options in [Azure Docs](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties#details-on-service-health-level-information).
+Our examples configure service health alerts for `Security` and `Incident`.  However, these categories can be customized based on your need.  Please review the possible options in [Azure Docs](https://learn.microsoft.com/azure/service-health/service-health-notifications-properties#details-on-service-health-level-information).
 
 ### Deployment Scenarios
 
@@ -622,7 +622,7 @@ This example configures:
 [cloudUsageProfiles]: https://github.com/canada-ca/cloud-guardrails/blob/master/EN/00_Applicable-Scope.md
 [rfc1918]: https://tools.ietf.org/html/rfc1918
 [rfc6598]: https://tools.ietf.org/html/rfc6598
-[nsgAzureLoadBalancer]: https://docs.microsoft.com/azure/virtual-network/network-security-groups-overview#allowazureloadbalancerinbound
-[nsgAzureBastion]: https://docs.microsoft.com/azure/bastion/bastion-nsg#apply
-[nsgAppGatewayV2]: https://docs.microsoft.com/azure/application-gateway/configuration-infrastructure#network-security-groups
+[nsgAzureLoadBalancer]: https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview#allowazureloadbalancerinbound
+[nsgAzureBastion]: https://learn.microsoft.com/azure/bastion/bastion-nsg#apply
+[nsgAppGatewayV2]: https://learn.microsoft.com/azure/application-gateway/configuration-infrastructure#network-security-groups
 [azmarketplacefortinet]: https://portal.azure.com/#blade/Microsoft_Azure_Marketplace/GalleryItemDetailsBladeNopdl/id/fortinet.fortigatengfw-high-availability/product/%7B%22displayName%22%3A%22FortiGate%20NGFW%20for%20Azure%20LB%20HA%20with%20ARM%20template%22%2C%22itemDisplayName%22%3A%22FortiGate%20NGFW%20for%20Azure%20LB%20HA%20with%20ARM%20template%22%2C%22id%22%3A%22fortinet.fortigatengfw-high-availability%22%2C%22offerId%22%3A%22fortigatengfw-high-availability%22%2C%22publisherId%22%3A%22fortinet%22%2C%22publisherDisplayName%22%3A%22Fortinet%22%2C%22summary%22%3A%22FortiGate%20NGFW%20improves%20on%20the%20Azure%20firewall%20with%20complete%20data%2C%20application%20and%20network%20security%22%2C%22longSummary%22%3A%22Automated%20deployment%20for%20the%20combined%20use%20of%20Azure%20LB%20and%20NGFW%20configurations%20(2%20FortiGate%20virtual%20machines)%20to%20support%20your%20Enterprise%20Cloud%20workload%22%2C%22description%22%3A%22%3Cp%3EThe%20FortiGate%20Next-Generation%20Firewall%20combines%20a%20comprehensive%20suite%20of%20powerful%20security%20tools%20into%20a%20high-performance%20virtual%20device.%20FortiGate%20NGFWs%20can%20be%20combined%20with%20other%20Fortinet%20solutions%20to%20form%20a%20unified%20security%20fabric%20to%20secure%20your%20network%2C%20users%2C%20data%20and%20applications%20across%20clouds%20and%20enterprises.%3Cbr%3E%3C%2Fp%3E%3Cp%20class%3D%5C%22x_xmsonormal%5C%22%3EThe%20FortiGate%20NGFW%20includes%20application%20aware%20network%20security%2C%20secure%20SD-WAN%2C%20virus%20protection%2C%20IPS%2C%20Web%20filtering%20and%20VPN%20along%20with%20advanced%20features%20such%20as%20an%20extreme%20threat%20database%2C%20vulnerability%20management%20and%20flow-based%20inspection%20work%20in%20concert%20to%20identify%20and%20mitigate%20the%20latest%20complex%20security%20threats.%20The%20security-hardened%20FortiOS%20operating%20system%20is%20purpose-built%20for%20inspection%20and%20identification%20of%20malware.%3C%2Fp%3E%3Cp%20class%3D%5C%22x_xmsonormal%5C%22%3EDesigned%20to%20ensure%20easy%2C%20consistent%20deployment%20for%20the%20most%20ef
