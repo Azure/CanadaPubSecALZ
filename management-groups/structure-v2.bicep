@@ -22,7 +22,7 @@ param childManagementGroupId string
 param childManagementGroupName string
 
 // Telemetry - Azure customer usage attribution
-// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+// Reference:  https://learn.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 var telemetry = json(loadTextContent('../config/telemetry.json'))
 module telemetryCustomerUsageAttribution '../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled && (childManagementGroupName == topLevelManagementGroupName)) {
   name: 'pid-${telemetry.customerUsageAttribution.modules.managementGroups}'

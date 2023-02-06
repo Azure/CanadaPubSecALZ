@@ -118,7 +118,7 @@ module identity '../../iam/user-assigned-identity.bicep' = {
   }
 }
 
-// assign permissions to identity per https://docs.microsoft.com/en-us/azure/aks/private-clusters#configure-private-dns-zone
+// assign permissions to identity per https://learn.microsoft.com/en-us/azure/aks/private-clusters#configure-private-dns-zone
 module rbacPrivateDnsZoneContributor '../../iam/resource/private-dns-zone-role-assignment-to-sp.bicep' = {
   name: 'rbac-private-dns-zone-contributor-${name}'
   scope: resourceGroup(privateDnsZoneSubscriptionId, privateZoneDnsResourceGroupName)

@@ -114,7 +114,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
     Once the permissions are identified, click the **Cancel** button to discard the changes.
 
-    Use [Azure Built-In Roles table](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles) to map the permission name to it's Resource ID.  Resource ID will be used when defining the role assignments. 
+    Use [Azure Built-In Roles table](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles) to map the permission name to it's Resource ID.  Resource ID will be used when defining the role assignments. 
 
 4. Click on the **Duplicate initiative** button.  We will not be duplicating the policy set definition, but use this step to identify the parameter names that will need to be populated during policy assignment.
 
@@ -336,7 +336,7 @@ The built-in policy sets are used as-is to ensure future improvements from Azure
 
 Execute `Azure DevOps Policy pipeline` to deploy.  The policy set assignment will be deployed to the `top level management group` (i.e. `pubsec`).
 
-> It takes approximately 30 minutes for the assignment to be applied to the defined scope. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative, and depending on the effects defined by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once evaluation completes, the updated compliance results are available in the portal and to SDKs.  See [Azure Docs for more information](https://docs.microsoft.com/azure/governance/policy/how-to/get-compliance-data).
+> It takes approximately 30 minutes for the assignment to be applied to the defined scope. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative, and depending on the effects defined by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once evaluation completes, the updated compliance results are available in the portal and to SDKs.  See [Azure Docs for more information](https://learn.microsoft.com/azure/governance/policy/how-to/get-compliance-data).
 
 #### **Step 5: Verify policy set assignment**
 
@@ -388,7 +388,7 @@ You may want to evaluate the compliance in your environment without any automati
 
 Please review guidance and expected behaviour of these settings prior to making any modification:
 
-* [Cloud Adoption Framework - Adopting policy driven guardrails](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/dine-guidance)
+* [Cloud Adoption Framework - Adopting policy driven guardrails](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/dine-guidance)
 * [Azure Policy Enforcement Mode](https://aka.ms/enforcementMode)
 
 You can switch between these modes per-policy set based on your Azure Policy adoption strategy.
@@ -445,13 +445,13 @@ Custom policies and policy sets enable an organization to expand their governanc
     * all: evaluate resource groups, subscriptions, and all resource types
     * indexed: only evaluate resource types that support tags and location
 
-    See [Azure Policy Reference](https://docs.microsoft.com/azure/governance/policy/concepts/definition-structure#mode) for more information.
+    See [Azure Policy Reference](https://learn.microsoft.com/azure/governance/policy/concepts/definition-structure#mode) for more information.
 
 4. Edit `azurepolicy.parameters.json`.  
 
     Define parameters that are required by the policy definition.  Using parameters enable the policy to be used with different configuration.
 
-    See [Azure Parameter Reference](https://docs.microsoft.com/azure/governance/policy/concepts/definition-structure#parameters) for more information.
+    See [Azure Parameter Reference](https://learn.microsoft.com/azure/governance/policy/concepts/definition-structure#parameters) for more information.
 
     **Example**
 
@@ -472,7 +472,7 @@ Custom policies and policy sets enable an organization to expand their governanc
 
     Describes the policy rule that will be evaluated by Azure Policy.  The rule can have any effect such as Audit, Deny, DeployIfNotExists.
 
-    See [Azure Policy docs for more information on creating custom policies](https://docs.microsoft.com/azure/governance/policy/concepts/definition-structure).
+    See [Azure Policy docs for more information on creating custom policies](https://learn.microsoft.com/azure/governance/policy/concepts/definition-structure).
 
     **Example**
 
@@ -879,7 +879,7 @@ When there are deployment errors:
 
 Execute `Azure DevOps Policy pipeline` to deploy.  The policy set definition and assignment will be deployed to the `top level management group` (i.e. `pubsec`).
 
-> It takes around 30 minutes for the assignment to be applied to the defined scope. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs. See [Azure Docs for more information](https://docs.microsoft.com/azure/governance/policy/how-to/get-compliance-data).
+> It takes around 30 minutes for the assignment to be applied to the defined scope. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs. See [Azure Docs for more information](https://learn.microsoft.com/azure/governance/policy/how-to/get-compliance-data).
 
 #### **Step 5: Verify policy set definition and assignment deployment**
 
@@ -911,7 +911,7 @@ Execute `Azure DevOps Policy pipeline` to automatically deploy the policy defini
 
 Navigate to [Azure Policy Definitions][portalAzurePolicyDefinition] to verify that the policy has been updated.
 
-> It takes around 30 minutes for the update to be applied. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs. See [Azure Docs for more information](https://docs.microsoft.com/azure/governance/policy/how-to/get-compliance-data).
+> It takes around 30 minutes for the update to be applied. Once it's applied, the evaluation cycle begins for resources within that scope against the newly assigned policy or initiative and depending on the effects used by the policy or initiative, resources are marked as compliant, non-compliant, or exempt. A large policy or initiative evaluated against a large scope of resources can take time. As such, there's no pre-defined expectation of when the evaluation cycle completes. Once it completes, updated compliance results are available in the portal and SDKs. See [Azure Docs for more information](https://learn.microsoft.com/azure/governance/policy/how-to/get-compliance-data).
 
 When there are deployment errors:
 
@@ -1025,7 +1025,7 @@ You may want to evaluate the compliance in your environment without any automati
 
 Please review guidance and expected behaviour of these settings prior to making any modification:
 
-* [Cloud Adoption Framework - Adopting policy driven guardrails](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/dine-guidance)
+* [Cloud Adoption Framework - Adopting policy driven guardrails](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/dine-guidance)
 * [Azure Policy Enforcement Mode](https://aka.ms/enforcementMode)
 
 You can switch between these modes per-policy set based on your Azure Policy adoption strategy.
@@ -1052,13 +1052,13 @@ The Diagnostic Settings policies in this reference implementation were created u
     * Create `azurepolicy.config.json` with policy name and mode.
 4. Delete the instance created in Step 1.
 
-[nist80053r4Policyset]: https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r4
-[nist80053r5Policyset]: https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r5
-[pbmmPolicyset]: https://docs.microsoft.com/azure/governance/policy/samples/canada-federal-pbmm
-[asbPolicySet]: https://docs.microsoft.com/security/benchmark/azure/overview
-[cisMicrosoftAzureFoundationPolicySet]: https://docs.microsoft.com/azure/governance/policy/samples/cis-azure-1-3-0
-[fedrampmPolicySet]: https://docs.microsoft.com/azure/governance/policy/samples/fedramp-moderate
-[hipaaHitrustPolicySet]: https://docs.microsoft.com/azure/governance/policy/samples/hipaa-hitrust-9-2
+[nist80053r4Policyset]: https://learn.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r4
+[nist80053r5Policyset]: https://learn.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r5
+[pbmmPolicyset]: https://learn.microsoft.com/azure/governance/policy/samples/canada-federal-pbmm
+[asbPolicySet]: https://learn.microsoft.com/security/benchmark/azure/overview
+[cisMicrosoftAzureFoundationPolicySet]: https://learn.microsoft.com/azure/governance/policy/samples/cis-azure-1-3-0
+[fedrampmPolicySet]: https://learn.microsoft.com/azure/governance/policy/samples/fedramp-moderate
+[hipaaHitrustPolicySet]: https://learn.microsoft.com/azure/governance/policy/samples/hipaa-hitrust-9-2
 [portalAzurePolicyDefinition]: https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Definitions
 [portalAzurePolicyAssignment]: https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Assignments
 [portalAzurePolicyCompliance]: https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyMenuBlade/Compliance
