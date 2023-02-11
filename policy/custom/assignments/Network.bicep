@@ -29,7 +29,8 @@ var policyId = 'custom-network'
 var assignmentName = 'Custom - Network'
 
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
-var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${policyId}'
+var policyScopedId = managementGroupResourceId(policyDefinitionManagementGroupId, 'Microsoft.Authorization/policySetDefinitions/',policyId)
+//var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${policyId}'
 
 // Telemetry - Azure customer usage attribution
 // Reference:  https://learn.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
