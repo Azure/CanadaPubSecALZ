@@ -4,6 +4,9 @@
             "verbose": false,
             "enabled": true,
             "rules": {
+              "use-resource-id-functions": {
+                "level": "warning"
+              },
                 "adminusername-should-not-be-literal": {
                     "level": "error"
                 },

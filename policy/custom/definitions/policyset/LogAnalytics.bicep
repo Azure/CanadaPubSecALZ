@@ -111,7 +111,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/5ee9e9ed-0b42-41b7-8c9c-3cfb2fbe2069'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '5ee9e9ed-0b42-41b7-8c9c-3cfb2fbe2069')
         policyDefinitionReferenceId: toLower(replace('Deploy Log Analytics agent for Linux virtual machine scale sets', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -123,7 +123,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/3c1b3629-c8f8-4bf6-862c-037cb9094038'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '3c1b3629-c8f8-4bf6-862c-037cb9094038')
         policyDefinitionReferenceId: toLower(replace('Deploy Log Analytics agent for Windows virtual machine scale sets', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -135,7 +135,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/4da21710-ce6f-4e06-8cdb-5cc4c93ffbee'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '4da21710-ce6f-4e06-8cdb-5cc4c93ffbee')
         policyDefinitionReferenceId: toLower(replace('Deploy Dependency agent for Linux virtual machines', ' ', '-'))
         parameters: {}
       }
@@ -143,7 +143,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/1c210e94-a481-4beb-95fa-1571b434fb04'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '1c210e94-a481-4beb-95fa-1571b434fb04')
         policyDefinitionReferenceId: toLower(replace('Deploy Dependency agent for Windows virtual machines', ' ', '-'))
         parameters: {}
       }
@@ -151,7 +151,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/765266ab-e40e-4c61-bcb2-5a5275d0b7c0'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '765266ab-e40e-4c61-bcb2-5a5275d0b7c0')
         policyDefinitionReferenceId: toLower(replace('Deploy Dependency agent for Linux virtual machine scale sets', ' ', '-'))
         parameters: {}
       }
@@ -159,7 +159,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/3be22e3b-d919-47aa-805e-8985dbeb0ad9'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '3be22e3b-d919-47aa-805e-8985dbeb0ad9')
         policyDefinitionReferenceId: toLower(replace('Deploy Dependency agent for Windows virtual machine scale sets', ' ', '-'))
         parameters: {}
       }
@@ -167,7 +167,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/6f8f98a4-f108-47cb-8e98-91a0d85cd474'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '6f8f98a4-f108-47cb-8e98-91a0d85cd474')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic settings for storage accounts to Log Analytics workspace', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -191,7 +191,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/c84e5349-db6d-4769-805e-e14037dab9b5'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'c84e5349-db6d-4769-805e-e14037dab9b5')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Batch Account to Log Analytics workspace', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -203,7 +203,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/d56a5a7c-72d7-42bc-8ceb-3baf4c0eae03'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'd56a5a7c-72d7-42bc-8ceb-3baf4c0eae03')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Data Lake Analytics to Log Analytics workspace', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -215,7 +215,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/25763a0a-5783-4f14-969e-79d4933eb74b'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '25763a0a-5783-4f14-969e-79d4933eb74b')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Data Lake Storage Gen1 to Log Analytics workspace', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -227,7 +227,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/bef3f64c-5290-43b7-85b0-9b254eef4c47'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'bef3f64c-5290-43b7-85b0-9b254eef4c47')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Key Vault to Log Analytics workspace', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -239,7 +239,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/b889a06c-ec72-4b03-910a-cb169ee18721'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'b889a06c-ec72-4b03-910a-cb169ee18721')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Logic Apps to Log Analytics workspace', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -251,7 +251,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/08ba64b8-738f-4918-9686-730d2ed79c7d'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '08ba64b8-738f-4918-9686-730d2ed79c7d')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Search Services to Log Analytics workspace', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -263,7 +263,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/04d53d87-841c-4f23-8a5b-21564380b55e'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '04d53d87-841c-4f23-8a5b-21564380b55e')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Service Bus to Log Analytics workspace', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -275,7 +275,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/237e0f7e-b0e8-4ec4-ad46-8c12cb66d673'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '237e0f7e-b0e8-4ec4-ad46-8c12cb66d673')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Stream Analytics to Log Analytics workspace', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -287,7 +287,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/6c66c325-74c8-42fd-a286-a74b0e2939d8'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '6c66c325-74c8-42fd-a286-a74b0e2939d8')
         policyDefinitionReferenceId: toLower(replace('Deploy Diagnostic Settings for Azure Kubernetes Service to Log Analytics workspace', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -302,7 +302,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/053d3325-282c-4e5c-b944-24faffd30d77'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '053d3325-282c-4e5c-b944-24faffd30d77')
         policyDefinitionReferenceId: toLower(replace('Deploy Log Analytics agent for Linux VMs', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -314,7 +314,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/0868462e-646c-4fe3-9ced-a733534b6a2c'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '0868462e-646c-4fe3-9ced-a733534b6a2c')
         policyDefinitionReferenceId: toLower(replace('Deploy Log Analytics agent for Windows VMs', ' ', '-'))
         parameters: {
           logAnalytics: {
@@ -326,7 +326,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/32133ab0-ee4b-4b44-98d6-042180979d50'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '32133ab0-ee4b-4b44-98d6-042180979d50')
         policyDefinitionReferenceId: toLower(replace('Audit Log Analytics Agent Deployment - VM Image (OS) unlisted', ' ', '-'))
         parameters: {}
       }
@@ -334,7 +334,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/5c3bc7b8-a64c-4e08-a9cd-7ff0f31e1138'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '5c3bc7b8-a64c-4e08-a9cd-7ff0f31e1138')
         policyDefinitionReferenceId: toLower(replace('Audit Log Analytics agent deployment in virtual machine scale sets - VM Image (OS) unlisted', ' ', '-'))
         parameters: {}
       }
@@ -342,7 +342,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/f47b5582-33ec-4c5c-87c0-b010a6b2e917'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', 'f47b5582-33ec-4c5c-87c0-b010a6b2e917')
         policyDefinitionReferenceId: toLower(replace('Audit Log Analytics Workspace for VM - Report Mismatch', ' ', '-'))
         parameters: {
           logAnalyticsWorkspaceId: {
@@ -354,7 +354,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/752154a7-1e0f-45c6-a880-ac75a7e4f648'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '752154a7-1e0f-45c6-a880-ac75a7e4f648')
         policyDefinitionReferenceId: toLower(replace('Public IP addresses should have resource logs enabled for Azure DDoS Protection Standard', ' ', '-'))
         parameters: {
           effect: {
@@ -372,7 +372,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
         groupNames: [
           'BUILTIN'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/7f89b1eb-583c-429a-8828-af049802c1d9'
+        policyDefinitionId: extensionResourceId(customPolicyDefinitionMgScope, 'Microsoft.Authorization/policyDefinitions', '7f89b1eb-583c-429a-8828-af049802c1d9')
         policyDefinitionReferenceId: toLower(replace('Audit diagnostic setting', ' ', '-'))
         parameters: {
           listOfResourceTypes: {
