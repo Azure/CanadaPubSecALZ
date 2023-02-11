@@ -61,7 +61,7 @@ resource policySetRoleAssignmentSecurityAdmin 'Microsoft.Authorization/roleAssig
   name: guid(policyAssignmentManagementGroupId, 'asc', 'Security Admin')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/fb1c8493-542b-48eb-b624-b4c8fea62acd'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','fb1c8493-542b-48eb-b624-b4c8fea62acd')
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -71,7 +71,7 @@ resource policySetRoleAssignmentVirtualMachineContributor 'Microsoft.Authorizati
   name: guid(policyAssignmentManagementGroupId, 'asc', 'Virtual Machine Contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','9980e02c-c2be-4d73-94e8-173b1dc7cf3c')
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }

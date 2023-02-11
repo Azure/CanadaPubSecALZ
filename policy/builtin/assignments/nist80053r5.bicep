@@ -64,7 +64,7 @@ resource policySetRoleAssignmentContributor 'Microsoft.Authorization/roleAssignm
   name: guid(policyAssignmentManagementGroupId, 'nist-sp-800-53-r5-contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','b24988ac-6180-42a0-ab88-20f7382dd24c')
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }

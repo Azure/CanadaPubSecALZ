@@ -73,7 +73,7 @@ resource policySetRoleAssignmentLogAnalyticsContributor 'Microsoft.Authorization
   name: guid(policyAssignmentManagementGroupId, 'loganalytics', 'Log Analytics Contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','92aaf0da-9dab-42b6-94a3-d43ce8d16293')
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -83,7 +83,7 @@ resource policySetRoleAssignmentVirtualMachineContributor 'Microsoft.Authorizati
   name: guid(policyAssignmentManagementGroupId, 'loganalytics', 'Virtual Machine Contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','9980e02c-c2be-4d73-94e8-173b1dc7cf3c')
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -93,7 +93,7 @@ resource policySetRoleAssignmentMonitoringContributor 'Microsoft.Authorization/r
   name: guid(policyAssignmentManagementGroupId, 'loganalytics', 'Monitoring Contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','749f88d5-cbae-40b8-bcfc-e573ddc772fa')
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }

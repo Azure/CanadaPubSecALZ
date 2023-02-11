@@ -58,7 +58,7 @@ resource rgPolicySetRoleAssignmentFromSubscriptionToResourceGroupContributor 'Mi
   name: guid(rgInheritedPolicyFromSubscriptionToResourceGroupId, 'RgRemediation', 'Contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','b24988ac-6180-42a0-ab88-20f7382dd24c')
     principalId: rgInheritedPolicySetFromSubscriptionToResourceGroupAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -88,7 +88,7 @@ resource rgPolicySetRoleAssignmentContributor 'Microsoft.Authorization/roleAssig
   name: guid(policyAssignmentManagementGroupId, 'RgRemediation', 'Contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','b24988ac-6180-42a0-ab88-20f7382dd24c')
     principalId: rgInheritedPolicySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }
