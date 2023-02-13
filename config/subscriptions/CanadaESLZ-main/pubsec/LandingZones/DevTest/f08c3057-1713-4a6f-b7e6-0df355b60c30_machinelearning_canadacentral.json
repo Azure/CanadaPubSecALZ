@@ -89,7 +89,7 @@
     },
     "aks": {
       "value": {
-        "version": "1.25.5",
+        "version": "1.25",
         "enabled": true,
         "networkPlugin": "kubenet",
         "networkPolicy": "calico",
