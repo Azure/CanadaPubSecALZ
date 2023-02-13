@@ -78,7 +78,7 @@ resource policySetRoleAssignmentNetworkContributor 'Microsoft.Authorization/role
   name: guid(policyAssignmentManagementGroupId, 'dns-private-endpoint', 'Network Contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','4d97b98b-1d4f-4787-a291-c67834d212e7')
+    roleDefinitionId: tenantResourceId('Microsoft.Authorization/roleDefinitions','4d97b98b-1d4f-4787-a291-c67834d212e7')
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }
