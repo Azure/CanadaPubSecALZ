@@ -60,7 +60,7 @@ param logAnalyticsWorkspaceResourceId string
 // "securityCenter": {
 //   "value": {
 //       "email": "alzcanadapubsec@microsoft.com",
-//       "phone": "5555555555"
+//       "phone": "6045555555"
 //   }
 // }
 
@@ -68,7 +68,7 @@ param logAnalyticsWorkspaceResourceId string
 // -----------------------------
 // {
 //   email: 'alzcanadapubsec@microsoft.com'
-//   phone: '5555555555'
+//   phone: '6045555555'
 // }
 @description('Microsoft Defender for Cloud configuration.  It includes email and phone.')
 param securityCenter object

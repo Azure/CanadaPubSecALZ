@@ -66,7 +66,7 @@ param serviceHealthAlerts object = {}
 // "securityCenter": {
 //   "value": {
 //       "email": "alzcanadapubsec@microsoft.com",
-//       "phone": "5555555555"
+//       "phone": "6045555555"
 //   }
 // }
 
@@ -74,7 +74,7 @@ param serviceHealthAlerts object = {}
 // -----------------------------
 // {
 //   email: 'alzcanadapubsec@microsoft.com'
-//   phone: '5555555555'
+//   phone: '6045555555'
 // }
 @description('Microsoft Defender for Cloud.  It includes email and phone.')
 param securityCenter object
