@@ -10,8 +10,8 @@
           "receivers": {
               "app": [ "alzcanadapubsec@microsoft.com" ],
               "email": [ "alzcanadapubsec@microsoft.com" ],
-              "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-              "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+              "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
+              "voice": [ { "countryCode": "1", "phoneNumber": "6045555555" } ]
           },
           "actionGroupName": "Service health action group",
           "actionGroupShortName": "health-alert",
@@ -22,7 +22,7 @@
     "securityCenter": {
       "value": {
         "email": "alzcanadapubsec@microsoft.com",
-        "phone": "5555555555"
+        "phone": "6045555555"
       }
     },
     "subscriptionRoleAssignments": {
@@ -89,7 +89,7 @@
     },
     "aks": {
       "value": {
-        "version": "1.22.6",
+        "version": "1.25.5",
         "enabled": true,
         "networkPlugin": "kubenet",
         "networkPolicy": "calico",

@@ -243,7 +243,7 @@ A simple object parameter used for configuring Microsoft Defender for Cloud:
   "securityCenter": {
     "value": {
       "email": "alzcanadapubsec@microsoft.com",
-      "phone": "5555555555"
+      "phone": "6045555555"
     }
   }
 ```
@@ -259,8 +259,8 @@ A complex object parameter used for configuring Service Health alerts:
       "receivers": {
         "app": [ "alzcanadapubsec@microsoft.com" ],
         "email": [ "alzcanadapubsec@microsoft.com" ],
-        "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-        "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+        "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
+        "voice": [ { "countryCode": "1", "phoneNumber": "6045555555" } ]
       },
       "actionGroupName": "Sub5 ALZ action group",
       "actionGroupShortName": "sub5-alert",

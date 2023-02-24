@@ -108,7 +108,7 @@ var virtualNetworkName = subnetIdSplit[8]
 var privateDnsZoneIdSplit = split(privateDNSZoneId, '/')
 var privateDnsZoneSubscriptionId = privateDnsZoneIdSplit[2]
 var privateZoneDnsResourceGroupName = privateDnsZoneIdSplit[4]
-var privateZoneResourceName = last(privateDnsZoneIdSplit)
+var privateZoneResourceName = last(privateDnsZoneIdSplit)!
 
 module identity '../../iam/user-assigned-identity.bicep' = {
   name: 'deploy-aks-identity'

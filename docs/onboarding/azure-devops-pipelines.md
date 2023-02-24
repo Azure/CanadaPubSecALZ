@@ -502,8 +502,8 @@ This role assignment is used to grant users access to the logging subscription b
                   "receivers": {
                       "app": [ "alzcanadapubsec@microsoft.com" ],
                       "email": [ "alzcanadapubsec@microsoft.com" ],
-                      "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-                      "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                      "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
+                      "voice": [ { "countryCode": "1", "phoneNumber": "6045555555" } ]
                   },
                   "actionGroupName": "Service health action group",
                   "actionGroupShortName": "health-alert",
@@ -514,7 +514,7 @@ This role assignment is used to grant users access to the logging subscription b
             "securityCenter": {
               "value": {
                 "email": "alzcanadapubsec@microsoft.com",
-                "phone": "5555555555"
+                "phone": "6045555555"
               }
             },
             "subscriptionRoleAssignments": {
@@ -837,8 +837,8 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                       "receivers": {
                           "app": [ "alzcanadapubsec@microsoft.com" ],
                           "email": [ "alzcanadapubsec@microsoft.com" ],
-                          "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-                          "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                          "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
+                          "voice": [ { "countryCode": "1", "phoneNumber": "6045555555" } ]
                       },
                       "actionGroupName": "Service health action group",
                       "actionGroupShortName": "health-alert",
@@ -849,7 +849,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                 "securityCenter": {
                   "value": {
                     "email": "alzcanadapubsec@microsoft.com",
-                    "phone": "5555555555"
+                    "phone": "6045555555"
                   }
                 },
                 "subscriptionRoleAssignments": {
@@ -1075,8 +1075,8 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                       "receivers": {
                           "app": [ "alzcanadapubsec@microsoft.com" ],
                           "email": [ "alzcanadapubsec@microsoft.com" ],
-                          "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-                          "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                          "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
+                          "voice": [ { "countryCode": "1", "phoneNumber": "6045555555" } ]
                       },
                       "actionGroupName": "Service health action group",
                       "actionGroupShortName": "health-alert",
@@ -1087,7 +1087,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
                 "securityCenter": {
                   "value": {
                     "email": "alzcanadapubsec@microsoft.com",
-                    "phone": "5555555555"
+                    "phone": "6045555555"
                   }
                 },
                 "subscriptionRoleAssignments": {

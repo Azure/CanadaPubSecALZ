@@ -77,9 +77,9 @@ resource sqlmi 'Microsoft.Sql/managedInstances@2020-11-01-preview' = {
 }
 
 resource sqlmi_va 'Microsoft.Sql/managedInstances/vulnerabilityAssessments@2020-11-01-preview' = {
-  name: '${name}/default'
+  parent: sqlmi
+  name: 'default'
   dependsOn: [
-    sqlmi
     roleAssignSQLMIToSALogging
   ]
   properties: {

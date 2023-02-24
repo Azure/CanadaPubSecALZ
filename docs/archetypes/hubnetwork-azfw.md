@@ -347,8 +347,8 @@ This example configures:
           "receivers": {
               "app": [ "alzcanadapubsec@microsoft.com" ],
               "email": [ "alzcanadapubsec@microsoft.com" ],
-              "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-              "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+              "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
+              "voice": [ { "countryCode": "1", "phoneNumber": "6045555555" } ]
           },
           "actionGroupName": "Service health action group",
           "actionGroupShortName": "health-alert",
@@ -359,7 +359,7 @@ This example configures:
     "securityCenter": {
       "value": {
         "email": "alzcanadapubsec@microsoft.com",
-        "phone": "5555555555"
+        "phone": "6045555555"
       }
     },
     "subscriptionRoleAssignments": {

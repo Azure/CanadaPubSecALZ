@@ -9,6 +9,8 @@
 
 targetScope = 'managementGroup'
 
+@description('Management Group scope for the policy definition.')
+
 resource aksPolicySet 'Microsoft.Authorization/policySetDefinitions@2020-03-01' = {
   name: 'custom-aks'
   properties: {
@@ -24,7 +26,7 @@ resource aksPolicySet 'Microsoft.Authorization/policySetDefinitions@2020-03-01' 
         groupNames: [
           'AKS'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/a8eff44f-8c92-45c3-a3fb-9880802d67a7'
+        policyDefinitionId: tenantResourceId('Microsoft.Authorization/policyDefinitions', 'a8eff44f-8c92-45c3-a3fb-9880802d67a7')
         policyDefinitionReferenceId: toLower(replace('Deploy Azure Policy Add-on to Azure Kubernetes Service clusters', ' ', '-'))
         parameters: {}
       }
@@ -32,7 +34,7 @@ resource aksPolicySet 'Microsoft.Authorization/policySetDefinitions@2020-03-01' 
         groupNames: [
           'AKS'
         ]
-        policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/3fc4dc25-5baf-40d8-9b05-7fe74c1bc64e'
+        policyDefinitionId: tenantResourceId('Microsoft.Authorization/policyDefinitions', '3fc4dc25-5baf-40d8-9b05-7fe74c1bc64e')
         policyDefinitionReferenceId: toLower(replace('Kubernetes clusters should use internal load balancers', ' ', '-'))
         parameters: {}
       }

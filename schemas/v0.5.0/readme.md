@@ -36,13 +36,13 @@
               "sms": [
                 {
                   "countryCode": "1",
-                  "phoneNumber": "5555555555"
+                  "phoneNumber": "6045555555"
                 }
               ],
               "voice": [
                 {
                   "countryCode": "1",
-                  "phoneNumber": "5555555555"
+                  "phoneNumber": "6045555555"
                 }
               ]
             },
@@ -55,7 +55,7 @@
         "securityCenter": {
           "value": {
             "email": "alzcanadapubsec@microsoft.com",
-            "phone": "5555555555"
+            "phone": "6045555555"
           }
         },
         "subscriptionRoleAssignments": {
@@ -271,13 +271,13 @@
               "sms": [
                 {
                   "countryCode": "1",
-                  "phoneNumber": "5555555555"
+                  "phoneNumber": "6045555555"
                 }
               ],
               "voice": [
                 {
                   "countryCode": "1",
-                  "phoneNumber": "5555555555"
+                  "phoneNumber": "6045555555"
                 }
               ]
             },
@@ -290,7 +290,7 @@
         "securityCenter": {
           "value": {
             "email": "alzcanadapubsec@microsoft.com",
-            "phone": "5555555555"
+            "phone": "6045555555"
           }
         },
         "subscriptionRoleAssignments": {
