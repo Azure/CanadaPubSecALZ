@@ -22,12 +22,13 @@
 
 variables:
   deploymentRegion: canadacentral
+  identityPathFromRoot: 'config/identity'
 
   # Management Groups
   var-managementgroup-hierarchy: >
     {
       "name": "Tenant Root Group",
-      "id": "343ddfdb-bef5-46d9-99cf-ed67d5948783",
+      "id": "586153d5-0630-4e6c-b44a-2dfeca488db7",
       "children": [
         {
           "name": "Azure Landing Zones for Canadian Public Sector",
@@ -61,22 +62,24 @@ variables:
   # Logging
   var-logging-region: canadacentral
   var-logging-managementGroupId: pubsecPlatformManagement
-  var-logging-subscriptionId: bc0a4f9f-07fa-4284-b1bd-fbad38578d3a
+  var-logging-subscriptionId: 46e3c98c-7c51-4634-be53-df9916714a46
   var-logging-configurationFileName: logging.parameters.json
 
   ## This parameter is only used for HIPAA/HITRUST Policy Assignment
   var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
 
+
   # Platform Identity
   var-identity-region: canadacentral
   var-identity-managementGroupId: pubsecPlatformIdentity
-  var-identity-subscriptionId: b357bf7b-3328-4d21-b94b-4bfa84af97b1
+  var-identity-subscriptionId: 3cc02518-00e3-4dc7-a755-71b2cef65b27
   var-identity-configurationFileName: identity.parameters.json
+
 
   # Hub Networking
   var-hubnetwork-region: canadacentral
   var-hubnetwork-managementGroupId: pubsecPlatformConnectivity
-  var-hubnetwork-subscriptionId: ed7f4eed-9010-4227-b115-2a5e37728f27
+  var-hubnetwork-subscriptionId: db8a3c31-7dbb-4368-8883-f9e6333ff23a
 
   ## Hub Network configuration using Azure Firewall - required when Azure Firewall is used
   var-hubnetwork-azfwPolicy-configurationFileName: hub-azfw-policy/azure-firewall-policy.parameters.json

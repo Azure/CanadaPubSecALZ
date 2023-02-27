@@ -293,11 +293,19 @@ Azure PaaS services use Private DNS Zones to map their fully qualified domain na
 * Private DNS Zones from being created in the spoke subscriptions. These can only be created in the designated resource group in the Hub Subscription.
 * Ensure private endpoints can be automatically mapped to the centrally managed Private DNS Zones.
 
-The following diagram shows a typical high-level architecture for enterprise environments with central DNS resolution and name resolution for Private Link resources via Azure Private DNS. This topology provides:
+The following diagrams show a typical high-level architecture for enterprise environments with central DNS resolution and name resolution for Private Link resources via Azure Private DNS. This topology provides:
 
 * Name resolution from hub to spoke
 * Name resolution from spoke to spoke
 * Name resolution from on-premises to Azure (Hub & Spoke resources).  Additional configuration is required to deploy DNS resolvers in the Hub Network & provide DNS forwarding from on-premises to Azure.
+
+**`DNS Resolution using Azure DNS Resolver`**
+![DNS using Azure DNS Resolver](https://learn.microsoft.com/en-us/azure/dns/media/dns-resolver-overview/resolver-architecture.png)
+**Reference:** [What is Azure DNS Private Resolver?](https://learn.microsoft.com/en-us/azure/dns/dns-resolver-overview)
+
+
+
+**`DNS using Virtual Machines managed by IT`**
 
 ![Hub Managed DNS](media/architecture/hubnetwork-private-link-central-dns.png)
 
@@ -305,7 +313,8 @@ The following diagram shows a typical high-level architecture for enterprise env
 
 Reference implementation provides the following capabilities:
 
-* Deploy Private DNS Zones to the Hub Networking subscription. Enable/disable via configuration.
+* Deploy Private DNS Zones to the Hub Networking or Identity subscription. Enable/disable via configuration.
+* Deploy Azure DNS Private Resolver to the Hub or Identity Subscription. Enable/disable via configuration.
 * Azure Policy to block private zones from being created outside of the designated resource group in the Hub networking subscription.
 * Azure Policy to automatically detect new private endpoints and add their A records to their respective Private DNS Zone.
 * Support to ensure Hub managed Private DNS Zones are used when deploying archetypes.
@@ -316,7 +325,7 @@ The reference implementation does not deploy DNS Servers (as Virtual Machines) i
 
 * Link Private DNS Zones directly to the spoke virtual networks and use the [built-in DNS resolver in each virtual network](https://learn.microsoft.com/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances). Virtual network(s) in spoke subscriptions be configured through Virtual Network Link for name resolution. DNS resolution is automatic once the Private DNS Zone is linked to the virtual network.
 
-* Leverage DNS Servers on virtual machines that are managed by department's IT.
+* Leverage DNS Services from either Azure DNS Private Resolver or on virtual machines that are managed by department's IT.
 
 ### Spoke Landing Zone Networks
 
@@ -556,6 +565,7 @@ Use the [Azure DevOps Pipelines](onboarding/azure-devops-pipelines.md) onboardin
 | Platform – Hub Networking using NVAs | platform-connectivity-hub-nva.yml | platform-connectivity-hub-nva-ci | Configures Hub Networking with Fortigate Firewalls. | spn-azure-platform-ops | None |
 | Platform – Hub Networking with Azure Firewall - Firewall Policy | platform-connectivity-hub-azfw-policy.yml | platform-connectivity-hub-azfw-policy-ci | Configures Azure Firewall Policy.  A policy contains firewall rules and firewall configuration such as enabling DNS Proxy.  Firewall policies can be updated independently of Azure Firewall. | spn-azure-platform-ops | None |
 | Platform – Hub Networking with Azure Firewall | platform-connectivity-hub-azfw.yml | platform-connectivity-hub-azfw-ci | Configures Hub Networking with Azure Firewall. | spn-azure-platform-ops | None |
+| Identity | platform-identity.yml | platform-identity-ci | Configures a Identity Landing Zone that will be used by all landing zones for managing identities services (i.e. Domain Controllers). | spn-azure-platform-ops | None |
 | Subscriptions | subscriptions.yml | subscriptions-ci | Configures a new subscription based on the archetype defined in the configuration file name. | spn-azure-platform-ops | None |
 | Pull Request Validation | pull-request-check.yml | pull-request-validation-ci | Checks for breaking changes to Bicep templates & parameter schemas prior to merging the change to main branch.  This pipeline must be configured as a check for the `main` branch. | spn-azure-platform-ops | None |
 

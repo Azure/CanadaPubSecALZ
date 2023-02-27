@@ -63,6 +63,7 @@ This deployment diagram describes the steps for deploying one, many or all modul
     Logging: Logging
     Policy: Azure Policy
     HubNetworking: Hub Networking (NVAs or Azure Firewall)
+    Identity: Identity
     Archetypes: Archetypes (Spokes)
 
     [*] --> ManagementGroups
@@ -73,10 +74,13 @@ This deployment diagram describes the steps for deploying one, many or all modul
 
     Policy --> HubNetworking
     Policy --> Archetypes
+    HubNetworking --> Identity
+
 
     HubNetworking --> Archetypes
 
     Policy --> [*]
+    Identity --> [*]
     HubNetworking --> [*]
     Archetypes --> [*]
 ```
@@ -103,6 +107,10 @@ This deployment diagram describes the steps for deploying one, many or all modul
     AssignDDOSPolicy: [Optional] Assign Azure Policy for linking DDoS Standard Plan to virtual network
     AssignPrivateDNSZonesPolicy: [Optional] Assign Azure Policies for centrally managing private DNS zones
 
+    Identity: Identity
+    DeployVirtualNetwork: Deploy Virtual Network
+    DeployDNSResolver: Deploy DNS Resolver (optional)
+
     Archetypes: Archetypes (Spokes)
     DeployGenericSubscriptionArchetype: Generic Subscription
     DeployMachineLearningArchetype: Machine Learning
@@ -126,6 +134,7 @@ This deployment diagram describes the steps for deploying one, many or all modul
     }
 
     Policy --> HubNetworking: When Hub Networking is required
+    HubNetworking --> Archetypes: When archetypes are deployed in spoke subscriptions
     Policy --> Archetypes: When existing Hub Networking is in place
 
     state HubNetworking {
@@ -150,7 +159,13 @@ This deployment diagram describes the steps for deploying one, many or all modul
         AssignPrivateDNSZonesPolicy --> [*]
     }
 
-    HubNetworking --> Archetypes: When archetypes are deployed in spoke subscriptions
+    HubNetworking --> Identity: When Identity Sub is required
+
+    state Identity {
+        DeployVirtualNetwork --> DeployDNSResolver
+        DeployDNSResolver --> [*]
+    }
+    
 
     state Archetypes {
         state ArchetypeChoice <<choice>>
@@ -163,7 +178,8 @@ This deployment diagram describes the steps for deploying one, many or all modul
     }
 
     Policy --> [*]: MVP deployment and enables Microsoft Sentinel & Log Analytics
-    HubNetworking --> [*]
+    HubNetworking --> [*]: Identity Sub is NOT required
+    Identity --> [*]
     Archetypes --> [*]
 ```
 
@@ -178,7 +194,8 @@ This deployment diagram describes the steps for deploying one, many or all modul
 * [Step 5 - Configure Logging](#step-5---configure-logging)
 * [Step 6 - Configure Azure Policies](#step-6---configure-azure-policies)
 * [Step 7 - Configure Hub Networking](#step-7---configure-hub-networking)
-* [Step 8 - Configure Subscription Archetypes](#step-8---configure-subscription-archetypes)
+* [Step 8 - Configure Identity subscription](#step-8---configure-identity-subscription)
+* [Step 9 - Configure Subscription Archetypes](#step-9---configure-subscription-archetypes)
 * [Appendix](#appendix)
   * [Populate management group hierarchy from your environment](#populate-management-group-hierarchy-from-your-environment)
   * [Migrate Logging configuration from Azure DevOps variables to JSON parameters file](#migrate-logging-configuration-from-azure-devops-variables-to-json-parameters-file)
@@ -1479,8 +1496,168 @@ In order to configure audit stream for Azure Monitor, identify the following inf
     * When using Hub Networking with Azure Firewall, run `platform-connectivity-hub-azfw-policy-ci` pipeline first.  This ensures that the Azure Firewall Policy is deployed and can be used as a reference for Azure Firewall.  This approach allows for Azure Firewall Policies (such as allow/deny rules) to be managed independently from the Hub Networking components.
 
 ---
+## Step 8 - Configure Identity Subscription
 
-## Step 8 - Configure Subscription Archetypes
+1. Configure Pipeline definition for Identity 
+
+    > Pipelines are stored as YAML definitions in Git and imported into Azure DevOps Pipelines.  This approach allows for portability and change tracking.
+
+    1. Go to Pipelines
+    1. New Pipeline
+    1. Choose Azure Repos Git
+    1. Select Repository
+    1. Select Existing Azure Pipeline YAML file
+    1. Identify the pipeline in `.pipelines/platform-identity.yml`.
+    1. Save the pipeline (don't run it yet)
+    1. Rename the pipeline to `identity-ci`
+
+1. Create a subscription configuration file (JSON)
+
+    1. Create directory ./config/identity.
+    
+    1. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaESLZ-main` to create path `./config/identity/CanadaESLZ-main/`).
+    
+    1. Make a copy of an existing subscription configuration file under `config/identity/CanadaESLZ-main` as a starting point
+
+    1. Define deployment parameters based on example below.
+        
+        * Set the values for the Azure tags that would be applied to the identity subscription and the Identity resources.
+        * Set resource group names for the Identity resources. 
+        > **Note:** Each resource group is created if the associated resource's Enabled flag is set to `true`.
+
+        * Example deployment parameters file:
+  
+          ```json
+            "subscriptionTags": {
+              "value": {
+                "ISSO": "isso-tbd",
+                "ClientOrganization": "client-organization-tag",
+                "CostCenter": "cost-center-tag",
+                "DataSensitivity": "data-sensitivity-tag",
+                "ProjectContact": "project-contact-tag",
+                "ProjectName": "project-name-tag",
+                "TechnicalContact": "technical-contact-tag"
+              }
+            },
+            "resourceTags": {
+              "value": {
+                "ClientOrganization": "client-organization-tag",
+                "CostCenter": "cost-center-tag",
+                "DataSensitivity": "data-sensitivity-tag",
+                "ProjectContact": "project-contact-tag",
+                "ProjectName": "project-name-tag",
+                "TechnicalContact": "technical-contact-tag"
+              }
+            },
+            "resourceGroups": {
+              "value": {
+                  "automation": "automation",
+                  "networking": "networking",
+                  "networkWatcher": "NetworkWatcherRG",
+                  "backupRecoveryVault": "backup",
+                  "domainControllers": "DomainControllersRG",
+                  "dnsResolver": "dns-resolverRG",
+                  "dnsCondionalForwarders": "dns-CondionalForwardersRG",
+                  "privateDnsZones": "pubsec-dns"
+              }
+            },
+          ```
+        * Configure Azure DNS Private Resolver
+
+          ```json
+            "privateDnsResolver": {
+            "value": {
+              "enabled": true,
+              "name": "dns-resolver",
+              "inboundEndpointName": "dns-resolver-Inbound",
+              "outboundEndpointName": "dns-resolver-Outbound"
+            }
+          },
+
+          "privateDnsResolverRuleset": {
+            "value": {
+              "enabled": true,
+              "name": "dns-resolver-ruleset",
+              "linkRuleSetToVnet": true,
+              "linkRuleSetToVnetName": "dns-resolver-vnet-link",
+              "forwardingRules": [
+                {
+                  "name": "default",
+                  "domain": "dontMakeMeThink.local",
+                  "state": "Enabled",
+                  "targetDnsServers": [
+                    {
+                      "ipAddress": "10.99.99.100"
+                    },
+                    {
+                      "ipAddress": "10.99.99.99"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          ```  
+        * Configure the Identity network & it's peering connection to the hub network
+        > **Note:** If the PrivateDnsResolver Enabled setting is set to `false` the associated DNS Resolver subnets will not be deployed.
+
+          ```json
+          "hubNetwork": {
+            "value": {
+                "virtualNetworkId": "/subscriptions/db8a3c31-7dbb-4368-8883-f9e6333ff23a/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+                "rfc1918IPRange": "10.18.0.0/22",
+                "rfc6598IPRange": "100.60.0.0/16",
+                "egressVirtualApplianceIp": "10.18.1.4"
+            }
+          },
+
+          "network": {
+              "value": {
+                "deployVnet": true,
+                "peerToHubVirtualNetwork": true,
+                "useRemoteGateway": false,
+                "name": "id-vnet",
+                "dnsServers": [
+                  "10.18.1.4"
+                ],
+                "addressPrefixes": [
+                  "10.15.0.0/24"
+                ],
+                "subnets": {
+                  "domainControllers": {
+                    "comments": "Identity Subnet for Domain Controllers and VM-Based DNS Servers",
+                    "name": "DomainControllers",
+                    "addressPrefix": "10.15.0.0/27"
+                  },
+                  "dnsResolverInbound": {
+                    "comments": "Azure DNS Resolver Inbound Requests subnet",
+                    "name": "AzureDNSResolver-Inbound",
+                    "addressPrefix": "10.15.0.32/27"
+                  },
+                  "dnsResolverOutbound": {
+                    "comments": "Azure DNS Resolver Outbound Requests subnet",
+                    "name": "AzureDNSResolver-Outbound",
+                    "addressPrefix": "10.15.0.64/27"
+                  },
+                  "optional": []
+                }
+              }
+            }
+          ```
+
+1. Configure the Azure DevOps pipeline for Identity
+
+    1. In Azrue DevOps, go to Pipelines
+    1. New Pipeline
+        1. Select Existing Azrue Pipline YAML file
+        1. Identify the pipeline in `.pipelines/identity.yml`
+        1. save the pipeline (don't run it yet)
+        1. Rename the pipeline to `identity-ci` 
+
+1. Run pipeline and wait for completion
+
+---
+## Step 9 - Configure Subscription Archetypes
 
 1. Configure Pipeline definition for subscription archetypes
 

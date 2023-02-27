@@ -1,0 +1,128 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serviceHealthAlerts": {
+      "value": {
+          "resourceGroupName": "service-health",
+          "incidentTypes": [ "Incident", "Security" ],
+          "regions": [ "Global", "Canada East", "Canada Central" ],
+          "receivers": {
+              "app": [ "alzcanadapubsec@microsoft.com" ],
+              "email": [ "alzcanadapubsec@microsoft.com" ],
+              "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
+              "voice": [ { "countryCode": "1", "phoneNumber": "6055555555" } ]
+          },
+          "actionGroupName": "Service health action group",
+          "actionGroupShortName": "health-alert",
+          "alertRuleName": "Incidents and Security",
+          "alertRuleDescription": "Service Health: Incidents and Security"
+      }
+    },
+    "securityCenter": {
+      "value": {
+        "email": "alzcanadapubsec@microsoft.com",
+        "phone": "6045555555"
+      }
+    },
+    "subscriptionRoleAssignments": {
+      "value": [
+        {
+          "comments": "Built-in Owner Role",
+          "roleDefinitionId": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+          "securityGroupObjectIds": [
+            "3af30d9f-04aa-4d64-b4d5-407d7ff64ff8"
+          ]
+        }
+      ]
+    },
+    "subscriptionBudget": {
+      "value": {
+        "createBudget": false
+      }
+    },
+    "subscriptionTags": {
+      "value": {
+        "ISSO": "isso-tbd"
+      }
+    },
+    "resourceTags": {
+      "value": {
+        "ClientOrganization": "client-organization-tag",
+        "CostCenter": "cost-center-tag",
+        "DataSensitivity": "data-sensitivity-tag",
+        "ProjectContact": "project-contact-tag",
+        "ProjectName": "project-name-tag",
+        "TechnicalContact": "technical-contact-tag"
+      }
+    },
+    "logAnalyticsResourceGroupName": {
+      "value": "pubsec-central-logging"
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "bwill-log-analytics-workspace"
+    },
+    "logAnalyticsRetentionInDays": {
+      "value": 30
+    },
+    "logAnalyticsAutomationAccountName": {
+      "value": "automation-account"
+    },
+    "dataCollectionRule": {
+      "value": {
+        "enabled": true,
+        "name": "DCR-AzureMonitorLogs",
+        "windowsEventLogs": [
+          {
+              "streams": [
+                  "Microsoft-Event"
+              ],
+              "xPathQueries": [
+                  "Application!*[System[(Level=1 or Level=2 or Level=3)]]",
+                  "Security!*[System[(band(Keywords,13510798882111488))]]",
+                  "System!*[System[(Level=1 or Level=2 or Level=3)]]"
+              ],
+              "name": "eventLogsDataSource"
+          }
+        ],
+        "syslog": [
+          {
+              "streams": [
+                  "Microsoft-Syslog"
+              ],
+              "facilityNames": [
+                  "auth",
+                  "authpriv",
+                  "cron",
+                  "daemon",
+                  "mark",
+                  "kern",
+                  "local0",
+                  "local1",
+                  "local2",
+                  "local3",
+                  "local4",
+                  "local5",
+                  "local6",
+                  "local7",
+                  "lpr",
+                  "mail",
+                  "news",
+                  "syslog",
+                  "user",
+                  "uucp"
+              ],
+              "logLevels": [
+                  "Warning",
+                  "Error",
+                  "Critical",
+                  "Alert",
+                  "Emergency"
+              ],
+              "name": "sysLogsDataSource"
+          }
+        ]
+      }
+    }
+  }
+}

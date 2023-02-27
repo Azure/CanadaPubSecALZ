@@ -1,0 +1,73 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+trigger: none
+  # batch: true
+  # branches:
+  #   include:
+  #     - main
+  # paths:
+  #   include:
+  #     - landingzones/lz-platform-connectivity-hub-nva
+  #     - .pipelines/platform-connectivity-hub-nva.yml  
+  #     - .pipelines/templates/steps/deploy-platform-connectivity-hub-nva.yml
+
+pr: none
+
+variables:
+- name: devops-org-name
+  value: ${{ replace(replace(variables['System.CollectionUri'], 'https://dev.azure.com/' , ''), '/', '') }}
+- name: logging-config-directory
+  value: $(System.DefaultWorkingDirectory)/$(loggingPathFromRoot)/${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}
+- name: identity-config-directory
+  value: $(System.DefaultWorkingDirectory)/$(identityPathFromRoot)/${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}
+- name: variable-template-file
+  value: ${{ variables['devops-org-name'] }}-${{ variables['Build.SourceBranchName'] }}.yml
+- template: ../config/variables/common.yml
+- template: ../config/variables/${{ variables['variable-template-file'] }}
+
+
+pool:
+  vmImage: $[ variables.vmImage ]
+  
+stages:
+
+- stage: DeployNetworkingStage
+  displayName: Deploy Networking Stage
+
+  jobs:
+
+  - deployment: DeployIdentityJob
+    displayName: Deploy Identity Job
+    environment: ${{ variables['Build.SourceBranchName'] }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+
+          - template: templates/steps/load-variables.yml
+
+          - template: templates/steps/load-log-analytics-vars.yml
+            parameters:
+              logAnalyticsSubscriptionId: $(var-logging-subscriptionId)
+              logAnalyticsConfigurationFile: ${{ variables['logging-config-directory'] }}/$(var-logging-configurationFileName)
+
+          - template: templates/steps/show-variables.yml
+            parameters:
+              json: ${{ convertToJson(variables) }}
+
+          - template: templates/steps/deploy-platform-identity.yml
+            parameters:
+              workingDir: $(System.DefaultWorkingDirectory)/landingzones
+              deployOperation: ${{ variables['deployOperation'] }}
+              identityManagementGroupId: $(var-identity-managementGroupId)
+              identitySubscriptionId: $(var-identity-subscriptionId)
+              identityRegion: $(var-identity-region)
+              identityConfigurationPath: ${{ variables['identity-config-directory'] }}/$(var-identity-configurationFileName)
