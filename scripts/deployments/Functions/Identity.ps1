@@ -53,6 +53,11 @@ function Set-Identity {
         $Configuration.parameters | Add-Member $LogAnalyticsWorkspaceIdElement -Force
     }
     #endregion
+    
+    $PopulatedParametersFilePath = $ConfigurationFilePath.Split('.')[0] + '-populated.json'
+
+    Write-Output "Creating new file with runtime populated parameters: $PopulatedParametersFilePath"
+    $Configuration | ConvertTo-Json -Depth 100 | Set-Content $PopulatedParametersFilePath
 
     Write-Output "Moving Subscription ($SubscriptionId) to Management Group ($ManagementGroupId)"
     New-AzManagementGroupDeployment `
@@ -65,12 +70,12 @@ function Set-Identity {
         } `
         -Verbose
         
-    Write-Output "Deploying Logging to $SubscriptionId in $Region with $ConfigurationFilePath"
+    Write-Output "Deploying Identity to $SubscriptionId in $Region with $ConfigurationFilePath"
     New-AzSubscriptionDeployment `
         -Name "main-$Region" `
         -Location $Region `
         -TemplateFile "$($Context.WorkingDirectory)/landingzones/lz-platform-identity/main.bicep" `
-        -TemplateParameterFile $ConfigurationFilePath `
+        -TemplateParameterFile $PopulatedParametersFilePath `
         -Verbose
 
 }
