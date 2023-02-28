@@ -313,7 +313,7 @@ jobs:
 
   identity:
     name: Identity
-    if: github.event.inputs.deployIdentity == true
+    if: github.event.inputs.deployIdentity == 'true'
 
     needs:
       - Logging
