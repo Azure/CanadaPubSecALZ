@@ -87,7 +87,7 @@
         },
         "privateDnsZones": {
           "value": {
-            "enabled": true,
+            "enabled": false,
             "resourceGroupName": "pubsec-dns"
           }
         },
