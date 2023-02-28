@@ -3,7 +3,7 @@
       "contentVersion": "1.0.0.0",
       "parameters": {
         "logAnalyticsWorkspaceResourceId": {
-          "value": "/subscriptions/46e3c98c-7c51-4634-be53-df9916714a46/resourceGroups/pubsec-central-logging/providers/Microsoft.OperationalInsights/workspaces/bwill-log-analytics-workspace"
+          "value": "/subscriptions/b357bf7b-3328-4d21-b94b-4bfa84af97b1/resourceGroups/pubsec-central-logging/providers/Microsoft.OperationalInsights/workspaces/bwill-log-analytics-workspace"
         },
         "serviceHealthAlerts": {
           "value": {
