@@ -22,7 +22,8 @@ The following workflows are present in the `.github/workflows` repository folder
 | 5 | Azure Firewall Policy (required for Hub Networking with Azure Firewall) | `5-azure-firewall-policy.yml`
 | 5 | Hub Networking with Azure Firewall | `5-hub-network-with-azure-firewall.yml`
 | 5 | Hub Networking with NVA | `5-hub-network-with-nva.yml`
-| 6 | Subscriptions | `6-subscriptions.yml`
+| 6 | Identity | `6-identity.yml`
+| 7 | Subscriptions | `7-subscriptions.yml`
 
 With the exception of the `Everything` workflow, all other workflows need to be run in the order specified. For example, the `Policy` workflow is dependent on resources deployed by the `Logging` workflow. Think of it as a layered approach; once the layer is deployed, it only requires re-running if some configuration at that layer changes.
 
