@@ -2,9 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
       "contentVersion": "1.0.0.0",
       "parameters": {
-        "logAnalyticsWorkspaceResourceId": {
-          "value": "/subscriptions/b357bf7b-3328-4d21-b94b-4bfa84af97b1/resourceGroups/pubsec-central-logging/providers/Microsoft.OperationalInsights/workspaces/bwill-log-analytics-workspace"
-        },
         "serviceHealthAlerts": {
           "value": {
               "resourceGroupName": "service-health",
