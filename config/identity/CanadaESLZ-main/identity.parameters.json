@@ -34,7 +34,7 @@
               "comments": "Built-in Owner Role",
               "roleDefinitionId": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
               "securityGroupObjectIds": [
-                "3af30d9f-04aa-4d64-b4d5-407d7ff64ff8" //change to match a role ID in the Test Tenant//
+                "3a4fa072-cc14-471d-aeac-49afdbde9f7a"
               ]
             }
           ]
@@ -130,7 +130,7 @@
   
         "hubNetwork": {
           "value": {
-              "virtualNetworkId": "/subscriptions/db8a3c31-7dbb-4368-8883-f9e6333ff23a/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+              "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet",
               "rfc1918IPRange": "10.18.0.0/22",
               "rfc6598IPRange": "100.60.0.0/16",
               "egressVirtualApplianceIp": "10.18.1.4"
