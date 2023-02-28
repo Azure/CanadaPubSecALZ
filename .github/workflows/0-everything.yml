@@ -20,6 +20,11 @@ on:
           - "HubNetworkWithNVA"
           - "HubNetworkWithAzureFirewall"
         default: "HubNetworkWithAzureFirewall"
+      deployIdentity:
+        type: boolean
+        description: "Deploy Identity Subscription"
+        required: true
+        default: false
       subscriptionIds:
         type: string
         description: Subscription ID(s) (optional), e.g. "abcd", "1234"
@@ -308,6 +313,8 @@ jobs:
 
   identity:
     name: Identity
+    if: github.event.inputs.deployIdentity == true
+
     needs:
       - Logging
       - HubNetworking
