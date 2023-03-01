@@ -8,15 +8,6 @@
 # ----------------------------------------------------------------------------------
 
 trigger: none
-  # batch: true
-  # branches:
-  #   include:
-  #     - main
-  # paths:
-  #   include:
-  #     - landingzones/lz-platform-connectivity-hub-nva
-  #     - .pipelines/platform-connectivity-hub-nva.yml  
-  #     - .pipelines/templates/steps/deploy-platform-connectivity-hub-nva.yml
 
 pr: none
 
