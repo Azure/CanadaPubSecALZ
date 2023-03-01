@@ -14,12 +14,11 @@ Identity Landing Zone to support ESLZ topology.  This architeype will provide:
 
 * Azure Automation Account
 * Azure Virtual Network
-* Azure Key Vault
+* Azure Recovery Services Vault
 * Role-based access control for Owner, Contributor & Reader
 * Integration with Azure Cost Management for Subscription-scoped budget
 * Integration with Microsoft Defender for Cloud
 * Azure Private DNS Resolver & Conditional Forwarder Zone (optional).
-* Enables DDOS Standard (optional)
 * Enables Azure Private DNS Zones (optional).
 
 */
@@ -207,7 +206,7 @@ param privateDnsResolverRuleset object
 // Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 var telemetry = json(loadTextContent('../../config/telemetry.json'))
 module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-usage-attribution-subscription.bicep' = if (telemetry.customerUsageAttribution.enabled) {
-  name: 'pid-${telemetry.customerUsageAttribution.modules.archetypes.genericSubscription}'
+  name: 'pid-${telemetry.customerUsageAttribution.modules.identity}'
 }
 
 /*
