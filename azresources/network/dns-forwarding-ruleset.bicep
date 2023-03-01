@@ -38,7 +38,7 @@ resource fwRule 'Microsoft.Network/dnsForwardingRulesets/forwardingRules@2022-07
   parent: ruleset
   properties: {
     forwardingRuleState: rule.state
-    domainName: endsWith(rule.domain, '.') ? rule.domain : '${rule.domain}.'
+    domainName: endsWith(rule.domain, '.') ? rule.domain : '${rule.domain}.' //Adding a '.' at the end of the domain name if it is not present
     targetDnsServers: rule.targetDnsServers
   }
 }]
