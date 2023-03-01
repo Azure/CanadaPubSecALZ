@@ -27,17 +27,17 @@ parameters:
 
 steps:
 
-#- task: PowerShell@2
-#  displayName: Validate identity Parameters
-#  inputs:
-#    targetType: 'inline'
-#    script: |
-#      $schemaFile="$(Build.SourcesDirectory)/schemas/latest/landingzones/lz-platform-connectivity-hub-nva.json"
+- task: PowerShell@2
+  displayName: Validate identity Parameters
+  inputs:
+    targetType: 'inline'
+    script: |
+      $schemaFile="$(Build.SourcesDirectory)/schemas/latest/landingzones/lz-platform-identity.json"
 
-#      Write-Host "Parameters File: ${{ parameters.identityConfigurationPath }}"
-#      Write-Host "Schema File: ${schemaFile}"
-#
-#      Get-Content -Raw "${{ parameters.identityConfigurationPath }}" | Test-Json -SchemaFile "${schemaFile}"
+      Write-Host "Parameters File: ${{ parameters.identityConfigurationPath }}"
+      Write-Host "Schema File: ${schemaFile}"
+
+      Get-Content -Raw "${{ parameters.identityConfigurationPath }}" | Test-Json -SchemaFile "${schemaFile}"
 
 - template: ./move-subscription.yml
   parameters:
