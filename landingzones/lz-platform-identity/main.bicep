@@ -171,7 +171,7 @@ param subscriptionTags object
 param resourceTags object
 
 // Resource Groups
-@description('Resource groups required for the achetype.  It includes automation, networking and networkWatcher.')
+@description('Resource groups required for the archetype.  It includes automation, networking and networkWatcher.')
 param resourceGroups object
 
 // RecoveryVault
@@ -186,11 +186,11 @@ param automation object
 @description('Hub Network configuration that includes virtualNetworkId, rfc1918IPRange, rfc6598IPRange and egressVirtualApplianceIp.')
 param hubNetwork object
 
-@description('Network configuration for the spoke virtual network.  It includes name, dnsServers, address spaces, vnet peering and subnets.')
+@description('Network configuration for the spoke virtual network.  It includes name, dns services, address spaces, vnet peering and subnets.')
 param network object
 
 // Private Dns Zones
-@description('Private DNS Zones configuration.  See docs/archetypes/hubnetwork-azfw.md for configuration settings.')
+@description('Private DNS Zones configuration.  See docs/archetypes/identity.md for configuration settings.')
 param privateDnsZones object
 
 // Private DNS Resolver

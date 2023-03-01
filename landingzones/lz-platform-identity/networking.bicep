@@ -186,7 +186,7 @@ param hubNetwork object
 //    ]
 //   }
 // }
-@description('Network configuration.  Includes peerToHubVirtualNetwork flag, useRemoteGateway flag, name, dnsServers, addressPrefixes and subnets (privateEndpoints, sqlmi, databricksPublic, databricksPrivate, aks, appService, optional [array of optional subnets]).) ')
+@description('Network configuration for the spoke virtual network.  It includes name, dnsServers, address spaces, vnet peering and subnets.')
 param network object
 
 @description('Get the DNS Private Resolver enabled/disabled setting so the associated subnets can be optionally deployed based on the value.')
