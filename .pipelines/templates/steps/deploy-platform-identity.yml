@@ -49,20 +49,6 @@ steps:
     workingDir: ${{ parameters.workingDir }}/utils/mg-move
 
 - task: AzureCLI@2
-  displayName: Register Resource Providers
-  inputs:
-    azureSubscription: $(serviceConnection)
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      $(var-bashPreInjectScript)
-
-      az account set -s ${{ parameters.identitySubscriptionId }}     
-      az provider register -n Microsoft.ContainerService --subscription '${{ parameters.identitySubscriptionId }}'
-
-      $(var-bashPostInjectScript)
-
-- task: AzureCLI@2
   displayName: Configure Identity LZ
   inputs:
     azureSubscription: $(serviceConnection)
