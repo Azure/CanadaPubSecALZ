@@ -86,7 +86,7 @@ jobs:
               Get-Content -Raw $_ | Test-Json -SchemaFile $HubNetworkWithNVASchemaFile
           }
 
-          $IdentyFileFilter="*.json"
+          $IdentityFileFilter="*.json"
           $IdentitySchemaFile="${{env.SCHEMA_FOLDER}}/lz-platform-identity.json"
 
           Get-ChildItem -Recurse -Filter $IdentityFileFilter -Path "${{env.IDENTITY_PATH_FROM_ROOT}}" | ForEach-Object {
