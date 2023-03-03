@@ -23,7 +23,7 @@
 
 Identity and access management are core features of the Azure landing zone implementation. The deployment includes a subscription dedicated to identity, where customers can deploy the Active Directory domain controllers their environments require.  This landing zone will be in the `pubsecPlatformIdentity` management group.
 
-![Archetype:  Generic Subscription](../media/architecture/archetype-generic-subscription.jpg)
+![Archetype:  Generic Subscription](../media/architecture/archetype-identity.jpg)
 
 
 **Workflow**
@@ -52,7 +52,10 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 | Automation | Deploys an Azure Automation Account in each subscription. |
 | Backup Recovery Vault | Configures a backup recovery vault . |
 | Hub Networking | Configures virtual network peering to Hub Network which is required for egress traffic flow and hub-managed DNS resolution (on-premises or other spokes, private endpoints).
-| Networking | A spoke virtual network with minimum 4 zones: oz (Operational Zone), paz (Public Access Zone), rz (Restricted Zone), hrz (Highly Restricted Zone).  Additional subnets can be configured at deployment time using configuration (see below). 
+| Networking | A spoke virtual network with 1 to 3 subnets: Domain Controllers, DNS Resolver Inbound, DNS Resolver Outbound.  Additional subnets can be configured at deployment time using configuration (see below). 
+| DNS Resolver | Configures DNS Resolver with inbound and outbound forwarding.  Inbound forwarding is configured to forward DNS queries to the Hub Network DNS Resolver.  Outbound forwarding is configured to forward DNS queries to the Hub Network DNS Resolver. |
+| DNS Forwarding Ruleset | Configures DNS Forwarding Ruleset to forward DNS queries to the Hub Network DNS Resolver.
+| Private DNS Zones | Optionally configures the PrivateLink DNS zones to be linked to the Identity vNET 
 
 ## Azure Deployment
 
@@ -73,17 +76,9 @@ Reference implementation uses parameter files with `object` parameters to consol
     * [Subscription Tags](../../schemas/latest/landingzones/types/subscriptionTags.json)
     * [Resource Tags](../../schemas/latest/landingzones/types/resourceTags.json)
     * [Log Analytics Workspace](../../schemas/latest/landingzones/types/logAnalyticsWorkspaceId.json)
-
-  * Spoke types
     * [Automation](../../schemas/latest/landingzones/types/automation.json)
     * [Backup Recovery Vault](../../schemas/latest/landingzones/types/backupRecoveryVault.json)
-    * [Hub Network](../../schemas/latest/landingzones/types/hubNetwork.json)
 
-### Delete Locks
-
-As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
-
-**By default, this archetype deploys `CanNotDelete` lock to prevent accidental deletion on all resource groups it creates.**
 
 ### Service Health
 
@@ -97,17 +92,10 @@ Our examples configure service health alerts for `Security` and `Incident`.  How
 
 | Scenario | Example JSON Parameters | Notes |
 |:-------- |:----------------------- |:----- |
-| Deployment with Hub Virtual Network | [tests/schemas/lz-generic-subscription/FullDeployment-With-Hub.json](../../tests/schemas/lz-generic-subscription/FullDeployment-With-Hub.json) | - |
-| Deployment with Location | [tests/schemas/lz-generic-subscription/FullDeployment-With-Location.json](../../tests/schemas/lz-generic-subscription/FullDeployment-With-Location.json) | `parameters.location.value` is `canadacentral` |
-| Deployment without Hub Virtual Network | [tests/schemas/lz-generic-subscription/FullDeployment-Without-Hub.json](../../tests/schemas/lz-generic-subscription/FullDeployment-Without-Hub.json) | `parameters.hubNetwork.value.*` fields are empty & `parameters.network.value.peerToHubVirtualNetwork` is false. |
-| Deployment with subscription budget | [tests/schemas/lz-generic-subscription/BudgetIsTrue.json](../../tests/schemas/lz-generic-subscription/BudgetIsTrue.json) | `parameters.subscriptionBudget.value.createBudget` is set to `true` and budget information filled in. |
-| Deployment without subscription budget | [tests/schemas/lz-generic-subscription/BudgetIsFalse.json](../../tests/schemas/lz-generic-subscription/BudgetIsFalse.json) | `parameters.subscriptionBudget.value.createBudget` is set to `false` and budget information removed. |
-| Deployment without resource tags | [tests/schemas/lz-generic-subscription/EmptyResourceTags.json](../../tests/schemas/lz-generic-subscription/EmptyResourceTags.json) | `parameters.resourceTags.value` is an empty object. |
-| Deployment without subscription tags | [tests/schemas/lz-generic-subscription/EmptySubscriptionTags.json](../../tests/schemas/lz-generic-subscription/EmptySubscriptionTags.json) | `parameters.subscriptionTags.value` is an empty object. |
-| Deployment without subnets | [tests/schemas/lz-generic-subscription/WithoutSubnets.json](../../tests/schemas/lz-generic-subscription/WithoutSubnets.json) | `parameters.network.value.subnets` array is empty. |
-| Deployment without custom DNS | [tests/schemas/lz-generic-subscription/WithoutCustomDNS.json](../../tests/schemas/lz-generic-subscription/WithoutCustomDNS.json) | `parameters.network.value.dnsServers` array is empty.  Defaults to Azure managed DNS when array is empty. |
-| Deployment with Backup Recovery Vault | [tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsTrue.json](../../tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsTrue.json) | `parameters.backupRecoveryVault.value.enabled` is set to `true and vault name is filled in. |
-| Deployment without Backup Recovery Vault | [tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsFalse.json](../../tests/schemas/lz-generic-subscription/BackupRecoveryVaultIsFalse.json) | `parameters.backupRecoveryVault.value.enabled` is set to `false` and vault name is removed. |
+| Deployment with DNS Resolver | [tests/schemas/lz-platform-identity/lz-Identity-With-DNS-Resolver.json](../../tests/schemas/lz-platform-identity/lz-Identity-With-DNS-Resolver.json) | Does not deploy Private DNS Zones |
+| Deployment without DNS Resolver| [tests/schemas/lz-platform-identity/lz-Identity-Without-DNS-Resolver.json](../../tests/schemas/lz-platform-identity/lz-Identity-Without-DNS-Resolver.json) | `parameters.privateDnsResolver.value.enabled` is `false`.  If this setting is false the DNS Conditional Setting ruleset will not be deployed even if it's set to true |
+| Deployment with  DNS Resolver and Private DNS Zones | [tests/schemas/lz-platform-identity/lz-Identity-With-Private-DNS-Zones-And-DNS-Resolver.json](../../tests/schemas/lz-platform-identity/lz-Identity-With-Private-DNS-Zones-And-DNS-Resolver.json) | `parameters.privatednszones.value.enabled` is set to `true` && `parameters.privateDnsResolver.value.enabled` is `true` |
+| Deployment with Private DNS Zones | [tests/schemas/lz-platform-identity/lz-Identity-With-Private-DNS-Zones.json](../../tests/schemas/lz-platform-identity/lz-Identity-With-Private-DNS-Zones.json) | `parameters.privatednszones.value.enabled` is set to `true`.|
 
 ### Example Deployment Parameters
 
