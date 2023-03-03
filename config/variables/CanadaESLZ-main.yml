@@ -67,6 +67,12 @@ variables:
   ## This parameter is only used for HIPAA/HITRUST Policy Assignment
   var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
 
+  # Platform Identity
+  var-identity-region: canadacentral
+  var-identity-managementGroupId: pubsecPlatformIdentity
+  var-identity-subscriptionId: b357bf7b-3328-4d21-b94b-4bfa84af97b1
+  var-identity-configurationFileName: identity.parameters.json
+
   # Hub Networking
   var-hubnetwork-region: canadacentral
   var-hubnetwork-managementGroupId: pubsecPlatformConnectivity

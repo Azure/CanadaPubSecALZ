@@ -260,6 +260,7 @@ Run the `create-pipelines.bat` script to create the landing zone pipelines:
 - platform-connectivity-hub-nva-ci
 - platform-connectivity-hub-azfw-ci
 - platform-connectivity-hub-azfw-policy-ci
+- platform-identity-ci
 - subscriptions-ci
 
 If you would rather perform these steps manually, detailed guidance is available in the following sections of the [Azure DevOps Pipelines Onboarding Guide](./azure-devops-pipelines.md):
@@ -269,7 +270,8 @@ If you would rather perform these steps manually, detailed guidance is available
 - [Step 5 - Configure Logging](./azure-devops-pipelines.md#step-5--configure-logging)
 - [Step 6 - Configure Azure Policies](./azure-devops-pipelines.md#step-6---configure-azure-policies)
 - [Step 7 - Configure Hub Networking](./azure-devops-pipelines.md#step-7---configure-hub-networking)
-- [Step 8 - Configure Subscription Archetypes](./azure-devops-pipelines.md#step-8---configure-subscription-archetypes)
+- [Step 8 - Configure Identity Subscription](./azure-devops-pipelines.md#step-8---configure-identity-subscription)
+- [Step 9 - Configure Subscription Archetypes](./azure-devops-pipelines.md#step-9---configure-subscription-archetypes)
 
 ### Give pipelines access to service endpoint
 

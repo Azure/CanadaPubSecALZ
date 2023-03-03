@@ -1,0 +1,455 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/PlatformIdentityArchetypeDefinition",
+    "definitions": {
+        "PlatformIdentityArchetypeDefinition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "$schema": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "https"
+                    ],
+                    "qt-uri-extensions": [
+                        ".json"
+                    ]
+                },
+                "contentVersion": {
+                    "type": "string"
+                },
+                "parameters": {
+                    "$ref": "#/definitions/Parameters"
+                }
+            },
+            "required": [
+                "$schema",
+                "contentVersion",
+                "parameters"
+            ],
+            "title": "PlatformIdentityArchetypeDefinition"
+        },
+        "Parameters": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "location": {
+                    "$ref": "types/location.json#/definitions/Location"
+                },
+                "logAnalyticsWorkspaceResourceId": {
+                    "$ref": "types/logAnalyticsWorkspaceId.json#/definitions/LogAnalyticsWorkspaceId"
+                },
+                "serviceHealthAlerts": {
+                    "$ref": "types/serviceHealthAlerts.json#/definitions/ServiceHealthAlerts"
+                },
+                "securityCenter": {
+                    "$ref": "types/securityCenter.json#/definitions/SecurityCenter"
+                },
+                "subscriptionRoleAssignments": {
+                    "$ref": "types/subscriptionRoleAssignments.json#/definitions/SubscriptionRoleAssignments"
+                },
+                "subscriptionBudget": {
+                    "$ref": "types/subscriptionBudget.json#/definitions/SubscriptionBudget"
+                },
+                "subscriptionTags": {
+                    "$ref": "types/subscriptionTags.json#/definitions/SubscriptionTags"
+                },
+                "resourceTags": {
+                    "$ref": "types/resourceTags.json#/definitions/ResourceTags"
+                },
+                "resourceGroups": {
+                    "$ref": "#/definitions/ResourceGroups"
+                },
+                "automation": {
+                    "$ref": "types/automation.json#/definitions/Automation"
+                },
+                "backupRecoveryVault": {
+                    "$ref": "types/backupRecoveryVault.json#/definitions/RecoveryVault"
+                },
+                "privateDnsZones": {
+                    "$ref": "#/definitions/PrivateDNSZones"
+                },
+                "privateDnsResolver": {
+                    "$ref": "#/definitions/PrivateDNSResolver"
+                },
+                "privateDnsResolverRuleset": {
+                    "$ref": "#/definitions/PrivateDNSResolverRuleset"
+                },
+                "hubNetwork": {
+                    "$ref": "#/definitions/HubNetwork"
+                },
+                "network": {
+                    "$ref": "#/definitions/Network"
+                }
+            },
+            "required": [
+                "automation",
+                "backupRecoveryVault",
+                "hubNetwork",
+                "network",
+                "privateDnsResolver",
+                "privateDnsResolverRuleset",
+                "privateDnsZones",
+                "resourceGroups",
+                "resourceTags",
+                "securityCenter",
+                "serviceHealthAlerts",
+                "subscriptionBudget",
+                "subscriptionRoleAssignments",
+                "subscriptionTags"
+            ],
+            "title": "Parameters"
+        },
+        "HubNetwork": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "value": {
+                    "$ref": "#/definitions/HubNetworkValue"
+                }
+            },
+            "required": [
+                "value"
+            ],
+            "title": "HubNetwork"
+        },
+        "HubNetworkValue": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "virtualNetworkId": {
+                    "type": "string"
+                },
+                "rfc1918IPRange": {
+                    "type": "string"
+                },
+                "rfc6598IPRange": {
+                    "type": "string"
+                },
+                "egressVirtualApplianceIp": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "egressVirtualApplianceIp",
+                "rfc1918IPRange",
+                "rfc6598IPRange",
+                "virtualNetworkId"
+            ],
+            "title": "HubNetworkValue"
+        },
+        "DNSResolverInbound": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "comments": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "addressPrefix": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "addressPrefix",
+                "comments",
+                "name"
+            ],
+            "title": "DNSResolverInbound"
+        },
+        "PrivateDNSResolver": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "value": {
+                    "$ref": "#/definitions/PrivateDNSResolverValue"
+                }
+            },
+            "required": [
+                "value"
+            ],
+            "title": "PrivateDNSResolver"
+        },
+        "PrivateDNSResolverValue": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "inboundEndpointName": {
+                    "type": "string"
+                },
+                "outboundEndpointName": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "enabled",
+                "inboundEndpointName",
+                "name",
+                "outboundEndpointName"
+            ],
+            "title": "PrivateDNSResolverValue"
+        },
+        "PrivateDNSResolverRuleset": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "value": {
+                    "$ref": "#/definitions/PrivateDNSResolverRulesetValue"
+                }
+            },
+            "required": [
+                "value"
+            ],
+            "title": "PrivateDNSResolverRuleset"
+        },
+        "PrivateDNSResolverRulesetValue": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "linkRuleSetToVnet": {
+                    "type": "boolean"
+                },
+                "linkRuleSetToVnetName": {
+                    "type": "string"
+                },
+                "forwardingRules": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ForwardingRule"
+                    }
+                }
+            },
+            "required": [
+                "enabled",
+                "forwardingRules",
+                "linkRuleSetToVnet",
+                "linkRuleSetToVnetName",
+                "name"
+            ],
+            "title": "PrivateDNSResolverRulesetValue"
+        },
+        "ForwardingRule": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "targetDnsServers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/TargetDNSServer"
+                    }
+                }
+            },
+            "required": [
+                "domain",
+                "name",
+                "state",
+                "targetDnsServers"
+            ],
+            "title": "ForwardingRule"
+        },
+        "TargetDNSServer": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "ipAddress": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "ipAddress"
+            ],
+            "title": "TargetDNSServer"
+        },
+        "PrivateDNSZones": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "value": {
+                    "$ref": "#/definitions/PrivateDNSZonesValue"
+                }
+            },
+            "required": [
+                "value"
+            ],
+            "title": "PrivateDNSZones"
+        },
+        "PrivateDNSZonesValue": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "resourceGroupName": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "enabled",
+                "resourceGroupName"
+            ],
+            "title": "PrivateDNSZonesValue"
+        },
+        "ResourceGroups": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "value": {
+                    "$ref": "#/definitions/ResourceGroupsValue"
+                }
+            },
+            "required": [
+                "value"
+            ],
+            "title": "ResourceGroups"
+        },
+        "ResourceGroupsValue": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "automation": {
+                    "type": "string"
+                },
+                "networking": {
+                    "type": "string"
+                },
+                "networkWatcher": {
+                    "type": "string"
+                },
+                "backupRecoveryVault": {
+                    "type": "string"
+                },
+                "domainControllers": {
+                    "type": "string"
+                },
+                "dnsResolver": {
+                    "type": "string"
+                },
+                "dnsCondionalForwarders": {
+                    "type": "string"
+                },
+                "privateDnsZones": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "automation",
+                "backupRecoveryVault",
+                "dnsCondionalForwarders",
+                "dnsResolver",
+                "domainControllers",
+                "networkWatcher",
+                "networking",
+                "privateDnsZones"
+            ],
+            "title": "ResourceGroupsValue"
+        },
+    
+        "Network": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "value": {
+                    "$ref": "#/definitions/NetworkValue"
+                }
+            },
+            "required": [
+                "value"
+            ],
+            "title": "Network"
+        },
+        "NetworkValue": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "deployVnet": {
+                    "type": "boolean"
+                },
+                "peerToHubVirtualNetwork": {
+                    "type": "boolean"
+                },
+                "useRemoteGateway": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "dnsServers": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "addressPrefixes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "subnets": {
+                    "$ref": "#/definitions/Subnets"
+                }
+            },
+            "required": [
+                "addressPrefixes",
+                "deployVnet",
+                "dnsServers",
+                "name",
+                "peerToHubVirtualNetwork",
+                "subnets",
+                "useRemoteGateway"
+            ],
+            "title": "NetworkValue"
+        },
+        "Subnets": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "domainControllers": {
+                    "$ref": "#/definitions/DNSResolverInbound"
+                },
+                "dnsResolverInbound": {
+                    "$ref": "#/definitions/DNSResolverInbound"
+                },
+                "dnsResolverOutbound": {
+                    "$ref": "#/definitions/DNSResolverInbound"
+                },
+                "optional": {
+                    "type": "array",
+                    "items": {}
+                }
+            },
+            "required": [
+                "dnsResolverInbound",
+                "dnsResolverOutbound",
+                "domainControllers",
+                "optional"
+            ],
+            "title": "Subnets"
+        }
+    }
+}

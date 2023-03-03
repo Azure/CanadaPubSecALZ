@@ -12,6 +12,8 @@ pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/latest/l
 
 pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/latest/landingzones/lz-platform-connectivity-hub-nva.json' -TestFolder '../../config/networking/*/hub-nva/' -FileFilter '*.json'
 
+pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/latest/landingzones/lz-platform-identity.json' -TestFolder '../../config/identity/' -FileFilter '*.json'
+
 pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/latest/landingzones/lz-generic-subscription.json' -TestFolder '../../config/subscriptions/' -FileFilter '*generic-subscription*.json'
 
 pwsh -File ./validate-deployment-config.ps1  -SchemaFile '../../schemas/latest/landingzones/lz-machinelearning.json' -TestFolder '../../config/subscriptions/' -FileFilter '*machinelearning*.json'

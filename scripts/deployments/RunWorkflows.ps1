@@ -61,6 +61,9 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 
   .PARAMETER DeployHubNetworkWithNVA
     If true, run the NVA hub network workflow.
+  
+  .PARAMETER DeployIdentity
+    If true, run the Identity workflow.
 
   .PARAMETER DeploySubscriptionIds
     Comma separated list of quoted subscription ids to run the subscription workflow against.
@@ -173,6 +176,8 @@ Param(
   [switch]$DeployHubNetworkWithNVA,
   [switch]$DeployHubNetworkWithAzureFirewall,
 
+  [switch]$DeployIdentity,
+
   [string[]]$DeploySubscriptionIds=@(),
 
   # How to deploy
@@ -220,6 +225,7 @@ Write-Host "Loading functions..."
 . ".\Functions\Policy.ps1"
 . ".\Functions\HubNetworkWithNVA.ps1"
 . ".\Functions\HubNetworkWithAzureFirewall.ps1"
+. ".\Functions\Identity.ps1"
 . ".\Functions\Subscriptions.ps1"
 
 # Az Login interactively
@@ -390,6 +396,24 @@ if ($DeployHubNetworkWithAzureFirewall) {
     -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
     -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-azfw-configurationFileName'])" `
     -AzureFirewallPolicyResourceId $AzureFirewallPolicyConfiguration.AzureFirewallPolicyResourceId `
+    -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
+}
+
+# Deploy Identity Subscription
+if ($DeployIdentity) {
+  Write-Host "Deploying Identity Subscription..."
+  # Get Logging information using logging config file
+  $LoggingConfiguration = Get-LoggingConfiguration `
+    -ConfigurationFilePath "$($Context.LoggingDirectory)/$($Context.Variables['var-logging-configurationFileName'])" `
+    -SubscriptionId $Context.Variables['var-logging-subscriptionId']
+  
+  #Create Identity Subscription
+  Set-Identity `
+    -Context $Context `
+    -Region $Context.Variables['var-identity-region'] `
+    -ManagementGroupId $Context.Variables['var-identity-managementGroupId'] `
+    -SubscriptionId $Context.Variables['var-identity-subscriptionId'] `
+    -ConfigurationFilePath "$($Context.IdentityDirectory)/$($Context.Variables['var-identity-configurationFileName'])" `
     -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
 }
 
