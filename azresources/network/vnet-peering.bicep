@@ -19,6 +19,9 @@ param peeringName string
 @description('Boolean flag to determine whether remote gateways are used.  Default: false')
 param useRemoteGateways bool = false
 
+@description('Boolean flag to determine whether to allow local gateways transit.  Default: false')
+param allowGatewayTransit bool = false
+
 @description('Boolean flag to determine virtual network access through the peer.  Default: true')
 param allowVirtualNetworkAccess bool = true
 
@@ -30,6 +33,7 @@ resource vnetPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2
   properties: {
     useRemoteGateways: useRemoteGateways
     allowVirtualNetworkAccess: allowVirtualNetworkAccess
+    allowGatewayTransit: allowGatewayTransit
     allowForwardedTraffic: allowForwardedTraffic
     remoteVirtualNetwork: {
       id: targetVnetId
