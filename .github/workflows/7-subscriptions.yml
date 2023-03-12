@@ -7,7 +7,7 @@
 # OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 # ----------------------------------------------------------------------------------
 
-name: 6 - Subscriptions
+name: 7 - Subscriptions
 
 on:
   workflow_dispatch:
