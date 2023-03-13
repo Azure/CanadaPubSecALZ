@@ -480,6 +480,7 @@ module vnetPeeringHubToSpoke '../../azresources/network/vnet-peering.bicep' = if
     peeringName: 'Spoke-${last(hubVnetIdSplit)}-to-${vnet.name}-${uniqueString(vnet.id)}'
     allowForwardedTraffic: true
     allowVirtualNetworkAccess: true
+    allowGatewayTransit: true
     sourceVnetName: last(hubVnetIdSplit)!
     targetVnetId: vnet.id
     useRemoteGateways: false

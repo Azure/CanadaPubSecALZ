@@ -384,12 +384,12 @@ module vnetPeeringSpokeToHub '../../azresources/network/vnet-peering.bicep' = if
 // For Hub to Spoke vnet peering, we must rescope the deployment to the subscription id & resource group of where the Hub VNET is located.
 module vnetPeeringHubToSpoke '../../azresources/network/vnet-peering.bicep' = if (network.peerToHubVirtualNetwork) {
   name: 'deploy-vnet-peering-${subscription().subscriptionId}'
-  // vnet id = /subscriptions/<<SUBSCRIPTION ID>>/resourceGroups/<<RESOURCE GROUP>>/providers/Microsoft.Network/virtualNetworks/<<VNET NAME>>
   scope: resourceGroup(network.peerToHubVirtualNetwork ? hubVnetIdSplit[2] : '', network.peerToHubVirtualNetwork ? hubVnetIdSplit[4] : '')
   params: {
     peeringName: 'Spoke-${last(hubVnetIdSplit)}-to-${vnet.name}-${uniqueString(vnet.id)}'
     allowForwardedTraffic: true
     allowVirtualNetworkAccess: true
+    allowGatewayTransit: true
     sourceVnetName: last(hubVnetIdSplit)!
     targetVnetId: vnet.id
     useRemoteGateways: false
