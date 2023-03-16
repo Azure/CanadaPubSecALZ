@@ -33,7 +33,7 @@ var assignmentName = 'Custom - Enable DDoS Standard on Virtual Networks'
 
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
 var policyDefinitionScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)
-var policyScopedId = extensionResourceId(policyDefinitionScope, 'Microsoft.Authorization/policySetDefinitions', policyId)
+var policyScopedId = extensionResourceId(policyDefinitionScope, 'Microsoft.Authorization/policyDefinitions', policyId)
 
 
 // Telemetry - Azure customer usage attribution
