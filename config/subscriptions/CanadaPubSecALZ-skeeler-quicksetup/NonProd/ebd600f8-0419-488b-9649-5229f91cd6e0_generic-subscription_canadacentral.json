@@ -9,7 +9,7 @@
       "value": {
         "receivers": {
           "email": [
-            "t-subscription-owners@example.com"
+            "subscription-owners@example.com"
           ],
           "app": [
             "subscription-owners@example.com"
