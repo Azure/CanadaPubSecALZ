@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/CanadaPubSecALZ/main/schemas/latest/landingzones/lz-platform-connectivity-hub-azfw-policy.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceTags": {
+      "value": {
+        "ClientOrganization": "client-organization-tag",
+        "CostCenter": "cost-center-tag",
+        "DataSensitivity": "data-sensitivity-tag",
+        "ProjectContact": "project-contact-tag",
+        "ProjectName": "project-name-tag",
+        "TechnicalContact": "technical-contact-tag"
+      }
+    },
+    "resourceGroupName": {
+      "value": "pubsec-azure-firewall-policy"
+    },
+    "policyName": {
+      "value": "pubsecAzureFirewallPolicy"
+    }
+  }
+}
