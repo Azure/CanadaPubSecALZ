@@ -97,6 +97,17 @@ jobs:
           }
         "@
           $headers = @{ Authorization = "Bearer $env:SYSTEM_ACCESSTOKEN" }
+
+          Write-Host "===================================================================================================="
+          Write-Host ""
+          Write-Host "Invoke body: $body"
+          Write-Host ""
+          Write-Host "Invoke headers: $headers"
+          Write-Host ""
+          Write-Host "Invoke URI: $url"
+          Write-Host ""
+          Write-Host "===================================================================================================="
+
           $pipeline = Invoke-RestMethod -Uri $url -Headers $headers -Method Post -Body $body -ContentType application/json
           Write-Host "Pipeline invocation result = $($pipeline | ConvertTo-Json -Depth 100)"
         }
