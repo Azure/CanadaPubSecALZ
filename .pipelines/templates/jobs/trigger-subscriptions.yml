@@ -87,7 +87,7 @@ jobs:
         Write-Host "Subscription changes: $env:SUBSCRIPTION_CHANGES"
         if (($env:SUBSCRIPTION_CHANGES).Length -gt 0)
         {
-          $url = "$($env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI)$env:SYSTEM_TEAMPROJECTID/_apis/pipelines/$($env:SYSTEM_DEFINITIONID)/runs?api-version=7.0"
+          $url = "$($env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI)$env:SYSTEM_TEAMPROJECTID/_apis/pipelines/$($env:SYSTEM_DEFINITIONID)/runs?api-version=6.0-preview.1"
           Write-Host "Invoking pipeline definition with URL: $url"
           $paths = $env:SUBSCRIPTION_CHANGES -split ','
           $guids = $paths -replace '.*?([0-9a-f]{8}[-]?([0-9a-f]{4}[-]?){3}[0-9a-f]{12}).*', '$1'
