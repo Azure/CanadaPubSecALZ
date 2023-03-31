@@ -1,4 +1,4 @@
-# Archetype: Generic Subscription
+# Archetype: Identity and Access Management
 
 ## Table of Contents
 
