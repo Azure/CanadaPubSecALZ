@@ -26,19 +26,21 @@ function Set-Subscriptions {
 
   foreach ($subscriptionId in $SubscriptionIds) {   
     # Find the ARM JSON parameters, ensure there's only 1 parameters file for each subscription
-    $SubscriptonConfigurations = Get-ChildItem -Path $Context.SubscriptionsDirectory -Filter "*$subscriptionId*.json" -Recurse
+    # $SubscriptionConfigurations = Get-ChildItem -Path $Context.SubscriptionsDirectory -Filter "*$subscriptionId*.json" -Recurse
+    $pattern = "^$subscriptionId(_.*)(_.*)?\.json"
+    $SubscriptionConfigurations = @(Get-ChildItem -Path $Context.SubscriptionsDirectory -Filter "*$subscriptionId*.json" -File -Recurse | ? { $_.Name -match $pattern })
 
-    if ($SubscriptonConfigurations.Count -eq 0) {
+    if ($SubscriptionConfigurations.Count -eq 0) {
       Write-Output "No Subscription JSON paramters files found in $($Context.SubscriptionsDirectory) for $subscriptionId"
       continue
-    } elseif ($SubscriptonConfigurations.Count -gt 1) {
+    } elseif ($SubscriptionConfigurations.Count -gt 1) {
       Write-Output "Multiple Subscription JSON paramters files found in $($Context.SubscriptionsDirectory) for $subscriptionId.  There must only be one."
       continue
     }
 
-    $DirectoryName = $SubscriptonConfigurations[0].DirectoryName
-    $FilePath = $SubscriptonConfigurations[0].FullName
-    $FileName = $SubscriptonConfigurations[0].Name
+    $DirectoryName = $SubscriptionConfigurations[0].DirectoryName
+    $FilePath = $SubscriptionConfigurations[0].FullName
+    $FileName = $SubscriptionConfigurations[0].Name
 
     # Parse the file name to get subscription id, archetype and region (optional).
     # If region is not available in the file name, the use the default region provided
@@ -48,8 +50,8 @@ function Set-Subscriptions {
     $DeploymentRegion = $FileNameParts.Count -eq 3 ? $FileNameParts[2] : $Region
 
     # Compute the management group id from the folder structure
-    $FilePathWithoutBaseDirectory = $DirectoryName -Replace $($Context.SubscriptionsDirectory), ""
-    $ManagementGroupId = $FilePathWithoutBaseDirectory -Replace [IO.Path]::DirectorySeparatorChar, ""
+    $FilePathWithoutBaseDirectory = $DirectoryName -Replace [regex]::Escape($Context.SubscriptionsDirectory), ""
+    $ManagementGroupId = $FilePathWithoutBaseDirectory -Replace [regex]::Escape([IO.Path]::DirectorySeparatorChar.ToString()), ""
 
     Write-Output "Deploying Subscription: $SubscriptionId"
     Write-Output "  - Management Group: $ManagementGroupId"
@@ -58,10 +60,10 @@ function Set-Subscriptions {
 
     Set-AzContext -Subscription $SubscriptionId
 
-    $SchemaFilePath = "$($Context.SchemaDirectory)/landingzones/lz-$ArchetypeName.json"
+    $SchemaFile = (Resolve-Path -Path "$($Context.SchemaDirectory)/landingzones/lz-$ArchetypeName.json").Path
     
     Write-Output "Validation JSON parameter configuration using $SchemaFilePath"
-    Get-Content -Raw $FilePath | Test-Json -SchemaFile $SchemaFilePath
+    Get-Content -Raw $FilePath | Test-Json -SchemaFile $SchemaFile
 
     $Configuration = Get-Content $FilePath | ConvertFrom-Json -Depth 100
 
@@ -88,11 +90,12 @@ function Set-Subscriptions {
     $MoveDeploymentName=-join $MoveDeploymentName[0..63] 
 
     Write-Output "Moving Subscription ($SubscriptionId) to Management Group ($ManagementGroupId)"
+    $TemplateFile = (Resolve-Path -Path "$($Context.WorkingDirectory)/landingzones/utils/mg-move/move-subscription.bicep").Path
     New-AzManagementGroupDeployment `
       -Name $MoveDeploymentName `
       -ManagementGroupId $ManagementGroupId `
       -Location $Context.DeploymentRegion `
-      -TemplateFile "$($Context.WorkingDirectory)/landingzones/utils/mg-move/move-subscription.bicep" `
+      -TemplateFile $TemplateFile `
       -TemplateParameterObject @{
         managementGroupId = $ManagementGroupId
         subscriptionId = $SubscriptionId
@@ -102,10 +105,11 @@ function Set-Subscriptions {
     Write-Output "Deploying $PopulatedParametersFilePath to $SubscriptionId in $Region"
 
     Set-AzContext -Subscription $SubscriptionId
+    $TemplateFile = (Resolve-Path -Path "$($Context.WorkingDirectory)/landingzones/lz-$ArchetypeName/main.bicep").Path
     New-AzSubscriptionDeployment `
       -Name "main-$DeploymentRegion" `
       -Location $DeploymentRegion `
-      -TemplateFile "$($Context.WorkingDirectory)/landingzones/lz-$ArchetypeName/main.bicep" `
+      -TemplateFile $TemplateFile `
       -TemplateParameterFile $PopulatedParametersFilePath `
       -Verbose
 
