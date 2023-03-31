@@ -89,10 +89,13 @@ jobs:
         {
           $url = "$($env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI)$env:SYSTEM_TEAMPROJECTID/_apis/pipelines/$($env:SYSTEM_DEFINITIONID)/runs?api-version=7.0"
           Write-Host "Invoking pipeline definition with URL: $url"
+          $paths = $env:SUBSCRIPTION_CHANGES -split ','
+          $guids = $paths -replace '.*?([0-9a-f]{8}[-]?([0-9a-f]{4}[-]?){3}[0-9a-f]{12}).*', '$1'
+          $changes = $guids -join ','
           $body = @"
           {
             "templateParameters": {
-              "subscriptions":"[$env:SUBSCRIPTION_CHANGES]"
+              "subscriptions":"[$changes]"
               },
           }
         "@
