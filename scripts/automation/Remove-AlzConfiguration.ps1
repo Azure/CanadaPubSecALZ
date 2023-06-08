@@ -86,6 +86,15 @@ function RemovePaths {
     Write-Output "Logging configuration directory not found ($path)"
   }
 
+  # Remove identity configuration file(s)
+  $path = "$RepoConfigPath/identity/$Environment"
+  if (Test-Path -PathType Container -Path $path) {
+    Write-Output "Removing identity configuration directory: $path"
+    Remove-Item -Path $path -Recurse
+  } else {
+    Write-Output "Identity configuration directory not found ($path)"
+  }
+
   # Remove network configuration file(s)
   $path = "$RepoConfigPath/networking/$Environment"
   if (Test-Path -PathType Container -Path $path) {
