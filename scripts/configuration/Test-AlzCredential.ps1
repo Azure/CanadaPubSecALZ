@@ -85,6 +85,7 @@ function TestServicePrincipal {
 
   $role = Get-AzRoleAssignment -ServicePrincipalName $sp.appId
 
+  Write-Output ""
   if (($role | where { $_.RoleDefinitionName -eq 'Owner' -and $_.Scope -eq '/' }).Count -lt 1) {
     throw "Service Principal ($($sp.displayName)) for environment ($Environment) from tenant ($($sp.tenant)) is not an Owner of the tenant."
   } else {
@@ -92,12 +93,15 @@ function TestServicePrincipal {
   }
 
   try {
+    Write-Output ""
     Write-Output "Current Azure context:"
     Get-AzContext
     .\Connect-AlzCredential.ps1 -CredentialFile $credentialFile
+    Write-Output ""
     Write-Output "Service Principal Azure context:"
     Get-AzContext
     Disconnect-AzAccount
+    Write-Output ""
     Write-Output "Original Azure context:"
     Get-AzContext
   } catch {

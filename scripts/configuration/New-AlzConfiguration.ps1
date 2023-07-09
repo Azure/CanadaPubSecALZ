@@ -79,7 +79,9 @@ $ErrorActionPreference = "Stop"
 function ValidateParameters {
   param (
     [Parameter(Mandatory = $true)]
-    [object]$Parameters
+    [object]$Parameters,
+    [Parameter(Mandatory = $true)]
+    [string]$ParameterFile
   )
   Write-Output "Checking configuration path ($RepoConfigPath)"
   if (-not (Test-Path -PathType Container -Path $RepoConfigPath)) {
@@ -116,12 +118,14 @@ function ValidateParameters {
 
   if (-not (Test-Path -PathType Leaf -Path "$RepoConfigPath/variables/$($Parameters.Environment.Source).yml")) {
     throw "Source environment does not exist ($($Parameters.Environment.Source))"
+  } else {
+    Write-Output "  Source environment: $($Parameters.Environment.Source)"
   }
 
-  if (Test-Path -PathType Leaf -Path "$RepoConfigPath/variables/$($Parameters.Environment.Target).yml") {
-    if (-not $Force) {
-      throw "Target environment already exists ($($Parameters.Environment.Target)). Use the '-Force' parameter to overwrite it."
-    }
+  if ((Test-Path -PathType Leaf -Path "$RepoConfigPath/variables/$($Parameters.Environment.Target).yml") -and (-not $Force)) {
+    throw "Target environment already exists ($($Parameters.Environment.Target)). Use the '-Force' parameter to overwrite it."
+  } else {
+    Write-Output "  Target environment: $($Parameters.Environment.Target)"
   }
 }
 
@@ -204,39 +208,6 @@ function LoggingConfiguration {
     $ConfigLoggingJson | ConvertTo-Json -Depth 100 | Set-Content -Path $ConfigLoggingFile | Out-Null
   } else {
     Write-Output "  Source environment logging configuration file not found: $file"
-  }
-}
-
-function IdentityConfiguration {
-  param (
-    [Parameter(Mandatory = $true)]
-    [object]$Parameters,
-    [Parameter(Mandatory = $true)]
-    [object]$ConfigVariablesYaml
-  )
-  Write-Output ""
-  Write-Output "Generating Identity configurations"
-  Write-Output ""
-
-  $file = "$RepoConfigPath/identity/$($Parameters.Environment.Source)/$($ConfigVariablesYaml.variables['var-identity-configurationFileName'])"
-  if (Test-Path -PathType Leaf -Path $file) {
-    Write-Output "  Reading source environment identity configuration file: $file"
-    $ConfigIdentityJson = Get-Content -Path $file -Raw | ConvertFrom-Json
-
-    Write-Output "  Updating identity configuration"
-    $ConfigIdentityJson.{$schema} = 'https://raw.githubusercontent.com/Azure/CanadaPubSecALZ/main/schemas/latest/landingzones/lz-platform-identity.json#'
-    $ConfigIdentityJson.parameters.securityCenter.value = $Parameters.Identity.SecurityCenter ?? $ConfigIdentityJson.parameters.securityCenter.value
-    $ConfigIdentityJson.parameters.serviceHealthAlerts.value = $Parameters.Identity.ServiceHealthAlerts ?? $ConfigIdentityJson.parameters.serviceHealthAlerts.value
-    $ConfigIdentityJson.parameters.subscriptionRoleAssignments.value = $Parameters.Identity.RoleAssignments ?? $ConfigIdentityJson.parameters.subscriptionRoleAssignments.value
-    $ConfigIdentityJson.parameters.subscriptionTags.value = $Parameters.values.Identity.SubscriptionTags ?? $ConfigIdentityJson.parameters.subscriptionTags.value
-    $ConfigIdentityJson.parameters.resourceTags.value = $Parameters.values.Identity.ResourceTags ?? $ConfigIdentityJson.parameters.resourceTags.value
-
-    $ConfigIdentityFile = "$RepoConfigPath/identity/$($Parameters.Environment.Target)/$($ConfigVariablesYaml.variables['var-identity-configurationFileName'])"
-    Write-Output "  Writing identity configuration file: $ConfigIdentityFile"
-    New-Item -ItemType Directory -Path (Split-Path -Parent -Path $ConfigIdentityFile) -Force | Out-Null
-    $ConfigIdentityJson | ConvertTo-Json -Depth 100 | Set-Content -Path $ConfigIdentityFile | Out-Null
-  } else {
-    Write-Output "  Source environment identity configuration file not found: $file"
   }
 }
 
@@ -340,6 +311,40 @@ function NetworkNvaConfiguration {
   }
 }
 
+function IdentityConfiguration {
+  param (
+    [Parameter(Mandatory = $true)]
+    [object]$Parameters,
+    [Parameter(Mandatory = $true)]
+    [object]$ConfigVariablesYaml
+  )
+  Write-Output ""
+  Write-Output "Generating Identity configurations"
+  Write-Output ""
+
+  $file = "$RepoConfigPath/identity/$($Parameters.Environment.Source)/$($ConfigVariablesYaml.variables['var-identity-configurationFileName'])"
+  if (Test-Path -PathType Leaf -Path $file) {
+    Write-Output "  Reading source environment identity configuration file: $file"
+    $ConfigIdentityJson = Get-Content -Path $file -Raw | ConvertFrom-Json
+
+    Write-Output "  Updating identity configuration"
+    $ConfigIdentityJson.{$schema} = 'https://raw.githubusercontent.com/Azure/CanadaPubSecALZ/main/schemas/latest/landingzones/lz-platform-identity.json#'
+    $ConfigIdentityJson.parameters.securityCenter.value = $Parameters.Identity.SecurityCenter ?? $ConfigIdentityJson.parameters.securityCenter.value
+    $ConfigIdentityJson.parameters.serviceHealthAlerts.value = $Parameters.Identity.ServiceHealthAlerts ?? $ConfigIdentityJson.parameters.serviceHealthAlerts.value
+    $ConfigIdentityJson.parameters.subscriptionRoleAssignments.value = $Parameters.Identity.RoleAssignments ?? $ConfigIdentityJson.parameters.subscriptionRoleAssignments.value
+    $ConfigIdentityJson.parameters.subscriptionTags.value = $Parameters.values.Identity.SubscriptionTags ?? $ConfigIdentityJson.parameters.subscriptionTags.value
+    $ConfigIdentityJson.parameters.resourceTags.value = $Parameters.values.Identity.ResourceTags ?? $ConfigIdentityJson.parameters.resourceTags.value
+    $ConfigIdentityJson.parameters.hubNetwork.value.virtualNetworkId = "/subscriptions/$($ConfigVariablesYaml.variables['var-hubnetwork-subscriptionId'])/resourceGroups/$($ConfigNetworkAzfwJson.parameters.hub.value.resourceGroupName)/providers/Microsoft.Network/virtualNetworks/$($ConfigNetworkAzfwJson.parameters.hub.value.network.name)"
+
+    $ConfigIdentityFile = "$RepoConfigPath/identity/$($Parameters.Environment.Target)/$($ConfigVariablesYaml.variables['var-identity-configurationFileName'])"
+    Write-Output "  Writing identity configuration file: $ConfigIdentityFile"
+    New-Item -ItemType Directory -Path (Split-Path -Parent -Path $ConfigIdentityFile) -Force | Out-Null
+    $ConfigIdentityJson | ConvertTo-Json -Depth 100 | Set-Content -Path $ConfigIdentityFile | Out-Null
+  } else {
+    Write-Output "  Source environment identity configuration file not found: $file"
+  }
+}
+
 function SubscriptionConfiguration {
   param (
     [Parameter(Mandatory = $true)]
@@ -434,7 +439,7 @@ try {
   }
   $Parameters = Get-Content $ParameterFile -Raw | ConvertFrom-Yaml
 
-  ValidateParameters -Parameters $Parameters `
+  ValidateParameters -Parameters $Parameters -ParameterFile $ParameterFile `
     | Tee-Object -FilePath $logFile -Append
 
   $ConfigVariablesYaml = @{}
@@ -444,9 +449,6 @@ try {
   LoggingConfiguration -Parameters $Parameters -ConfigVariablesYaml $ConfigVariablesYaml `
     | Tee-Object -FilePath $logFile -Append
 
-  IdentityConfiguration -Parameters $Parameters -ConfigVariablesYaml $ConfigVariablesYaml `
-  | Tee-Object -FilePath $logFile -Append
-
   $ConfigNetworkAzfwJson = @{}
   NetworkAzfwConfiguration -Parameters $Parameters -ConfigVariablesYaml $ConfigVariablesYaml -ConfigNetworkAzfwByRef ([ref]$ConfigNetworkAzfwJson) `
     | Tee-Object -FilePath $logFile -Append
@@ -455,6 +457,9 @@ try {
     | Tee-Object -FilePath $logFile -Append
 
   NetworkNvaConfiguration -Parameters $Parameters -ConfigVariablesYaml $ConfigVariablesYaml `
+    | Tee-Object -FilePath $logFile -Append
+
+  IdentityConfiguration -Parameters $Parameters -ConfigVariablesYaml $ConfigVariablesYaml `
     | Tee-Object -FilePath $logFile -Append
 
   SubscriptionConfiguration -Parameters $Parameters -ConfigNetworkAzfwJson $ConfigNetworkAzfwJson `

@@ -201,6 +201,8 @@ This deployment diagram describes the steps for deploying one, many or all modul
   * [Migrate Logging configuration from Azure DevOps variables to JSON parameters file](#migrate-logging-configuration-from-azure-devops-variables-to-json-parameters-file)
   * [Migrate Hub Networking configuration from Azure DevOps variables to JSON parameters file](#migrate-hub-networking-configuration-from-azure-devops-variables-to-json-parameters-file)
 
+>Note: For steps #3 - #9 above, there are scripts available to automate generating the JSON and YAML configuration files for environments. Refer to the [Configuration Scripts](./configuration-scripts.md) documentation for more information.
+
 ---
 
 ## Step 1 - Create Service Principal Account & Assign RBAC

@@ -114,6 +114,7 @@ function CreateDeployment {
         -DeployBuiltinPolicySetAssignments `
         -DeployAzureFirewallPolicy `
         -DeployHubNetworkWithAzureFirewall `
+        -DeployIdentity `
         -DeploySubscriptionIds $SubscriptionIds
     } elseif ($NetworkType -ieq "NVA") {
       Write-Output "Generating temporary NVA credentials"
@@ -137,6 +138,7 @@ function CreateDeployment {
         -DeployHubNetworkWithNVA `
         -NvaUserName $nvaUsername `
         -NvaPassword $nvaPassword `
+        -DeployIdentity `
         -DeploySubscriptionIds $SubscriptionIds
 
     } else {

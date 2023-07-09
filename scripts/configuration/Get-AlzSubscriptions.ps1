@@ -11,10 +11,10 @@ OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 
 <#
   .SYNOPSIS
-    This script gets the main YAML configuration for a CanadaPubSecALZ deployment.
+    This script gets an array of subscription ids for a CanadaPubSecALZ deployment.
 
   .DESCRIPTION
-    This script gets the main YAML configuration for a CanadaPubSecALZ deployment.
+    This script gets an array of subscription ids for a CanadaPubSecALZ deployment.
 
   .PARAMETER Environment
     The name of the environment.

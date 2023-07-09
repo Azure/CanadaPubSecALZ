@@ -1,13 +1,11 @@
 {
-  "$schema": "https://raw.githubusercontent.com/Azure/CanadaPubSecALZ/main/schemas/latest/landingzones/lz-platform-connectivity-hub-nva.json#",
+  "$schema": "https://raw.githubusercontent.com/Azure/CanadaPubSecALZ/main/schemas/latest/landingzones/lz-platform-connectivity-hub-azfw.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "serviceHealthAlerts": {
       "value": {
+        "alertRuleName": "Networking Alerts",
         "receivers": {
-          "email": [
-            "networking@example.com"
-          ],
           "app": [
             "networking@example.com"
           ],
@@ -17,6 +15,9 @@
               "phoneNumber": "6135555555"
             }
           ],
+          "email": [
+            "networking@example.com"
+          ],
           "voice": [
             {
               "countryCode": "1",
@@ -24,20 +25,19 @@
             }
           ]
         },
-        "alertRuleName": "Networking Alerts",
-        "incidentTypes": [
-          "Incident",
-          "Security"
-        ],
         "regions": [
           "Global",
           "Canada Central",
           "Canada East"
         ],
         "resourceGroupName": "service-health-alerts-rg",
-        "alertRuleDescription": "Networking Alerts for Incidents and Security",
+        "actionGroupName": "Networking Alerts",
         "actionGroupShortName": "network-ag",
-        "actionGroupName": "Networking Alerts"
+        "incidentTypes": [
+          "Incident",
+          "Security"
+        ],
+        "alertRuleDescription": "Networking Alerts for Incidents and Security"
       }
     },
     "securityCenter": {
@@ -49,11 +49,11 @@
     "subscriptionRoleAssignments": {
       "value": [
         {
+          "comments": "Built-in Contributor Role",
           "securityGroupObjectIds": [
-            "558bb757-0c38-4a0d-b8e5-4e3a4e577966"
+            "12d01649-fdb7-4769-afe5-66248082a064"
           ],
-          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-          "comments": "Built-in Contributor Role"
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         }
       ]
     },
@@ -79,14 +79,14 @@
     },
     "privateDnsZones": {
       "value": {
-        "resourceGroupName": "private-dns-rg",
-        "enabled": true
+        "enabled": true,
+        "resourceGroupName": "private-dns-rg"
       }
     },
     "ddosStandard": {
       "value": {
-        "enabled": false,
         "resourceGroupName": "ddos-rg",
+        "enabled": false,
         "planName": "ddos-plan"
       }
     },
@@ -174,6 +174,16 @@
           "sku": "Standard",
           "scaleUnits": 2
         },
+        "azureFirewall": {
+          "name": "pubsecAzureFirewall",
+          "availabilityZones": [
+            "1",
+            "2",
+            "3"
+          ],
+          "forcedTunnelingEnabled": false,
+          "forcedTunnelingNextHop": "10.17.1.4"
+        },
         "network": {
           "name": "hub-vnet",
           "addressPrefixes": [
@@ -185,126 +195,29 @@
             "gateway": {
               "comments": "Gateway Subnet used for VPN and/or Express Route connectivity",
               "name": "GatewaySubnet",
-              "addressPrefix": "10.18.1.0/27"
+              "addressPrefix": "10.18.0.0/27"
+            },
+            "firewall": {
+              "comments": "Azure Firewall",
+              "name": "AzureFirewallSubnet",
+              "addressPrefix": "10.18.1.0/24"
+            },
+            "firewallManagement": {
+              "comments": "Azure Firewall Management",
+              "name": "AzureFirewallManagementSubnet",
+              "addressPrefix": "10.18.2.0/26"
             },
             "bastion": {
               "comments": "Azure Bastion",
               "name": "AzureBastionSubnet",
               "addressPrefix": "192.168.0.0/24"
             },
-            "public": {
-              "comments": "Public Subnet Name (External Facing (Internet/Ground))",
-              "name": "PublicSubnet",
-              "addressPrefix": "100.60.0.0/24"
-            },
-            "publicAccessZone": {
-              "comments": "Public Access Zone (i.e. Application Gateway)",
+            "publicAccess": {
+              "comments": "Public Access Zone (Application Gateway)",
               "name": "PAZSubnet",
               "addressPrefix": "100.60.1.0/24"
             },
-            "externalAccessNetwork": {
-              "comments": "External Access Network",
-              "name": "EanSubnet",
-              "addressPrefix": "10.18.0.0/27"
-            },
-            "nonProductionInternal": {
-              "comments": "Non-production Internal for firewall appliances (Internal Facing Non-Production Traffic)",
-              "name": "DevIntSubnet",
-              "addressPrefix": "10.18.0.64/27"
-            },
-            "productionInternal": {
-              "comments": "Production Internal for firewall appliances (Internal Facing Production Traffic)",
-              "name": "PrdIntSubnet",
-              "addressPrefix": "10.18.0.32/27"
-            },
-            "managementRestrictedZoneInternal": {
-              "comments": "Management Restricted Zone",
-              "name": "MrzSubnet",
-              "addressPrefix": "10.18.0.96/27"
-            },
-            "highAvailability": {
-              "comments": "High Availability (Firewall to Firewall heartbeat)",
-              "name": "HASubnet",
-              "addressPrefix": "10.18.0.128/28"
-            },
             "optional": []
-          }
-        },
-        "nvaFirewall": {
-          "image": {
-            "publisher": "fortinet",
-            "offer": "fortinet_fortigate-vm_v5",
-            "sku": "fortinet_fg-vm",
-            "version": "6.4.5",
-            "plan": "fortinet_fg-vm"
-          },
-          "nonProduction": {
-            "internalLoadBalancer": {
-              "name": "pubsecDevFWILB",
-              "tcpProbe": {
-                "name": "lbprobe",
-                "port": 8008,
-                "intervalInSeconds": 5,
-                "numberOfProbes": 2
-              },
-              "internalIp": "10.18.0.68",
-              "externalIp": "100.60.0.7"
-            },
-            "deployVirtualMachines": false,
-            "virtualMachines": [
-              {
-                "name": "pubsecDevFW1",
-                "vmSku": "Standard_D8s_v4",
-                "internalIp": "10.18.0.69",
-                "externalIp": "100.60.0.8",
-                "mrzInternalIp": "10.18.0.104",
-                "highAvailabilityIp": "10.18.0.134",
-                "availabilityZone": "2"
-              },
-              {
-                "name": "pubsecDevFW2",
-                "vmSku": "Standard_D8s_v4",
-                "internalIp": "10.18.0.70",
-                "externalIp": "100.60.0.9",
-                "mrzInternalIp": "10.18.0.105",
-                "highAvailabilityIp": "10.18.0.135",
-                "availabilityZone": "3"
-              }
-            ]
-          },
-          "production": {
-            "internalLoadBalancer": {
-              "name": "pubsecProdFWILB",
-              "tcpProbe": {
-                "name": "lbprobe",
-                "port": 8008,
-                "intervalInSeconds": 5,
-                "numberOfProbes": 2
-              },
-              "internalIp": "10.18.0.36",
-              "externalIp": "100.60.0.4"
-            },
-            "deployVirtualMachines": false,
-            "virtualMachines": [
-              {
-                "name": "pubsecProdFW1",
-                "vmSku": "Standard_F8s_v2",
-                "internalIp": "10.18.0.37",
-                "externalIp": "100.60.0.5",
-                "mrzInternalIp": "10.18.0.101",
-                "highAvailabilityIp": "10.18.0.132",
-                "availabilityZone": "1"
-              },
-              {
-                "name": "pubsecProdFW2",
-                "vmSku": "Standard_F8s_v2",
-                "internalIp": "10.18.0.38",
-                "externalIp": "100.60.0.6",
-                "mrzInternalIp": "10.18.0.102",
-                "highAvailabilityIp": "10.18.0.133",
-                "availabilityZone": "2"
-              }
-            ]
           }
         }
       }

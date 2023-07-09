@@ -7,10 +7,8 @@
     },
     "serviceHealthAlerts": {
       "value": {
+        "alertRuleName": "Subscription Owners Alerts",
         "receivers": {
-          "email": [
-            "subscription-owners@example.com"
-          ],
           "app": [
             "subscription-owners@example.com"
           ],
@@ -20,6 +18,9 @@
               "phoneNumber": "6135555555"
             }
           ],
+          "email": [
+            "subscription-owners@example.com"
+          ],
           "voice": [
             {
               "countryCode": "1",
@@ -27,20 +28,19 @@
             }
           ]
         },
-        "alertRuleName": "Subscription Owners Alerts",
-        "incidentTypes": [
-          "Incident",
-          "Security"
-        ],
         "regions": [
           "Global",
           "Canada Central",
           "Canada East"
         ],
         "resourceGroupName": "service-health-alerts-rg",
-        "alertRuleDescription": "Subscription Owners Alerts for Incidents and Security",
+        "actionGroupName": "Subscription Owners Alerts",
         "actionGroupShortName": "sub-own-ag",
-        "actionGroupName": "Subscription Owners Alerts"
+        "incidentTypes": [
+          "Incident",
+          "Security"
+        ],
+        "alertRuleDescription": "Subscription Owners Alerts for Incidents and Security"
       }
     },
     "securityCenter": {
@@ -52,18 +52,18 @@
     "subscriptionRoleAssignments": {
       "value": [
         {
+          "comments": "Built-in Contributor Role",
           "securityGroupObjectIds": [
-            "558bb757-0c38-4a0d-b8e5-4e3a4e577966"
+            "49f9256a-d77a-43ba-8cc5-957eb40dedee"
           ],
-          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-          "comments": "Built-in Contributor Role"
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
+          "comments": "Custom Role: Landing Zone Application Owner",
           "securityGroupObjectIds": [
-            "86a05be5-3737-4329-b709-47a49e5cf317"
+            "43d97b7e-27b8-4fa7-a339-c935f7752bb9"
           ],
-          "roleDefinitionId": "b4c87314-c1a1-5320-9c43-779585186bcc",
-          "comments": "Custom Role: Landing Zone Application Owner"
+          "roleDefinitionId": "b4c87314-c1a1-5320-9c43-779585186bcc"
         }
       ]
     },
@@ -108,7 +108,7 @@
     },
     "hubNetwork": {
       "value": {
-        "virtualNetworkId": "/subscriptions/9e917d2d-f13a-4cc9-ba38-1ecc255a8c81/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+        "virtualNetworkId": "/subscriptions/4fd845de-f6c8-4e6d-9a87-c21c4ebf7edd/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet",
         "rfc1918IPRange": "10.18.0.0/22",
         "rfc6598IPRange": "100.60.0.0/16",
         "egressVirtualApplianceIp": "10.18.1.4"
