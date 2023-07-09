@@ -9,6 +9,7 @@ This document discusses the scripts available to help simplify creating and usin
 - [Prerequisites](#prerequisites)
 - [Creating the Service Principal](#creating-the-service-principal)
 - [Working with Configuration Files](#working-with-configuration-files)
+- [Working with Deployments](#working-with-deployments)
 
 ---
 
