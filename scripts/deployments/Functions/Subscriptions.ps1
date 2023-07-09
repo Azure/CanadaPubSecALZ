@@ -27,11 +27,11 @@ function Set-Subscriptions {
   foreach ($subscriptionId in $SubscriptionIds) {   
     # Find the ARM JSON parameters, ensure there's only 1 parameters file for each subscription
     # $SubscriptionConfigurations = Get-ChildItem -Path $Context.SubscriptionsDirectory -Filter "*$subscriptionId*.json" -Recurse
-    $pattern = "^$subscriptionId(_.*)(_.*)?\.json"
+    $pattern = "^$subscriptionId.*(_.*)(_.*)?\.json"
     $SubscriptionConfigurations = @(Get-ChildItem -Path $Context.SubscriptionsDirectory -Filter "*$subscriptionId*.json" -File -Recurse | ? { $_.Name -match $pattern })
 
     if ($SubscriptionConfigurations.Count -eq 0) {
-      Write-Output "No Subscription JSON paramters files found in $($Context.SubscriptionsDirectory) for $subscriptionId"
+      Write-Output "No Subscription JSON parameters files found in $($Context.SubscriptionsDirectory) for $subscriptionId"
       continue
     } elseif ($SubscriptionConfigurations.Count -gt 1) {
       Write-Output "Multiple Subscription JSON paramters files found in $($Context.SubscriptionsDirectory) for $subscriptionId.  There must only be one."
