@@ -1,9 +1,5 @@
 # Configuration Scripts
 
-> Copyright (c) Microsoft Corporation.  
-  Licensed under the MIT license.  
-  THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
-
 ## Introduction
 
 This document discusses the scripts available to help simplify creating and using configuration files for a CanadaPubSecALZ deployment.
@@ -62,8 +58,7 @@ New-AlzConfiguration.ps1 | Configuration | Creates the ALZ configuration files i
 New-AlzCredential.ps1 | Credentials | Creates an ALZ credential file in your home directory.
 New-AlzDeployment.ps1 | Deployment | Deploys the ALZ configuration files to the specified Target Environment. Uses the `../deployments/RunWorkflows.ps1` script to deploy the configuration files.
 Remove-AlzConfiguration.ps1 | Configuration | Removes the ALZ configuration file.
-Remove-AlzCredential.ps1 | Credentials | Removes the ALZ credential file.
-Remove-AlzDeployment.ps1 | Deployment | Removes the ALZ configuration files. This is useful, for example, if you need to remove configuration files that were created and used for testing purposes, but do not want to commit them to the repository.
+Remove-AlzCredential.ps1 | Credentials | Removes all elements of an ALZ credential created using the `New-AlzCredential.ps1` script. This includes: the credential file, the service principal, and the app registration.
 Test-AlzCredential.ps1 | Credentials | Tests the ALZ credential file.
 
 >Note: The scripts in this folder are designed to be run from the folder they are located in (`/scripts/configuration`). Running them from any other location may result in errors.

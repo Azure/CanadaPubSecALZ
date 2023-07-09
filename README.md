@@ -34,6 +34,7 @@ See the following onboarding guides for setup instructions:
 * [Azure DevOps Setup](docs/onboarding/azure-devops-setup.md) provides guidance on considerations and recommended practices when creating and configuring your Azure DevOps Services environment.
 * [Azure DevOps Scripts](docs/onboarding/azure-devops-scripts.md) provides guidance on the scripts available to help simplify the onboarding process to Azure Landing Zones design using Azure DevOps pipelines.
 * [Azure DevOps Pipelines](docs/onboarding/azure-devops-pipelines.md) provides guidance on the manual steps for onboarding to the Azure Landing Zones design using Azure DevOps Pipelines.
+* [Configuration Scripts](docs/onboarding/configuration-scripts.md) provides guidance on the scripts available to help simplify the configuration process of the Azure Landing Zones design.
 
 ## Goals
 
