@@ -1,5 +1,6 @@
 experiments/*
 **/*.swp
+**/*.diff
 .vscode/*
 /*.sh
 /*.ps1

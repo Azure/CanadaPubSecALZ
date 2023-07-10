@@ -1,45 +1,66 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "$schema": "https://raw.githubusercontent.com/Azure/CanadaPubSecALZ/main/schemas/latest/landingzones/lz-machinelearning.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "serviceHealthAlerts": {
       "value": {
-          "resourceGroupName": "service-health",
-          "incidentTypes": [ "Incident", "Security" ],
-          "regions": [ "Global", "Canada East", "Canada Central" ],
-          "receivers": {
-              "app": [ "alzcanadapubsec@microsoft.com" ],
-              "email": [ "alzcanadapubsec@microsoft.com" ],
-              "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
-              "voice": [ { "countryCode": "1", "phoneNumber": "6045555555" } ]
-          },
-          "actionGroupName": "Service health action group",
-          "actionGroupShortName": "health-alert",
-          "alertRuleName": "Incidents and Security",
-          "alertRuleDescription": "Service Health: Incidents and Security"
+        "alertRuleName": "Subscription Owners Alerts",
+        "receivers": {
+          "app": [
+            "subscription-owners@example.com"
+          ],
+          "sms": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "6135555555"
+            }
+          ],
+          "email": [
+            "subscription-owners@example.com"
+          ],
+          "voice": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "6135555555"
+            }
+          ]
+        },
+        "regions": [
+          "Global",
+          "Canada Central",
+          "Canada East"
+        ],
+        "resourceGroupName": "service-health-alerts-rg",
+        "actionGroupName": "Subscription Owners Alerts",
+        "actionGroupShortName": "sub-own-ag",
+        "incidentTypes": [
+          "Incident",
+          "Security"
+        ],
+        "alertRuleDescription": "Subscription Owners Alerts for Incidents and Security"
       }
     },
     "securityCenter": {
       "value": {
-        "email": "alzcanadapubsec@microsoft.com",
-        "phone": "6045555555"
+        "email": "security@example.com",
+        "phone": "6135555555"
       }
     },
     "subscriptionRoleAssignments": {
       "value": [
         {
-          "comments": "Built-in Role: Contributor",
-          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+          "comments": "Built-in Contributor Role",
           "securityGroupObjectIds": [
-            "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-          ]
+            "49f9256a-d77a-43ba-8cc5-957eb40dedee"
+          ],
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
           "comments": "Custom Role: Landing Zone Application Owner",
-          "roleDefinitionId": "b4c87314-c1a1-5320-9c43-779585186bcc",
           "securityGroupObjectIds": [
-            "38f33f7e-a471-4630-8ce9-c6653495a2ee"
-          ]
+            "43d97b7e-27b8-4fa7-a339-c935f7752bb9"
+          ],
+          "roleDefinitionId": "b4c87314-c1a1-5320-9c43-779585186bcc"
         }
       ]
     },
@@ -65,17 +86,17 @@
     },
     "resourceGroups": {
       "value": {
-        "automation": "azmlcmk-automation",
-        "compute": "azmlcmk-compute",
-        "monitor": "azmlcmk-monitor",
-        "networking": "azmlcmk-networking",
+        "automation": "azmlnocmk-automation",
+        "compute": "azmlnocmk-compute",
+        "monitor": "azmlnocmk-monitor",
+        "networking": "azmlnocmk-networking",
         "networkWatcher": "NetworkWatcherRG",
-        "security": "azmlcmk-security",
-        "storage": "azmlcmk-storage"
+        "security": "azmlnocmk-security",
+        "storage": "azmlnocmk-storage"
       }
     },
     "useCMK": {
-      "value": true
+      "value": false
     },
     "automation": {
       "value": {
@@ -126,56 +147,56 @@
     },
     "hubNetwork": {
       "value": {
-        "virtualNetworkId": "/subscriptions/ed7f4eed-9010-4227-b115-2a5e37728f27/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+        "virtualNetworkId": "/subscriptions/4fd845de-f6c8-4e6d-9a87-c21c4ebf7edd/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet",
         "rfc1918IPRange": "10.18.0.0/22",
         "rfc6598IPRange": "100.60.0.0/16",
         "egressVirtualApplianceIp": "10.18.1.4",
         "privateDnsManagedByHub": true,
-        "privateDnsManagedByHubSubscriptionId": "ed7f4eed-9010-4227-b115-2a5e37728f27",
-        "privateDnsManagedByHubResourceGroupName": "pubsec-dns"
+        "privateDnsManagedByHubSubscriptionId": "4fd845de-f6c8-4e6d-9a87-c21c4ebf7edd",
+        "privateDnsManagedByHubResourceGroupName": "private-dns-rg"
       }
     },
     "network": {
       "value": {
         "peerToHubVirtualNetwork": true,
         "useRemoteGateway": false,
-        "name": "azmlcmk-vnet",
+        "name": "azmlnocmk-vnet",
         "dnsServers": [
           "10.18.1.4"
         ],
         "addressPrefixes": [
-          "10.1.0.0/16"
+          "10.3.0.0/16"
         ],
         "subnets": {
           "sqlmi": {
             "comments": "SQL Managed Instances Delegated Subnet",
             "name": "sqlmi",
-            "addressPrefix": "10.1.5.0/25"
+            "addressPrefix": "10.3.5.0/25"
           },
           "databricksPublic": {
             "comments": "Databricks Public Delegated Subnet",
             "name": "databrickspublic",
-            "addressPrefix": "10.1.6.0/25"
+            "addressPrefix": "10.3.6.0/25"
           },
           "databricksPrivate": {
             "comments": "Databricks Private Delegated Subnet",
             "name": "databricksprivate",
-            "addressPrefix": "10.1.7.0/25"
+            "addressPrefix": "10.3.7.0/25"
           },
           "privateEndpoints": {
             "comments": "Private Endpoints Subnet",
             "name": "privateendpoints",
-            "addressPrefix": "10.1.8.0/25"
+            "addressPrefix": "10.3.8.0/25"
           },
           "aks": {
             "comments": "AKS Subnet",
             "name": "aks",
-            "addressPrefix": "10.1.9.0/25"
+            "addressPrefix": "10.3.9.0/25"
           },
           "appService": {
             "comments": "App Service Subnet",
             "name": "appService",
-            "addressPrefix": "10.1.10.0/25"
+            "addressPrefix": "10.3.10.0/25"
           },
           "optional": []
         }

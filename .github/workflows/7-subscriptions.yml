@@ -19,7 +19,7 @@ on:
         required: true
       environmentName:
         type: string
-        description: Environment name (optional), e.g. CanadaESLZ-main
+        description: Environment name (optional), e.g. CanadaPubSecALZ-main
         required: false
 
 defaults:

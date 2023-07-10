@@ -1,0 +1,149 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/CanadaPubSecALZ/main/schemas/latest/landingzones/lz-platform-logging.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serviceHealthAlerts": {
+      "value": {
+        "alertRuleName": "Logging Alerts",
+        "receivers": {
+          "app": [
+            "logging@example.com"
+          ],
+          "sms": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "6135555555"
+            }
+          ],
+          "email": [
+            "logging@example.com"
+          ],
+          "voice": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "6135555555"
+            }
+          ]
+        },
+        "regions": [
+          "Global",
+          "Canada Central",
+          "Canada East"
+        ],
+        "resourceGroupName": "service-health-alerts-rg",
+        "actionGroupName": "Logging Alerts",
+        "actionGroupShortName": "logging-ag",
+        "incidentTypes": [
+          "Incident",
+          "Security"
+        ],
+        "alertRuleDescription": "Logging Alerts for Incidents and Security"
+      }
+    },
+    "securityCenter": {
+      "value": {
+        "email": "security@example.com",
+        "phone": "6135555555"
+      }
+    },
+    "subscriptionRoleAssignments": {
+      "value": [
+        {
+          "comments": "Built-in Contributor Role",
+          "securityGroupObjectIds": [
+            "9e16fb9d-7ea4-43fb-a92c-a5dbe308f921"
+          ],
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        }
+      ]
+    },
+    "subscriptionBudget": {
+      "value": {
+        "createBudget": false
+      }
+    },
+    "subscriptionTags": {
+      "value": {
+        "ISSO": "isso-tbd"
+      }
+    },
+    "resourceTags": {
+      "value": {
+        "ClientOrganization": "client-organization-tag",
+        "CostCenter": "cost-center-tag",
+        "DataSensitivity": "data-sensitivity-tag",
+        "ProjectContact": "project-contact-tag",
+        "ProjectName": "project-name-tag",
+        "TechnicalContact": "technical-contact-tag"
+      }
+    },
+    "logAnalyticsResourceGroupName": {
+      "value": "pubsec-central-logging"
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "log-analytics-workspace"
+    },
+    "logAnalyticsRetentionInDays": {
+      "value": 730
+    },
+    "logAnalyticsAutomationAccountName": {
+      "value": "automation-account"
+    },
+    "dataCollectionRule": {
+      "value": {
+        "enabled": false,
+        "name": "DCR-AzureMonitorLogs",
+        "windowsEventLogs": [
+          {
+            "streams": [
+              "Microsoft-Event"
+            ],
+            "xPathQueries": [
+              "Application!*[System[(Level=1 or Level=2 or Level=3)]]",
+              "Security!*[System[(band(Keywords,13510798882111488))]]",
+              "System!*[System[(Level=1 or Level=2 or Level=3)]]"
+            ],
+            "name": "eventLogsDataSource"
+          }
+        ],
+        "syslog": [
+          {
+            "streams": [
+              "Microsoft-Syslog"
+            ],
+            "facilityNames": [
+              "auth",
+              "authpriv",
+              "cron",
+              "daemon",
+              "mark",
+              "kern",
+              "local0",
+              "local1",
+              "local2",
+              "local3",
+              "local4",
+              "local5",
+              "local6",
+              "local7",
+              "lpr",
+              "mail",
+              "news",
+              "syslog",
+              "user",
+              "uucp"
+            ],
+            "logLevels": [
+              "Warning",
+              "Error",
+              "Critical",
+              "Alert",
+              "Emergency"
+            ],
+            "name": "sysLogsDataSource"
+          }
+        ]
+      }
+    }
+  }
+}

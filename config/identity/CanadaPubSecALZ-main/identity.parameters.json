@@ -1,0 +1,187 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/CanadaPubSecALZ/main/schemas/latest/landingzones/lz-platform-identity.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serviceHealthAlerts": {
+      "value": {
+        "alertRuleName": "Identity Alerts",
+        "receivers": {
+          "app": [
+            "identity@example.com"
+          ],
+          "sms": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "6135555555"
+            }
+          ],
+          "email": [
+            "identity@example.com"
+          ],
+          "voice": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "6135555555"
+            }
+          ]
+        },
+        "regions": [
+          "Global",
+          "Canada Central",
+          "Canada East"
+        ],
+        "resourceGroupName": "service-health-alerts-rg",
+        "actionGroupName": "Identity Alerts",
+        "actionGroupShortName": "identity-ag",
+        "incidentTypes": [
+          "Incident",
+          "Security"
+        ],
+        "alertRuleDescription": "Identity Alerts for Incidents and Security"
+      }
+    },
+    "securityCenter": {
+      "value": {
+        "email": "security@example.com",
+        "phone": "6135555555"
+      }
+    },
+    "subscriptionRoleAssignments": {
+      "value": [
+        {
+          "comments": "Built-in Contributor Role",
+          "securityGroupObjectIds": [
+            "b4df54ba-7232-40fa-8f51-f84e8d149322"
+          ],
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        }
+      ]
+    },
+    "subscriptionBudget": {
+      "value": {
+        "createBudget": false
+      }
+    },
+    "subscriptionTags": {
+      "value": {
+        "ISSO": "isso-tbd",
+        "ClientOrganization": "client-organization-tag",
+        "CostCenter": "cost-center-tag",
+        "DataSensitivity": "data-sensitivity-tag",
+        "ProjectContact": "project-contact-tag",
+        "ProjectName": "project-name-tag",
+        "TechnicalContact": "technical-contact-tag"
+      }
+    },
+    "resourceTags": {
+      "value": {
+        "ClientOrganization": "client-organization-tag",
+        "CostCenter": "cost-center-tag",
+        "DataSensitivity": "data-sensitivity-tag",
+        "ProjectContact": "project-contact-tag",
+        "ProjectName": "project-name-tag",
+        "TechnicalContact": "technical-contact-tag"
+      }
+    },
+    "resourceGroups": {
+      "value": {
+        "automation": "automation",
+        "networking": "networking",
+        "networkWatcher": "NetworkWatcherRG",
+        "backupRecoveryVault": "backup",
+        "domainControllers": "DomainControllersRG",
+        "dnsResolver": "dns-resolverRG",
+        "dnsCondionalForwarders": "dns-CondionalForwardersRG",
+        "privateDnsZones": "pubsec-dns"
+      }
+    },
+    "automation": {
+      "value": {
+        "name": "automation"
+      }
+    },
+    "backupRecoveryVault": {
+      "value": {
+        "enabled": true,
+        "name": "backup-vault"
+      }
+    },
+    "privateDnsZones": {
+      "value": {
+        "enabled": false,
+        "resourceGroupName": "pubsec-dns"
+      }
+    },
+    "privateDnsResolver": {
+      "value": {
+        "enabled": true,
+        "name": "dns-resolver",
+        "inboundEndpointName": "dns-resolver-Inbound",
+        "outboundEndpointName": "dns-resolver-Outbound"
+      }
+    },
+    "privateDnsResolverRuleset": {
+      "value": {
+        "enabled": true,
+        "name": "dns-resolver-ruleset",
+        "linkRuleSetToVnet": true,
+        "linkRuleSetToVnetName": "dns-resolver-vnet-link",
+        "forwardingRules": [
+          {
+            "name": "default",
+            "domain": "dontMakeMeThink.local",
+            "state": "Enabled",
+            "targetDnsServers": [
+              {
+                "ipAddress": "10.99.99.100"
+              },
+              {
+                "ipAddress": "10.99.99.99"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "hubNetwork": {
+      "value": {
+        "virtualNetworkId": "/subscriptions/4fd845de-f6c8-4e6d-9a87-c21c4ebf7edd/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+        "rfc1918IPRange": "10.18.0.0/22",
+        "rfc6598IPRange": "100.60.0.0/16",
+        "egressVirtualApplianceIp": "10.18.1.4"
+      }
+    },
+    "network": {
+      "value": {
+        "deployVnet": true,
+        "peerToHubVirtualNetwork": true,
+        "useRemoteGateway": false,
+        "name": "id-vnet",
+        "dnsServers": [
+          "10.18.1.4"
+        ],
+        "addressPrefixes": [
+          "10.15.0.0/24"
+        ],
+        "subnets": {
+          "domainControllers": {
+            "comments": "Identity Subnet for Domain Controllers and VM-Based DNS Servers",
+            "name": "DomainControllers",
+            "addressPrefix": "10.15.0.0/27"
+          },
+          "dnsResolverInbound": {
+            "comments": "Azure DNS Resolver Inbound Requests subnet",
+            "name": "AzureDNSResolver-Inbound",
+            "addressPrefix": "10.15.0.32/27"
+          },
+          "dnsResolverOutbound": {
+            "comments": "Azure DNS Resolver Outbound Requests subnet",
+            "name": "AzureDNSResolver-Outbound",
+            "addressPrefix": "10.15.0.64/27"
+          },
+          "optional": []
+        }
+      }
+    }
+  }
+}

@@ -22,7 +22,7 @@ function New-EnvironmentContext {
     [string] $Environment
   )
 
-  $EnvironmentConfigurationYamlFilePath = "$WorkingDirectory/config/variables/$Environment.yml"
+  $EnvironmentConfigurationYamlFilePath = (Resolve-Path -Path "$WorkingDirectory/config/variables/$Environment.yml").Path
 
   # Load main environment variables file as YAML
   $EnvironmentConfiguration = Get-Content $EnvironmentConfigurationYamlFilePath  | ConvertFrom-Yaml
@@ -31,25 +31,25 @@ function New-EnvironmentContext {
   # Retrieve the management group hierarchy variable as JSON
   $ManagementGroupHierarchy = $Variables['var-managementgroup-hierarchy'] | ConvertFrom-Json
 
-  $PolicyDirectory = "$WorkingDirectory/policy"
+  $PolicyDirectory = (Resolve-Path -Path "$WorkingDirectory/policy").Path
 
   # Create a new context object
   return [PSCustomObject]@{
-    WorkingDirectory = $WorkingDirectory
+    WorkingDirectory = (Resolve-Path -Path $WorkingDirectory).Path
 
-    RolesDirectory = "$WorkingDirectory/roles"
+    RolesDirectory = (Resolve-Path -Path "$WorkingDirectory/roles").Path
 
-    PolicyCustomDefinitionDirectory = "$PolicyDirectory/custom/definitions/policy"
-    PolicySetCustomDefinitionDirectory = "$PolicyDirectory/custom/definitions/policyset"
-    PolicySetCustomAssignmentsDirectory = "$PolicyDirectory/custom/assignments"
-    PolicySetBuiltInAssignmentsDirectory = "$PolicyDirectory/builtin/assignments"
+    PolicyCustomDefinitionDirectory = (Resolve-Path -Path "$PolicyDirectory/custom/definitions/policy").Path
+    PolicySetCustomDefinitionDirectory = (Resolve-Path -Path "$PolicyDirectory/custom/definitions/policyset").Path
+    PolicySetCustomAssignmentsDirectory = (Resolve-Path -Path "$PolicyDirectory/custom/assignments").Path
+    PolicySetBuiltInAssignmentsDirectory = (Resolve-Path -Path "$PolicyDirectory/builtin/assignments").Path
 
-    SchemaDirectory = "$WorkingDirectory/schemas/latest"
+    SchemaDirectory = (Resolve-Path -Path "$WorkingDirectory/schemas/latest").Path
 
-    LoggingDirectory = "$WorkingDirectory/config/logging/$Environment"
-    NetworkingDirectory = "$WorkingDirectory/config/networking/$Environment"
-    SubscriptionsDirectory = "$WorkingDirectory/config/subscriptions/$Environment"
-    IdentityDirectory = "$WorkingDirectory/config/identity/$Environment"
+    LoggingDirectory = (Resolve-Path -Path "$WorkingDirectory/config/logging/$Environment").Path
+    NetworkingDirectory = (Resolve-Path -Path "$WorkingDirectory/config/networking/$Environment").Path
+    SubscriptionsDirectory = (Resolve-Path -Path "$WorkingDirectory/config/subscriptions/$Environment").Path
+    IdentityDirectory = (Resolve-Path -Path "$WorkingDirectory/config/identity/$Environment").Path
 
     Variables = $Variables
     ManagementGroupHierarchy = $ManagementGroupHierarchy

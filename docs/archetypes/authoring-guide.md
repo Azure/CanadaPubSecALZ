@@ -339,24 +339,24 @@ Azure Resource Manager (ARM) parameters files provide deployment information to 
 
 These parameter files are located in [config/subscription](../../config/subscriptions) folder.  This folder is configurable in `common.yml` and you can override in environment configuration files using the `subscriptionsPathFromRoot` setting.  By default it is set to `config/subscriptions`.  
 
-Immediate subfolder defines the environment which is based on Azure DevOps Organization (i.e. `CanadaESLZ`) & Git branch name (i.e. `main`), for example the subfolder will be called `CanadaESLZ-main`.  You can have many environments based on Git branch names such as `CanadaESLZ-feature-1`, `CanadaESLZ-dev`, etc.
+Immediate subfolder defines the environment which is based on Azure DevOps Organization (i.e. `CanadaPubSecALZ`) & Git branch name (i.e. `main`), for example the subfolder will be called `CanadaPubSecALZ-main`.  You can have many environments based on Git branch names such as `CanadaPubSecALZ-feature-1`, `CanadaPubSecALZ-dev`, etc.
 
 ARM parameter files are used by `subscriptions-ci` Azure DevOps Pipeline when configuring subscriptions with Azure resources.  The pipeline will detect environment, management group, subscription, deployment location and deployment parameters using the folder hierarchy, file name and file content.
 
 For example when the file path is:
 
-`config/subscriptions/CanadaESLZ-main/pubsec/LandingZones/DevTest/8c6e48a4-4c73-4a1f-9f95-9447804f2c98_machinelearning_canadacentral.json`
+`config/subscriptions/CanadaPubSecALZ-main/pubsec/LandingZones/DevTest/8c6e48a4-4c73-4a1f-9f95-9447804f2c98_machinelearning_canadacentral.json`
 
-- **Folder hierarchy:** config/subscriptions/CanadaESLZ-main/pubsec/LandingZones/DevTest/
+- **Folder hierarchy:** config/subscriptions/CanadaPubSecALZ-main/pubsec/LandingZones/DevTest/
 - **File name:** 8c6e48a4-4c73-4a1f-9f95-9447804f2c98_machinelearning_canadacentral.json
 
 | Deployment Information | Approach | Example |
 |:---------------------- |:-------- |:------- |
-| Environment | DevOps organization name & Git branch name | `CanadaESLZ-main` |
-| Management Group | Calculated based on concatenating the folder hierarchy under `config/subscription/CanadaESLZ-main` | pubsecLandingZonesDevTest (without the `/`).  [See below for details](#management-group-id-detection).
+| Environment | DevOps organization name & Git branch name | `CanadaPubSecALZ-main` |
+| Management Group | Calculated based on concatenating the folder hierarchy under `config/subscription/CanadaPubSecALZ-main` | pubsecLandingZonesDevTest (without the `/`).  [See below for details](#management-group-id-detection).
 | Subscription | Part of the file name | `8c6e48a4-4c73-4a1f-9f95-9447804f2c98` |
 | Deployment location | Part of the file name | `canadacentral` |
-| Deployment parameters | Content of the file | [See file content](../../config/subscriptions/CanadaESLZ-main/pubsec/LandingZones/DevTest/8c6e48a4-4c73-4a1f-9f95-9447804f2c98_machinelearning_canadacentral.json) |
+| Deployment parameters | Content of the file | [See file content](../../config/subscriptions/CanadaPubSecALZ-main/pubsec/LandingZones/DevTest/8c6e48a4-4c73-4a1f-9f95-9447804f2c98_machinelearning_canadacentral.json) |
 
 The ARM parameter file name can be in one of two formats:
 
@@ -402,7 +402,7 @@ The `subscriptions-ci` management group detection logic is built to accommodate 
 - Folder structure in `config/subscription/` is created without including the prefixes.  For example:
 
     ```none
-          config/subscription/CanadaESLZ-main
+          config/subscription/CanadaPubSecALZ-main
             - pubsec
                 - LandingZones
                     - DevTest
@@ -415,7 +415,7 @@ The `subscriptions-ci` management group detection logic is built to accommodate 
 - Folder structure in `config/subscription/` should be flat.  For example:
 
     ```none
-          config/subscription/CanadaESLZ-main
+          config/subscription/CanadaPubSecALZ-main
             - pubsec
             - LandingZones
             - DevTest

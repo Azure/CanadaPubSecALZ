@@ -32,7 +32,13 @@ function Set-HubNetwork-With-NVA {
     [SecureString]$NvaUsername = $null,
 
     [Parameter(Mandatory = $false)]
-    [SecureString]$NvaPassword = $null
+    [SecureString]$NvaPassword = $null,
+
+    [Parameter(HelpMessage = "Number of retries to deploy the Hub Network")]
+    [int]$RetryCount = 5,
+
+    [Parameter(HelpMessage = "Delay, in seconds, between retries to deploy the Hub Network")]
+    [double]$RetryDelay = 60
   )
 
   Set-AzContext -Subscription $SubscriptionId
@@ -100,13 +106,35 @@ function Set-HubNetwork-With-NVA {
       subscriptionId = $SubscriptionId
     }
 
-  Write-Output "Deploying $PopulatedParametersFilePath to $SubscriptionId in $Region"
-  New-AzSubscriptionDeployment `
-    -Name "main-$Region" `
-    -Location $Region `
-    -TemplateFile "$($Context.WorkingDirectory)/landingzones/lz-platform-connectivity-hub-nva/main.bicep" `
-    -TemplateParameterFile $PopulatedParametersFilePath `
-    -Verbose
+  <# This 'New-AzSubscriptionDeployment` command to deploy the hub network has been observed to fail with a transient error condition. It is wrapped in a retry loop to solve for transient errors. #>
+  $deployAttempt = 1
+  $deployed = $false
+  while (($deployAttempt -le $RetryCount) -and (-not $deployed)) {
+    if ($deployAttempt -gt 1) {
+      Write-Output "Waiting $RetryDelay seconds before retrying deployment"
+      Start-Sleep -Seconds $RetryDelay
+    }
+    try {
+      Write-Output "Deploying $PopulatedParametersFilePath to $SubscriptionId in $Region - Attempt $deployAttempt of $RetryCount"
+      New-AzSubscriptionDeployment `
+        -Name "main-$Region" `
+        -Location $Region `
+        -TemplateFile "$($Context.WorkingDirectory)/landingzones/lz-platform-connectivity-hub-nva/main.bicep" `
+        -TemplateParameterFile $PopulatedParametersFilePath `
+        -Verbose
+      $deployed = $true
+    }
+    catch {
+      if ($deployAttempt -eq $RetryCount) {
+        throw
+      } else {
+        Write-Output "Error deploying $PopulatedParametersFilePath to $SubscriptionId in $Region"
+        Write-Output $_.Exception.Message
+        Write-Output $_.Exception.StackTrace
+      }
+    }
+    $deployAttempt++
+  }
 
   #region Check if Private DNS Zones are managed in the Hub.  If so, enable Private DNS Zones policy assignment
   if ($Configuration.parameters.privateDnsZones.value.enabled -eq $true) {
