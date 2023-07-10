@@ -16,15 +16,14 @@ parameters:
     default: 'optional-commit-id'
 
 # Remove 'none' and uncomment block to enable CI trigger
-trigger:
-  batch: false
-  branches:
-    include:
-      - main
-      - skeeler-quicksetup
-  paths:
-    include:
-      - config/subscriptions/*
+trigger: none
+  # batch: false
+  # branches:
+  #   include:
+  #     - main
+  # paths:
+  #   include:
+  #     - config/subscriptions/*
 
 pr: none
 
