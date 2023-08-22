@@ -3,17 +3,17 @@ variables:
   var-hubnetwork-managementGroupId: Connectivity
   var-hubnetwork-azfw-configurationFileName: hub-azfw/hub-network.parameters.json
   var-hubnetwork-nva-configurationFileName: hub-nva/hub-network.parameters.json
-  var-hubnetwork-subscriptionId: 4fd845de-f6c8-4e6d-9a87-c21c4ebf7edd
+  var-hubnetwork-subscriptionId: a0c1a4a0-74bc-422b-8e8d-71f1d016e69d
   var-hubnetwork-azfwPolicy-configurationFileName: hub-azfw-policy/azure-firewall-policy.parameters.json
   var-logging-managementGroupId: Management
-  var-logging-subscriptionId: 91e1aaa2-a0a0-4770-8d90-02daa39bf57a
+  var-logging-subscriptionId: 8dda93c7-1801-480d-a82a-2620875371fa
   deploymentRegion: canadacentral
   var-identity-managementGroupId: Identity
   var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
   var-logging-configurationFileName: logging.parameters.json
   var-managementgroup-hierarchy: |-
     {
-      "id": "0d466ba2-7ea1-420f-9820-2583fc040733",
+      "id": "61e54fa4-fa93-43b3-9775-a60c5495ffdc",
       "name": "Tenant Root Group",
       "children": [
         {
@@ -74,5 +74,5 @@ variables:
   var-logging-region: canadacentral
   var-identity-configurationFileName: identity.parameters.json
   var-identity-region: canadacentral
-  var-identity-subscriptionId: 2987c7a3-1e43-4b28-b983-ac0925e37d03
+  var-identity-subscriptionId: 7281b8be-c687-468b-9519-a8e6b28f66c9
 
