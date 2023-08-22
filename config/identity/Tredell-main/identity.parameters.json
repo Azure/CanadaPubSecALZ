@@ -51,9 +51,9 @@
         {
           "comments": "Built-in Contributor Role",
           "securityGroupObjectIds": [
-            "b4df54ba-7232-40fa-8f51-f84e8d149322"
+            "e13967fe-4a8e-4051-b85b-a6bd7c3e57fa"
           ],
-          "roleDefinitionId": "e31589a0-2517-4893-9ebe-c66835fae93f"
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         }
       ]
     },
