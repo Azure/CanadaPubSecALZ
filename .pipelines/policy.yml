@@ -96,14 +96,14 @@ stages:
     - template: templates/steps/define-policyset.yml
       parameters:
         description: 'Define Policy Set'
-        deployTemplates: [AKS, DefenderForCloud, DNSPrivateEndpoints, LogAnalytics, Network, Tags]
+        deployTemplates: [DNSPrivateEndpoints]
         deployOperation: ${{ variables['deployOperation'] }}
         workingDir: $(System.DefaultWorkingDirectory)/policy/custom/definitions/policyset
       
     - template: templates/steps/assign-policy.yml
       parameters:
         description: 'Assign Policy Set'
-        deployTemplates: [AKS, DefenderForCloud, LogAnalytics, Network, Tags]
+        deployTemplates: []
         deployOperation: ${{ variables['deployOperation'] }}
         policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
         workingDir: $(System.DefaultWorkingDirectory)/policy/custom/assignments
@@ -130,7 +130,7 @@ stages:
     - template: templates/steps/assign-policy.yml
       parameters:
         description: 'Assign Policy Set'
-        deployTemplates: [asb, cis-msft-130, location, nist80053r4, nist80053r5, pbmm, hitrust-hipaa, fedramp-moderate]
+        deployTemplates: []
         deployOperation: ${{ variables['deployOperation'] }}
         policyAssignmentManagementGroupScope: $(var-topLevelManagementGroupName)
         workingDir: $(System.DefaultWorkingDirectory)/policy/builtin/assignments
