@@ -242,6 +242,15 @@
                     ]
                 },
                 {
+                    "privateLinkServiceNamespace": "Microsoft.DBforMySQL/flexibleServers",
+                    "zone": "privatelink.mysql.database.azure.com",
+                    "filterLocationLike": "*",
+                    "groupId": "mysqlServer",
+                    "privateDnsZoneConfigs": [
+                        "privatelink.mysql.database.azure.com"
+                    ]
+                },
+                {
                     "privateLinkServiceNamespace": "Microsoft.DBforMariaDB/servers",
                     "zone": "privatelink.mariadb.database.azure.com",
                     "filterLocationLike": "*",
