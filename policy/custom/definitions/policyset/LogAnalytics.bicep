@@ -56,7 +56,7 @@ resource policyset_name 'Microsoft.Authorization/policySetDefinitions@2020-03-01
           'Microsoft.DataLakeAnalytics/accounts'
           'Microsoft.DataLakeStore/accounts'
           'Microsoft.EventGrid/systemTopics'
-          'Microsoft.EventGrid/eventSubscriptions'
+          //'Microsoft.EventGrid/eventSubscriptions' # Removed since it doesn't have any logs
           'Microsoft.EventGrid/topics'
           'Microsoft.EventHub/namespaces'
           'Microsoft.Network/expressRouteCircuits'
