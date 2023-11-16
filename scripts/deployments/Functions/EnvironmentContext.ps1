@@ -8,8 +8,6 @@ EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES
 OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 ----------------------------------------------------------------------------------
 #>
-
-#Requires -Modules powershell-yaml
  
 Import-Module powershell-yaml
 

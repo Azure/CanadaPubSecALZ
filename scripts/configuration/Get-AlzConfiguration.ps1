@@ -40,8 +40,6 @@ Param(
   [ref]$ConfigVariablesByRef
 )
 
-#Requires -Modules powershell-yaml
-
 $ErrorActionPreference = "Stop"
 
 $RepoConfigPath = (Resolve-Path -Path "$RepoRootPath/config/variables/$Environment.yml").Path

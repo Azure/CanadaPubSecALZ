@@ -86,8 +86,6 @@ Param(
   [string]$UserConfigPath = "$UserRootPath/ALZ/config"
 )
 
-#Requires -Modules Az, powershell-yaml, PSPasswordGenerator
-
 $ErrorActionPreference = "Stop"
 
 #region Functions

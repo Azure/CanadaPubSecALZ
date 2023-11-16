@@ -191,8 +191,6 @@ Param(
   [SecureString]$NvaPassword=$null
 )
 
-#Requires -Modules Az, powershell-yaml
-
 $ErrorActionPreference = "Stop"
 
 # In order to use this End to End script, you must configure ARM template configurations for Logging, Networking and Subscriptions.
