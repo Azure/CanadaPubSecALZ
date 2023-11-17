@@ -72,8 +72,6 @@ Param(
   [string]$UserConfigPath = "$UserRootPath/ALZ/config"
 )
 
-#Requires -Modules powershell-yaml
-
 $ErrorActionPreference = "Stop"
 
 function ValidateParameters {

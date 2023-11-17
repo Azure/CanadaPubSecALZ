@@ -61,8 +61,6 @@ Param(
   [string]$UserConfigPath = "$UserRootPath/ALZ/config"
 )
 
-#Requires -Modules Az
-
 $ErrorActionPreference = "Stop"
 
 function CreateServicePrincipal {
