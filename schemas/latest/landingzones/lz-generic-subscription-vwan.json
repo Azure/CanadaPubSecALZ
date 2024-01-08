@@ -1,0 +1,400 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/VPPGenericSubscriptionArchetypeDefinition",
+  "definitions": {
+    "VPPGenericSubscriptionArchetypeDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": [
+            "https"
+          ],
+          "qt-uri-extensions": [
+            ".json"
+          ]
+        },
+        "contentVersion": {
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/definitions/Parameters"
+        }
+      },
+      "required": [
+        "$schema",
+        "contentVersion",
+        "parameters"
+      ],
+      "title": "VPPGenericSubscriptionArchetypeDefinition"
+    },
+    "Parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SubscriptionConfig": {
+          "$ref": "#/definitions/SubscriptionConfig"
+        }
+      },
+      "required": [
+        "SubscriptionConfig"
+      ],
+      "title": "Parameters"
+    },
+    "SubscriptionConfig":{
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/SubscriptionConfigValue"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "SubscriptionConfig"
+    },
+    "SubscriptionConfigValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "type": "string"
+        },
+        "serviceHealthAlerts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "resourceGroupName": {
+              "type": "string"
+            },
+            "incidentTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "regions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "receivers": {
+              "$ref": "#/definitions/Receivers"
+            },
+            "actionGroupName": {
+              "type": "string"
+            },
+            "actionGroupShortName": {
+              "type": "string"
+            },
+            "alertRuleName": {
+              "type": "string"
+            },
+            "alertRuleDescription": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "actionGroupName",
+            "actionGroupShortName",
+            "alertRuleDescription",
+            "alertRuleName",
+            "incidentTypes",
+            "receivers",
+            "regions",
+            "resourceGroupName"
+          ],
+          "title": "serviceHealthAlerts"
+        },
+        "subscriptionRoleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RoleAssignment"
+          },
+          "title": "subscriptionRoleAssignments"
+        },
+        "subscriptionBudget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "createBudget": {
+              "type": "boolean"
+            },
+            "name": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "integer"
+            },
+            "timeGrain": {
+              "type": "string"
+            },
+            "contactEmails": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "createBudget"
+          ],
+          "title": "SubscriptionBudget"
+        },
+        "subscriptionTags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "description": "Key/Value pairs of tags"
+          },
+          "title": "subscriptionTags"
+        },
+        "resourceTags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "description": "Key/Value pairs of tags"
+          },
+          "title": "resourceTags"
+        },
+        "automationAccount": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "resourceGroupName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        "backupRecoveryVault": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "resourceGroupName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        "network": {
+          "$ref": "#/definitions/Network"
+        }
+      }
+    },
+    "Network": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "deployVnet": {
+          "type": "boolean"
+        },
+        "resourceGroupName":{
+          "type": "string"
+        },
+        "vHubConnection": {
+          "type": "object",
+          "properties": {
+            "deployvHUBConnection": {
+              "type": "boolean"
+            },
+            "ConnectivitySubscriptionID":{
+              "type": "string",
+              "format": "uuid"
+            },
+            "VHUBName": {
+              "type": "string"
+            },
+            "VWANResourceGroupName": {
+              "type": "string"
+            }
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "dnsServers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "addressPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subnets": {
+          "$ref": "#/definitions/Subnets"
+        }
+      },
+      "required": [
+        "deployVnet",
+        "resourceGroupName",
+        "vHubConnection",
+        "name",
+        "dnsServers",
+        "addressPrefixes",
+        "subnets"
+      ],
+      "title": "Network"
+    },
+    "Subnets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Subnet"
+      },
+      "title": "Subnets"
+    },
+    "Subnet": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "comments": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "addressPrefix": {
+          "type": "string"
+        },
+        "nsg": {
+          "$ref": "#/definitions/Nsg"
+        },
+        "delegations": {
+          "$ref": "#/definitions/Delegations"
+        }
+      },
+      "required": [
+        "addressPrefix",
+        "comments",
+        "name",
+        "nsg"
+      ],
+      "title": "subnet"
+    },
+    "Nsg": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "title": "Nsg"
+    },
+    "Delegations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "serviceName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "serviceName"
+      ],
+      "title": "Delegations"
+    },
+    "Receivers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "app": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "email": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/phone"
+          }
+        },
+        "voice": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/phone"
+          }
+        }
+      },
+      "required": [
+        "app",
+        "email",
+        "sms",
+        "voice"
+      ],
+      "title": "Receivers"
+    },
+    "phone": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "countryCode": {
+          "type": "string",
+          "format": "integer"
+        },
+        "phoneNumber": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "countryCode",
+        "phoneNumber"
+      ],
+      "title": "phone"
+    },
+    "RoleAssignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "comments": {
+          "type": "string"
+        },
+        "roleDefinitionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "securityGroupObjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": [
+        "comments",
+        "roleDefinitionId",
+        "securityGroupObjectIds"
+      ],
+      "title": "RoleAssignment"
+    }
+  }
+}

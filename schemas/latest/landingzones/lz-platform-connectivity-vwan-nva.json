@@ -1,0 +1,314 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/PlatformConnectivityVWANArchetypeDefinition",
+  "definitions": {
+    "PlatformConnectivityVWANArchetypeDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": [
+            "https"
+          ],
+          "qt-uri-extensions": [
+            ".json"
+          ]
+        },
+        "contentVersion": {
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/definitions/Parameters"
+        }
+      },
+      "required": [
+        "$schema",
+        "contentVersion",
+        "parameters"
+      ],
+      "title": "PlatformConnectivityVWANArchetypeDefinition"
+    },
+    "Parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "$ref": "types/location.json#/definitions/Location"
+        },
+        "serviceHealthAlerts": {
+          "$ref": "types/serviceHealthAlerts.json#/definitions/ServiceHealthAlerts"
+        },
+        "subscriptionRoleAssignments": {
+          "$ref": "types/subscriptionRoleAssignments.json#/definitions/SubscriptionRoleAssignments"
+        },
+        "subscriptionBudget": {
+          "$ref": "types/subscriptionBudget.json#/definitions/SubscriptionBudget"
+        },
+        "subscriptionTags": {
+          "$ref": "types/subscriptionTags.json#/definitions/SubscriptionTags"
+        },
+        "resourceTags": {
+          "$ref": "types/resourceTags.json#/definitions/ResourceTags"
+        },
+        "VWAN": {
+          "$ref": "types/VWAN.json#/definitions/VWAN"
+        },
+        "VirtualWanHUBs": {
+          "$ref": "types/VirtualWanHUBs.json#/definitions/VirtualWanHUBs"
+        },
+        "SharedConnServicesNetwork": {
+          "$ref": "#/definitions/SharedConnServicesNetwork"
+        },
+        "fwUsername": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "fwPassword": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "serviceHealthAlerts",
+        "subscriptionBudget",
+        "subscriptionRoleAssignments",
+        "subscriptionTags",
+        "resourceTags",
+        "VWAN",
+        "VirtualWanHUBs",
+        "SharedConnServicesNetwork"
+      ],
+      "title": "Parameters"
+    },
+    "SharedConnServicesNetwork": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "object",
+          "properties": {
+            "resourceGroupName": {
+              "type": "string"
+            },
+            "bastion": {
+              "$ref": "#/definitions/bastion"
+            },
+            "jumpbox": {
+              "$ref": "#/definitions/jumpbox"
+            },
+            "panoramaA": {
+              "$ref": "#/definitions/panorama"
+            },
+            "panoramaB": {
+              "$ref": "#/definitions/panorama"
+            },
+            "network": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "addressPrefixes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "subnets": {
+                  "type": "object",
+                  "properties": {
+                    "AzureBastionSubnet": {
+                      "$ref": "#/definitions/requiredSubnet"
+                    },
+                    "ManagementSubnet": {
+                      "$ref": "#/definitions/requiredSubnet"
+                    },
+                    "PanoramaSubnet": {
+                      "$ref": "#/definitions/requiredSubnet"
+                    },
+                    "optional": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/optionalSubnet"
+                      }
+                    }
+                  },
+                  "required": [
+                    "AzureBastionSubnet",
+                    "ManagementSubnet",
+                    "PanoramaSubnet",
+                    "optional"
+                  ]
+                }
+              },
+              "required": [
+                "name",
+                "addressPrefixes",
+                "subnets"
+              ]
+            }
+          },
+          "required": [
+            "resourceGroupName",
+            "bastion",
+            "network",
+            "jumpbox",
+            "panoramaA",
+            "panoramaB"
+          ]
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "bastion": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "sku": {
+          "type": "string"
+        },
+        "scaleUnits": {
+          "type": "integer"
+        },
+        "resourceGroupName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "enabled",
+        "name",
+        "sku",
+        "scaleUnits",
+        "resourceGroupName"
+      ]
+    },
+    "jumpbox": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "VMSize": {
+          "type": "string"
+        },
+        "resourceGroupName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "enabled",
+        "name",
+        "VMSize",
+        "resourceGroupName"
+      ]
+    },
+    "panorama": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "vmName": {
+          "type": "string"
+        },
+        "vmSize": {
+          "type": "string"
+        },
+        "resourceGroupName": {
+          "type": "string"
+        },
+        "privateIPAddress": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "enabled",
+        "vmName",
+        "vmSize",
+        "resourceGroupName",
+        "privateIPAddress"
+      ]
+    },
+    "requiredSubnet": {
+      "type": "object",
+      "properties": {
+        "comments": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "addressPrefix": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "comments",
+        "name",
+        "addressPrefix"
+      ]
+    },
+    "optionalSubnet": {
+      "type": "object",
+      "properties": {
+        "comments": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "addressPrefix": {
+          "type": "string"
+        },
+        "nsg": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "enabled"
+          ]
+        },
+        "delegations": {
+          "type": "object",
+          "properties": {
+            "serviceName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "serviceName"
+          ]
+        }
+      },
+      "required": [
+        "comments",
+        "name",
+        "addressPrefix",
+        "nsg",
+        "udr"
+      ]
+    }
+  }
+}

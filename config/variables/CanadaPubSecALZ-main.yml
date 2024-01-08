@@ -2,7 +2,7 @@ variables:
   var-hubnetwork-region: canadacentral
   var-hubnetwork-managementGroupId: Connectivity
   var-hubnetwork-azfw-configurationFileName: hub-azfw/hub-network.parameters.json
-  var-hubnetwork-nva-configurationFileName: hub-nva/hub-network.parameters.json
+  var-hubnetwork-nva-configurationFileName: vwan-nva/vwan-nva.parameters.json
   var-hubnetwork-subscriptionId: 4fd845de-f6c8-4e6d-9a87-c21c4ebf7edd
   var-hubnetwork-azfwPolicy-configurationFileName: hub-azfw-policy/azure-firewall-policy.parameters.json
   var-logging-managementGroupId: Management

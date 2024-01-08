@@ -175,6 +175,7 @@ Param(
   [switch]$DeployAzureFirewallPolicy,
   [switch]$DeployHubNetworkWithNVA,
   [switch]$DeployHubNetworkWithAzureFirewall,
+  [switch]$DeployVWANNetworkWithNVA,
 
   [switch]$DeployIdentity,
 
@@ -430,4 +431,18 @@ if (($null -ne $DeploySubscriptionIds) -and ($DeploySubscriptionIds.Count -gt 0)
     -Region $Context.DeploymentRegion `
     -SubscriptionIds $DeploySubscriptionIds `
     -LogAnalyticsWorkspaceResourceId $LoggingConfiguration.LogAnalyticsWorkspaceResourceId
+}
+
+# Deploy Hub Networking with NVA
+if ($DeployVWANNetworkWithNVA) {
+  Write-Host "Deploying Hub Networking with NVA..."
+
+  Set-VWANNetwork-With-NVA `
+    -Context $Context `
+    -Region $Context.Variables['var-hubnetwork-region'] `
+    -ManagementGroupId $Context.Variables['var-hubnetwork-managementGroupId'] `
+    -SubscriptionId $Context.Variables['var-hubnetwork-subscriptionId'] `
+    -ConfigurationFilePath "$($Context.NetworkingDirectory)/$($Context.Variables['var-hubnetwork-nva-configurationFileName'])" `
+    -NvaUsername $NvaUsername `
+    -NvaPassword $NvaPassword
 }

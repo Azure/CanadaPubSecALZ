@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "definitions": {
+    "VirtualWanHUBs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Value"
+          }
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "VirtualWanHUBs"
+    },
+    "Value": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DeployVWANHUB": {
+          "type": "boolean"
+        },
+        "VirtualWanHUBName": {
+          "type": "string"
+        },
+        "VirtualHubAddressPrefix": {
+          "type": "string"
+        },
+        "HubLocation": {
+          "type": "string"
+        },
+        "VirtualRouterAutoScaleConfiguration": {
+          "type": "integer"
+        },
+        "HubRoutingPreference": {
+          "type": "string"
+        },
+        "ExpressRouteConfig": {
+          "type": "object",
+          "properties": {
+            "ExpressRouteGatewayEnabled": {
+              "type": "boolean"
+            },
+            "ExpressRouteGatewayScaleUnits": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "ExpressRouteGatewayEnabled",
+            "ExpressRouteGatewayScaleUnits"
+          ]
+        },
+        "VirtualHubRoutingIntentDestinations": {
+          "type": "array",
+          "items": {}
+        }
+      },
+      "required": [
+        "DeployVWANHUB",
+        "VirtualWanHUBName",
+        "VirtualHubAddressPrefix",
+        "HubLocation",
+        "VirtualRouterAutoScaleConfiguration",
+        "HubRoutingPreference",
+        "ExpressRouteConfig",
+        "VirtualHubRoutingIntentDestinations"
+      ],
+      "title": "Value"
+    }
+  }
+}

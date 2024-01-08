@@ -1,0 +1,147 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serviceHealthAlerts": {
+      "value": {
+        "alertRuleName": "VWAN Alerts",
+        "receivers": {
+          "app": [],
+          "sms": [],
+          "email": [
+            "VWAN@example.com"
+          ],
+          "voice": []
+        },
+        "regions": [
+          "Global",
+          "Canada Central",
+          "Canada East"
+        ],
+        "resourceGroupName": "alz-connectivity-alerts-rg",
+        "actionGroupName": "Connectivity Alerts",
+        "actionGroupShortName": "vwan-ag",
+        "incidentTypes": [
+          "Incident",
+          "Security"
+        ],
+        "alertRuleDescription": "Connectivity Alerts for Incidents and Security"
+      }
+    },
+    "subscriptionRoleAssignments": {
+      "value": []
+    },
+    "subscriptionBudget": {
+      "value": {
+        "createBudget": false
+      }
+    },
+    "subscriptionTags": {
+      "value": {
+        "Env": "Prod",
+        "Support": "Prod",
+        "App-id": "3f34-d34d3"
+      }
+    },
+    "resourceTags": {
+      "value": {
+        "Env": "Prod",
+        "Support": "Prod",
+        "App-id": "3f34-d34d3",
+        "Cost-center": "432432"
+      }
+    },
+    "VWAN": {
+      "value": {
+        "resourceGroupName" : "Central-VWAN-Connectivity-RG",
+        "name" : "Central-VWAN-Prod"
+      }
+    },
+    "VirtualWanHUBs":{
+      "value": [ 
+        {
+        "DeployVWANHUB": true,
+        "VirtualWanHUBName": "vHUB-CC-Prod",
+        "VirtualHubAddressPrefix": "10.100.0.0/23",
+        "HubLocation": "canadacentral",
+        "VirtualRouterAutoScaleConfiguration": 2,
+        "HubRoutingPreference": "ExpressRoute",
+        "ExpressRouteConfig": {
+          "ExpressRouteGatewayEnabled": false,
+          "ExpressRouteGatewayScaleUnits": 1
+        },
+        "VirtualHubRoutingIntentDestinations": []
+      },
+        {
+        "DeployVWANHUB": false,
+        "VirtualWanHUBName": "vHUB-CE-Prod",
+        "VirtualHubAddressPrefix": "10.200.0.0/23",
+        "HubLocation": "canadaeast",
+        "VirtualRouterAutoScaleConfiguration": 2,
+        "HubRoutingPreference": "ExpressRoute",
+        "ExpressRouteConfig": {
+          "ExpressRouteGatewayEnabled": false,
+          "ExpressRouteGatewayScaleUnits": 1
+        },
+        "VirtualHubRoutingIntentDestinations": []
+      }
+    ]
+    },
+    "SharedConnServicesNetwork": {
+      "value": {
+        "resourceGroupName": "SharedConVNET-RG",
+        "bastion": {
+          "enabled": true,
+          "name": "bastion-shared-cc",
+          "sku": "Standard",
+          "scaleUnits": 2,
+          "resourceGroupName": "Bastion-RG"
+        },
+        "jumpbox": {
+          "enabled": true,
+          "name": "JumpboxVM-01",
+          "VMSize": "Standard_D2s_v3",
+          "resourceGroupName": "Jumpbox-RG"
+        },
+        "panoramaA": {
+          "enabled": true,
+          "resourceGroupName": "Panorama-RG",
+          "vmName": "Panorama-A",
+          "vmSize": "Standard_D8s_v3",
+          "privateIPAddress": "10.250.0.100" 
+        },
+        "panoramaB": {
+          "enabled": true,
+          "resourceGroupName": "Panorama-RG",
+          "vmName": "Panorama-B",
+          "vmSize": "Standard_D8s_v3",
+          "privateIPAddress": "10.250.0.101" 
+        },
+        "network": {
+          "name": "SharedConVNET",
+          "addressPrefixes": [
+            "10.250.0.0/24"
+          ],
+          "subnets": {
+            "AzureBastionSubnet": {
+              "comments": "AzureBastionSubnet",
+              "name": "AzureBastionSubnet",
+              "addressPrefix": "10.250.0.0/26"
+            },
+            "ManagementSubnet": {
+              "comments": "ManagementSubnet (Jumpboxes)",
+              "name": "ManagementSubnet",
+              "addressPrefix": "10.250.0.64/27"
+            },
+            "PanoramaSubnet": {
+              "comments": "PanoramaSubnet",
+              "name": "PanoramaSubnet",
+              "addressPrefix": "10.250.0.96/27"
+            },
+            "optional": []
+          }
+        }
+      }
+    }
+  }
+}

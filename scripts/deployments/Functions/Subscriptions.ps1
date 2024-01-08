@@ -113,6 +113,39 @@ function Set-Subscriptions {
       -TemplateParameterFile $PopulatedParametersFilePath `
       -Verbose
 
+    #VHUB connection - START
+    # Check if the values exist
+    if ($Configuration.parameters.SubscriptionConfig.value.network.deployVnet -and
+        $Configuration.parameters.SubscriptionConfig.value.network.vHubConnection.deployvHUBConnection) {
+        
+        # Check if both values are set to "True"
+        if ($Configuration.parameters.SubscriptionConfig.value.network.deployVnet -eq $true -and
+            $Configuration.parameters.SubscriptionConfig.value.network.vHubConnection.deployvHUBConnection -eq $true) {
+
+            # Run the command if conditions are met
+            $remoteVirtualNetworkId = (Get-AzDeployment -Name "main-$DeploymentRegion").Outputs.vnetID.value
+            Set-AzContext -SubscriptionID $Configuration.parameters.SubscriptionConfig.value.network.vHubConnection.ConnectivitySubscriptionID
+            $TemplateFile = (Resolve-Path -Path "$($Context.WorkingDirectory)/landingzones/lz-$ArchetypeName/vhubVNETConn.bicep").Path
+
+            $inputObject = @{
+              Name = "VHUBConn-$SubscriptionId"
+              Location = $DeploymentRegion              
+              TemplateFile = $TemplateFile
+              TemplateParameterFile = $PopulatedParametersFilePath
+              remoteVirtualNetworkId = $remoteVirtualNetworkId
+             }
+
+             New-AzDeployment @inputObject
+        }
+        else {
+            Write-Host "Skipping Connection to vHub step: Both values of deployVnet and deployvHUBConnection are not set to 'True'."
+        }
+    }
+    else {
+        Write-Host "Skipping Connection to vHub step: The architype does not support it."
+    }
+    #VHUB connection -  END
+
     Remove-Item $PopulatedParametersFilePath
   }
 }

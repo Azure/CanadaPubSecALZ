@@ -1,0 +1,123 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "SubscriptionConfig":{
+        "value": {
+            "location": "canadacentral",
+            "serviceHealthAlerts": {
+                "alertRuleName": "spoke Alerts",
+                "receivers": {
+                  "app": [],
+                  "sms": [],
+                  "email": [
+                    "spoke@example.com"
+                  ],
+                  "voice": []
+                },
+                "regions": [
+                  "Global",
+                  "Canada Central",
+                  "Canada East"
+                ],
+                "resourceGroupName": "alz-app1-alerts-rg",
+                "actionGroupName": "App1 Alerts",
+                "actionGroupShortName": "spoke-ag",
+                "incidentTypes": [
+                  "Incident",
+                  "Security"
+                ],
+                "alertRuleDescription": "App1 Alerts for Incidents and Security"
+            },
+            "subscriptionRoleAssignments": [],
+            "subscriptionBudget": {
+              "createBudget": false
+            },
+            "subscriptionTags": {
+              "Env": "Prod",
+              "Support": "Prod",
+              "App-id": "3f34-d34d3"
+            },
+            "resourceTags": {
+              "Env": "Prod",
+              "Support": "Prod",
+              "App-id": "3f34-d34d3",
+              "Cost-center": "432432"
+            },
+            "automationAccount": {
+              "enabled": true,
+              "resourceGroupName": "app1-automation-rg",
+              "name": "app1-automation"
+            },
+            "backupRecoveryVault": {
+              "enabled": true,
+              "resourceGroupName": "app1-backup",
+              "name": "app1-backup-vault"
+            },
+            "network": {
+              "deployVnet": true,
+              "resourceGroupName": "app1-networking-rg",
+              "name": "App1-vnet",
+              "vHubConnection": {
+                "deployvHUBConnection": true,
+                "ConnectivitySubscriptionID": "00b726dc-f2c6-45b4-8984-ed242fee7f45",
+                "VHUBName": "vHUB-CC-Prod",
+                "VWANResourceGroupName": "Central-VWAN-Connectivity-RG"
+              },
+              "dnsServers": [
+                "10.18.1.4"
+              ],
+              "addressPrefixes": [
+                "10.2.0.0/16"
+              ],
+              "subnets": [
+                {
+                  "comments": "App Management Zone (OZ)",
+                  "name": "appManagement",
+                  "addressPrefix": "10.2.1.0/25",
+                  "nsg": {
+                    "enabled": true
+                  }
+                },
+                {
+                  "comments": "Presentation Zone (PAZ)",
+                  "name": "web",
+                  "addressPrefix": "10.2.2.0/25",
+                  "nsg": {
+                    "enabled": true
+                  }
+                },
+                {
+                  "comments": "Application Zone (RZ)",
+                  "name": "app",
+                  "addressPrefix": "10.2.3.0/25",
+                  "nsg": {
+                    "enabled": true
+                  }
+                },
+                {
+                  "comments": "Data Zone (HRZ)",
+                  "name": "data",
+                  "addressPrefix": "10.2.4.0/25",
+                  "nsg": {
+                    "enabled": true
+                  }
+                },
+                {
+                  "comments": "App Service",
+                  "name": "appservice",
+                  "addressPrefix": "10.2.5.0/25",
+                  "nsg": {
+                    "enabled": false
+                  },
+                  "delegations": {
+                    "serviceName": "Microsoft.Web/serverFarms"
+                  }
+                }
+              ]
+            }
+      }
+    }
+  }
+}
+  
