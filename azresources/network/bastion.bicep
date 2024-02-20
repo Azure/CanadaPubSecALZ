@@ -32,6 +32,22 @@ param tags object = {}
 @description('Subnet Resource Id.')
 param subnetId string
 
+// Bastion Features
+@description('Copy and paste')
+param enableFileCopy bool = true
+
+@description('IP-based connection - available only for Standard SKU')
+param enableIpConnect bool = false
+
+@description('Kerberos authentication - available only for Basic and Standard SKU')
+param enableKerberos bool = false
+
+@description('Native client support - available only for Standard SKU')
+param enableTunneling bool = false
+
+@description('Shareable Link - available only for Standard SKU')
+param enableShareableLink bool = false
+
 resource bastionPublicIP 'Microsoft.Network/publicIPAddresses@2020-06-01' = {
   location: location
   name: '${name}PublicIp'
@@ -45,7 +61,7 @@ resource bastionPublicIP 'Microsoft.Network/publicIPAddresses@2020-06-01' = {
   }
 }
 
-resource bastion 'Microsoft.Network/bastionHosts@2021-03-01' = {
+resource bastion 'Microsoft.Network/bastionHosts@2023-09-01' = {
   location: location
   name: name
   tags: tags
@@ -55,6 +71,11 @@ resource bastion 'Microsoft.Network/bastionHosts@2021-03-01' = {
   properties: {
       dnsName: uniqueString(resourceGroup().id)
       scaleUnits: sku == 'Standard' ? scaleUnits : json('null')
+      enableFileCopy: enableFileCopy
+      enableIpConnect: enableIpConnect
+      enableKerberos: enableKerberos
+      enableTunneling: enableTunneling
+      enableShareableLink: enableShareableLink
       ipConfigurations: [
           {
               name: 'IpConf'
