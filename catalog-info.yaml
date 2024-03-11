@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: cds-azure-lz
+  description: CDS Azure Landing Zone
+  labels:
+    license: MIT
+spec:
+  type: service
+  lifecycle: production
+  owner: group:cds-snc/internal-sre
+  domain: site-reliability-engineering
+  system: cds-azure-landing-zone
