@@ -71,13 +71,13 @@
     },
     "resourceGroups": {
       "value": {
-        "automation": "azml-automation",
-        "compute": "azml-compute",
-        "monitor": "azml-monitor",
-        "networking": "azml-networking",
+        "automation": "azmlcmk-automation",
+        "compute": "azmlcmk-compute",
+        "monitor": "azmlcmk-monitor",
+        "networking": "azmlcmk-networking",
         "networkWatcher": "NetworkWatcherRG",
-        "security": "azml-security",
-        "storage": "azml-storage"
+        "security": "azmlcmk-security",
+        "storage": "azmlcmk-storage"
       }
     },
     "useCMK": {
@@ -95,11 +95,11 @@
     },
     "aks": {
       "value": {
-        "version": "1.21.2",
+        "version": "1.22.6",
         "enabled": true,
-        "networkPlugin": "azure",
-        "networkPolicy": "azure",
-        "podCidr": "",
+        "networkPlugin": "kubenet",
+        "networkPolicy": "calico",
+        "podCidr": "11.0.0.0/16",
         "serviceCidr": "20.0.0.0/16",
         "dnsServiceIP": "20.0.0.10",
         "dockerBridgeCidr": "30.0.0.1/16"
@@ -110,17 +110,14 @@
         "enabled": true,
         "skuName": "P1V2",
         "skuTier": "Premium",
-        "enablePrivateEndpoint": false
+        "enablePrivateEndpoint": true
       }
     },
     "sqldb": {
       "value": {
         "enabled": true,
         "sqlAuthenticationUsername": "azadmin",
-        "aadAuthenticationOnly": false,
-        "aadLoginName": "DBA Group",
-        "aadLoginObjectID": "4e4ea47c-ee21-4add-ad2f-a75d0d8014e0",
-        "aadLoginType": "Group"
+        "aadAuthenticationOnly": false
       }
     },
     "sqlmi": {
@@ -149,7 +146,7 @@
       "value": {
         "peerToHubVirtualNetwork": true,
         "useRemoteGateway": false,
-        "name": "azml-vnet",
+        "name": "azmlcmk-vnet",
         "dnsServers": [
           "10.18.1.4"
         ],

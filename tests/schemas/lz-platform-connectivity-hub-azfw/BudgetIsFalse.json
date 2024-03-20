@@ -161,7 +161,7 @@
             "3"
           ],
           "forcedTunnelingEnabled": false,
-          "forcedTunnelingNextHop": "10.17.1.4",
+          "forcedTunnelingNextHop": "10.17.1.4"
         },
         "network": {
           "name": "hub-vnet",

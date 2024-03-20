@@ -2,15 +2,13 @@
 
 ## Table of Contents
 
-- [Archetype:  Logging](#archetype--logging)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
-  - [Schema Definition](#schema-definition)
-  - [Delete Locks](#delete-locks)
-  - [Service Health](#service-health)
-  - [Deployment Scenarios](#deployment-scenarios)
-  - [Example Deployment Parameters](#example-deployment-parameters)
-  - [Deployment Instructions](#deployment-instructions)
+* [Overview](#overview)
+* [Schema Definition](#schema-definition)
+* [Delete Locks](#delete-locks)
+* [Service Health](#service-health)
+* [Deployment Scenarios](#deployment-scenarios)
+* [Example Deployment Parameters](#example-deployment-parameters)
+* [Deployment Instructions](#deployment-instructions)
 
 ## Overview
 
