@@ -1,0 +1,83 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+parameters:
+  - name: workingDir
+    type: string
+  - name: deployOperation
+    type: string
+    default: create
+    values:
+      - create
+      - what-if
+  - name: identityManagementGroupId
+    type: string
+  - name: identitySubscriptionId
+    type: string
+  - name: identityRegion
+    type: string
+  - name: identityConfigurationPath
+    type: string
+
+steps:
+
+- task: PowerShell@2
+  displayName: Validate identity Parameters
+  inputs:
+    targetType: 'inline'
+    script: |
+      $schemaFile="$(Build.SourcesDirectory)/schemas/latest/landingzones/lz-platform-identity.json"
+
+      Write-Host "Parameters File: ${{ parameters.identityConfigurationPath }}"
+      Write-Host "Schema File: ${schemaFile}"
+
+      Get-Content -Raw "${{ parameters.identityConfigurationPath }}" | Test-Json -SchemaFile "${schemaFile}"
+
+- template: ./move-subscription.yml
+  parameters:
+    managementGroup: ${{ parameters.identityManagementGroupId }}
+    subscriptionGuid: ${{ parameters.identitySubscriptionId }}
+    subscriptionLocation: ${{ parameters.identityRegion }}
+    templateDirectory: $(Build.SourcesDirectory)/landingzones/utils/mg-move
+    templateFile: move-subscription.bicep
+    workingDir: ${{ parameters.workingDir }}/utils/mg-move
+
+- task: AzureCLI@2
+  displayName: Configure Identity LZ
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $(var-bashPreInjectScript)
+
+      # Check if the log analytics workspace id is provided in the parameters json.
+      # If present, then do no change it.  Otherwise add it to the json parameter file.
+      LOG_ANALYTICS_WORKSPACE_RESOURCE_ID_IN_PARAMETERS=`jq -r .parameters.logAnalyticsWorkspaceResourceId.value ${{ parameters.identityConfigurationPath }}`   
+
+      if [[ $LOG_ANALYTICS_WORKSPACE_RESOURCE_ID_IN_PARAMETERS != null && "$LOG_ANALYTICS_WORKSPACE_RESOURCE_ID_IN_PARAMETERS" != "" ]];
+      then
+        echo "Log Analytics Workspace Resource ID is set in ${{ parameters.identityConfigurationPath }} to $LOG_ANALYTICS_WORKSPACE_RESOURCE_ID_IN_PARAMETERS"
+      else
+        echo "Log Analytics Workspace Resource ID is not set in ${{ parameters.identityConfigurationPath }}.  Updating ${{ parameters.identityConfigurationPath }} with $(var-logging-logAnalyticsWorkspaceResourceId)"
+
+        # use jq to update the json parameter file
+        echo "$( jq '.parameters.logAnalyticsWorkspaceResourceId.value = "$(var-logging-logAnalyticsWorkspaceResourceId)"' ${{ parameters.identityConfigurationPath }} )" > ${{ parameters.identityConfigurationPath }}
+      fi
+
+      echo "Deploying main.bicep using ${{ parameters.deployOperation}} operation using ${{ parameters.identityConfigurationPath  }}..."
+      
+      az deployment sub ${{ parameters.deployOperation }} \
+      --location ${{ parameters.identityRegion }} \
+      --subscription ${{ parameters.identitySubscriptionId }} \
+      --template-file main.bicep \
+      --parameters @${{ parameters.identityConfigurationPath }}
+          
+      $(var-bashPostInjectScript)
+    workingDirectory: '${{ parameters.workingDir }}/lz-platform-identity'

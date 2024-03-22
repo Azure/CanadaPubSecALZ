@@ -1,0 +1,84 @@
+# ----------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+# EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+# ----------------------------------------------------------------------------------
+
+
+name: 7 - Subscriptions
+
+on:
+  workflow_dispatch:
+    inputs:
+      subscriptionIds:
+        type: string
+        description: Subscription ID(s), e.g. "abcd", "1234"
+        required: true
+      environmentName:
+        type: string
+        description: Environment name (optional), e.g. CanadaESLZ-main
+        required: false
+
+defaults:
+  run:
+    shell: pwsh
+    working-directory: scripts/deployments
+
+jobs:
+  SubscriptionMatrix:
+    if: github.event.inputs.subscriptionIds != ''
+
+    name: Create subscription deployment(s) as matrix
+    
+    runs-on: ubuntu-latest
+    
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - id: set-matrix
+        run: |
+          $SubscriptionIdJsonObject = @{
+              SubscriptionId = ${{github.event.inputs.subscriptionIds}} -Split ","
+          }
+
+          $SubscriptionIdJson = $SubscriptionIdJsonObject | ConvertTo-Json -Compress
+
+          Write-Output "::set-output name=matrix::$SubscriptionIdJson"
+
+  Subscriptions:
+    if: github.event.inputs.subscriptionIds != ''
+    needs:
+      - SubscriptionMatrix
+
+    name: Subscriptions
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix: ${{fromJSON(needs.SubscriptionMatrix.outputs.matrix)}}
+      fail-fast: false
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy Subscription
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeploySubscriptionIds '${{ matrix.subscriptionId }}' `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}

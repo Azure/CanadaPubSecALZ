@@ -92,15 +92,15 @@ Reference implementation uses parameter files with `object` parameters to consol
 
 ### Delete Locks
 
-As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
 
 **This archetype does not use `CanNotDelete` nor `ReadOnly` locks as part of the deployment.  You may customize the deployment templates when it's required for your environment.**
 
 ### Service Health
 
-[Service health notifications](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties) are published by Azure, and contain information about the resources under your subscription.  Service health notifications can be informational or actionable, depending on the category.
+[Service health notifications](https://learn.microsoft.com/azure/service-health/service-health-notifications-properties) are published by Azure, and contain information about the resources under your subscription.  Service health notifications can be informational or actionable, depending on the category.
 
-Our examples configure service health alerts for `Security` and `Incident`.  However, these categories can be customized based on your need.  Please review the possible options in [Azure Docs](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties#details-on-service-health-level-information).
+Our examples configure service health alerts for `Security` and `Incident`.  However, these categories can be customized based on your need.  Please review the possible options in [Azure Docs](https://learn.microsoft.com/azure/service-health/service-health-notifications-properties#details-on-service-health-level-information).
 
 ### Deployment Scenarios
 
@@ -154,8 +154,8 @@ This example configures:
                 "receivers": {
                     "app": [ "alzcanadapubsec@microsoft.com" ],
                     "email": [ "alzcanadapubsec@microsoft.com" ],
-                    "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-                    "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                    "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
+                    "voice": [ { "countryCode": "1", "phoneNumber": "6045555555" } ]
                 },
                 "actionGroupName": "Service health action group",
                 "actionGroupShortName": "health-alert",
@@ -166,7 +166,7 @@ This example configures:
         "securityCenter": {
             "value": {
                 "email": "alzcanadapubsec@microsoft.com",
-                "phone": "5555555555"
+                "phone": "6045555555"
             }
         },
         "subscriptionRoleAssignments": {

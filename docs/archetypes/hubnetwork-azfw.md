@@ -42,7 +42,7 @@ The recommended network design achieves the purpose of hosting [**Protected B** 
 
 Application Gateway with WAFv2 will be used for ingress traffic and application delivery.  Application Gateways will be placed on the shared Public Access Zone (a subnet in the Hub), where public IPs will be protected with Azure DDoS (either Basic or Standard).
 
-Other possible topologies are explained in [Azure documentation](https://docs.microsoft.com/azure/architecture/example-scenario/gateway/firewall-application-gateway) and we recommend reviewing to ensure the topology aligns to your department's network design.
+Other possible topologies are explained in [Azure documentation](https://learn.microsoft.com/azure/architecture/example-scenario/gateway/firewall-application-gateway) and we recommend reviewing to ensure the topology aligns to your department's network design.
 
 There will be at least one shared Application Gateway instance and multiple dedicated Application Gateways for those line of businesses that require their own deployment (i.e. performance or cost allocation). All egress traffic from the spokes will be routed to the hub's edge firewall, inspected, and authorized/denied based on network (IP/Port) or application rules (FQDNs).
 
@@ -62,9 +62,9 @@ Network design will require 3 IP blocks:
 ## Hub Virtual Network
 
 * Azure Firewall Premium instance configured with
-  * Either [forced tunneling](https://docs.microsoft.com/azure/firewall/forced-tunneling) (requires the next hop as another device such as NVA, on-premises or another Azure Firewall at the edge) or without forced tunneling.  When forced tunneling is turned on, all management traffic will flow through the separate `AzureFirewallManagementSubnet` subnet.
-  * [DNS Proxy](https://docs.microsoft.com/azure/firewall/dns-details)
-  * [Threat Intelligence in Alert mode](https://docs.microsoft.com/azure/firewall/threat-intel)
+  * Either [forced tunneling](https://learn.microsoft.com/azure/firewall/forced-tunneling) (requires the next hop as another device such as NVA, on-premises or another Azure Firewall at the edge) or without forced tunneling.  When forced tunneling is turned on, all management traffic will flow through the separate `AzureFirewallManagementSubnet` subnet.
+  * [DNS Proxy](https://learn.microsoft.com/azure/firewall/dns-details)
+  * [Threat Intelligence in Alert mode](https://learn.microsoft.com/azure/firewall/threat-intel)
   * IDPS in Alert mode
 * Azure Firewall Policy
   * Base firewall rules to support spoke archetypes
@@ -73,7 +73,7 @@ Network design will require 3 IP blocks:
 ## Management Restricted Zone Virtual Network
 
 * Management Access Zone (OZ) - to host any privileged access workstations (PAW), with Management Public IPs forwarded via the hub's firewall.
-* Management (OZ) – hosting the management servers (domain controllers).
+* Management (OZ) – hosting the management servers (DNS Servers).
 * Infrastructure (OZ) – hosting other common infrastructure, like file shares.
 * Security Management (OZ) – hosting security, proxies and patching servers.
 * Logging (OZ) – hosting logging relays.
@@ -88,7 +88,7 @@ To simplify management and compliance, all public-facing web servers, reverse pr
 
 Application Gateway can have either public or private frontends (also with [RFC 6598][rfc6598] space) and it requires a full subnet for it's instances.
 
-The Backend URL should map to a VIP and Port mapping in the firewall's External network. In the future, Backend URLs could be directly pointed to the Frontend subnets in the spoke. The firewall performs DNAT and sends to the webserver, which will answer to the source IP (Application Gateway's internal IP), which means the webserver may need a UDR to force traffic destined to Application Gateway to re-traverse the firewall (next-hop), which is considered asymmetric routing ([other example topologies](https://docs.microsoft.com/azure/architecture/example-scenario/gateway/firewall-application-gateway#application-gateway-before-firewall)).
+The Backend URL should map to a VIP and Port mapping in the firewall's External network. In the future, Backend URLs could be directly pointed to the Frontend subnets in the spoke. The firewall performs DNAT and sends to the webserver, which will answer to the source IP (Application Gateway's internal IP), which means the webserver may need a UDR to force traffic destined to Application Gateway to re-traverse the firewall (next-hop), which is considered asymmetric routing ([other example topologies](https://learn.microsoft.com/azure/architecture/example-scenario/gateway/firewall-application-gateway#application-gateway-before-firewall)).
 
 ## User Defined Routes
 
@@ -193,7 +193,7 @@ Azure Firewall forwards it's logs to Log Analytics Workspace.  This integration 
 
 ![Diagnostic Settings](../media/architecture/hubnetwork-azfw/azfw-diagnostic-settings.jpg)
 
-Once Log Analytics Workspace has collected logs, [Azure Monitor Workbook for Azure Firewall](https://docs.microsoft.com/azure/firewall/firewall-workbook) can be used to monitor traffic flows.  
+Once Log Analytics Workspace has collected logs, [Azure Monitor Workbook for Azure Firewall](https://learn.microsoft.com/azure/firewall/firewall-workbook) can be used to monitor traffic flows.  
 
 Below are sample queries that can also be used to query Log Analytics Workspace directly.
 
@@ -225,9 +225,9 @@ AzureDiagnostics
 [cloudUsageProfiles]: https://github.com/canada-ca/cloud-guardrails/blob/master/EN/00_Applicable-Scope.md
 [rfc1918]: https://tools.ietf.org/html/rfc1918
 [rfc6598]: https://tools.ietf.org/html/rfc6598
-[nsgAzureLoadBalancer]: https://docs.microsoft.com/azure/virtual-network/network-security-groups-overview#allowazureloadbalancerinbound
-[nsgAzureBastion]: https://docs.microsoft.com/azure/bastion/bastion-nsg#apply
-[nsgAppGatewayV2]: https://docs.microsoft.com/azure/application-gateway/configuration-infrastructure#network-security-groups
+[nsgAzureLoadBalancer]: https://learn.microsoft.com/azure/virtual-network/network-security-groups-overview#allowazureloadbalancerinbound
+[nsgAzureBastion]: https://learn.microsoft.com/azure/bastion/bastion-nsg#apply
+[nsgAppGatewayV2]: https://learn.microsoft.com/azure/application-gateway/configuration-infrastructure#network-security-groups
 
 ## Azure Deployment
 
@@ -253,7 +253,7 @@ Reference implementation uses parameter files with `object` parameters to consol
 
 ### Delete Locks
 
-As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
 
 By default, this archetype deploys `CanNotDelete` lock to prevent accidental deletion at:
 
@@ -264,9 +264,9 @@ By default, this archetype deploys `CanNotDelete` lock to prevent accidental del
 
 ### Service Health
 
-[Service health notifications](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties) are published by Azure, and contain information about the resources under your subscription.  Service health notifications can be informational or actionable, depending on the category.
+[Service health notifications](https://learn.microsoft.com/azure/service-health/service-health-notifications-properties) are published by Azure, and contain information about the resources under your subscription.  Service health notifications can be informational or actionable, depending on the category.
 
-Our examples configure service health alerts for `Security` and `Incident`.  However, these categories can be customized based on your need.  Please review the possible options in [Azure Docs](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties#details-on-service-health-level-information).
+Our examples configure service health alerts for `Security` and `Incident`.  However, these categories can be customized based on your need.  Please review the possible options in [Azure Docs](https://learn.microsoft.com/azure/service-health/service-health-notifications-properties#details-on-service-health-level-information).
 
 ### Deployment Scenarios for Azure Firewall Policy
 
@@ -347,8 +347,8 @@ This example configures:
           "receivers": {
               "app": [ "alzcanadapubsec@microsoft.com" ],
               "email": [ "alzcanadapubsec@microsoft.com" ],
-              "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-              "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+              "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
+              "voice": [ { "countryCode": "1", "phoneNumber": "6045555555" } ]
           },
           "actionGroupName": "Service health action group",
           "actionGroupShortName": "health-alert",
@@ -359,7 +359,7 @@ This example configures:
     "securityCenter": {
       "value": {
         "email": "alzcanadapubsec@microsoft.com",
-        "phone": "5555555555"
+        "phone": "6045555555"
       }
     },
     "subscriptionRoleAssignments": {

@@ -78,19 +78,19 @@ Subscription can be moved to a target Management Group through Azure ARM Templat
 
 | Category | Service | Configuration | Reference |
 | --- | --- | --- | --- |
-| Storage | Azure Data Lake Gen 2 - Cloud storage enabling big data analytics. | Hierarchical namespace enabled.  Optional – Customer Managed Keys. | [Azure Docs](https://docs.microsoft.com/azure/storage/blobs/data-lake-storage-introduction)
-| Compute | Azure Databricks - Managed Spark cloud platform for data analytics and data science | Premium tier; Secured Cluster Connectivity enabled with load balancer for egress. | [Azure Docs](https://docs.microsoft.com/azure/databricks/scenarios/what-is-azure-databricks) |
-| Compute | Azure Synapse - End-to-end cloud analytics and data warehousing platform. | Disabled public network access by default.  Managed Private Endpoints for Compute & Synapse Studio.  Optional – Customer Managed Keys. | [Managed Private Endpoints](https://docs.microsoft.com/azure/synapse-analytics/security/synapse-workspace-managed-private-endpoints) / [Connect to Synapse Studio with private links](https://docs.microsoft.com/azure/synapse-analytics/security/synapse-private-link-hubs)
-| Compute | FHIR API - Fast Healthcare Interoperability Resources for healthcare medical exchange. | Private endpoint by default. | [Azure Docs](https://docs.microsoft.com/azure/healthcare-apis/fhir/) |
-| Compute | Azure Stream Analytics | Real-time analytics and event-processing engine for process high volumes of fast streaming data from multiple sources simultaneously. | [Azure Docs](https://docs.microsoft.com/azure/stream-analytics/stream-analytics-introduction)
-| Compute | Azure Function App - Serverless computing service | Virtual Network Integration for accessing resources in virtual network. | [Azure Docs](https://docs.microsoft.com/azure/azure-functions/functions-overview)
-| Ingestion | Azure Data Factory - Managed cloud service for data integration and orchestration | Managed virtual network.  Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/data-factory/introduction) |
-| Ingestion | Event Hub - Data streaming platform and event ingestion service | N/A | [Azure Docs](https://docs.microsoft.com/azure/event-hubs/event-hubs-about)
-| Machine learning and deployment | Azure Machine Learning - Cloud platform for end-to-end machine learning workflows | Optional – Customer Managed Keys, High Business Impact Workspace | [Azure Docs](https://docs.microsoft.com/azure/machine-learning/overview-what-is-azure-ml) |
-| Machine learning and deployment | Azure Container Registry - Managed private Docker cloud registry | Premium SKU.  Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/container-registry/container-registry-intro) |
-| SQL Storage | Azure SQL Database - Fully managed cloud database engine | Optional – Customer Managed Keys | [Azure Docs](https://docs.microsoft.com/azure/azure-sql/database/sql-database-paas-overview) |
-| Key Management | Azure Key Vault - Centralized cloud storage of secrets and keys | Private Endpoint | [Azure Docs](https://docs.microsoft.com/azure/key-vault/general/overview)
-| Monitoring | Application Insights - Application performance and monitoring cloud service | - | [Azure Docs](https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview)
+| Storage | Azure Data Lake Gen 2 - Cloud storage enabling big data analytics. | Hierarchical namespace enabled.  Optional – Customer Managed Keys. | [Azure Docs](https://learn.microsoft.com/azure/storage/blobs/data-lake-storage-introduction)
+| Compute | Azure Databricks - Managed Spark cloud platform for data analytics and data science | Premium tier; Secured Cluster Connectivity enabled with load balancer for egress. | [Azure Docs](https://learn.microsoft.com/azure/databricks/scenarios/what-is-azure-databricks) |
+| Compute | Azure Synapse - End-to-end cloud analytics and data warehousing platform. | Disabled public network access by default.  Managed Private Endpoints for Compute & Synapse Studio.  Optional – Customer Managed Keys. | [Managed Private Endpoints](https://learn.microsoft.com/azure/synapse-analytics/security/synapse-workspace-managed-private-endpoints) / [Connect to Synapse Studio with private links](https://learn.microsoft.com/azure/synapse-analytics/security/synapse-private-link-hubs)
+| Compute | FHIR API - Fast Healthcare Interoperability Resources for healthcare medical exchange. | Private endpoint by default. | [Azure Docs](https://learn.microsoft.com/azure/healthcare-apis/fhir/) |
+| Compute | Azure Stream Analytics | Real-time analytics and event-processing engine for process high volumes of fast streaming data from multiple sources simultaneously. | [Azure Docs](https://learn.microsoft.com/azure/stream-analytics/stream-analytics-introduction)
+| Compute | Azure Function App - Serverless computing service | Virtual Network Integration for accessing resources in virtual network. | [Azure Docs](https://learn.microsoft.com/azure/azure-functions/functions-overview)
+| Ingestion | Azure Data Factory - Managed cloud service for data integration and orchestration | Managed virtual network.  Optional – Customer Managed Keys | [Azure Docs](https://learn.microsoft.com/azure/data-factory/introduction) |
+| Ingestion | Event Hub - Data streaming platform and event ingestion service | N/A | [Azure Docs](https://learn.microsoft.com/azure/event-hubs/event-hubs-about)
+| Machine learning and deployment | Azure Machine Learning - Cloud platform for end-to-end machine learning workflows | Optional – Customer Managed Keys, High Business Impact Workspace | [Azure Docs](https://learn.microsoft.com/azure/machine-learning/overview-what-is-azure-ml) |
+| Machine learning and deployment | Azure Container Registry - Managed private Docker cloud registry | Premium SKU.  Optional – Customer Managed Keys | [Azure Docs](https://learn.microsoft.com/azure/container-registry/container-registry-intro) |
+| SQL Storage | Azure SQL Database - Fully managed cloud database engine | Optional – Customer Managed Keys | [Azure Docs](https://learn.microsoft.com/azure/azure-sql/database/sql-database-paas-overview) |
+| Key Management | Azure Key Vault - Centralized cloud storage of secrets and keys | Private Endpoint | [Azure Docs](https://learn.microsoft.com/azure/key-vault/general/overview)
+| Monitoring | Application Insights - Application performance and monitoring cloud service | - | [Azure Docs](https://learn.microsoft.com/azure/azure-monitor/app/app-insights-overview)
 
 The intended cloud service workflows and data movements for this archetype include:
 
@@ -253,15 +253,15 @@ Reference implementation uses parameter files with `object` parameters to consol
 
 ### Delete Locks
 
-As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.  You can set the lock level to `CanNotDelete` or `ReadOnly`.  Please see [Azure Docs](https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources) for more information.
 
 **This archetype does not use `CanNotDelete` nor `ReadOnly` locks as part of the deployment.  You may customize the deployment templates when it's required for your environment.**
 
 ### Service Health
 
-[Service health notifications](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties) are published by Azure, and contain information about the resources under your subscription.  Service health notifications can be informational or actionable, depending on the category.
+[Service health notifications](https://learn.microsoft.com/azure/service-health/service-health-notifications-properties) are published by Azure, and contain information about the resources under your subscription.  Service health notifications can be informational or actionable, depending on the category.
 
-Our examples configure service health alerts for `Security` and `Incident`.  However, these categories can be customized based on your need.  Please review the possible options in [Azure Docs](https://docs.microsoft.com/azure/service-health/service-health-notifications-properties#details-on-service-health-level-information).
+Our examples configure service health alerts for `Security` and `Incident`.  However, these categories can be customized based on your need.  Please review the possible options in [Azure Docs](https://learn.microsoft.com/azure/service-health/service-health-notifications-properties#details-on-service-health-level-information).
 
 ### Deployment Scenarios
 
@@ -318,8 +318,8 @@ This example configures:
                 "receivers": {
                     "app": [ "alzcanadapubsec@microsoft.com" ],
                     "email": [ "alzcanadapubsec@microsoft.com" ],
-                    "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-                    "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                    "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
+                    "voice": [ { "countryCode": "1", "phoneNumber": "6045555555" } ]
                 },
                 "actionGroupName": "Service health action group",
                 "actionGroupShortName": "health-alert",
@@ -330,7 +330,7 @@ This example configures:
         "securityCenter": {
             "value": {
                 "email": "alzcanadapubsec@microsoft.com",
-                "phone": "5555555555"
+                "phone": "6045555555"
             }
         },
         "subscriptionRoleAssignments": {

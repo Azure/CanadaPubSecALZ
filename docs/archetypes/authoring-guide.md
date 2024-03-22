@@ -1,6 +1,6 @@
 # Archetype Authoring Guide
 
-[Azure landing zones](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/) are the output of a multi-subscription Azure environment that accounts for scale, security governance, networking, and identity. Therefore, deploying an archetype will result in an Azure landing zone that can be enhanced, scaled and refined based on business need.
+[Azure landing zones](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/) are the output of a multi-subscription Azure environment that accounts for scale, security governance, networking, and identity. Therefore, deploying an archetype will result in an Azure landing zone that can be enhanced, scaled and refined based on business need.
 
 This reference implementation provides a number of archetypes that can be used as-is or customized further to suit business needs.  Archetypes are self-contained Bicep deployment templates that are used to configure multiple subscriptions.  Archetypes provide the ability to configure new subscriptions with use case specific architecture in a repeatable method. One archetype can be used to configure many subscriptions.
 
@@ -233,7 +233,7 @@ module subScaffold '../scaffold-subscription.bicep' = {
 
 ## JSON Schema for deployment parameters
 
-Spoke archetypes are deployed to a subscription using a JSON parameters file.  This parameters file defines all configuration expected by the archetype in order to deploy and configure a subscription.  An archetype can have an arbitrary number of parameters (up to a [maximum of 256 parameters](https://docs.microsoft.com/azure/azure-resource-manager/templates/best-practices#template-limits)).  
+Spoke archetypes are deployed to a subscription using a JSON parameters file.  This parameters file defines all configuration expected by the archetype in order to deploy and configure a subscription.  An archetype can have an arbitrary number of parameters (up to a [maximum of 256 parameters](https://learn.microsoft.com/azure/azure-resource-manager/templates/best-practices#template-limits)).  
 
 While these parameters offer customization benefits, they incur overhead when defining input values and correlating them to the resources that are deployed.  To keep all related parameters together and to make them contextual, we've chosen to use `object` parameter type.  This type can contain simple and complex nested types and offers greater flexibility when defining many related parameters together.  For example:
 
@@ -243,7 +243,7 @@ A simple object parameter used for configuring Microsoft Defender for Cloud:
   "securityCenter": {
     "value": {
       "email": "alzcanadapubsec@microsoft.com",
-      "phone": "5555555555"
+      "phone": "6045555555"
     }
   }
 ```
@@ -259,8 +259,8 @@ A complex object parameter used for configuring Service Health alerts:
       "receivers": {
         "app": [ "alzcanadapubsec@microsoft.com" ],
         "email": [ "alzcanadapubsec@microsoft.com" ],
-        "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-        "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+        "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
+        "voice": [ { "countryCode": "1", "phoneNumber": "6045555555" } ]
       },
       "actionGroupName": "Sub5 ALZ action group",
       "actionGroupShortName": "sub5-alert",
@@ -270,7 +270,7 @@ A complex object parameter used for configuring Service Health alerts:
   }
 ```
 
-Azure Resource Manager templates (and by extension Bicep) does not support parameter validation for `object` type.  Therefore, it's not possible to depend on Azure Resource Manager to perform pre-deployment validation.  The input validation supported for parameters are described in [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/templates/parameters).
+Azure Resource Manager templates (and by extension Bicep) does not support parameter validation for `object` type.  Therefore, it's not possible to depend on Azure Resource Manager to perform pre-deployment validation.  The input validation supported for parameters are described in [Azure Docs](https://learn.microsoft.com/azure/azure-resource-manager/templates/parameters).
 
 As a result, we could either
 
@@ -286,7 +286,7 @@ We chose to check the input parameters prior to deployment to identify misconfig
 
 ## Telemetry
 
-This reference implementation is instrumented to track deployment telemetry per module through [customer usage attribution](https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution).  When a new archetype is developed, the telemetry settings must be updated to reference the tracking id.  Telemetry configuration is located at [`config/telemetry.json`](../../config/telemetry.json).
+This reference implementation is instrumented to track deployment telemetry per module through [customer usage attribution](https://learn.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution).  When a new archetype is developed, the telemetry settings must be updated to reference the tracking id.  Telemetry configuration is located at [`config/telemetry.json`](../../config/telemetry.json).
 
 To support per-module tracking, we've split each archetype to be tracked independently.  At the moment, a single tracking id is used for all modules and can be modified in the future when required.
 
@@ -321,7 +321,7 @@ To support per-module tracking, we've split each archetype to be tracked indepen
 
 ```bicep
 // Telemetry - Azure customer usage attribution
-// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+// Reference:  https://learn.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 
 var telemetry = json(loadTextContent('../../config/telemetry.json'))
 module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-usage-attribution-subscription.bicep' = if (telemetry.customerUsageAttribution.enabled) {
@@ -335,7 +335,7 @@ module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-u
 
 > Use the [Onboarding Guide for Azure DevOps](../onboarding/azure-devops-pipelines.md) to configure the `subscription` pipeline.  This pipeline will deploy workload archetypes such as Generic Subscription, Machine Learning and Healthcare.
 
-Azure Resource Manager (ARM) parameters files provide deployment information to setup subscriptions.  Deployment information can include `location`, `resource group names`, `resource names` and `networking`. You can find more information in [Azure Docs](https://docs.microsoft.com/azure/azure-resource-manager/templates/parameter-files) on ARM parameter files.
+Azure Resource Manager (ARM) parameters files provide deployment information to setup subscriptions.  Deployment information can include `location`, `resource group names`, `resource names` and `networking`. You can find more information in [Azure Docs](https://learn.microsoft.com/azure/azure-resource-manager/templates/parameter-files) on ARM parameter files.
 
 These parameter files are located in [config/subscription](../../config/subscriptions) folder.  This folder is configurable in `common.yml` and you can override in environment configuration files using the `subscriptionsPathFromRoot` setting.  By default it is set to `config/subscriptions`.  
 

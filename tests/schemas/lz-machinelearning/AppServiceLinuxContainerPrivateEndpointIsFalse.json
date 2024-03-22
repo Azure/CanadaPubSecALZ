@@ -10,8 +10,8 @@
           "receivers": {
               "app": [ "alzcanadapubsec@microsoft.com" ],
               "email": [ "alzcanadapubsec@microsoft.com" ],
-              "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-              "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+              "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
+              "voice": [ { "countryCode": "1", "phoneNumber": "6045555555" } ]
           },
           "actionGroupName": "Service health action group",
           "actionGroupShortName": "health-alert",
@@ -22,7 +22,7 @@
     "securityCenter": {
       "value": {
         "email": "alzcanadapubsec@microsoft.com",
-        "phone": "5555555555"
+        "phone": "6045555555"
       }
     },
     "subscriptionRoleAssignments": {
@@ -71,13 +71,13 @@
     },
     "resourceGroups": {
       "value": {
-        "automation": "azmlcmk-automation",
-        "compute": "azmlcmk-compute",
-        "monitor": "azmlcmk-monitor",
-        "networking": "azmlcmk-networking",
+        "automation": "azml-automation",
+        "compute": "azml-compute",
+        "monitor": "azml-monitor",
+        "networking": "azml-networking",
         "networkWatcher": "NetworkWatcherRG",
-        "security": "azmlcmk-security",
-        "storage": "azmlcmk-storage"
+        "security": "azml-security",
+        "storage": "azml-storage"
       }
     },
     "useCMK": {
@@ -95,11 +95,11 @@
     },
     "aks": {
       "value": {
-        "version": "1.22.6",
+        "version": "1.21.2",
         "enabled": true,
-        "networkPlugin": "kubenet",
-        "networkPolicy": "calico",
-        "podCidr": "11.0.0.0/16",
+        "networkPlugin": "azure",
+        "networkPolicy": "azure",
+        "podCidr": "",
         "serviceCidr": "20.0.0.0/16",
         "dnsServiceIP": "20.0.0.10",
         "dockerBridgeCidr": "30.0.0.1/16"
@@ -110,14 +110,17 @@
         "enabled": true,
         "skuName": "P1V2",
         "skuTier": "Premium",
-        "enablePrivateEndpoint": true
+        "enablePrivateEndpoint": false
       }
     },
     "sqldb": {
       "value": {
         "enabled": true,
         "sqlAuthenticationUsername": "azadmin",
-        "aadAuthenticationOnly": false
+        "aadAuthenticationOnly": false,
+        "aadLoginName": "DBA Group",
+        "aadLoginObjectID": "4e4ea47c-ee21-4add-ad2f-a75d0d8014e0",
+        "aadLoginType": "Group"
       }
     },
     "sqlmi": {
@@ -146,7 +149,7 @@
       "value": {
         "peerToHubVirtualNetwork": true,
         "useRemoteGateway": false,
-        "name": "azmlcmk-vnet",
+        "name": "azml-vnet",
         "dnsServers": [
           "10.18.1.4"
         ],

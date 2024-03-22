@@ -10,8 +10,8 @@
                 "receivers": {
                     "app": [ "alzcanadapubsec@microsoft.com" ],
                     "email": [ "alzcanadapubsec@microsoft.com" ],
-                    "sms": [ { "countryCode": "1", "phoneNumber": "5555555555" } ],
-                    "voice": [ { "countryCode": "1", "phoneNumber": "5555555555" } ]
+                    "sms": [ { "countryCode": "1", "phoneNumber": "6045555555" } ],
+                    "voice": [ { "countryCode": "1", "phoneNumber": "6045555555" } ]
                 },
                 "actionGroupName": "Service health action group",
                 "actionGroupShortName": "health-alert",
@@ -22,7 +22,7 @@
         "securityCenter": {
             "value": {
                 "email": "alzcanadapubsec@microsoft.com",
-                "phone": "5555555555"
+                "phone": "6045555555"
             }
         },
         "subscriptionRoleAssignments": {
@@ -96,16 +96,16 @@
         "sqldb": {
             "value": {
                 "enabled": true,
-                "sqlAuthenticationUsername": "azadmin",
-                "aadAuthenticationOnly": false
+                "aadAuthenticationOnly": true,
+                "aadLoginName": "DBA Group",
+                "aadLoginObjectID": "4e4ea47c-ee21-4add-ad2f-a75d0d8014e0",
+                "aadLoginType": "Group"
             }
         },
         "synapse": {
             "value": {
-                "aadAuthenticationOnly": true,
-                "aadLoginName": "az.admins",
-                "aadLoginObjectID": "e0357d81-55d8-44e9-9d9c-ab09dc710785",
-                "aadLoginType": "Group"
+                "aadAuthenticationOnly": false,
+                "sqlAuthenticationUsername": "synaseAdminUser"
             }
         },
         "hubNetwork": {
@@ -151,33 +151,7 @@
                         "name": "webapp",
                         "addressPrefix": "10.5.8.0/25"
                     },
-                    "optional": [
-                        {
-                            "comments": "Optional Subnet 1",
-                            "name": "virtualMachines",
-                            "addressPrefix": "10.5.9.0/25",
-                            "nsg": {
-                                "enabled": true
-                            },
-                            "udr": {
-                                "enabled": true
-                            }
-                        },
-                        {
-                            "comments": "Optional Subnet 2 with delegation for NetApp Volumes",
-                            "name": "NetappVolumes",
-                            "addressPrefix": "10.5.10.0/25",
-                            "nsg": {
-                                "enabled": false
-                            },
-                            "udr": {
-                                "enabled": false
-                            },
-                            "delegations": {
-                                "serviceName": "Microsoft.NetApp/volumes"
-                            }
-                        }
-                    ]
+                    "optional": []
                 }
             }
         }

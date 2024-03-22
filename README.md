@@ -2,14 +2,14 @@
 
 ## Introduction
 
-The purpose of the reference implementation is to guide Canadian Public Sector customers on building Landing Zones in their Azure environment.  The reference implementation is based on [Cloud Adoption Framework for Azure](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/) and provides an opinionated implementation that enables ITSG-33 regulatory compliance by using [NIST SP 800-53 Rev. 4](https://docs.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r4) and [Canada Federal PBMM](https://docs.microsoft.com/azure/governance/policy/samples/canada-federal-pbmm) Regulatory Compliance Policy Sets.
+The purpose of the reference implementation is to guide Canadian Public Sector customers on building Landing Zones in their Azure environment.  The reference implementation is based on [Cloud Adoption Framework for Azure](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/) and provides an opinionated implementation that enables ITSG-33 regulatory compliance by using [NIST SP 800-53 Rev. 4](https://learn.microsoft.com/azure/governance/policy/samples/nist-sp-800-53-r4) and [Canada Federal PBMM](https://learn.microsoft.com/azure/governance/policy/samples/canada-federal-pbmm) Regulatory Compliance Policy Sets.
 
 Architecture supported up to Treasury Board of Canada Secretariat (TBS) Cloud Profile 3 - Cloud Only Applications.  This profile is applicable to Infrastructure as a Service (IaaS) and Platform as a Service (PaaS) with [characteristics](https://github.com/canada-ca/cloud-guardrails/blob/master/EN/00_Applicable-Scope.md):
 
 * Cloud-based services hosting sensitive (up to Protected B) information
 * No direct system to system network interconnections required with GC data centers
 
-> This implementation is specific to **Canadian Public Sector departments**. Please see [Implement Cloud Adoption Framework enterprise-scale landing zones in Azure](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/implementation) if you are looking for implementation for other industries or customers.
+> This implementation is specific to **Canadian Public Sector departments**. Please see [Implement Cloud Adoption Framework enterprise-scale landing zones in Azure](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/implementation) if you are looking for implementation for other industries or customers.
 
 ## Architecture
 
@@ -54,7 +54,7 @@ multiple types of workloads including App Dev and Data & AI.
 
 * Automatic approval for Canada Federal PBMM nor Authority to Operate (ATO).  Customers must collect evidence, customize to meet their departmental requirements and submit for Authority to Operate based on their risk profile, requirements and process.
 
-* Compliant on all Azure Policies when the reference implementation is deployed.  This is due to the shared responsibility of cloud and customers can choose the Azure Policies to exclude.  For example, using Azure Firewall is an Azure Policy that will be non-compliant since majority of the Public Sector customers use Network Virtual Appliances such as Fortinet.  Customers must review [Microsoft Defender for Cloud Regulatory Compliance dashboard](https://docs.microsoft.com/azure/defender-for-cloud/update-regulatory-compliance-packages) and apply appropriate exemptions.
+* Compliant on all Azure Policies when the reference implementation is deployed.  This is due to the shared responsibility of cloud and customers can choose the Azure Policies to exclude.  For example, using Azure Firewall is an Azure Policy that will be non-compliant since majority of the Public Sector customers use Network Virtual Appliances such as Fortinet.  Customers must review [Microsoft Defender for Cloud Regulatory Compliance dashboard](https://learn.microsoft.com/azure/defender-for-cloud/update-regulatory-compliance-packages) and apply appropriate exemptions.
 
 ## Contributing
 
@@ -64,7 +64,7 @@ See [Contributing Reference Implementation](CONTRIBUTING.md) for information on 
 
 **November 11, 2021 onward**
 
-> Microsoft can identify the deployments of the Azure Resource Manager and Bicep templates with the deployed Azure resources. Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business.  The telemetry is collected through [customer usage attribution](https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution). The data is collected and governed by Microsoft's privacy policies, located at [https://www.microsoft.com/trustcenter](https://www.microsoft.com/trustcenter).
+> Microsoft can identify the deployments of the Azure Resource Manager and Bicep templates with the deployed Azure resources. Microsoft can correlate these resources used to support the deployments. Microsoft collects this information to provide the best experiences with their products and to operate their business.  The telemetry is collected through [customer usage attribution](https://learn.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution). The data is collected and governed by Microsoft's privacy policies, located at [https://www.microsoft.com/trustcenter](https://www.microsoft.com/trustcenter).
 >
 > If you don't wish to send usage data to Microsoft, you can set the `customerUsageAttribution.enabled` setting to `false` in `config/telemetry.json`.  Learn more in our [Azure DevOps Pipelines](docs/onboarding/azure-devops-pipelines.md#telemetry) onboarding guide.
 > 

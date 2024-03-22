@@ -108,7 +108,7 @@ var virtualNetworkName = subnetIdSplit[8]
 var privateDnsZoneIdSplit = split(privateDNSZoneId, '/')
 var privateDnsZoneSubscriptionId = privateDnsZoneIdSplit[2]
 var privateZoneDnsResourceGroupName = privateDnsZoneIdSplit[4]
-var privateZoneResourceName = last(privateDnsZoneIdSplit)
+var privateZoneResourceName = last(privateDnsZoneIdSplit)!
 
 module identity '../../iam/user-assigned-identity.bicep' = {
   name: 'deploy-aks-identity'
@@ -118,7 +118,7 @@ module identity '../../iam/user-assigned-identity.bicep' = {
   }
 }
 
-// assign permissions to identity per https://docs.microsoft.com/en-us/azure/aks/private-clusters#configure-private-dns-zone
+// assign permissions to identity per https://learn.microsoft.com/en-us/azure/aks/private-clusters#configure-private-dns-zone
 module rbacPrivateDnsZoneContributor '../../iam/resource/private-dns-zone-role-assignment-to-sp.bicep' = {
   name: 'rbac-private-dns-zone-contributor-${name}'
   scope: resourceGroup(privateDnsZoneSubscriptionId, privateZoneDnsResourceGroupName)

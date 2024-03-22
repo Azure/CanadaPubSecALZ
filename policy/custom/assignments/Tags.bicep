@@ -26,9 +26,11 @@ param policyAssignmentManagementGroupId string
 param enforcementMode string = 'Default'
 
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
+var policyDefinitionScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)
+
 
 // Telemetry - Azure customer usage attribution
-// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+// Reference:  https://learn.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 var telemetry = json(loadTextContent('../../../config/telemetry.json'))
 module telemetryCustomerUsageAttribution '../../../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
   name: 'pid-${telemetry.customerUsageAttribution.modules.policy}-tags'
@@ -42,7 +44,7 @@ resource rgInheritedPolicySetFromSubscriptionToResourceGroupAssignment 'Microsof
   name: 'tags-torg-${uniqueString('tags-torg-', policyAssignmentManagementGroupId)}'
   properties: {
     displayName: rgInheritedAssignmentFromSubscriptionToResourceGroupName
-    policyDefinitionId: '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${rgInheritedPolicyFromSubscriptionToResourceGroupId}'
+    policyDefinitionId: extensionResourceId(policyDefinitionScope, 'Microsoft.Authorization/policySetDefinitions', rgInheritedPolicyFromSubscriptionToResourceGroupId)
     scope: scope
     notScopes: []
     parameters: {}
@@ -58,7 +60,7 @@ resource rgPolicySetRoleAssignmentFromSubscriptionToResourceGroupContributor 'Mi
   name: guid(rgInheritedPolicyFromSubscriptionToResourceGroupId, 'RgRemediation', 'Contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','b24988ac-6180-42a0-ab88-20f7382dd24c')
     principalId: rgInheritedPolicySetFromSubscriptionToResourceGroupAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -72,7 +74,7 @@ resource rgInheritedPolicySetAssignment 'Microsoft.Authorization/policyAssignmen
   name: 'tags-rg-${uniqueString('tags-from-rg-', policyAssignmentManagementGroupId)}'
   properties: {
     displayName: rgInheritedAssignmentName
-    policyDefinitionId: '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${rgInheritedPolicyId}'
+    policyDefinitionId: extensionResourceId(policyDefinitionScope, 'Microsoft.Authorization/policySetDefinitions', rgInheritedPolicyId)
     scope: scope
     notScopes: []
     parameters: {}
@@ -88,7 +90,7 @@ resource rgPolicySetRoleAssignmentContributor 'Microsoft.Authorization/roleAssig
   name: guid(policyAssignmentManagementGroupId, 'RgRemediation', 'Contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','b24988ac-6180-42a0-ab88-20f7382dd24c')
     principalId: rgInheritedPolicySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -102,7 +104,7 @@ resource rgRequiredPolicySetAssignment 'Microsoft.Authorization/policyAssignment
   name: 'tags-rg-${uniqueString('tags-required-', policyAssignmentManagementGroupId)}'
   properties: {
     displayName: rgRequiredAssignmentName
-    policyDefinitionId: '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${rgRequiredPolicyId}'
+    policyDefinitionId: extensionResourceId(policyDefinitionScope, 'Microsoft.Authorization/policySetDefinitions', rgRequiredPolicyId)
     scope: scope
     notScopes: []
     parameters: {}
@@ -122,7 +124,7 @@ resource resourcesAuditPolicySetAssignment 'Microsoft.Authorization/policyAssign
   name: 'tags-r-${uniqueString('tags-missing-', policyAssignmentManagementGroupId)}'
   properties: {
     displayName: resourcesAssignmentName
-    policyDefinitionId: '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policySetDefinitions/${resourcesPolicyId}'
+    policyDefinitionId: extensionResourceId(policyDefinitionScope, 'Microsoft.Authorization/policySetDefinitions', resourcesPolicyId)
     scope: scope
     notScopes: []
     parameters: {}

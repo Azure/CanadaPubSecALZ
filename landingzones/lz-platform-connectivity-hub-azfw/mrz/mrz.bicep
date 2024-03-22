@@ -81,6 +81,7 @@ module vnetPeeringHubToSpoke '../../../azresources/network/vnet-peering.bicep' =
     peeringName: '${hubVnetName}-to-${mrzVnet.outputs.vnetName}'
     allowForwardedTraffic: true
     allowVirtualNetworkAccess: true
+    allowGatewayTransit: true
     sourceVnetName: hubVnetName
     targetVnetId: mrzVnet.outputs.vnetId
     useRemoteGateways: false

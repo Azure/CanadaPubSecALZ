@@ -86,9 +86,9 @@ resource sqlserver 'Microsoft.Sql/servers@2021-02-01-preview' = {
 }
 
 resource sqlserver_va 'Microsoft.Sql/servers/vulnerabilityAssessments@2020-11-01-preview' = {
-  name: '${sqlServerName}/default'
+  parent: sqlserver
+  name: 'default'
   dependsOn: [
-    sqlserver
     roleAssignSQLToSALogging
   ]
   properties: {

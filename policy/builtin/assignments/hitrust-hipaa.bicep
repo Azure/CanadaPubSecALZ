@@ -44,7 +44,7 @@ var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssi
 var policyScopedId = resourceId('Microsoft.Authorization/policySetDefinitions', policyId)
 
 // Telemetry - Azure customer usage attribution
-// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+// Reference:  https://learn.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 var telemetry = json(loadTextContent('../../../config/telemetry.json'))
 module telemetryCustomerUsageAttribution '../../../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
   name: 'pid-${telemetry.customerUsageAttribution.modules.policy}-hitrust-hipaa'
@@ -157,7 +157,7 @@ resource policySetRoleAssignmentContributor 'Microsoft.Authorization/roleAssignm
   name: guid(policyAssignmentManagementGroupId, 'hitrust-hipaa-contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','b24988ac-6180-42a0-ab88-20f7382dd24c')
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -167,7 +167,7 @@ resource policySetRoleAssignmentVMContributor 'Microsoft.Authorization/roleAssig
   name: guid(policyAssignmentManagementGroupId, 'hitrust-hipaa-virtual-machine-contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','9980e02c-c2be-4d73-94e8-173b1dc7cf3c')
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -177,7 +177,7 @@ resource policySetRoleAssignmentNetworkContributor 'Microsoft.Authorization/role
   name: guid(policyAssignmentManagementGroupId, 'hitrust-hipaa-network-contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','4d97b98b-1d4f-4787-a291-c67834d212e7')
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -187,7 +187,7 @@ resource policySetRoleAssignmentMonitoringContributor 'Microsoft.Authorization/r
   name: guid(policyAssignmentManagementGroupId, 'hitrust-hipaa-monitoring-contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','749f88d5-cbae-40b8-bcfc-e573ddc772fa')
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -197,7 +197,7 @@ resource policySetRoleAssignmentStorageAccountContributor 'Microsoft.Authorizati
   name: guid(policyAssignmentManagementGroupId, 'hitrust-hipaa-storage-account-contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab'
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions','17d1049b-9a84-46fb-8f53-869881c3d3ab')
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }

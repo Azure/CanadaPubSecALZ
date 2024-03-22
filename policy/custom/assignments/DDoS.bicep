@@ -32,10 +32,12 @@ var policyId = 'Network-Deploy-DDoS-Standard'
 var assignmentName = 'Custom - Enable DDoS Standard on Virtual Networks'
 
 var scope = tenantResourceId('Microsoft.Management/managementGroups', policyAssignmentManagementGroupId)
-var policyScopedId = '/providers/Microsoft.Management/managementGroups/${policyDefinitionManagementGroupId}/providers/Microsoft.Authorization/policyDefinitions/${policyId}'
+var policyDefinitionScope = tenantResourceId('Microsoft.Management/managementGroups', policyDefinitionManagementGroupId)
+var policyScopedId = extensionResourceId(policyDefinitionScope, 'Microsoft.Authorization/policyDefinitions', policyId)
+
 
 // Telemetry - Azure customer usage attribution
-// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+// Reference:  https://learn.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 var telemetry = json(loadTextContent('../../../config/telemetry.json'))
 module telemetryCustomerUsageAttribution '../../../azresources/telemetry/customer-usage-attribution-management-group.bicep' = if (telemetry.customerUsageAttribution.enabled) {
   name: 'pid-${telemetry.customerUsageAttribution.modules.policy}-ddos'
@@ -66,7 +68,7 @@ resource policySetRoleAssignmentNetworkContributor 'Microsoft.Authorization/role
   name: guid(policyAssignmentManagementGroupId, 'ddos-standard', 'Network Contributor')
   scope: managementGroup()
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+    roleDefinitionId: tenantResourceId('Microsoft.Authorization/roleDefinitions','4d97b98b-1d4f-4787-a291-c67834d212e7')
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
   }

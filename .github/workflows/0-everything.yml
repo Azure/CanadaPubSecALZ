@@ -20,6 +20,11 @@ on:
           - "HubNetworkWithNVA"
           - "HubNetworkWithAzureFirewall"
         default: "HubNetworkWithAzureFirewall"
+      deployIdentity:
+        type: boolean
+        description: "Deploy Identity Subscription"
+        required: true
+        default: false
       subscriptionIds:
         type: string
         description: Subscription ID(s) (optional), e.g. "abcd", "1234"
@@ -305,6 +310,34 @@ jobs:
           -GitHubRef ${env:GITHUB_REF} `
           -NvaUsername (ConvertTo-SecureString -String '${{secrets.NVA_USERNAME}}' -AsPlainText -Force) `
           -NvaPassword (ConvertTo-SecureString -String '${{secrets.NVA_PASSWORD}} '-AsPlainText -Force)
+
+  identity:
+    name: Identity
+    if: github.event.inputs.deployIdentity == 'true'
+
+    needs:
+      - Logging
+      - HubNetworking
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure PowerShell modules
+      run: |
+        Install-Module Az -Force
+        Install-Module powershell-yaml -Force
+
+    - name: Deploy Identity
+      run: |
+        ./RunWorkflows.ps1 `
+          -DeployIdentity `
+          -EnvironmentName '${{github.event.inputs.environmentName}}' `
+          -LoginServicePrincipalJson (ConvertTo-SecureString -String '${{secrets.ALZ_CREDENTIALS}}' -AsPlainText -Force) `
+          -GitHubRepo ${env:GITHUB_REPOSITORY} `
+          -GitHubRef ${env:GITHUB_REF}
 
   SubscriptionMatrix:
     if: github.event.inputs.subscriptionIds != ''

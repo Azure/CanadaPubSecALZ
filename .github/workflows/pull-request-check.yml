@@ -12,6 +12,7 @@ env:
   SCHEMA_FOLDER: schemas/latest/landingzones
   LOGGING_PATH_FROM_ROOT: config/logging
   NETWORKING_PATH_FROM_ROOT: config/networking
+  IDENTITY_PATH_FROM_ROOT: config/identity
   SUBSCRIPTIONS_PATH_FROM_ROOT: config/subscriptions
 
 jobs:
@@ -83,6 +84,14 @@ jobs:
           Get-ChildItem -Recurse -Filter $HubNetworkWithNVAFileFilter -Path "${{env.NETWORKING_PATH_FROM_ROOT}}/*/hub-nva/" | ForEach-Object {
               Write-Host "Validating: $_ with $HubNetworkWithNVASchemaFile"
               Get-Content -Raw $_ | Test-Json -SchemaFile $HubNetworkWithNVASchemaFile
+          }
+
+          $IdentityFileFilter="*.json"
+          $IdentitySchemaFile="${{env.SCHEMA_FOLDER}}/lz-platform-identity.json"
+
+          Get-ChildItem -Recurse -Filter $IdentityFileFilter -Path "${{env.IDENTITY_PATH_FROM_ROOT}}" | ForEach-Object {
+              Write-Host "Validating: $_ with $IdentitySchemaFile"
+              Get-Content -Raw $_ | Test-Json -SchemaFile $IdentitySchemaFile
           }
           
           $GenericSubscriptionFileFilter="*generic-subscription*.json"

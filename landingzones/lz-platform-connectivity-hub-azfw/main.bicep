@@ -44,7 +44,7 @@ param logAnalyticsWorkspaceResourceId string
 // "securityCenter": {
 //   "value": {
 //       "email": "alzcanadapubsec@microsoft.com",
-//       "phone": "5555555555"
+//       "phone": "6045555555"
 //   }
 // }
 
@@ -52,7 +52,7 @@ param logAnalyticsWorkspaceResourceId string
 // -----------------------------
 // {
 //   email: 'alzcanadapubsec@microsoft.com'
-//   phone: '5555555555'
+//   phone: '6045555555'
 // }
 @description('Microsoft Defender for Cloud configuration.  It includes email and phone.')
 param securityCenter object
@@ -179,7 +179,7 @@ param managementRestrictedZone object
 param publicAccessZone object
 
 // Telemetry - Azure customer usage attribution
-// Reference:  https://docs.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
+// Reference:  https://learn.microsoft.com/azure/marketplace/azure-partner-customer-usage-attribution
 var telemetry = json(loadTextContent('../../config/telemetry.json'))
 module telemetryCustomerUsageAttribution '../../azresources/telemetry/customer-usage-attribution-subscription.bicep' = if (telemetry.customerUsageAttribution.enabled) {
   name: 'pid-${telemetry.customerUsageAttribution.modules.networking.azureFirewall}'

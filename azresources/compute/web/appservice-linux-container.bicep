@@ -56,7 +56,7 @@ resource app 'Microsoft.Web/sites@2021-02-01' = {
     clientAffinityEnabled: true
     siteConfig: {
       // for Linux Apps Azure DNS private zones only works if Route All is enabled.
-      // https://docs.microsoft.com/azure/app-service/web-sites-integrate-with-vnet#azure-dns-private-zones
+      // https://learn.microsoft.com/azure/app-service/web-sites-integrate-with-vnet#azure-dns-private-zones
       linuxFxVersion: 'DOCKER|mcr.microsoft.com/appsvc/staticsite:latest'
       vnetRouteAllEnabled: true
       use32BitWorkerProcess: false

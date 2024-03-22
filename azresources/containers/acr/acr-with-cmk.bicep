@@ -66,7 +66,7 @@ param tempKeyVaultName string = 'tmpkv${uniqueString(utcNow())}'
 
 /*
   Create a temporary key vault and key to setup CMK.  These will be deleted at the end of deployment using deployment script.
-  See: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-customer-managed-keys#advanced-scenario-key-vault-firewall  
+  See: https://learn.microsoft.com/en-us/azure/container-registry/container-registry-customer-managed-keys#advanced-scenario-key-vault-firewall  
 */
 module tempAkv '../../security/key-vault.bicep' = {
   name: 'deploy-keyvault-temp'

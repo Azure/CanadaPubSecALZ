@@ -60,5 +60,5 @@ echo.
 echo Now that an environment exists for the repository branch [%DEVOPS_REPO_BRANCH%],
 echo learn more about configuring approvals and checks for deployments associated with this
 echo environment by reviewing the following documentation:
-echo    * https://docs.microsoft.com/azure/devops/pipelines/process/approvals
+echo    * https://learn.microsoft.com/azure/devops/pipelines/process/approvals
 echo.

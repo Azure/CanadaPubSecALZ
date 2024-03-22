@@ -16,6 +16,7 @@ variables:
 
   loggingPathFromRoot: 'config/logging'
   networkPathFromRoot: 'config/networking'
+  identityPathFromRoot: 'config/identity'
   subscriptionsPathFromRoot: 'config/subscriptions'
 
   var-bashPreInjectScript: 'set -E; function catch { echo "##vso[task.logissue type=error]Caller: $(caller), LineNo: $LINENO, Command: $BASH_COMMAND" ; exit 1 ; } ; echo ; echo "Current working directory: $(pwd)" ; echo ; trap catch ERR'

@@ -70,4 +70,10 @@ steps:
       echo
       printenv -0 | grep -zi '^var-hubnetwork-nva-' | xargs -0 -L 1 echo
 
+      echo
+      echo
+      echo "IDENTITY"
+      echo
+      printenv -0 | grep -zi '^var-identity-' | xargs -0 -L 1 echo
+
       $(var-bashPostInjectScript)

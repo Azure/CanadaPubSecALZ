@@ -26,23 +26,23 @@ The instructions in this document and scripts in the `/scripts/onboarding` folde
 
 Install instructions:
 
-- <https://docs.microsoft.com/cli/azure/install-azure-cli>
+- <https://learn.microsoft.com/cli/azure/install-azure-cli>
 
 After installation:
 
 - Sign in with `az login`  
-  <https://docs.microsoft.com/cli/azure/authenticate-azure-cli>
+  <https://learn.microsoft.com/cli/azure/authenticate-azure-cli>
 
 ### Azure CLI devops extension
 
 Install instructions:
 
-- <https://docs.microsoft.com/azure/devops/cli>
+- <https://learn.microsoft.com/azure/devops/cli>
 
 After installation:
 
 - Sign-in with a Personal Access Token (PAT):
-  <https://docs.microsoft.com/azure/devops/cli/log-in-via-pat>. For example:  
+  <https://learn.microsoft.com/azure/devops/cli/log-in-via-pat>. For example:  
   `az devops login --organization https://dev.azure.com/[DEVOPS-ORG]`
 
 Optionally, you may also want to perform the following steps:
@@ -55,7 +55,7 @@ Optionally, you may also want to perform the following steps:
 
 These additional steps are optional since the scripts use the `DEVOPS_ORG` and `DEVOPS_PROJECT_NAME` environment variables. Setting the default Azure DevOps organization and project may be useful when you are invoking the `az devops` commands directly.
 
-- For other `az devops` commands, refer to the following documentation: <https://docs.microsoft.com/cli/azure/ext/azure-devops>
+- For other `az devops` commands, refer to the following documentation: <https://learn.microsoft.com/cli/azure/ext/azure-devops>
 
 ### jq.exe
 
@@ -87,7 +87,7 @@ If you need to create Azure DevOps project(s) or manage organization-wide policy
 
 If you don't need to create Azure DevOps project(s) or manage organization-wide policy settings, then your user account will only need to be a member of the `Project Administrators` group in an existing Azure DevOps project.
 
-Detailed instructions on how to configure security & usage settings for Azure DevOps are outside the scope of this documentation. For additional information on these topics, refer to the following: [Settings, Security & Usage documentation](https://docs.microsoft.com/azure/devops/organizations).
+Detailed instructions on how to configure security & usage settings for Azure DevOps are outside the scope of this documentation. For additional information on these topics, refer to the following: [Settings, Security & Usage documentation](https://learn.microsoft.com/azure/devops/organizations).
 
 ### Azure Active Directory
 
@@ -102,7 +102,7 @@ Perform the following steps to verify your administrative access level:
 1. Verify your account is assigned the `Global administrator` role
 
 Next, ensure your account has elevated access at Azure AD tenant root scope, so that you are able to manage management groups:
-    Reference: <https://docs.microsoft.com/azure/role-based-access-control/elevate-access-global-admin>
+    Reference: <https://learn.microsoft.com/azure/role-based-access-control/elevate-access-global-admin>
 
 Here are some sample Azure CLI commands you can use:
 
@@ -119,7 +119,7 @@ Here are some sample Azure CLI commands you can use:
 
 ### Azure Subscriptions
 
-You will need to either have the ability to create new Azure subscriptions or have Azure subscriptions created for you and ready for use. If you need to create Azure subscriptions, then review the following documentation that discusses the role requirements depending on whether your Azure subscriptions are procured through an Azure Enterprise Agreement, Microsoft Customer Agreement, Microsoft Partner Agreement, or Microsoft Online Service Program billing account: [Create an additional Azure subscription](https://docs.microsoft.com/azure/cost-management-billing/manage/create-subscription).
+You will need to either have the ability to create new Azure subscriptions or have Azure subscriptions created for you and ready for use. If you need to create Azure subscriptions, then review the following documentation that discusses the role requirements depending on whether your Azure subscriptions are procured through an Azure Enterprise Agreement, Microsoft Customer Agreement, Microsoft Partner Agreement, or Microsoft Online Service Program billing account: [Create an additional Azure subscription](https://learn.microsoft.com/azure/cost-management-billing/manage/create-subscription).
 
 ---
 
@@ -143,7 +143,7 @@ There are two options for hosting the repository code, outlined in the following
 
 > Choose this option if you are already using (or more comfortable working with) Azure DevOps as a location for maintaining your repository files. This option is also a good choice if you want to simplify Azure DevOps pipelines creation by referencing Git repositories in Azure DevOps instead of GitHub Enterprise.
 
-Follow the instructions in the documentation [Import a Git repo](https://docs.microsoft.com/azure/devops/repos/git/import-git-repository?view=azure-devops).
+Follow the instructions in the documentation [Import a Git repo](https://learn.microsoft.com/azure/devops/repos/git/import-git-repository?view=azure-devops).
 
 In the instructions above, you will use the following Clone URL value: `https://github.com/Azure/CanadaPubSecALZ.git`, and the process will look similar to the following screenshot at the import stage:
 
@@ -260,6 +260,7 @@ Run the `create-pipelines.bat` script to create the landing zone pipelines:
 - platform-connectivity-hub-nva-ci
 - platform-connectivity-hub-azfw-ci
 - platform-connectivity-hub-azfw-policy-ci
+- platform-identity-ci
 - subscriptions-ci
 
 If you would rather perform these steps manually, detailed guidance is available in the following sections of the [Azure DevOps Pipelines Onboarding Guide](./azure-devops-pipelines.md):
@@ -269,7 +270,8 @@ If you would rather perform these steps manually, detailed guidance is available
 - [Step 5 - Configure Logging](./azure-devops-pipelines.md#step-5--configure-logging)
 - [Step 6 - Configure Azure Policies](./azure-devops-pipelines.md#step-6---configure-azure-policies)
 - [Step 7 - Configure Hub Networking](./azure-devops-pipelines.md#step-7---configure-hub-networking)
-- [Step 8 - Configure Subscription Archetypes](./azure-devops-pipelines.md#step-8---configure-subscription-archetypes)
+- [Step 8 - Configure Identity Subscription](./azure-devops-pipelines.md#step-8---configure-identity-subscription)
+- [Step 9 - Configure Subscription Archetypes](./azure-devops-pipelines.md#step-9---configure-subscription-archetypes)
 
 ### Give pipelines access to service endpoint
 

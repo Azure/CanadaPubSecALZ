@@ -10,6 +10,7 @@
         "nvaFortinet": "a83f6385-f514-415f-991b-2d9bd7aed658",
         "azureFirewall": "a83f6385-f514-415f-991b-2d9bd7aed658"
       },
+      "identity": "a83f6385-f514-415f-991b-2d9bd7aed658",
       "archetypes": {
         "genericSubscription": "a83f6385-f514-415f-991b-2d9bd7aed658",
         "machineLearning": "a83f6385-f514-415f-991b-2d9bd7aed658",
