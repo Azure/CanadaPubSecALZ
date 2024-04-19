@@ -191,7 +191,7 @@ Param(
   [SecureString]$NvaPassword=$null
 )
 
-#Requires -Modules Az, powershell-yaml
+#Requires -Modules Az.Accounts, powershell-yaml
 
 $ErrorActionPreference = "Stop"
 
