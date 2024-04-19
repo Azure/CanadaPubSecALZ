@@ -34,7 +34,7 @@ resource roleDefn 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' =
         actions: [
           'Microsoft.operationalinsights/workspaces/features/generateMap/read'
           'Microsoft.operationalinsights/workspaces/features/servergroups/members/read'
-          'Microsoft.operationalinsights/workspaces/features/clientgroups/memebers/read'
+          'Microsoft.operationalinsights/workspaces/features/clientgroups/members/read'
           'Microsoft.operationalinsights/workspaces/features/machineGroups/read'
           'Microsoft.OperationalInsights/workspaces/query/VMBoundPort/read'
           'Microsoft.OperationalInsights/workspaces/query/VMComputer/read'

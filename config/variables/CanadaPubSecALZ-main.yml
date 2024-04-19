@@ -1,0 +1,78 @@
+variables:
+  var-hubnetwork-region: canadacentral
+  var-hubnetwork-managementGroupId: Connectivity
+  var-hubnetwork-azfw-configurationFileName: hub-azfw/hub-network.parameters.json
+  var-hubnetwork-nva-configurationFileName: hub-nva/hub-network.parameters.json
+  var-hubnetwork-subscriptionId: 4fd845de-f6c8-4e6d-9a87-c21c4ebf7edd
+  var-hubnetwork-azfwPolicy-configurationFileName: hub-azfw-policy/azure-firewall-policy.parameters.json
+  var-logging-managementGroupId: Management
+  var-logging-subscriptionId: 91e1aaa2-a0a0-4770-8d90-02daa39bf57a
+  deploymentRegion: canadacentral
+  var-identity-managementGroupId: Identity
+  var-logging-diagnosticSettingsforNetworkSecurityGroupsStoragePrefix: pubsecnsg
+  var-logging-configurationFileName: logging.parameters.json
+  var-managementgroup-hierarchy: |-
+    {
+      "id": "0d466ba2-7ea1-420f-9820-2583fc040733",
+      "name": "Tenant Root Group",
+      "children": [
+        {
+          "id": "pubsec",
+          "name": "Canadian Public Sector Azure Landing Zones",
+          "children": [
+            {
+              "id": "Platform",
+              "name": "Platform",
+              "children": [
+                {
+                  "id": "Management",
+                  "name": "Management",
+                  "children": []
+                },
+                {
+                  "id": "Connectivity",
+                  "name": "Connectivity",
+                  "children": []
+                },
+                {
+                  "id": "Identity",
+                  "name": "Identity",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "LandingZones",
+              "name": "LandingZones",
+              "children": [
+                {
+                  "id": "DevTest",
+                  "name": "DevTest",
+                  "children": []
+                },
+                {
+                  "id": "QA",
+                  "name": "QA",
+                  "children": []
+                },
+                {
+                  "id": "Prod",
+                  "name": "Prod",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "Sandbox",
+              "name": "Sandbox",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  var-logging-region: canadacentral
+  var-identity-configurationFileName: identity.parameters.json
+  var-identity-region: canadacentral
+  var-identity-subscriptionId: 2987c7a3-1e43-4b28-b983-ac0925e37d03
+

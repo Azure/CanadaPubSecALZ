@@ -4,6 +4,8 @@ This document provides steps required to onboard to the Azure Landing Zones desi
 
 > There are scripts available to help simplify the onboarding process to Azure Landing Zones design using Azure DevOps Pipelines. The [Azure DevOps Scripts](./azure-devops-scripts.md) document contains more detailed information on the those scripts.
 
+> There are scripts available to help simplify the configuration process of the Azure Landing Zones design. The [Configuration Scripts](./configuration-scripts.md) document contains more detailed information on the those scripts.
+
 **All steps will need to be repeated per Azure AD tenant.**
 
 ---
@@ -201,6 +203,8 @@ This deployment diagram describes the steps for deploying one, many or all modul
   * [Migrate Logging configuration from Azure DevOps variables to JSON parameters file](#migrate-logging-configuration-from-azure-devops-variables-to-json-parameters-file)
   * [Migrate Hub Networking configuration from Azure DevOps variables to JSON parameters file](#migrate-hub-networking-configuration-from-azure-devops-variables-to-json-parameters-file)
 
+>Note: For steps #3 - #9 above, there are scripts available to automate generating the JSON and YAML configuration files for environments. Refer to the [Configuration Scripts](./configuration-scripts.md) documentation for more information.
+
 ---
 
 ## Step 1 - Create Service Principal Account & Assign RBAC
@@ -342,7 +346,7 @@ Instructions:
 
     >**Note**: The ID of the default parent management group 'Tenant Root Group' is the same as the Azure Active Directory (AAD) Tenant ID (GUID).
 
-2. Create/edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git (i.e. CanadaESLZ-main.yml).  This file name is automatically inferred by the pipeline based on the Azure DevOps organization name and the branch name.
+2. Create/edit `./config/variables/<devops-org-name>-<branch-name>.yml` in Git (i.e. CanadaPubSecALZ-main.yml).  This file name is automatically inferred by the pipeline based on the Azure DevOps organization name and the branch name.
 
     **Sample environment YAML (v0.9.0 or later)**
 
@@ -403,7 +407,7 @@ Instructions:
 
       * Specify the `id` and `name` of your existing Azure AD tenant for the topmost management group definition. The `id` attribute for this element is mapped into the `var-parentManagementGroupId` pipeline variable for backward compatibility.
       * Specify only 1 child management group definition for the topmost management group definition. You can specify more than 1 child of the topmost management group definition, but it is the first child of the topmost level that will be considered the root of of your management group hierarchy, and is the scope that the `policy-ci` pipeline will use to deploy built-in and custom policies. The `id` attribute for this element is mapped into the `var-topLevelManagementGroupName` pipeline variable for backward compatibility.
-      * The `id` attribute for management group elements can only be an ASCII letter, digit, `-`, `_`, `(`, `)`, `.` and cannot end with a period. In the sample environment configuration file (`CanadaESLZ-main.yml`), we illustrate a convention that prepends the id of the parent management group to the id of each child management group. This is an example only and not a requirement. You are welcome to choose any management group id convention that best suits your needs.
+      * The `id` attribute for management group elements can only be an ASCII letter, digit, `-`, `_`, `(`, `)`, `.` and cannot end with a period. In the sample environment configuration file (`CanadaPubSecALZ-main.yml`), we illustrate a convention that prepends the id of the parent management group to the id of each child management group. This is an example only and not a requirement. You are welcome to choose any management group id convention that best suits your needs.
       * If you are using **CanadaPubSecALZ v0.9.0 or later** and **do not** include a `var-managementgroup-hierarchy` variable setting in your configuration, it will fallback to using the pipeline variables `var-parentManagementGroupId` and `var-topLevelManagementGroupName`. This is to ensure backward compatibility, enabling newer versions of the code to run with older environment configurations.
       * If you are using **CanadaPubSecALZ v0.9.0** or later and **do** include a `var-managementgroup-hierarchy` variable setting in your configuration, it will override any pipeline variables `var-parentManagementGroupId` and `var-topLevelManagementGroupName` also present.
 
@@ -485,8 +489,8 @@ This role assignment is used to grant users access to the logging subscription b
 > **The deployment automation will update the existing resources instead of creating new.**
 
 1. Create directory `./config/logging`.
-2. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (e.g. `CanadaESLZ-main` to create path `./config/logging/CanadaESLZ-main/`).
-3. Create JSON parameters file with name `logging.parameters.json` (any name can be used) in directory created on step 2 (i.e. `./config/logging/CanadaESLZ-main/logging.parameters.json`).
+2. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (e.g. `CanadaPubSecALZ-main` to create path `./config/logging/CanadaPubSecALZ-main/`).
+3. Create JSON parameters file with name `logging.parameters.json` (any name can be used) in directory created on step 2 (i.e. `./config/logging/CanadaPubSecALZ-main/logging.parameters.json`).
 4. Define deployment parameters based on example below.
 
     * Set valid contact information for the Azure Service Health Alerts: email and phone number.
@@ -782,11 +786,11 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 > * [Hub Networking with Fortigate Firewall (NVA)](../../docs/archetypes/hubnetwork-nva-fortigate.md)
 
 1. Create directory `./config/networking`.
-1. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaESLZ-main` to create path `./config/networking/CanadaESLZ-main/`).
+1. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaPubSecALZ-main` to create path `./config/networking/CanadaPubSecALZ-main/`).
 1. When using Hub Networking with Azure Firewall
 
-    1. Create subdirectory: `hub-azfw-policy` (i.e. `./config/networking/CanadaESLZ-main/hub-azfw-policy`)
-    1. Create JSON parameters file with name `azure-firewall-policy.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaESLZ-main/hub-azfw-policy/azure-firewall-policy.parameters.json`).
+    1. Create subdirectory: `hub-azfw-policy` (i.e. `./config/networking/CanadaPubSecALZ-main/hub-azfw-policy`)
+    1. Create JSON parameters file with name `azure-firewall-policy.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaPubSecALZ-main/hub-azfw-policy/azure-firewall-policy.parameters.json`).
     1. Define deployment parameters based on example below.
 
         * Set the values for the Azure tags that would be applied to the logging resources.
@@ -820,8 +824,8 @@ In order to configure audit stream for Azure Monitor, identify the following inf
             }
         ```
 
-    1. Create subdirectory: `hub-azfw` (i.e. `./config/networking/CanadaESLZ-main/hub-azfw`)
-    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaESLZ-main/hub-azfw/hub-network.json`).
+    1. Create subdirectory: `hub-azfw` (i.e. `./config/networking/CanadaPubSecALZ-main/hub-azfw`)
+    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaPubSecALZ-main/hub-azfw/hub-network.json`).
     1. Define deployment parameters based on example below.
 
         * Set valid contact information for the Azure Service Health Alerts: email and phone number.
@@ -1058,8 +1062,8 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
 1. When using Hub Networking with Fortigate Firewall (NVA)
 
-    1. Create subdirectory: `hub-nva` (i.e. `./config/networking/CanadaESLZ-main/hub-nva`)
-    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaESLZ-main/hub-nva/hub-network.parameters.json`).
+    1. Create subdirectory: `hub-nva` (i.e. `./config/networking/CanadaPubSecALZ-main/hub-nva`)
+    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaPubSecALZ-main/hub-nva/hub-network.parameters.json`).
     1. Define deployment parameters based on example below.
 
         * Set valid contact information for the Azure Service Health Alerts: email and phone number.
@@ -1515,9 +1519,9 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
     1. Create directory ./config/identity.
     
-    1. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaESLZ-main` to create path `./config/identity/CanadaESLZ-main/`).
+    1. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaPubSecALZ-main` to create path `./config/identity/CanadaPubSecALZ-main/`).
     
-    1. Make a copy of an existing subscription configuration file under `config/identity/CanadaESLZ-main` as a starting point
+    1. Make a copy of an existing subscription configuration file under `config/identity/CanadaPubSecALZ-main` as a starting point
 
     1. Define deployment parameters based on example below.
         
@@ -1676,7 +1680,7 @@ In order to configure audit stream for Azure Monitor, identify the following inf
 
     *Review the [README.md under `/config/subscriptions`](../../config/subscriptions/README.md) to create the folder structure required for subscriptions deployments.*
 
-    1. Make a copy of an existing subscription configuration file under `config/subscriptions/CanadaESLZ-main` as a starting point
+    1. Make a copy of an existing subscription configuration file under `config/subscriptions/CanadaPubSecALZ-main` as a starting point
 
     2. Be sure to rename the file in one of the following formats:
        * `[GUID]_[TYPE].json`
@@ -1867,7 +1871,7 @@ As of `v0.10.0`, logging configuration have been migrated to JSON parameters fil
 * Separates Azure DevOps pipeline variables from ARM deployment parameters.
 * Simplifies support for multiple Log Analytics Workspaces in an Azure tenant (i.e. LAWs deployed by region or workload)
 
-We added a new parameter to `common.yml` to set the folder for logging configuration.  This folder is used by Azure DevOps Pipelines to create a fully qualified file path for logging configuration.  A fully qualified path will have the following structure: `<loggingPathFromRoot>`/`<devops-org-name>-<branch-name>`/`logging.parameters.json`.  For example:  `config/logging/CanadaESLZ-main/logging.parameters.json`
+We added a new parameter to `common.yml` to set the folder for logging configuration.  This folder is used by Azure DevOps Pipelines to create a fully qualified file path for logging configuration.  A fully qualified path will have the following structure: `<loggingPathFromRoot>`/`<devops-org-name>-<branch-name>`/`logging.parameters.json`.  For example:  `config/logging/CanadaPubSecALZ-main/logging.parameters.json`
 
 ```yaml
   loggingPathFromRoot: 'config/logging'
@@ -1876,8 +1880,8 @@ We added a new parameter to `common.yml` to set the folder for logging configura
 Migration process:
 
 1. Create directory `./config/logging`.
-2. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaESLZ-main` to create path `./config/logging/CanadaESLZ-main/`).
-3. Create JSON parameters file with name `logging.parameters.json` (any name can be used) in the directory (i.e. `./config/logging/CanadaESLZ-main/logging.parameters.json`).
+2. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaPubSecALZ-main` to create path `./config/logging/CanadaPubSecALZ-main/`).
+3. Create JSON parameters file with name `logging.parameters.json` (any name can be used) in the directory (i.e. `./config/logging/CanadaPubSecALZ-main/logging.parameters.json`).
 4. Define deployment parameters based on example below.
 
     **Template to use for logging.parameters.json**
@@ -2021,7 +2025,7 @@ As of `v0.10.0`, hub networking configuration have been migrated to JSON paramet
 * Separates Azure DevOps pipeline variables from ARM deployment parameters.
 * Simplifies support for multiple Hub Networks in an Azure tenant (i.e. Hub Network deployed by region)
 
-We added a new parameter to `common.yml` to set the folder for networking configuration.  This folder is used by Azure DevOps Pipelines to create a fully qualified file path for networking configuration.  A fully qualified path will have the following structure: `<networkPathFromRoot>`/`<devops-org-name>-<branch-name>`/`hub-capability`/`hub-network.parameters.json`.  For example:  `config/networking/CanadaESLZ-main/hub-azfw/hub-network.parameters.json`
+We added a new parameter to `common.yml` to set the folder for networking configuration.  This folder is used by Azure DevOps Pipelines to create a fully qualified file path for networking configuration.  A fully qualified path will have the following structure: `<networkPathFromRoot>`/`<devops-org-name>-<branch-name>`/`hub-capability`/`hub-network.parameters.json`.  For example:  `config/networking/CanadaPubSecALZ-main/hub-azfw/hub-network.parameters.json`
 
 ```yaml
   networkPathFromRoot: 'config/networking'
@@ -2030,11 +2034,11 @@ We added a new parameter to `common.yml` to set the folder for networking config
 Migration process:
 
 1. Create directory `./config/networking`.
-2. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaESLZ-main` to create path `./config/networking/CanadaESLZ-main/`).
+2. Create subdirectory based on the syntax: `<devops-org-name>-<branch-name>` (i.e. `CanadaPubSecALZ-main` to create path `./config/networking/CanadaPubSecALZ-main/`).
 3. When using Hub Networking with Azure Firewall
 
-    1. Create subdirectory: `hub-azfw-policy` (i.e. `./config/networking/CanadaESLZ-main/hub-azfw-policy`)
-    1. Create JSON parameters file with name `azure-firewall-policy.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaESLZ-main/hub-azfw-policy/azure-firewall-policy.parameters.json`).
+    1. Create subdirectory: `hub-azfw-policy` (i.e. `./config/networking/CanadaPubSecALZ-main/hub-azfw-policy`)
+    1. Create JSON parameters file with name `azure-firewall-policy.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaPubSecALZ-main/hub-azfw-policy/azure-firewall-policy.parameters.json`).
     1. Define deployment parameters based on example below.
 
         **Template to use for azure-firewall-policy.parameters.json**
@@ -2057,8 +2061,8 @@ Migration process:
         }
         ```
 
-    1. Create subdirectory: `hub-azfw` (i.e. `./config/networking/CanadaESLZ-main/hub-azfw`)
-    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaESLZ-main/hub-azfw/hub-network.json`).
+    1. Create subdirectory: `hub-azfw` (i.e. `./config/networking/CanadaPubSecALZ-main/hub-azfw`)
+    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaPubSecALZ-main/hub-azfw/hub-network.json`).
     1. Define deployment parameters based on example below.
 
         **Template to use for hub-network.parameters.json**
@@ -2243,8 +2247,8 @@ Migration process:
 
 4. When using Hub Networking with Network Virtual Appliance
 
-    1. Create subdirectory: `hub-nva` (i.e. `./config/networking/CanadaESLZ-main/hub-nva`)
-    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaESLZ-main/hub-nva/hub-network.parameters.json`).
+    1. Create subdirectory: `hub-nva` (i.e. `./config/networking/CanadaPubSecALZ-main/hub-nva`)
+    1. Create JSON parameters file with name `hub-network.parameters.json` (any name can be used) in the directory (i.e. `./config/networking/CanadaPubSecALZ-main/hub-nva/hub-network.parameters.json`).
     1. Define deployment parameters based on example below.
 
         **Template to use for hub-network.parameters.json**

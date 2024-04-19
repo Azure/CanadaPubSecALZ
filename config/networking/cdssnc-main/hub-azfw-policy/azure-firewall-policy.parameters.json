@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/CanadaPubSecALZ/main/schemas/latest/landingzones/lz-platform-connectivity-hub-azfw-policy.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceTags": {
+      "value": {
+        "ClientOrganization": "cds-snc",
+        "CostCenter": "sentinel",
+        "DataSensitivity": "U",
+        "ProjectContact": "Security@CDS",
+        "ProjectName": "Sentinel",
+        "TechnicalContact": "security@cds-snc.ca"
+      }
+    },
+    "resourceGroupName": {
+      "value": "pubsec-azure-firewall-policy"
+    },
+    "policyName": {
+      "value": "pubsecAzureFirewallPolicy"
+    }
+  }
+}

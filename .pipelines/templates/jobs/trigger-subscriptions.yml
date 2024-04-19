@@ -89,13 +89,17 @@ jobs:
         {
           $url = "$($env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI)$env:SYSTEM_TEAMPROJECTID/_apis/pipelines/$($env:SYSTEM_DEFINITIONID)/runs?api-version=6.0-preview.1"
           Write-Host "Invoking pipeline definition with URL: $url"
+          $paths = $env:SUBSCRIPTION_CHANGES -split ','
+          $guids = $paths -replace '.*?([0-9a-f]{8}[-]?([0-9a-f]{4}[-]?){3}[0-9a-f]{12}).*', '$1'
+          $changes = $guids -join ','
           $body = @"
           {
             "templateParameters": {
-              "subscriptions":"[$env:SUBSCRIPTION_CHANGES]"
+              "subscriptions":"[$changes]"
               },
           }
         "@
+          Write-Host "Invoking pipeline definition with body: $body"
           $headers = @{ Authorization = "Bearer $env:SYSTEM_ACCESSTOKEN" }
           $pipeline = Invoke-RestMethod -Uri $url -Headers $headers -Method Post -Body $body -ContentType application/json
           Write-Host "Pipeline invocation result = $($pipeline | ConvertTo-Json -Depth 100)"

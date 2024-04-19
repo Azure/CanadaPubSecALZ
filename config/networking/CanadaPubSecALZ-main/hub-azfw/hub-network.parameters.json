@@ -1,0 +1,231 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/CanadaPubSecALZ/main/schemas/latest/landingzones/lz-platform-connectivity-hub-azfw.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serviceHealthAlerts": {
+      "value": {
+        "alertRuleName": "Networking Alerts",
+        "receivers": {
+          "app": [
+            "networking@example.com"
+          ],
+          "sms": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "6135555555"
+            }
+          ],
+          "email": [
+            "networking@example.com"
+          ],
+          "voice": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "6135555555"
+            }
+          ]
+        },
+        "regions": [
+          "Global",
+          "Canada Central",
+          "Canada East"
+        ],
+        "resourceGroupName": "service-health-alerts-rg",
+        "actionGroupName": "Networking Alerts",
+        "actionGroupShortName": "network-ag",
+        "incidentTypes": [
+          "Incident",
+          "Security"
+        ],
+        "alertRuleDescription": "Networking Alerts for Incidents and Security"
+      }
+    },
+    "securityCenter": {
+      "value": {
+        "email": "security@example.com",
+        "phone": "6135555555"
+      }
+    },
+    "subscriptionRoleAssignments": {
+      "value": [
+        {
+          "comments": "Built-in Contributor Role",
+          "securityGroupObjectIds": [
+            "12d01649-fdb7-4769-afe5-66248082a064"
+          ],
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        }
+      ]
+    },
+    "subscriptionBudget": {
+      "value": {
+        "createBudget": false
+      }
+    },
+    "subscriptionTags": {
+      "value": {
+        "ISSO": "isso-tbd"
+      }
+    },
+    "resourceTags": {
+      "value": {
+        "ClientOrganization": "client-organization-tag",
+        "CostCenter": "cost-center-tag",
+        "DataSensitivity": "data-sensitivity-tag",
+        "ProjectContact": "project-contact-tag",
+        "ProjectName": "project-name-tag",
+        "TechnicalContact": "technical-contact-tag"
+      }
+    },
+    "privateDnsZones": {
+      "value": {
+        "enabled": true,
+        "resourceGroupName": "private-dns-rg"
+      }
+    },
+    "ddosStandard": {
+      "value": {
+        "resourceGroupName": "ddos-rg",
+        "enabled": false,
+        "planName": "ddos-plan"
+      }
+    },
+    "publicAccessZone": {
+      "value": {
+        "enabled": true,
+        "resourceGroupName": "pubsec-public-access-zone"
+      }
+    },
+    "managementRestrictedZone": {
+      "value": {
+        "enabled": true,
+        "resourceGroupName": "pubsec-management-restricted-zone",
+        "network": {
+          "name": "management-restricted-vnet",
+          "addressPrefixes": [
+            "10.18.4.0/22"
+          ],
+          "subnets": [
+            {
+              "comments": "Management (Access Zone) Subnet",
+              "name": "MazSubnet",
+              "addressPrefix": "10.18.4.0/25",
+              "nsg": {
+                "enabled": true
+              },
+              "udr": {
+                "enabled": true
+              }
+            },
+            {
+              "comments": "Infrastructure Services (Restricted Zone) Subnet",
+              "name": "InfSubnet",
+              "addressPrefix": "10.18.4.128/25",
+              "nsg": {
+                "enabled": true
+              },
+              "udr": {
+                "enabled": true
+              }
+            },
+            {
+              "comments": "Security Services (Restricted Zone) Subnet",
+              "name": "SecSubnet",
+              "addressPrefix": "10.18.5.0/26",
+              "nsg": {
+                "enabled": true
+              },
+              "udr": {
+                "enabled": true
+              }
+            },
+            {
+              "comments": "Logging Services (Restricted Zone) Subnet",
+              "name": "LogSubnet",
+              "addressPrefix": "10.18.5.64/26",
+              "nsg": {
+                "enabled": true
+              },
+              "udr": {
+                "enabled": true
+              }
+            },
+            {
+              "comments": "Core Management Interfaces (Restricted Zone) Subnet",
+              "name": "MgmtSubnet",
+              "addressPrefix": "10.18.5.128/26",
+              "nsg": {
+                "enabled": true
+              },
+              "udr": {
+                "enabled": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    "hub": {
+      "value": {
+        "resourceGroupName": "pubsec-hub-networking",
+        "bastion": {
+          "enabled": true,
+          "name": "bastion",
+          "sku": "Standard",
+          "scaleUnits": 2
+        },
+        "azureFirewall": {
+          "name": "pubsecAzureFirewall",
+          "availabilityZones": [
+            "1",
+            "2",
+            "3"
+          ],
+          "forcedTunnelingEnabled": false,
+          "forcedTunnelingNextHop": "10.17.1.4"
+        },
+        "network": {
+          "name": "hub-vnet",
+          "addressPrefixes": [
+            "10.18.0.0/22",
+            "100.60.0.0/16"
+          ],
+          "addressPrefixBastion": "192.168.0.0/16",
+          "subnets": {
+            "gateway": {
+              "comments": "Gateway Subnet used for VPN and/or Express Route connectivity",
+              "name": "GatewaySubnet",
+              "addressPrefix": "10.18.0.0/27"
+            },
+            "firewall": {
+              "comments": "Azure Firewall",
+              "name": "AzureFirewallSubnet",
+              "addressPrefix": "10.18.1.0/24"
+            },
+            "firewallManagement": {
+              "comments": "Azure Firewall Management",
+              "name": "AzureFirewallManagementSubnet",
+              "addressPrefix": "10.18.2.0/26"
+            },
+            "bastion": {
+              "comments": "Azure Bastion",
+              "name": "AzureBastionSubnet",
+              "addressPrefix": "192.168.0.0/24"
+            },
+            "publicAccess": {
+              "comments": "Public Access Zone (Application Gateway)",
+              "name": "PAZSubnet",
+              "addressPrefix": "100.60.1.0/24"
+            },
+            "optional": []
+          }
+        }
+      }
+    },
+    "networkWatcher": {
+      "value": {
+        "resourceGroupName": "NetworkWatcherRG"
+      }
+    }
+  }
+}

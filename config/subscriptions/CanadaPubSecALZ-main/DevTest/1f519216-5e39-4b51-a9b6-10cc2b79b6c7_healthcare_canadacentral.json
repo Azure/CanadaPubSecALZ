@@ -1,0 +1,200 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/CanadaPubSecALZ/main/schemas/latest/landingzones/lz-healthcare.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serviceHealthAlerts": {
+      "value": {
+        "alertRuleName": "Subscription Owners Alerts",
+        "receivers": {
+          "app": [
+            "subscription-owners@example.com"
+          ],
+          "sms": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "6135555555"
+            }
+          ],
+          "email": [
+            "subscription-owners@example.com"
+          ],
+          "voice": [
+            {
+              "countryCode": "1",
+              "phoneNumber": "6135555555"
+            }
+          ]
+        },
+        "regions": [
+          "Global",
+          "Canada Central",
+          "Canada East"
+        ],
+        "resourceGroupName": "service-health-alerts-rg",
+        "actionGroupName": "Subscription Owners Alerts",
+        "actionGroupShortName": "sub-own-ag",
+        "incidentTypes": [
+          "Incident",
+          "Security"
+        ],
+        "alertRuleDescription": "Subscription Owners Alerts for Incidents and Security"
+      }
+    },
+    "securityCenter": {
+      "value": {
+        "email": "security@example.com",
+        "phone": "6135555555"
+      }
+    },
+    "subscriptionRoleAssignments": {
+      "value": [
+        {
+          "comments": "Built-in Contributor Role",
+          "securityGroupObjectIds": [
+            "49f9256a-d77a-43ba-8cc5-957eb40dedee"
+          ],
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "comments": "Custom Role: Landing Zone Application Owner",
+          "securityGroupObjectIds": [
+            "43d97b7e-27b8-4fa7-a339-c935f7752bb9"
+          ],
+          "roleDefinitionId": "b4c87314-c1a1-5320-9c43-779585186bcc"
+        }
+      ]
+    },
+    "subscriptionBudget": {
+      "value": {
+        "createBudget": false
+      }
+    },
+    "subscriptionTags": {
+      "value": {
+        "ISSO": "isso-tag"
+      }
+    },
+    "resourceTags": {
+      "value": {
+        "ClientOrganization": "client-organization-tag",
+        "CostCenter": "cost-center-tag",
+        "DataSensitivity": "data-sensitivity-tag",
+        "ProjectContact": "project-contact-tag",
+        "ProjectName": "project-name-tag",
+        "TechnicalContact": "technical-contact-tag"
+      }
+    },
+    "resourceGroups": {
+      "value": {
+        "automation": "health-automation",
+        "compute": "health-compute",
+        "monitor": "health-monitor",
+        "networking": "health-network",
+        "networkWatcher": "NetworkWatcherRG",
+        "security": "health-security",
+        "storage": "health-storage"
+      }
+    },
+    "useCMK": {
+      "value": true
+    },
+    "keyVault": {
+      "value": {
+        "secretExpiryInDays": 3650
+      }
+    },
+    "automation": {
+      "value": {
+        "name": "automation"
+      }
+    },
+    "sqldb": {
+      "value": {
+        "enabled": true,
+        "sqlAuthenticationUsername": "azadmin",
+        "aadAuthenticationOnly": false
+      }
+    },
+    "synapse": {
+      "value": {
+        "aadAuthenticationOnly": true,
+        "aadLoginName": "az.admins",
+        "aadLoginObjectID": "e0357d81-55d8-44e9-9d9c-ab09dc710785",
+        "aadLoginType": "Group"
+      }
+    },
+    "hubNetwork": {
+      "value": {
+        "virtualNetworkId": "/subscriptions/4fd845de-f6c8-4e6d-9a87-c21c4ebf7edd/resourceGroups/pubsec-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet",
+        "rfc1918IPRange": "10.18.0.0/22",
+        "rfc6598IPRange": "100.60.0.0/16",
+        "egressVirtualApplianceIp": "10.18.1.4",
+        "privateDnsManagedByHub": true,
+        "privateDnsManagedByHubSubscriptionId": "4fd845de-f6c8-4e6d-9a87-c21c4ebf7edd",
+        "privateDnsManagedByHubResourceGroupName": "private-dns-rg"
+      }
+    },
+    "network": {
+      "value": {
+        "peerToHubVirtualNetwork": true,
+        "useRemoteGateway": false,
+        "name": "health-vnet",
+        "dnsServers": [
+          "10.18.1.4"
+        ],
+        "addressPrefixes": [
+          "10.5.0.0/16"
+        ],
+        "subnets": {
+          "databricksPublic": {
+            "comments": "Databricks Public Delegated Subnet",
+            "name": "databrickspublic",
+            "addressPrefix": "10.5.5.0/25"
+          },
+          "databricksPrivate": {
+            "comments": "Databricks Private Delegated Subnet",
+            "name": "databricksprivate",
+            "addressPrefix": "10.5.6.0/25"
+          },
+          "privateEndpoints": {
+            "comments": "Private Endpoints Subnet",
+            "name": "privateendpoints",
+            "addressPrefix": "10.5.7.0/25"
+          },
+          "web": {
+            "comments": "Azure Web App Delegated Subnet",
+            "name": "webapp",
+            "addressPrefix": "10.5.8.0/25"
+          },
+          "optional": [
+            {
+              "comments": "Optional Subnet 1",
+              "name": "virtualMachines",
+              "addressPrefix": "10.5.9.0/25",
+              "nsg": {
+                "enabled": true
+              },
+              "udr": {
+                "enabled": true
+              }
+            },
+            {
+              "comments": "Optional Subnet 2 with delegation for NetApp Volumes",
+              "name": "NetappVolumes",
+              "addressPrefix": "10.5.10.0/25",
+              "nsg": {
+                "enabled": false
+              },
+              "udr": {
+                "enabled": false
+              },
+              "delegations": {
+                "serviceName": "Microsoft.NetApp/volumes"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

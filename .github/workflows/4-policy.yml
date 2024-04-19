@@ -14,9 +14,10 @@ on:
     inputs:
       environmentName:
         type: string
-        description: Environment name (optional), e.g. CanadaESLZ-main
+        description: Environment name (optional), e.g. CanadaPubSecALZ-main
         required: false
-
+        default: cdssnc-main
+        
 defaults:
   run:
     shell: pwsh

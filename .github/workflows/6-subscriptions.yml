@@ -20,6 +20,7 @@ on:
         type: string
         description: Environment name (optional), e.g. CanadaESLZ-main
         required: false
+        default: cdssnc-main
 
 defaults:
   run:
