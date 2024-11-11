@@ -38,12 +38,12 @@ resource ascWorkspaceSettings 'Microsoft.Security/workspaceSettings@2017-08-01-p
   }
 }
 
-resource ascAutoProvision 'Microsoft.Security/autoProvisioningSettings@2017-08-01-preview' = {
+/* resource ascAutoProvision 'Microsoft.Security/autoProvisioningSettings@2017-08-01-preview' = {
   name: 'default'
   properties: {
     autoProvision: 'On'
   }
-}
+} */
 
 // Enable Azure Defender
 var azureDefenderServices = [
