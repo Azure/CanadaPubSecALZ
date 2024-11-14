@@ -25,7 +25,6 @@ param workspaceRetentionInDays int
 // Log Analytics Workspace Solutions
 var solutions = [
   'AgentHealthAssessment'
-  'AntiMalware'
   'AzureActivity'
   'ChangeTracking'
   'Security'
