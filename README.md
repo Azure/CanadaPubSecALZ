@@ -1,3 +1,7 @@
+> # ⚠️ Notice! **This repo is not currently maintained.**
+> For an up to date option that aligns very closely with Canadian Public Sector requirements, the [Azure Sovereign Landing Zone](https://learn.microsoft.com/en-us/industry/sovereign-cloud/sovereign-public-cloud/sovereign-landing-zone/overview-slz?tabs=hubspoke) is an excellent option.
+> 
+
 # Azure Landing Zones for Canadian Public Sector
 
 ## Introduction
